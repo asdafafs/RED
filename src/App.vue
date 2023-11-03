@@ -1,24 +1,38 @@
 <template>
   <div id="app">
-    <div>{{ users }}</div>
+
+    Пример Devextreme
+    <div><DevextremeExample></DevextremeExample></div>
+
+    Пример Jqx
+
+    <div><JqxScheduler></JqxScheduler></div>
+    Пример Syncfusion
+    <div><SyncfusionScheduler></SyncfusionScheduler></div>
   </div>
 </template>
 
 <script>
+import DevextremeExample from "@/components/DevextremeExample.vue";
+import JqxScheduler from "@/components/JqxScheduler.vue";
+import SyncfusionScheduler from "@/components/SyncfusionScheduler.vue";
+
 
 export default {
-  data: () => ({
-    users: ''
-  }),
-  async mounted() {
-    await this.getUsers();
-  },
-  methods: {
-    async getUsers() {
-      const response = await fetch("https://localhost:7012/users");
-      this.users = await response.json();
-    }
-  },
+  components: {SyncfusionScheduler, JqxScheduler, DevextremeExample, },
+
+//  data: () => ({
+//    users: ''
+    //  }),
+//  async mounted() {
+//    await this.getUsers();
+//  },
+//  methods: {
+//    async getUsers() {
+//      const response = await fetch("https://localhost:7012/users");
+//      this.users = await response.json();
+//    }
+//  },
 }
 </script>
 
@@ -43,4 +57,5 @@ nav a {
 nav a.router-link-exact-active {
   color: #42b983;
 }
+
 </style>

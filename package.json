@@ -8,7 +8,14 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "@syncfusion/ej2": "^23.1.43",
+    "@syncfusion/ej2-vue-schedule": "^23.1.40",
+    "cldr-data": "^36.0.1",
     "core-js": "^3.8.3",
+    "devextreme": "^23.1.6",
+    "devextreme-vue": "^23.1.6",
+    "dhtmlx-scheduler": "^6.0.5",
+    "jqwidgets-scripts": "^18.0.0",
     "vue": "^3.2.13",
     "vue-router": "^4.0.3",
     "vuetify": "^3.3.23",

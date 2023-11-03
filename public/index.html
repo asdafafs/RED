@@ -4,7 +4,11 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
+      <link rel="stylesheet" type="text/css" href="https://cdn3.devexpress.com/jslib/23.1.5/css/dx.material.blue.light.css" />
+      <script src="https://unpkg.com/core-js@2.6.12/client/shim.min.js"></script>
+    <script src="https://unpkg.com/systemjs@0.21.3/dist/system.js"></script>
     <link rel="icon" href="<%= BASE_URL %>favicon.ico">
+<link rel="stylesheet" type="text/css" href="./styles/jqx.base.css" />
     <title><%= htmlWebpackPlugin.options.title %></title>
   </head>
   <body>
@@ -12,6 +16,7 @@
       <strong>We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
     </noscript>
     <div id="app"></div>
+    <script src="dist/main.bundle.js"></script>
     <!-- built files will be auto injected -->
   </body>
 </html>
