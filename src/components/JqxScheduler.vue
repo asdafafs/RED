@@ -1,7 +1,7 @@
 <template>
     <JqxScheduler ref="myScheduler"
         :width="getWidth" :height="600" :source="dataAdapter" :date="date" :showLegend="true" :view="'weekView'"
-        :appointmentDataFields="appointmentDataFields" :resources="resources" :views="views" :localization="localization"
+        :appointmentDataFields="appointmentDataFields" :resources="resources" :views="views"
     />
 </template>
 <script>
@@ -32,68 +32,10 @@
                 },
                 views:
                 [
-                    { type: 'dayView', timeRuler: { formatString: 'HH:mm' } },
-                    { type: 'weekView', timeRuler: { formatString: 'HH:mm' } },
-                    { type: 'monthView' }
-
+                    'dayView',
+                    'weekView',
+                    'monthView'
                 ]
-              ,
-                localization:
-                    {
-                      // separator of parts of a date (e.g. '/' in 11/05/1955)
-                      '/': '/',
-                      // separator of parts of a time (e.g. ':' in 05:44 PM)
-                      ':': ':',
-                      // the first day of the week (0 = Sunday, 1 = Monday, etc)
-                      firstDay: 1,
-                      days: {
-                        // full day names
-                        names: ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота'],
-                        // abbreviated day names
-                        namesAbbr: ['Вс', 'Пон', 'Вт', 'Ср', 'Чт', 'Пт', 'Суб'],
-                        // shortest day names
-                        namesShort: ['Вс', 'Пон', 'Вт', 'Ср', 'Чт', 'Пт', 'Суб']
-                      },
-                      months: {
-                        // full month names (13 months for lunar calendards -- 13th month should be '' if not lunar)
-                        names: ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь', ''],
-                        // abbreviated month names
-                        namesAbbr: ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь', '']
-                      },
-                      dayViewString: 'День',
-                      weekViewString: 'Неделя',
-                      monthViewString: 'Месяц',
-
-                      editDialogCreateTitleString: 'Создать новую встречу',
-                      contextMenuCreateAppointmentString: 'Создать новую встречу',
-                      editDialogTimeZoneString: 'Временной пояс',
-                      editDialogSelectTimeZoneString: 'Выберите временной пояс',
-                      editDialogSubjectString: 'Название',
-                      editDialogLocationString: 'Расположение',
-                      editDialogFromString: 'От',
-                      editDialogToString: 'До',
-                      editDialogAllDayString: 'Весь день',
-                      editDialogRepeatString: 'Повторить',
-                      editDialogDescriptionString: 'Описание',
-                      editDialogColorString: 'Цвет',
-                      editDialogColorPlaceHolderString: 'Выберите цвет',
-                      editDialogRepeatNeverString: 'Никогда',
-                      editDialogRepeatDailyString: 'Ежедневно',
-                      editDialogRepeatWeeklyString: 'Еженедельно',
-                      editDialogRepeatMonthlyString: 'Ежемесячно',
-                      editDialogRepeatYearlyString: 'Ежегодно',
-                      editDialogStatusString: 'Статус встречи',
-                      editDialogStatuses:
-                    {
-                        free: 'Свободный',
-                        tentative: 'Тестовый',
-                        busy: 'Занят',
-                        outOfOffice: 'Типа отменено'
-                    },
-                      editDialogResourceIdString:'Владелец',
-                      editDialogSaveString: 'Сохранить',
-                      editDialogCancelString: 'Отменить',
-                    }
             }
         },
         beforeCreate: function () {

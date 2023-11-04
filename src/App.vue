@@ -5,12 +5,13 @@
     <div><DevextremeExample></DevextremeExample></div>
 
     Пример Jqx
-    <div><JqxScheduler></JqxScheduler></div>
 
+    <div><JqxScheduler></JqxScheduler></div>
     Пример Syncfusion
     <div><SyncfusionScheduler></SyncfusionScheduler></div>
   </div>
 </template>
+
 <script>
 import DevextremeExample from "@/components/DevextremeExample.vue";
 import JqxScheduler from "@/components/JqxScheduler.vue";

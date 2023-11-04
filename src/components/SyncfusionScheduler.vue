@@ -1,13 +1,4 @@
 <script setup>
-import { loadCldr} from '/node_modules/@syncfusion/ej2-base';
-
-  loadCldr(
-     require('cldr-data/supplemental/numberingSystems.json'),
-     require('cldr-data/main/fr-CH/ca-gregorian.json'),
-     require('cldr-data/main/fr-CH/numbers.json'),
-     require('cldr-data/main/fr-CH/timeZoneNames.json')
-   );
-
 import { provide } from "vue";
 import {
   ScheduleComponent as EjsSchedule, ViewsDirective as EViews, ViewDirective as EView,
@@ -54,7 +45,7 @@ const ownerDataSource = [
 </script>
 
 <template>
-  <ejs-schedule :locale = 'ru' height='550px' width='100%' :selectedDate='selectedDate' :eventSettings='eventSettings'>
+  <ejs-schedule height='550px' width='100%' :selectedDate='selectedDate' :eventSettings='eventSettings'>
     <e-views>
       <e-view option='Day'></e-view>
       <e-view option='Week'></e-view>
@@ -71,8 +62,6 @@ const ownerDataSource = [
 </template>
 
 <style scoped>
-
-
   @import '/node_modules/@syncfusion/ej2-base/styles/material.css';
   @import '/node_modules/@syncfusion/ej2-buttons/styles/material.css';
   @import '/node_modules/@syncfusion/ej2-calendars/styles/material.css';
