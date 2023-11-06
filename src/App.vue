@@ -1,24 +1,12 @@
 <template>
   <div id="app">
-    <div>{{ users }}</div>
+    <router-view/>
   </div>
 </template>
 
 <script>
 
 export default {
-  data: () => ({
-    users: ''
-  }),
-  async mounted() {
-    await this.getUsers();
-  },
-  methods: {
-    async getUsers() {
-      const response = await fetch("https://localhost:7012/users");
-      this.users = await response.json();
-    }
-  },
 }
 </script>
 
