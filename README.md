@@ -1,4 +1,4 @@
-# new-red-frontend
+# red-frontend
 
 ## Project setup
 ```
