@@ -1,39 +1,40 @@
 <script>
 
+  import ModalWindow from "@/components/ModalWindow.vue";
+  import ContextMenu from "@/components/ContextMenu.vue";
+
   export default {
+    components: {ContextMenu, ModalWindow},
     data: () => ({
       type: 'month',
       types: [
           {text: 'месяц', value: 'month'},
           {text: 'неделя', value: 'week'},
           {text: 'день', value: 'day'},
-          {text: '4 дня', value: '4day'}
       ],
 
       mode: 'stack',
       modes: [
-        {text: "пачка", value:'stack'},
-        {text: "колонка",value:'column'}
+        'column'
       ],
-      weekday: [0, 1, 2, 3, 4, 5, 6],
-      weekdays: [
-        { text: 'Вс - Сб', value: [0, 1, 2, 3, 4, 5, 6] },
-        { text: 'Пн - Вс', value: [1, 2, 3, 4, 5, 6, 0] },
-        { text: 'Пн - Пт', value: [1, 2, 3, 4, 5] },
-        { text: 'Пн, Ср, Пт', value: [1, 3, 5] },
+      weekday: [1, 2, 3, 4, 5, 6, 0],
+      weekdays: [1, 2, 3, 4, 5, 6, 0
+
       ],
       value: '',
       events: [],
       colors: ['blue', 'indigo', 'deep-purple', 'cyan', 'green', 'orange', 'grey darken-1'],
       names: ['Meeting', 'Holiday', 'PTO', 'Travel', 'Event', 'Birthday', 'Conference', 'Party'],
+      isModalVisible: false,
     }),
     methods: {
-            startDrag ({ event, timed }) {
+      startDrag ({ event, timed }) {
         if (event && timed) {
           this.dragEvent = event
           this.dragTime = null
           this.extendOriginal = null
         }
+        console.log("moveEvent", this.dragEvent.name)
       },
       startTime (tms) {
         const mouse = this.toTime(tms)
@@ -53,6 +54,7 @@
           }
 
           this.events.push(this.createEvent)
+          console.log('createEvent ', this.createEvent.name, this.createEvent.start,)
         }
       },
       extendBottom (event) {
@@ -73,7 +75,8 @@
 
           this.dragEvent.start = newStart
           this.dragEvent.end = newEnd
-        } else if (this.createEvent && this.createStart !== null) {
+        }
+        else if (this.createEvent && this.createStart !== null) {
           const mouseRounded = this.roundTime(mouse, false)
           const min = Math.min(mouseRounded, this.createStart)
           const max = Math.max(mouseRounded, this.createStart)
@@ -83,11 +86,13 @@
         }
       },
       endDrag () {
+        let name = this.dragEvent.name;
         this.dragTime = null
         this.dragEvent = null
         this.createEvent = null
         this.createStart = null
         this.extendOriginal = null
+        console.log("endMove", name)
       },
       cancelDrag () {
         if (this.createEvent) {
@@ -161,6 +166,12 @@
       rndElement (arr) {
         return arr[this.rnd(0, arr.length - 1)]
       },
+      showModal() {
+        this.isModalVisible = true;
+      },
+      closeModal() {
+        this.isModalVisible = false;
+      }
     },
   }
 </script>
@@ -180,6 +191,7 @@
       >
         <v-icon>mdi-chevron-left</v-icon>
       </v-btn>
+      <v-spacer></v-spacer>
       <v-select
         v-model="type"
         :items="types"
@@ -189,24 +201,7 @@
         class="ma-2"
         label="тип"
       ></v-select>
-      <v-select
-        v-model="mode"
-        :items="modes"
-        dense
-        outlined
-        hide-details
-        label="отображение событий дня"
-        class="ma-2"
-      ></v-select>
-      <v-select
-        v-model="weekday"
-        :items="weekdays"
-        dense
-        outlined
-        hide-details
-        label="типы недель"
-        class="ma-2"
-      ></v-select>
+
       <v-spacer></v-spacer>
       <v-btn
         icon
@@ -234,9 +229,13 @@
           @mouseup:time="endDrag"
           @mouseleave.native="cancelDrag"
         >
-          <template v-slot:event="{ event, timed, eventSummary }">
-            <div class="v-event-draggable">
+          <template v-slot:event="{ event, timed, eventSummary }" >
+            <div class="v-event-draggable" @click="showModal">
               <component :is="{ render: eventSummary }"></component>
+            </div>
+            <div>
+              <v-spacer></v-spacer>
+              <ContextMenu></ContextMenu>
             </div>
             <div
               v-if="timed"
@@ -246,6 +245,11 @@
           </template>
         </v-calendar>
     </v-sheet>
+
+    <ModalWindow
+      v-show="isModalVisible"
+      @close="closeModal"
+    />
   </div>
 </template>
 
