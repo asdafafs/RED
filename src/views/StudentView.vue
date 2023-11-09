@@ -1,6 +1,8 @@
 <script setup>
 
+//import TestModule from "@/components/TestModule.vue";
 import CalendarTemplate from "@/components/CalendarTemplate.vue";
+//import TestSheet from "@/components/TestSheet.vue";
 </script>
 
 <template>
@@ -8,9 +10,7 @@ import CalendarTemplate from "@/components/CalendarTemplate.vue";
     <v-row no-gutters>
       <v-spacer></v-spacer>
       <v-col cols="12">
-        <CalendarTemplate>
-
-        </CalendarTemplate>
+        <CalendarTemplate></CalendarTemplate>
       </v-col>
     </v-row>
   </v-container>
