@@ -5,7 +5,6 @@
     <v-main>
       <router-view/>
       <v-sheet>
-      <v-container style="height: 1000px"> </v-container>
       </v-sheet>
     </v-main>
   </v-app>
@@ -25,3 +24,6 @@ export default {
   }),
 };
 </script>
+<style>
+
+</style>
