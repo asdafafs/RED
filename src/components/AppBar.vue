@@ -1,10 +1,13 @@
 <script>
 
+import LogoRed from "@/components/LogoRed.vue";
+
 export default {
+  components: {LogoRed},
 
   data() {
     return {
-      drawer: false
+
     }
   }
   }
@@ -12,34 +15,80 @@ export default {
 </script>
 
 <template>
-  <div id = "header">
-    <v-container
-      class="header"
-    >
-      <v-overlay :value="drawer" z-index="4">
-      </v-overlay>
-      <v-navigation-drawer v-model="drawer" app clipped hide-overlay :style="{ top: $vuetify.application.top + 'px', zIndex: 6 }">
-        <v-list dense>
-          <v-list-item @click.stop="$router.push('/student')">
-            Кабинет ученика
-          </v-list-item>
-          <v-list-item @click.stop = "$router.push('/instructor')">
-            Кабинет инструктора
-          </v-list-item>
-          <v-list-item @click.stop = "$router.push('/admin')">
-            Админская панель
-          </v-list-item>
-        </v-list>
-      </v-navigation-drawer>
+  <v-app-bar app density="compact" color="#1e1f22" class = "appbar">
+  <v-container  class="pa-0 my-0" fluid>
+    <v-row align="start" no-gutters>
+    <v-col cols = 2 >
+          <v-container class="pa-0" fill-height >
+            <v-row  no-gutters align-content="center"  justify="center">
+              <v-col cols = 12 class="d-flex justify-center align-center">
+                <LogoRed ></LogoRed>
+              </v-col>
+            </v-row>
+          </v-container>
+    </v-col>
+    <v-col>
 
-    <v-app-bar app clipped-left dark color="red">
-      <v-app-bar-nav-icon @click.prevent="drawer = !drawer"></v-app-bar-nav-icon>
-      <v-toolbar-title>Test</v-toolbar-title>
-    </v-app-bar>
-    </v-container>
-  </div>
+          <v-container class="pa-0" fluid>
+            <v-row justify="center" no-gutters align-content="center" class="my-0 ga-3">
+              <v-col cols = 2>
+                <v-btn text min-height="3em" color="white" class="pa-0" block>Расписание
+
+                </v-btn>
+              </v-col>
+              <v-col cols = 2>
+                <v-btn text min-height="3em" color="white" class="pa-0" block>Запись на экзамен
+
+                </v-btn>
+              </v-col>
+              <v-col cols = 2>
+                <v-btn text min-height="3em" color="white" class="pa-0" block>Лекции
+
+                </v-btn>
+              </v-col>
+              <v-col cols = 2>
+                <v-btn text min-height="3em" color="white" class="pa-0" block>Мой план
+
+                </v-btn>
+              </v-col>
+            </v-row>
+          </v-container>
+
+
+    </v-col>
+    <v-col cols = 2 >
+
+         <v-container class="pa-0" fluid>
+            <v-row justify="center" no-gutters align-content="center" class="px-1 my-0">
+              <v-col cols = 12>
+                <v-btn text min-height="3em" color="white" class="pa-0" block>Кабинет
+
+                </v-btn>
+              </v-col>
+            </v-row>
+          </v-container>
+
+    </v-col>
+    </v-row>
+  </v-container>
+  </v-app-bar>
 </template>
 
 <style scoped>
+.test1{
+  background: #1e1f22;
+  height: 3em;
+}
+.test2{
+  background: rgba(248, 7, 7, 0.0);
+  height: 3em;
+}
+/deep/ .v-toolbar__content {
+  padding: 0px !important;
+}
+.appbar{
+  z-index: auto;
 
+}
 </style>
+

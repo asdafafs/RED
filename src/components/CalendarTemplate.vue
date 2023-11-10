@@ -4,6 +4,7 @@
   import ContextMenu from "@/components/ContextMenu.vue";
 
   export default {
+    // eslint-disable-next-line vue/no-unused-components
     components: {ContextMenu, ModalWindow},
     data: () => ({
       type: 'month',
@@ -231,17 +232,13 @@
         >
           <template v-slot:event="{ event, timed, eventSummary }" >
             <div class="v-event-draggable" @click="showModal">
-              <component :is="{ render: eventSummary }"></component>
+              <div class="d-flex flex-row  ">
+                <div v-show="true" class="ma-2 pa-2">{{event.name}}</div>
+                <div v-show="false">{{timed}}</div>
+                <div v-show="false">{{eventSummary}}</div>
+                <ContextMenu class="ma-2 pa-2"></ContextMenu>
+              </div>
             </div>
-            <div>
-              <v-spacer></v-spacer>
-              <ContextMenu></ContextMenu>
-            </div>
-            <div
-              v-if="timed"
-              class="v-event-drag-bottom"
-              @mousedown.stop="extendBottom(event)"
-            ></div>
           </template>
         </v-calendar>
     </v-sheet>
