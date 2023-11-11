@@ -22,31 +22,31 @@ export default {
           <v-container class="pa-0" fill-height >
             <v-row  no-gutters align-content="center"  justify="center">
               <v-col cols = 12 class="d-flex justify-center align-center">
-                <LogoRed ></LogoRed>
+                <LogoRed class = "view"></LogoRed>
               </v-col>
             </v-row>
           </v-container>
     </v-col>
     <v-col>
 
-          <v-container class="pa-0" fluid>
+          <v-container class="pa-0"   >
             <v-row justify="center" no-gutters align-content="center" class="my-0 ga-3">
-              <v-col cols = 2>
+              <v-col cols = 2 class="text-truncate">
                 <v-btn text min-height="3em" color="white" class="pa-0" block>Расписание
 
                 </v-btn>
               </v-col>
-              <v-col cols = 2>
+              <v-col cols = 2 class="text-truncate">
                 <v-btn text min-height="3em" color="white" class="pa-0" block>Запись на экзамен
 
                 </v-btn>
               </v-col>
-              <v-col cols = 2>
+              <v-col cols = 2 class="text-truncate">
                 <v-btn text min-height="3em" color="white" class="pa-0" block>Лекции
 
                 </v-btn>
               </v-col>
-              <v-col cols = 2>
+              <v-col cols = 2 class="text-truncate">
                 <v-btn text min-height="3em" color="white" class="pa-0" block>Мой план
 
                 </v-btn>
@@ -89,6 +89,10 @@ export default {
 .appbar{
   z-index: auto;
 
+}
+.view
+{
+  height: inherit;
 }
 </style>
 
