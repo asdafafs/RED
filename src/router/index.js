@@ -5,7 +5,7 @@ import StudentView from "@/views/StudentView.vue";
 import InstructorView from "@/views/InstructorView.vue";
 import AdminPanel from "@/views/AdminPanel.vue";
 import NotFoundView from "@/views/NotFoundView.vue";
-import AuthorizationView from "@/views/AuthorizationView.vue";
+import HomeView from "@/views/HomeView";
 
 Vue.use(VueRouter)
 
@@ -13,7 +13,7 @@ const routes = [
   {
     path: '/',
     name: 'main',
-    component: AuthorizationView
+    component: HomeView
   },
   {
     path: '/student',
