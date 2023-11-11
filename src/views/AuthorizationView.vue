@@ -15,23 +15,22 @@
     class="ma-4"
     justify="center"
   >
-
       <v-row justify="center">
         <v-overlay
           v-model="overlay"
           contained
           class="cock"
         >
-          <v-row align="center" justify="center">
-            <v-col cols="4" >
-              <div class = white>
-                <div align="center" class="black--text" >Добро пожаловать!</div>
-                <div align="center" class="black--text">Для продолжения работы в RED: Расписание, пожалуйста, авторизуйтесь через Вконтакте.</div>
-              <LogoRed ></LogoRed>
+          <v-row align="center" justify="center" class="width">
+            <v-col cols="4" class="height" >
+              <div class = "d-flex justify-space-between flex-column white height rounded-lg " >
+                <div  class="black--text mx-4 text-h6 pa-2" > Добро пожаловать! </div>
+                <div  class="black--text mx-4 pa-0">Для продолжения работы в RED: Расписание, пожалуйста, авторизуйтесь через Вконтакте.</div>
+              <LogoRed class = "pos"></LogoRed>
               <v-btn
                   color="#4E7AEC"
                   @click="overlay = false"
-                  block
+                  class = "rounded-lg"
               >
                 Войти через VK
               </v-btn>
@@ -49,7 +48,21 @@
 <style scoped>
 .cock
 {
-  backdrop-filter: blur(5px);
+
+
+}
+.width
+{
+  width: 60em;
+}
+.height
+{
+  min-height: 18rem;
 }
 
+.pos
+{
+  align-self: center;
+  transform: scale(1.8);
+}
 </style>
