@@ -19,9 +19,9 @@
         <v-overlay
           v-model="overlay"
           contained
-          class="cock"
+          class="blur"
         >
-          <v-row align="center" justify="center" class="width">
+          <v-row align="center" justify="center" class="width ">
             <v-col cols="4" class="height" >
               <div class = "d-flex justify-space-between flex-column white height rounded-lg " >
                 <div  class="black--text mx-4 text-h6 pa-2" > Добро пожаловать! </div>
@@ -29,8 +29,10 @@
               <LogoRed class = "pos"></LogoRed>
               <v-btn
                   color="#4E7AEC"
-                  @click="overlay = false"
+                  @click="overlay = false; "
                   class = "rounded-lg"
+                  max-height="3em"
+                  block
               >
                 Войти через VK
               </v-btn>
@@ -45,11 +47,11 @@
   </v-row>
 </template>
 
+
 <style scoped>
-.cock
+.blur
 {
-
-
+  backdrop-filter: blur(5px);
 }
 .width
 {
@@ -63,6 +65,6 @@
 .pos
 {
   align-self: center;
-  transform: scale(1.8);
+  transform: scale(2.1);
 }
 </style>
