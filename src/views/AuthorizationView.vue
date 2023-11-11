@@ -2,6 +2,7 @@
   import LogoRed from "@/components/LogoRed.vue";
 
   export default {
+    // eslint-disable-next-line vue/no-unused-components
     components: {LogoRed},
     data: () => ({
       overlay: true,
@@ -22,22 +23,24 @@
           class="blur"
         >
           <v-row align="center" justify="center" class="width ">
-            <v-col cols="4" class="height" >
-              <div class = "d-flex justify-space-between flex-column white height rounded-lg " >
-                <div  class="black--text mx-4 text-h6 pa-2" > Добро пожаловать! </div>
-                <div  class="black--text mx-4 pa-0">Для продолжения работы в RED: Расписание, пожалуйста, авторизуйтесь через Вконтакте.</div>
-              <LogoRed class = "pos"></LogoRed>
-              <v-btn
+            <v-col cols="4" class=" pa-0" >
+              <v-card class="d-flex justify-space-between flex-column height white rounded-lg ma-2" >
+                <v-card-title class="black--text"> Добро пожаловать! </v-card-title>
+                <v-card-subtitle class="black--text">
+                  Для продолжения работы в RED: Расписание, пожалуйста, авторизуйтесь через Вконтакте.
+                </v-card-subtitle>
+                <LogoRed class = "pos"></LogoRed>
+                <v-card-actions>
+                  <v-btn
                   color="#4E7AEC"
                   @click="overlay = false; "
-                  class = "rounded-lg"
-                  max-height="3em"
+                  class = "rounded-lg pa-0 "
                   block
-              >
-                Войти через VK
-              </v-btn>
-              </div>
-
+                  >
+                    Войти через VK
+                    </v-btn>
+                </v-card-actions>
+              </v-card>
             </v-col>
           </v-row>
 
@@ -51,7 +54,7 @@
 <style scoped>
 .blur
 {
-  backdrop-filter: blur(5px);
+  backdrop-filter: blur(0px);
 }
 .width
 {
@@ -59,7 +62,7 @@
 }
 .height
 {
-  min-height: 18rem;
+  min-height: 20rem;
 }
 
 .pos
