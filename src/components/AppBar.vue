@@ -7,7 +7,6 @@ export default {
 
   data() {
     return {
-
     }
   }
   }
@@ -28,46 +27,52 @@ export default {
           </v-container>
     </v-col>
     <v-col>
-
-          <v-container class="pa-0"   >
+          <v-container class="pa-0">
             <v-row justify="center" no-gutters align-content="center" class="my-0 ga-3">
-              <v-col cols = 2 class="text-truncate">
-                <v-btn text min-height="3em" color="white" class="pa-0" block>Расписание
-
+              <v-col cols = 2 >
+                <v-btn text min-height="3em"  color="white" class="pa-0 fixed" block  >
+                  <span class="text-body-1">
+                    Расписание
+                  </span>
                 </v-btn>
               </v-col>
-              <v-col cols = 2 class="text-truncate">
-                <v-btn text min-height="3em" color="white" class="pa-0" block>Запись на экзамен
-
+              <v-col cols = 2 >
+                <v-btn text min-height="3em"  color="white" class="pa-0 fixed" block  >
+                  <span class="text-body-1">
+                    Запись на экзамен
+                  </span>
                 </v-btn>
               </v-col>
-              <v-col cols = 2 class="text-truncate">
-                <v-btn text min-height="3em" color="white" class="pa-0" block>Лекции
-
+              <v-col cols = 2 >
+                <v-btn text min-height="3em" color="white" class="pa-0 fixed" block  >
+                  <span class="text-body-1">
+                    Лекции
+                  </span>
                 </v-btn>
               </v-col>
-              <v-col cols = 2 class="text-truncate">
-                <v-btn text min-height="3em" color="white" class="pa-0" block>Мой план
-
+              <v-col cols = 2 >
+                <v-btn text min-height="3em"  color="white " class="pa-0 fixed" block  >
+                  <span class="text-body-1">
+                    Мой план
+                  </span>
                 </v-btn>
               </v-col>
             </v-row>
           </v-container>
-
 
     </v-col>
     <v-col cols = 2 >
-
          <v-container class="pa-0" fluid>
             <v-row justify="center" no-gutters align-content="center" class="px-1 my-0">
               <v-col cols = 12>
-                <v-btn text min-height="3em" color="white" class="pa-0" block>Кабинет
-
+                <v-btn text min-height="3em" color="white" class="pa-0" block>
+                  <span class="text-body-1">
+                    Кабинет
+                  </span>
                 </v-btn>
               </v-col>
             </v-row>
           </v-container>
-
     </v-col>
     </v-row>
   </v-container>
@@ -75,16 +80,8 @@ export default {
 </template>
 
 <style scoped>
-.test1{
-  background: #1e1f22;
-  height: 3em;
-}
-.test2{
-  background: rgba(248, 7, 7, 0.0);
-  height: 3em;
-}
 /deep/ .v-toolbar__content {
-  padding: 0px !important;
+  padding: 0 !important;
 }
 .appbar{
   z-index: auto;
