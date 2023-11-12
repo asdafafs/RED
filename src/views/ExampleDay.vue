@@ -128,11 +128,17 @@ export default {
   }
 }
 
-.theme--light.v-calendar-daily .v-calendar-daily__day-interval {
-  border-top: none;
-}
+.day-calendar {
+  :only-child {
+    .theme--light.v-calendar-daily .v-calendar-daily__day-interval {
+      border-top: none;
+    }
 
-.theme--light.v-calendar-daily {
+    .theme--light.v-calendar-daily {
+      border-top: none;
+    }
+  }
+
   border-top: none;
 }
 </style>
