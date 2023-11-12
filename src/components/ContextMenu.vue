@@ -10,7 +10,6 @@
     }),
   }
 </script>
-
 <template>
   <div class="text-center">
     <v-menu offset-y>
@@ -33,7 +32,5 @@
     </v-menu>
   </div>
 </template>
-
 <style scoped>
-
 </style>

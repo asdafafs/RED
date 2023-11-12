@@ -1,11 +1,11 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-//import HomeView from '../views/HomeView.vue'
-import StudentView from "@/views/StudentView.vue";
 import InstructorView from "@/views/InstructorView.vue";
 import AdminPanel from "@/views/AdminPanel.vue";
 import NotFoundView from "@/views/NotFoundView.vue";
 import AuthorizationView from "@/views/AuthorizationView.vue";
+import MainStudent from "@/views/MainStudent.vue";
+import AndroidMain from "@/views/AndroidMain.vue";
 
 Vue.use(VueRouter)
 
@@ -18,7 +18,7 @@ const routes = [
   {
     path: '/student',
     name: 'student',
-    component: StudentView
+    component: MainStudent
   },
   {
     path: '/instructor',
@@ -34,6 +34,11 @@ const routes = [
     path: '*',
     name: 'notFound',
     component: NotFoundView
+  },
+  {
+    path: '/android',
+    name: 'android',
+    component: AndroidMain
   }
 ]
 
