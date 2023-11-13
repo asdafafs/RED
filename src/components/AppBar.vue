@@ -80,7 +80,7 @@ export default {
     </v-list-item>
   </v-list>
 </v-navigation-drawer>
-  <v-app-bar app density="compact" color="#1e1f22" class = "appbar" v-if = true>
+  <v-app-bar app density="compact" color="#1e1f22" class = "appbar">
   <v-container  class="pa-0 my-0" fluid v-if="true">
     <v-row no-gutters >
     <v-col cols = 2 >

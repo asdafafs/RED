@@ -230,7 +230,7 @@
           <template v-slot:event="{ event, timed, eventSummary }" >
             <div class="v-event-draggable" @click="showModal">
               <div class="d-flex flex-row  ">
-                <div v-show="true" class="ma-2 pa-2">{{event.name}}</div>
+                <div v-show="true" class="ma-2 pa-2">{{event}}</div>
                 <div v-show="false">{{timed}}</div>
                 <div v-show="false">{{eventSummary}}</div>
                 <ContextMenu class="ma-2 pa-2"></ContextMenu>
