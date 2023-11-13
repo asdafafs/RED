@@ -1,29 +1,107 @@
 <script>
 
+
 export default {
-    components: {},
-    data: () => ({
-      classesSelectorsToRemove: [
+  components: {},
+  mounted() {
+    const buttonStyleReplace = [
+      'v-btn',
+      'v-btn--fab',
+      'v-btn--has-bg',
+      'v-btn--round',
+      'theme--light',
+      'v-size--small',
+      'transparent',
+    ]
+    this.$refs.calendar.$el
+        .querySelectorAll('.v-btn.v-btn--fab.v-btn--has-bg.v-btn--round.theme--light.v-size--small.primary')
+        .forEach(item => {
+          console.log(item);
+          item.classList = '';
+          buttonStyleReplace.forEach(x => {
+            item.classList.toggle(x)
+          })
+        })
+  },
+  data: () => ({
+    classesSelectorsToRemove: [],
+    type: 'month',
+    mode: 'stack',
+    modes: [
+      'column'
+    ],
+    weekday: [1, 2, 3, 4, 5, 6, 0],
 
-      ],
-      type: 'month',
-      mode: 'stack',
-      modes: [
-        'column'
-      ],
-      weekday: [1, 2, 3, 4, 5, 6, 0],
-      weekdays: [1, 2, 3, 4, 5, 6, 0
-      ],
-      value: '',
-      events: [],
-      colors: ['blue', 'indigo', 'deep-purple', 'cyan', 'green', 'orange', 'grey darken-1'],
-      names: ['Meeting', 'Holiday', 'PTO', 'Travel', 'Event', 'Birthday', 'Conference', 'Party'],
-      isModalVisible: false,
-    }),
-    methods: {
+    value: '',
+    events: [
+      {
+        name: 'Лекция',
+        start: new Date(2023, 10, 13, 1, 0),
+        end: new Date(2023, 10, 13, 3, 0),
+        startTime: '12:00',
+        timed: true,
+        type: 'practice',
+        teacher: 'Каминский С.В.',
+      },
+      {
+        name: 'Вождение',
+        start: new Date(2023, 10, 13, 3, 0),
+        end: new Date(2023, 10, 13, 5, 0),
+        startTime: '14:00',
+        type: 'lecture',
+        timed: true,
+        teacher: 'Каминский С.В.'
+      },
+      {
+        name: 'Вождение',
+        start: new Date(2023, 10, 13, 3, 0),
+        end: new Date(2023, 10, 13, 5, 0),
+        startTime: '14:00',
+        type: 'lecture',
+        timed: true,
+        teacher: 'Каминский С.В.'
+      },
+              {
+        name: 'Вождение',
+        start: new Date(2023, 10, 13, 3, 0),
+        end: new Date(2023, 10, 13, 5, 0),
+        startTime: '14:00',
+        type: 'lecture',
+        timed: true,
+        teacher: 'Каминский С.В.'
+      }
+    ],
+  }),
+  methods: {
+    updateRange({ start, end }) {
+      this.start = start;
+      this.end = end;
 
+      let mn = this.start.month;
+
+      const mNames = [
+        "Январь",
+        "Февраль",
+        "Март",
+        "Апрель",
+        "Май",
+        "Июнь",
+        "Июль",
+        "Август",
+        "Сентябрь",
+        "Октябрь",
+        "Ноябрь",
+        "Декабрь",
+      ];
+      console.log(mn)
+      this.title = mNames[mn - 1];
     },
-  }
+    getEventColor(event) {
+      return event.color = "#9DB9FF"
+    }
+
+  },
+}
 </script>
 
 <template>
@@ -42,7 +120,7 @@ export default {
       >
         <v-icon>mdi-chevron-left</v-icon>
       </v-btn>
-      <div class="text-h6 align-self-center">Месяц</div>
+      <v-toolbar-title class="text-h6 align-self-center">{{ title }}</v-toolbar-title>
       <v-btn
         icon
         class="ma-0  align-self-center"
@@ -56,15 +134,27 @@ export default {
       <v-calendar
           ref="calendar"
           v-model="value"
-          color="primary"
           :weekdays="weekday"
           :event-overlap-mode="mode"
           :type="type"
           :events="events"
+          :event-color = "getEventColor"
           :event-ripple="false"
+          :event-height = "70"
+          :hide-header = false
+           @change = "updateRange"
+      >
+          <template v-slot:event="{event}">
+            <v-row>
+              <v-col cols="2">
+                <div>{{event.startTime}}</div>
+              </v-col>
+              <v-col>
+                <div>{{event.name}}</div>
+                <div>Преподаватель: <br> {{event.teacher}}</div>
+              </v-col>
+            </v-row>
 
-        >
-          <template v-slot:event="{}" >
 
           </template>
         </v-calendar>
@@ -73,6 +163,8 @@ export default {
   </div>
 </template>
 
-<style scoped lang="scss">
-
+<style lang="scss">
+.v-calendar-weekly__week {
+  min-height: max-content;
+}
 </style>
