@@ -1,11 +1,11 @@
 <script>
 
-  import ModalWindow from "@/components/ModalWindow.vue";
+
   import ContextMenu from "@/components/ContextMenu.vue";
 
   export default {
     // eslint-disable-next-line vue/no-unused-components
-    components: {ContextMenu, ModalWindow},
+    components: {ContextMenu},
     data: () => ({
       type: 'month',
       types: [
@@ -35,7 +35,6 @@
           this.dragTime = null
           this.extendOriginal = null
         }
-        console.log("moveEvent", this.dragEvent.name)
       },
       startTime (tms) {
         const mouse = this.toTime(tms)
@@ -53,9 +52,7 @@
             end: this.createStart,
             timed: true,
           }
-
           this.events.push(this.createEvent)
-          console.log('createEvent ', this.createEvent.name, this.createEvent.start,)
         }
       },
       extendBottom (event) {
@@ -243,10 +240,6 @@
         </v-calendar>
     </v-sheet>
 
-    <ModalWindow
-      v-show="isModalVisible"
-      @close="closeModal"
-    />
   </div>
 </template>
 

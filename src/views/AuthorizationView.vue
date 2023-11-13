@@ -1,8 +1,8 @@
 <script>
-  import LogoRed from "@/components/LogoRed.vue";
+  import LogoRed from "@/components/logos/LogoRed.vue";
 
   export default {
-    // eslint-disable-next-line vue/no-unused-components
+
     components: {LogoRed},
     data: () => ({
       overlay: true,
