@@ -6,7 +6,9 @@ import NotFoundView from "@/views/NotFoundView.vue";
 import AuthorizationView from "@/views/AuthorizationView.vue";
 import MainStudent from "@/views/MainStudent.vue";
 import AndroidMain from "@/views/AndroidMain.vue";
-import TestVuew from "@/views/TestVuew.vue";
+// eslint-disable-next-line no-unused-vars
+import TestDaylyView from "@/views/TestDaylyView.vue";
+import TestMonthView from "@/views/TestMonthView.vue";
 
 Vue.use(VueRouter)
 
@@ -44,7 +46,7 @@ const routes = [
   {
     path: "/test",
     name: 'test',
-    component: TestVuew,
+    component: TestMonthView,
   },
 
 ]

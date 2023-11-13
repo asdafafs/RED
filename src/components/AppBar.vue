@@ -1,6 +1,6 @@
 <script>
 
-import LogoRed from "@/components/LogoRed.vue";
+import LogoRed from "@/components/logos/LogoRed.vue";
 
 export default {
   components: {LogoRed},
@@ -30,7 +30,7 @@ export default {
 
 <template>
   <v-container>
-  <v-navigation-drawer v-model="drawer" app clipped color="#1e1f22">
+  <v-navigation-drawer v-model="drawer" app clipped color="#1e1f22" v-if="false">
   <v-list height="inherit" class="d-flex flex-column">
     <v-list-item
         class="white--text align-start align-center"
@@ -81,7 +81,7 @@ export default {
   </v-list>
 </v-navigation-drawer>
   <v-app-bar app density="compact" color="#1e1f22" class = "appbar" v-if = true>
-  <v-container  class="pa-0 my-0" fluid v-if = false>
+  <v-container  class="pa-0 my-0" fluid v-if="true">
     <v-row no-gutters >
     <v-col cols = 2 >
           <v-container class="pa-0"  fluid style="height: 100%;">
