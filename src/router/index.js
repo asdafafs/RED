@@ -6,6 +6,7 @@ import NotFoundView from "@/views/NotFoundView.vue";
 import AuthorizationView from "@/views/AuthorizationView.vue";
 import MainStudent from "@/views/MainStudent.vue";
 import AndroidMain from "@/views/AndroidMain.vue";
+import TestVuew from "@/views/TestVuew.vue";
 
 Vue.use(VueRouter)
 
@@ -13,33 +14,39 @@ const routes = [
   {
     path: '/',
     name: 'main',
-    component: AuthorizationView
+    component: AuthorizationView,
   },
   {
     path: '/student',
     name: 'student',
-    component: MainStudent
+    component: MainStudent,
   },
   {
     path: '/instructor',
     name: 'instructor',
-    component: InstructorView
+    component: InstructorView,
   },
   {
     path: '/admin',
     name: 'admin',
-    component: AdminPanel
+    component: AdminPanel,
   },
   {
     path: '*',
     name: 'notFound',
-    component: NotFoundView
+    component: NotFoundView,
   },
   {
     path: '/android',
     name: 'android',
-    component: AndroidMain
-  }
+    component: AndroidMain,
+  },
+  {
+    path: "/test",
+    name: 'test',
+    component: TestVuew,
+  },
+
 ]
 
 const router = new VueRouter({

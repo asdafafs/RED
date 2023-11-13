@@ -3,7 +3,6 @@
 import LogoRed from "@/components/LogoRed.vue";
 
 export default {
-  // eslint-disable-next-line vue/no-unused-components
   components: {LogoRed},
   data() {
     return {
@@ -30,9 +29,59 @@ export default {
 </script>
 
 <template>
-  <div>
-  <v-app-bar app density="compact" color="#1e1f22" class = "appbar">
-  <v-container  class="pa-0 my-0" fluid v-if = true>
+  <v-container>
+  <v-navigation-drawer v-model="drawer" app clipped color="#1e1f22">
+  <v-list height="inherit" class="d-flex flex-column">
+    <v-list-item
+        class="white--text align-start align-center"
+        style="max-height: 4em; overflow-y: auto;">
+      <span class="mdi mdi-plus rotate" @click.stop="drawer = !drawer"></span>
+    </v-list-item>
+    <v-list-item
+        @click.stop="$router.push('/student').catch(err => {})"
+        class="white--text align-start align-center"
+        style="max-height: 4em; overflow-y: auto;">
+      Расписание
+    </v-list-item>
+    <v-list-item
+        @click.stop="$router.push('/').catch(err => {})"
+        class="white--text align-start align-center"
+        style="max-height: 4em; overflow-y: auto;">
+      Запись на экзамен
+    </v-list-item>
+    <v-list-item
+        @click.stop="$router.push('/').catch(err => {})"
+        class="white--text align-start align-center"
+        style="max-height: 4em; overflow-y: auto;">
+      Лекции
+    </v-list-item>
+    <v-list-item
+        @click.stop="$router.push('/').catch(err => {})"
+        class="white--text align-start align-center"
+        style="max-height: 4em; overflow-y: auto;">
+      Мой план
+    </v-list-item>
+
+    <!-- Last list item at the bottom -->
+    <v-list-item
+        @click.stop="$router.push('/').catch(err => {})"
+        class="white--text align-end mt-auto align-center"
+        style="max-height: 4em;">
+      <div class="d-flex flex-column">
+        <div>
+          <span class="mdi mdi-account-outline"></span>
+          {{ user }}
+        </div>
+        <div style="text-align: left;">
+          {{ role[0] }}
+        </div>
+      </div>
+      <span class="mdi mdi-login" style="transform: scale(1.5)"></span>
+    </v-list-item>
+  </v-list>
+</v-navigation-drawer>
+  <v-app-bar app density="compact" color="#1e1f22" class = "appbar" v-if = true>
+  <v-container  class="pa-0 my-0" fluid v-if = false>
     <v-row no-gutters >
     <v-col cols = 2 >
           <v-container class="pa-0"  fluid style="height: 100%;">
@@ -48,7 +97,7 @@ export default {
             <v-row  no-gutters  class="my-0 ga-3" align-content="center"  justify="center">
               <v-spacer cols="1"></v-spacer>
               <v-col cols = 2 >
-                <v-btn :class="{ 'custom-bg': isButtonPressed[0] }"
+                <v-btn :class="{'custom-bg': isButtonPressed[0]}"
                        @click="changeButtonState(0); $router.push('/student').catch(err => {})  "
                        text
                        min-height="3em"
@@ -159,61 +208,38 @@ export default {
       </v-row>
     </v-container>
   </v-app-bar>
-      <v-navigation-drawer v-model="drawer" :style="{ top: $vuetify.application.bar + 'px', zIndex: 6 }">
-        <v-list color = "#1e1f22">
-          <v-list-item @click.stop = "drawer = !drawer" ></v-list-item>
-          <v-list-item @click.stop="$router.push('/')" class="white--text">
-            Расписание
-          </v-list-item >
-          <v-list-item @click.stop = "$router.push('/')" class="white--text">
-            Запись на экзамен
-          </v-list-item>
-          <v-list-item @click.stop = "$router.push('/')" class="white--text">
-            Лекции
-          </v-list-item>
-          <v-list-item @click.stop = "$router.push('/')" class="white--text">
-            Мой план
-          </v-list-item>
-          <v-list-item @click.stop = "$router.push('/')" class="white--text">
-            Мой план
-          </v-list-item>
-          <v-list-item @click.stop = "$router.push('/')" class="white--text">
-            <div class ="d-flex flex-column">
-              <div>
-                <span class="mdi mdi-account-outline"></span>
-                {{user}}
-              </div>
-              <div style="text-align: left;">
-                {{role[0]}}
-              </div>
-            </div>
-            <span class="mdi mdi-login" style="transform: scale(1.5)"></span>
-          </v-list-item>
-        </v-list>
-      </v-navigation-drawer>
-  </div>
+  </v-container>
 </template>
 
 <style scoped>
 /deep/ .v-toolbar__content {
   padding: 0 !important;
 }
-.appbar{
+.appbar
+{
   z-index: auto;
 
 }
-.custom-bg {
+.custom-bg
+{
   background-color: #4E7AEC;
   color: #ffffff;
 }
-.btn {
+.btn
+{
   text-transform: unset !important;
   font-size: 1.125rem;
 }
-.btn2 {
+.btn2
+{
   text-transform: unset !important;
   font-size: 1.0rem;
   font-weight: lighter;
+}
+.rotate
+{
+  transform: rotate(45deg)scale(1.8);
+
 }
 </style>
 
