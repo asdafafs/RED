@@ -22,8 +22,10 @@ export default {
             item.classList.toggle(x)
           })
         })
+    this.test = true
   },
   data: () => ({
+    test: false,
     classesSelectorsToRemove: [],
     type: 'month',
     mode: 'stack',
@@ -35,7 +37,7 @@ export default {
     value: '',
     events: [
       {
-        name: 'Лекция',
+        name: 'Вождение',
         start: new Date(2023, 10, 13, 1, 0),
         end: new Date(2023, 10, 13, 3, 0),
         startTime: '12:00',
@@ -44,7 +46,25 @@ export default {
         teacher: 'Каминский С.В.',
       },
       {
-        name: 'Вождение',
+        name: 'Лекция',
+        start: new Date(2023, 10, 13, 3, 0),
+        end: new Date(2023, 10, 13, 5, 0),
+        startTime: '14:00',
+        type: 'lecture',
+        timed: true,
+        teacher: 'Каминский С.В.'
+      },
+      {
+        name: 'Лекция',
+        start: new Date(2023, 10, 13, 3, 0),
+        end: new Date(2023, 10, 13, 5, 0),
+        startTime: '14:00',
+        type: 'lecture',
+        timed: true,
+        teacher: 'Каминский С.В.'
+      },
+              {
+        name: 'Лекция',
         start: new Date(2023, 10, 13, 3, 0),
         end: new Date(2023, 10, 13, 5, 0),
         startTime: '14:00',
@@ -54,17 +74,17 @@ export default {
       },
       {
         name: 'Вождение',
-        start: new Date(2023, 10, 13, 3, 0),
-        end: new Date(2023, 10, 13, 5, 0),
+        start: new Date(2023, 10, 15, 3, 0),
+        end: new Date(2023, 10, 15, 5, 0),
         startTime: '14:00',
-        type: 'lecture',
+        type: 'practice',
         timed: true,
         teacher: 'Каминский С.В.'
       },
-              {
-        name: 'Вождение',
-        start: new Date(2023, 10, 13, 3, 0),
-        end: new Date(2023, 10, 13, 5, 0),
+      {
+        name: 'Лекция',
+        start: new Date(2023, 10, 11, 3, 0),
+        end: new Date(2023, 10, 11, 5, 0),
         startTime: '14:00',
         type: 'lecture',
         timed: true,
@@ -73,46 +93,34 @@ export default {
     ],
   }),
   methods: {
-    updateRange({ start, end }) {
-      this.start = start;
-      this.end = end;
+    updateRange () {
 
-      let mn = this.start.month;
-
-      const mNames = [
-        "Январь",
-        "Февраль",
-        "Март",
-        "Апрель",
-        "Май",
-        "Июнь",
-        "Июль",
-        "Август",
-        "Сентябрь",
-        "Октябрь",
-        "Ноябрь",
-        "Декабрь",
-      ];
-      console.log(mn)
-      this.title = mNames[mn - 1];
-    },
-    getEventColor(event) {
-      return event.color = "#9DB9FF"
+      },
+      rnd (a, b) {
+        return Math.floor((b - a + 1) * Math.random()) + a
+      },
+  getEventColor(event) {
+    if (event.type === 'lecture') {
+      return '#9DB9FF'; // Blue color for 'lecture' type
+    } else if (event.type === 'practice') {
+      return '#E9E9E8'; // Gray color for 'practice' type
+    } else {
+      // Default color if type is not 'lecture' or 'practice'
+      return 'rgba(0,0,0,0)'; // You can set your default color here
     }
+  },
 
   },
 }
 </script>
 
 <template>
-  <div>
-
+  <div >
     <v-sheet
       tile
       height="54"
       class="d-flex justify-center"
     >
-
       <v-btn
         icon
         class="ma-0  align-self-center"
@@ -120,7 +128,7 @@ export default {
       >
         <v-icon>mdi-chevron-left</v-icon>
       </v-btn>
-      <v-toolbar-title class="text-h6 align-self-center">{{ title }}</v-toolbar-title>
+      <v-toolbar-title v-if="test" class="text-h6 align-self-center">{{ $refs.calendar.title.split(' ')[0] }}</v-toolbar-title>
       <v-btn
         icon
         class="ma-0  align-self-center"
@@ -128,7 +136,6 @@ export default {
       >
         <v-icon>mdi-chevron-right</v-icon>
       </v-btn>
-
     </v-sheet>
     <v-sheet height="600">
       <v-calendar
@@ -144,18 +151,18 @@ export default {
           :hide-header = false
            @change = "updateRange"
       >
-          <template v-slot:event="{event}">
-            <v-row>
-              <v-col cols="2">
-                <div>{{event.startTime}}</div>
+        <template v-slot:event="{event}">
+         <v-container class="pa-1 mx-0 d-flex " >
+            <v-row class="ma-0" >
+              <v-col cols="4" class = "black--text pa-0 align-self-center" >
+                <div class="text-subtitle-2 d-flex justify-center">{{event.startTime}}</div>
               </v-col>
-              <v-col>
-                <div>{{event.name}}</div>
-                <div>Преподаватель: <br> {{event.teacher}}</div>
+              <v-col class = "black--text pa-0 align-self-center">
+                <div class="font-weight-bold">{{event.name}}</div>
+                <div>Преподаватель:<br>{{event.teacher}}</div>
               </v-col>
             </v-row>
-
-
+            </v-container>
           </template>
         </v-calendar>
     </v-sheet>
@@ -165,6 +172,18 @@ export default {
 
 <style lang="scss">
 .v-calendar-weekly__week {
-  min-height: max-content;
+    min-height: 20em;
+}
+.theme--light.v-btn {
+    color: #4E7AEC;
+}
+.v-event{
+  display: flex;
+  justify-content: center;
+  width: 98% !important;
+  height: 70px;
+  background-color: rgb(157, 185, 255);
+  border-color: rgb(157, 185, 255);
+  margin: 0px 0px 0px 1.1%;
 }
 </style>

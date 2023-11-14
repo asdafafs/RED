@@ -29,7 +29,7 @@
                 <v-card-subtitle class="black--text">
                   Для продолжения работы в RED: Расписание, пожалуйста, авторизуйтесь через Вконтакте.
                 </v-card-subtitle>
-                <LogoRed class = "pos"></LogoRed>
+                  <LogoRed class = "pos"></LogoRed>
                 <v-card-actions>
                   <v-btn
                   color="#4E7AEC"
@@ -69,5 +69,6 @@
 {
   align-self: center;
   transform: scale(2.1);
+
 }
 </style>
