@@ -19,9 +19,7 @@ export default {
      if (this.lastPressedIndex !== -1) {
         this.$set(this.isButtonPressed, this.lastPressedIndex, false);
       }
-
       this.$set(this.isButtonPressed, index, true);
-
       this.lastPressedIndex = index;
     },
   },
@@ -29,8 +27,8 @@ export default {
 </script>
 
 <template>
-  <v-container>
-  <v-navigation-drawer v-model="drawer" app clipped color="#1e1f22" v-if="false">
+  <v-container class="position_component">
+  <v-navigation-drawer v-model="drawer" app clipped color="#1e1f22" v-if="true">
   <v-list height="inherit" class="d-flex flex-column">
     <v-list-item
         class="white--text align-start align-center"
@@ -62,7 +60,6 @@ export default {
       Мой план
     </v-list-item>
 
-    <!-- Last list item at the bottom -->
     <v-list-item
         @click.stop="$router.push('/').catch(err => {})"
         class="white--text align-end mt-auto align-center"
@@ -79,9 +76,9 @@ export default {
       <span class="mdi mdi-login" style="transform: scale(1.5)"></span>
     </v-list-item>
   </v-list>
-</v-navigation-drawer>
+  </v-navigation-drawer>
   <v-app-bar app density="compact" color="#1e1f22" class = "appbar">
-  <v-container  class="pa-0 my-0" fluid v-if="true">
+    <v-container  class="pa-0 my-0 " v-if="false" fluid>
     <v-row no-gutters >
     <v-col cols = 2 >
           <v-container class="pa-0"  fluid style="height: 100%;">
@@ -189,7 +186,7 @@ export default {
     </v-col>
     </v-row>
   </v-container>
-    <v-container class="pa-0 my-0" fluid v-else>
+    <v-container class="pa-0 my-0  " v-else fluid>
       <v-row no-gutters >
         <v-col cols = 12 >
           <v-container class="pa-0"  fluid style="height: 100%;">
@@ -197,7 +194,6 @@ export default {
               <v-col cols="2" class="d-flex justify-center align-center">
                 <v-app-bar-nav-icon color="white" variant="text" @click.prevent="drawer = !drawer"></v-app-bar-nav-icon>
               </v-col>
-
               <v-col cols = 8 class="d-flex justify-center align-center">
                 <LogoRed ></LogoRed>
               </v-col>
@@ -218,7 +214,6 @@ export default {
 .appbar
 {
   z-index: auto;
-
 }
 .custom-bg
 {
@@ -239,7 +234,9 @@ export default {
 .rotate
 {
   transform: rotate(45deg)scale(1.8);
-
+}
+.position_component{
+  z-index: 10;
 }
 </style>
 
