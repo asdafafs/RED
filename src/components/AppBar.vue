@@ -11,9 +11,10 @@ export default {
       role: ["Ученик", "Учитель"],
       lastPressedIndex: -1,
       drawer: false,
-
+      showDrawer: true,
     }
   },
+
    methods: {
     changeButtonState(index) {
      if (this.lastPressedIndex !== -1) {
@@ -22,13 +23,25 @@ export default {
       this.$set(this.isButtonPressed, index, true);
       this.lastPressedIndex = index;
     },
+     checkWindowWidth() {
+    this.showDrawer = window.innerWidth >= 1260;
+     },
+   },
+
+  created() {
+  this.checkWindowWidth();
+  window.addEventListener('resize', this.checkWindowWidth);
   },
+
+  beforeDestroy() {
+  window.removeEventListener('resize', this.checkWindowWidth);
+},
   }
 </script>
 
 <template>
   <v-container class="position_component">
-  <v-navigation-drawer v-model="drawer" app clipped color="#1e1f22" v-if="true">
+    <v-navigation-drawer v-model="drawer" app clipped color="#1e1f22" v-if = "!showDrawer">
   <v-list height="inherit" class="d-flex flex-column">
     <v-list-item
         class="white--text align-start align-center"
@@ -78,7 +91,7 @@ export default {
   </v-list>
   </v-navigation-drawer>
   <v-app-bar app density="compact" color="#1e1f22" class = "appbar">
-    <v-container  class="pa-0 my-0 " v-if="false" fluid>
+    <v-container  class="pa-0 my-0" v-if = "showDrawer" fluid>
     <v-row no-gutters >
     <v-col cols = 2 >
           <v-container class="pa-0"  fluid style="height: 100%;">
@@ -186,7 +199,7 @@ export default {
     </v-col>
     </v-row>
   </v-container>
-    <v-container class="pa-0 my-0  " v-else fluid>
+    <v-container class="pa-0 my-0" v-else fluid>
       <v-row no-gutters >
         <v-col cols = 12 >
           <v-container class="pa-0"  fluid style="height: 100%;">
