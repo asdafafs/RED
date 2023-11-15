@@ -19,9 +19,7 @@
         'column'
       ],
       weekday: [1, 2, 3, 4, 5, 6, 0],
-      weekdays: [1, 2, 3, 4, 5, 6, 0
-
-      ],
+      weekdays: [1, 2, 3, 4, 5, 6, 0],
       value: '',
       events: [],
       colors: ['blue', 'indigo', 'deep-purple', 'cyan', 'green', 'orange', 'grey darken-1'],
