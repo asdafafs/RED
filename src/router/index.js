@@ -4,11 +4,11 @@ import InstructorView from "@/views/InstructorView.vue";
 import AdminPanel from "@/views/AdminPanel.vue";
 import NotFoundView from "@/views/NotFoundView.vue";
 import AuthorizationView from "@/views/AuthorizationView.vue";
-import MainStudent from "@/views/MainStudent.vue";
-import AndroidMain from "@/views/AndroidMain.vue";
 // eslint-disable-next-line no-unused-vars
 import TestDaylyView from "@/views/TestDaylyView.vue";
 import TestMonthView from "@/views/TestMonthView.vue";
+import StudentPlanView from "@/views/StudentPlanView.vue";
+import TestWeeklyView from "@/views/TestWeeklyView.vue";
 
 Vue.use(VueRouter)
 
@@ -17,11 +17,6 @@ const routes = [
     path: '/',
     name: 'main',
     component: AuthorizationView,
-  },
-  {
-    path: '/student',
-    name: 'student',
-    component: MainStudent,
   },
   {
     path: '/instructor',
@@ -39,15 +34,20 @@ const routes = [
     component: NotFoundView,
   },
   {
-    path: '/android',
-    name: 'android',
-    component: AndroidMain,
-  },
-  {
     path: "/test",
     name: 'test',
     component: TestMonthView,
   },
+  {
+    path: "/testPlan",
+    name: 'plan',
+    component: StudentPlanView,
+  },
+  {
+    path: "/testWeek",
+    name: 'week',
+    component: TestWeeklyView,
+  }
 
 ]
 
