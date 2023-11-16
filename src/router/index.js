@@ -1,14 +1,15 @@
+// eslint-disable-next-line no-unused-vars
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import InstructorView from "@/views/InstructorView.vue";
 import AdminPanel from "@/views/AdminPanel.vue";
 import NotFoundView from "@/views/NotFoundView.vue";
 import AuthorizationView from "@/views/AuthorizationView.vue";
-// eslint-disable-next-line no-unused-vars
 import TestDaylyView from "@/views/TestDaylyView.vue";
 import TestMonthView from "@/views/TestMonthView.vue";
 import StudentPlanView from "@/views/StudentPlanView.vue";
 import TestWeeklyView from "@/views/TestWeeklyView.vue";
+
 
 Vue.use(VueRouter)
 
@@ -33,21 +34,27 @@ const routes = [
     name: 'notFound',
     component: NotFoundView,
   },
-  {
-    path: "/test",
-    name: 'test',
-    component: TestMonthView,
-  },
+
   {
     path: "/testPlan",
     name: 'plan',
     component: StudentPlanView,
   },
   {
+    path: "/testDay",
+    name: 'day',
+    component: TestDaylyView,
+  },
+  {
     path: "/testWeek",
     name: 'week',
     component: TestWeeklyView,
-  }
+  },
+  {
+    path: "/testMonth",
+    name: 'test',
+    component: TestMonthView,
+  },
 
 ]
 

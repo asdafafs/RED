@@ -10,7 +10,7 @@
       <v-btn
         icon
         class="ma-0  align-self-center"
-        @click="$refs.calendar.prev()"
+        @click="prev"
       >
         <v-icon>mdi-chevron-left</v-icon>
       </v-btn>
@@ -37,7 +37,7 @@
       <v-btn
         icon
         class="ma-0  align-self-center"
-        @click="$refs.calendar.next()"
+        @click="next"
       >
         <v-icon>mdi-chevron-right</v-icon>
       </v-btn>
@@ -46,6 +46,7 @@
       <v-sheet>
         <v-calendar
           ref="calendar"
+          v-model="focus"
           :events="events"
           color="primary"
           type="week"
@@ -78,6 +79,7 @@
   export default {
     components: {},
     data: () => ({
+      focus: '',
       weekday: [1, 2, 3, 4, 5, 6, 0],
       today: new Date(),
       test: false,
@@ -88,7 +90,7 @@
         name: 'Лекция',
         start: new Date(2023, 10, 13, 3, 0),
         end: new Date(2023, 10, 13, 5, 0),
-        startTime: '14:00',
+        startTime: '11:00',
         type: 'lecture',
         timed: true,
         teacher: 'Каминский С.В.'
@@ -137,6 +139,25 @@
         this.$set(this.isButtonPressed, index, true);
         this.lastPressedIndex = index;
       },
+
+      prev() {
+        this.$refs.calendar.prev(1);
+        this.updateDateRange();
+       },
+
+      next() {
+        this.$refs.calendar.next(1);
+        this.updateDateRange();
+      },
+      updateDateRange() {
+       const start = 1
+       const end = 2
+        if (start) {
+          this.dateMonday = parseInt(start.textContent)+1;
+          this.dateSunday = parseInt(end.textContent)+13;
+          console.log(start);
+        }
+      },
   },
     mounted() {
     const buttonStyleReplace = [
@@ -169,8 +190,8 @@
     color: #4E7AEC;
 }
 .v-event-timed{
-  display: flex;
-  justify-content: center;
+
+
   width: 100% !important;
   background-color: rgb(157, 185, 255);
   border-color: rgb(157, 185, 255);

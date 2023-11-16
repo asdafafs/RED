@@ -108,7 +108,7 @@ export default {
               <v-spacer cols="1"></v-spacer>
               <v-col cols = 2 >
                 <v-btn :class="{'custom-bg': isButtonPressed[0]}"
-                       @click="changeButtonState(0); $router.push('/test').catch(err => {})  "
+                       @click="changeButtonState(0); $router.push('/testMonth').catch(err => {})  "
                        text
                        min-height="3em"
                        color="white"
@@ -249,7 +249,7 @@ export default {
   transform: rotate(45deg)scale(1.8);
 }
 .position_component{
-  z-index: 10;
+  z-index: 2;
 }
 </style>
 
