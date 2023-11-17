@@ -186,23 +186,25 @@
 .v-calendar-weekly__week {
     min-height: 20em;
 }
+
 .theme--light.v-btn {
     color: #4E7AEC;
 }
+
 .v-event-timed{
-
-
   width: 100% !important;
   background-color: rgb(157, 185, 255);
   border-color: rgb(157, 185, 255);
   margin: 0px 0px 0px 2.1%;
 }
+
 .v-event-more{
 
   font-size: 1em !important;
   //color: white;
   //background-color: black !important;
 }
+
 hr {
     display: block;
     height: 1px;
@@ -211,20 +213,24 @@ hr {
     margin: 1em 0;
     padding: 0;
 }
+
 .btn
 {
   text-transform: unset !important;
   font-size: 1.5em;
 }
+
 .custom-bg
 {
   background-color: #1e1f22;
 }
+
 .custom_text
 {
   color: white;
 }
-.v-calendar-daily__interval-text {
+
+.v-c alendar-daily__interval-text {
   color: #424242;
   font-size: 19px;
   font-weight: bold;

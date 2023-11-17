@@ -1,6 +1,4 @@
 <script>
-
-
 export default {
   components: {},
   mounted() {
@@ -102,12 +100,11 @@ export default {
       },
   getEventColor(event) {
     if (event.type === 'lecture') {
-      return '#9DB9FF'; // Blue color for 'lecture' type
+      return '#9DB9FF';
     } else if (event.type === 'practice') {
-      return '#E9E9E8'; // Gray color for 'practice' type
+      return '#E9E9E8';
     } else {
-      // Default color if type is not 'lecture' or 'practice'
-      return 'rgba(0,0,0,0)'; // You can set your default color here
+      return 'rgba(0,0,0,0)'
     }
   },
    changeButtonState(index) {
@@ -123,38 +120,7 @@ export default {
 </script>
 
 <template>
-  <v-container >
-    <div class="text-h3 font-weight-medium">
-      Расписание школы
-    </div>
-    <hr>
-    <div class="text-h6">
-      Выберите день, чтобы записаться на занятие
-    </div>
-    <v-row class="d-flex mt-0 ga-3 " no-gutters>
-      <v-col cols="1">
-        <v-btn text class="black--text btn pa-0" width="100%"
-               :class="{'custom-bg': isButtonPressed[0],}"
-               @click="changeButtonState(0);"
-        >
-          <span :class="{ 'custom_text':isButtonPressed[0]}">Смотреть все</span>
-        </v-btn>
-      </v-col >
-      <v-col cols="1">
-        <v-btn text  class="black--text btn pa-0" width="100%"
-               :class="{'custom-bg': isButtonPressed[1]}"
-               @click="changeButtonState(1);">
-          <span :class="{ 'custom_text':isButtonPressed[1]}">Теория</span>
-        </v-btn>
-      </v-col>
-      <v-col cols="1">
-        <v-btn text class="black--text btn pa-0" width="100%"
-               :class="{'custom-bg': isButtonPressed[2]}"
-               @click="changeButtonState(2);">
-          <span :class="{ 'custom_text':isButtonPressed[2]}">Практика</span>
-        </v-btn>
-      </v-col>
-    </v-row>
+  <v-container>
     <v-row>
       <v-col>
     <v-sheet
