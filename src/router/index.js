@@ -1,4 +1,3 @@
-// eslint-disable-next-line no-unused-vars
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import InstructorView from "@/views/InstructorView.vue";
@@ -9,6 +8,7 @@ import TestDaylyView from "@/views/TestDaylyView.vue";
 import TestMonthView from "@/views/TestMonthView.vue";
 import StudentPlanView from "@/views/StudentPlanView.vue";
 import TestWeeklyView from "@/views/TestWeeklyView.vue";
+import scheduleView from "@/views/scheduleView.vue";
 
 
 Vue.use(VueRouter)
@@ -39,22 +39,34 @@ const routes = [
     path: "/testPlan",
     name: 'plan',
     component: StudentPlanView,
+    children:[
+        {
+          path: "testDay",
+          name: 'day',
+          component: TestDaylyView,
+        },
+      {
+        path: "testWeek",
+        name: 'week',
+        component: TestWeeklyView,
+      },
+      {
+        path: "testMonth",
+        name: 'month',
+        component: TestMonthView,
+      },
+    ]
   },
   {
-    path: "/testDay",
-    name: 'day',
-    component: TestDaylyView,
+    path: "/schedule",
+    name: 'schedule',
+    component: scheduleView,
   },
-  {
-    path: "/testWeek",
-    name: 'week',
-    component: TestWeeklyView,
-  },
-  {
-    path: "/testMonth",
-    name: 'test',
-    component: TestMonthView,
-  },
+        {
+          path: "/testDay",
+          name: 'day',
+          component: TestDaylyView,
+        },
 
 ]
 

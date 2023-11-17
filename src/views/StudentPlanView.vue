@@ -44,7 +44,8 @@
       <v-col cols="1">
         <v-btn text class="black--text btn pa-0" width="100%"
                :class="{'custom-bg': isButtonPressed[0],}"
-               @click="changeButtonState(0);"
+               @click="changeButtonState(0);
+               $router.push('/testPlan/testDay').catch(err => {})"
         >
           <span :class="{ 'custom_text':isButtonPressed[0]}">День</span>
         </v-btn>
@@ -52,16 +53,23 @@
       <v-col cols="1">
         <v-btn text  class="black--text btn pa-0" width="100%"
                :class="{'custom-bg': isButtonPressed[1]}"
-               @click="changeButtonState(1);">
+               @click="changeButtonState(1);
+               $router.push('/testPlan/testWeek').catch(err => {})">
           <span :class="{ 'custom_text':isButtonPressed[1]}">Неделя</span>
         </v-btn>
       </v-col>
       <v-col cols="1">
         <v-btn text class="black--text btn pa-0" width="100%"
                :class="{'custom-bg': isButtonPressed[2]}"
-               @click="changeButtonState(2);">
+               @click="changeButtonState(2);
+               $router.push('/testPlan/testMonth').catch(err => {})">
           <span :class="{ 'custom_text':isButtonPressed[2]}">Месяц</span>
         </v-btn>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col>
+        <router-view></router-view>
       </v-col>
     </v-row>
   </v-container>
@@ -107,10 +115,12 @@ hr {
 .uno{
   color: #4E7AEC;
 }
+
 .btn
 {
   font-size: 1.125rem;
 }
+
 .button-line {
   width: 100%;
   height: 2px;

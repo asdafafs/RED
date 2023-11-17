@@ -1,7 +1,10 @@
 <template>
-  <div>
-    <v-sheet height="600">
-      <v-calendar
+  <v-container >
+    <v-row >
+      <v-col>
+        <v-sheet >
+          <v-calendar
+              style="overflow: hidden;"
           ref="cal"
           type="day"
           event-overlap-mode="stack"
@@ -28,9 +31,11 @@
             </div>
           </div>
         </template>
-      </v-calendar>
-    </v-sheet>
-  </div>
+          </v-calendar>
+        </v-sheet>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script>
@@ -79,6 +84,15 @@ export default {
           name: 'Вождение',
           start: new Date(2023, 10, 13, 3, 0),
           end: new Date(2023, 10, 13, 5, 0),
+          startTime: '14:00',
+          type: 'lecture',
+          timed: true,
+          teacher: 'Каминский С.В.'
+        },
+        {
+          name: 'Вождение',
+          start: new Date(2023, 10, 17, 3, 0),
+          end: new Date(2023, 10, 17, 5, 0),
           startTime: '14:00',
           type: 'lecture',
           timed: true,
@@ -133,12 +147,10 @@ export default {
     .theme--light.v-calendar-daily .v-calendar-daily__day-interval {
       border-top: none;
     }
-
     .theme--light.v-calendar-daily {
       border-top: none;
     }
   }
-
   border-top: none;
 }
 </style>
