@@ -9,6 +9,8 @@ import TestMonthView from "@/views/TestMonthView.vue";
 import StudentPlanView from "@/views/StudentPlanView.vue";
 import TestWeeklyView from "@/views/TestWeeklyView.vue";
 import scheduleView from "@/views/scheduleView.vue";
+import MainCalendar from "@/views/MainCalendar.vue";
+import ProgressBar from "@/views/ProgressBar.vue";
 
 
 Vue.use(VueRouter)
@@ -41,20 +43,32 @@ const routes = [
     component: StudentPlanView,
     children:[
         {
-          path: "testDay",
-          name: 'day',
-          component: TestDaylyView,
+          path: "mainCal",
+          name: 'main',
+          component: MainCalendar,
+          children:[
+              {
+                path: "testDay",
+                name: 'day',
+                component: TestDaylyView,
+              },
+            {
+              path: "testWeek",
+              name: 'week',
+              component: TestWeeklyView,
+            },
+            {
+              path: "testMonth",
+              name: 'month',
+              component: TestMonthView,
+            },
+          ]
         },
       {
-        path: "testWeek",
-        name: 'week',
-        component: TestWeeklyView,
-      },
-      {
-        path: "testMonth",
-        name: 'month',
-        component: TestMonthView,
-      },
+        path: 'progress',
+        name: 'progress',
+        component: ProgressBar,
+      }
     ]
   },
   {
@@ -69,11 +83,11 @@ const routes = [
       },
     ]
   },
-            {
-          path: "/testDay",
-          name: 'day',
-          component: TestDaylyView,
-        },
+  {
+    path: "/mainCal",
+    name: 'main',
+    component: MainCalendar,
+  }
 ]
 
 const router = new VueRouter({

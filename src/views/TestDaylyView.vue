@@ -68,34 +68,11 @@ import moment from "moment";
 export default {
   name: "ExampleDay.vue",
   components: {LectureLogo, CarLogo},
-  methods: {
-    updateRange () {},
-
-    prev() {
-        this.$refs.calendar.prev(1);
-        this.updateDateRange()
-      },
-
-    next() {
-        this.$refs.calendar.next(1);
-        this.updateDateRange()
-      },
-
-  },
-
-  mounted() {
-    this.classesSelectorsToRemove.forEach(item => {
-      this.$refs.cal.$el.querySelectorAll(item).forEach(item => {
-        item.remove();
-      })
-    })
-    this.test = true
-  },
-
   data: () => ({
       focus: '',
       test: false,
-      dateDay: moment().format('DD'),
+      dateDay: moment().locale('ru').format('Do MMMM'),
+      currentDate: moment(),
       classesSelectorsToRemove: [
         '.v-calendar-daily__interval-text',
         '.v-calendar-daily__interval',
@@ -155,6 +132,35 @@ export default {
       ]
   }),
 
+  mounted() {
+    this.classesSelectorsToRemove.forEach(item => {
+      this.$refs.cal.$el.querySelectorAll(item).forEach(item => {
+        item.remove();
+      })
+    })
+    this.test = true
+    this.$refs.cal.checkChange()
+  },
+
+  methods: {
+    updateRange () {},
+
+    prev() {
+        this.$refs.cal.prev(1);
+        this.currentDate = this.currentDate.clone().subtract(1, 'day');
+        this.updateDateRange()
+      },
+
+    next() {
+        this.$refs.cal.next(1);
+        this.currentDate = this.currentDate.clone().add(1, 'day');
+        this.updateDateRange()
+      },
+
+    updateDateRange() {
+     this.dateDay = this.currentDate.clone().locale('ru').format('Do MMMM');
+    }
+  } ,
 }
 </script>
 
