@@ -49,7 +49,7 @@ export default {
       <span class="mdi mdi-plus rotate" @click.stop="drawer = !drawer"></span>
     </v-list-item>
     <v-list-item
-        @click.stop="$router.push('/test').catch(err => {})"
+        @click.stop="$router.push('/schedule').catch(err => {})"
         class="white--text align-start align-center"
         style="max-height: 4em; overflow-y: auto;">
       Расписание
@@ -108,7 +108,7 @@ export default {
               <v-spacer cols="1"></v-spacer>
               <v-col cols = 2 >
                 <v-btn :class="{'custom-bg': isButtonPressed[0]}"
-                       @click="changeButtonState(0); $router.push('/testMonth').catch(err => {})  "
+                       @click="changeButtonState(0); $router.push('/schedule/testMonth').catch(err => {})"
                        text
                        min-height="3em"
                        color="white"

@@ -61,13 +61,19 @@ const routes = [
     path: "/schedule",
     name: 'schedule',
     component: scheduleView,
-  },
+    children: [
         {
+        path: "testMonth",
+        name: 'month',
+        component: TestMonthView,
+      },
+    ]
+  },
+            {
           path: "/testDay",
           name: 'day',
           component: TestDaylyView,
         },
-
 ]
 
 const router = new VueRouter({
