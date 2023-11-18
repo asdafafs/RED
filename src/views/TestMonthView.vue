@@ -189,7 +189,7 @@ export default {
 .v-event{
   display: flex;
   justify-content: center;
-  width: 98% !important;
+  width: 98% ;
   height: 70px;
   background-color: rgb(157, 185, 255);
   border-color: rgb(157, 185, 255);

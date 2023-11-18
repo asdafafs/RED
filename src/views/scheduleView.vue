@@ -80,7 +80,7 @@ export default {
     </v-row>
     <v-row>
       <v-col>
-
+        <router-view></router-view>
       </v-col>
     </v-row>
   </v-container>
@@ -102,12 +102,11 @@ export default {
   border-color: rgb(157, 185, 255);
   margin: 0px 0px 0px 1.1%;
 }
-.v-event-more{
 
+.v-event-more{
   font-size: 1em !important;
-  //color: white;
-  //background-color: black !important;
 }
+
 hr {
     display: block;
     height: 1px;
@@ -116,15 +115,18 @@ hr {
     margin: 1em 0;
     padding: 0;
 }
+
 .btn
 {
   text-transform: unset !important;
   font-size: 1.5em;
 }
+
 .custom-bg
 {
   background-color: #1e1f22;
 }
+
 .custom_text
 {
   color: white;

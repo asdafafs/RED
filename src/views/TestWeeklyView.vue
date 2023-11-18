@@ -14,11 +14,11 @@
       >
         <v-icon>mdi-chevron-left</v-icon>
       </v-btn>
-        <div class="d-flex flex-row justify-space-between align-center col-2">
+        <div  class="d-flex flex-row justify-space-between align-center col-2">
           <div class="col-5 text-center pa-0">
             <div class="grey--text">понедельник
             </div>
-            <div class="text-h6 ">
+            <div class="text-h6 " v-if="test">
               {{ dateMonday }}
             </div>
           </div>
@@ -29,7 +29,7 @@
             <div class="grey--text">
               воскресенье
             </div>
-            <div class="text-h6">
+            <div class="text-h6" v-if="test">
               {{ dateSunday }}
             </div>
           </div>
@@ -75,16 +75,38 @@
 </template>
 
 <script>
-
+import moment from 'moment';
   export default {
     components: {},
+        mounted() {
+    const buttonStyleReplace = [
+      'v-btn',
+      'v-btn--fab',
+      'v-btn--has-bg',
+      'v-btn--round',
+      'theme--light',
+      'v-size--small',
+      'transparent',
+    ]
+      this.$refs.calendar.$el
+          .querySelectorAll('.v-btn.v-btn--fab.v-btn--has-bg.v-btn--round.theme--light.v-size--small.primary')
+          .forEach(item => {
+            console.log(item);
+            item.classList = '';
+            buttonStyleReplace.forEach(x => {
+              item.classList.toggle(x)
+            })
+          })
+      this.test = true
+    },
     data: () => ({
+      currentDate: moment(),
       focus: '',
       weekday: [1, 2, 3, 4, 5, 6, 0],
       today: new Date(),
       test: false,
-      dateMonday: 12,
-      dateSunday: 18,
+      dateMonday: moment().subtract(0, 'weeks').startOf('isoWeek').format('DD'),
+      dateSunday: moment().subtract(0, 'weeks').endOf('isoWeek').format('DD'),
       events: [
         {
         name: 'Лекция',
@@ -142,44 +164,22 @@
 
       prev() {
         this.$refs.calendar.prev(1);
-        this.updateDateRange();
-       },
+        this.currentDate = this.currentDate.clone().subtract(1, 'week');
+        this.updateDateRange()
+      },
 
       next() {
         this.$refs.calendar.next(1);
-        this.updateDateRange();
+        this.currentDate = this.currentDate.clone().add(1, 'week');
+        this.updateDateRange()
       },
+
       updateDateRange() {
-       const start = 1
-       const end = 2
-        if (start) {
-          this.dateMonday = parseInt(start.textContent)+1;
-          this.dateSunday = parseInt(end.textContent)+13;
-          console.log(start);
-        }
-      },
+      this.dateMonday = this.currentDate.clone().startOf('isoWeek').format('DD');
+      this.dateSunday = this.currentDate.clone().endOf('isoWeek').format('DD');
+    },
   },
-    mounted() {
-    const buttonStyleReplace = [
-      'v-btn',
-      'v-btn--fab',
-      'v-btn--has-bg',
-      'v-btn--round',
-      'theme--light',
-      'v-size--small',
-      'transparent',
-    ]
-      this.$refs.calendar.$el
-          .querySelectorAll('.v-btn.v-btn--fab.v-btn--has-bg.v-btn--round.theme--light.v-size--small.primary')
-          .forEach(item => {
-            console.log(item);
-            item.classList = '';
-            buttonStyleReplace.forEach(x => {
-              item.classList.toggle(x)
-            })
-          })
-      this.test = true
-    }
+
   }
 </script>
 <style lang="scss">
@@ -192,10 +192,10 @@
 }
 
 .v-event-timed{
-  width: 100% !important;
+  width: 100% ;
   background-color: rgb(157, 185, 255);
   border-color: rgb(157, 185, 255);
-  margin: 0px 0px 0px 2.1%;
+  margin: 0px 0px 0px 5px;
 }
 
 .v-event-more{

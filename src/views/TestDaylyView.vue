@@ -2,9 +2,31 @@
   <v-container >
     <v-row >
       <v-col>
+        <v-sheet
+            tile
+            height="54"
+            class="d-flex justify-center"
+        >
+          <v-btn
+              icon
+              class="ma-0  align-self-center"
+              @click="prev()"
+          >
+            <v-icon>mdi-chevron-left</v-icon>
+          </v-btn>
+          <v-toolbar-title v-if="test" class="text-h6 align-self-center">{{dateDay }}</v-toolbar-title>
+          <v-btn
+              icon
+              class="ma-0  align-self-center"
+              @click="next()"
+          >
+            <v-icon>mdi-chevron-right</v-icon>
+          </v-btn>
+        </v-sheet>
         <v-sheet >
           <v-calendar
-              style="overflow: hidden;"
+          v-model="focus"
+          style="overflow: hidden;"
           ref="cal"
           type="day"
           event-overlap-mode="stack"
@@ -41,25 +63,39 @@
 <script>
 import LectureLogo from "@/components/logos/LectureLogo";
 import CarLogo from "@/components/logos/CarLogo";
+import moment from "moment";
 
 export default {
   name: "ExampleDay.vue",
   components: {LectureLogo, CarLogo},
   methods: {
-    getTest(data) {
-      console.log(data);
-      return data
-    }
+    updateRange () {},
+
+    prev() {
+        this.$refs.calendar.prev(1);
+        this.updateDateRange()
+      },
+
+    next() {
+        this.$refs.calendar.next(1);
+        this.updateDateRange()
+      },
+
   },
+
   mounted() {
     this.classesSelectorsToRemove.forEach(item => {
       this.$refs.cal.$el.querySelectorAll(item).forEach(item => {
         item.remove();
       })
     })
+    this.test = true
   },
-  data() {
-    return {
+
+  data: () => ({
+      focus: '',
+      test: false,
+      dateDay: moment().format('DD'),
       classesSelectorsToRemove: [
         '.v-calendar-daily__interval-text',
         '.v-calendar-daily__interval',
@@ -97,10 +133,28 @@ export default {
           type: 'lecture',
           timed: true,
           teacher: 'Каминский С.В.'
+        },
+        {
+          name: 'Вождение',
+          start: new Date(2023, 10, 18, 3, 0),
+          end: new Date(2023, 10, 18, 5, 0),
+          startTime: '14:00',
+          type: 'lecture',
+          timed: true,
+          teacher: 'Каминский С.В.'
+        },
+        {
+          name: 'Вождение',
+          start: new Date(2023, 10, 19, 3, 0),
+          end: new Date(2023, 10, 19, 5, 0),
+          startTime: '14:00',
+          type: 'lecture',
+          timed: true,
+          teacher: 'Каминский С.В.'
         }
       ]
-    }
-  }
+  }),
+
 }
 </script>
 
@@ -152,5 +206,8 @@ export default {
     }
   }
   border-top: none;
+}
+.v-calendar-daily__scroll-area{
+  overflow-y: hidden;
 }
 </style>
