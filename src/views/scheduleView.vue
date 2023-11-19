@@ -2,6 +2,7 @@
 export default {
   components: {},
   mounted() {
+    // eslint-disable-next-line no-unused-vars
     const buttonStyleReplace = [
       'v-btn',
       'v-btn--fab',
@@ -11,15 +12,7 @@ export default {
       'v-size--small',
       'transparent',
     ]
-    this.$refs.calendar.$el
-        .querySelectorAll('.v-btn.v-btn--fab.v-btn--has-bg.v-btn--round.theme--light.v-size--small.primary')
-        .forEach(item => {
-          console.log(item);
-          item.classList = '';
-          buttonStyleReplace.forEach(x => {
-            item.classList.toggle(x)
-          })
-        })
+
     this.test = true
   },
   data: () => ({
@@ -31,6 +24,7 @@ export default {
     modes: ['column'],
     weekday: [1, 2, 3, 4, 5, 6, 0],
     value: '',
+    showDrawer: true,
   }),
   methods: {
    changeButtonState(index) {
@@ -40,13 +34,24 @@ export default {
       this.$set(this.isButtonPressed, index, true);
       this.lastPressedIndex = index;
     },
+    checkWindowWidth() {
+    this.showDrawer = window.innerWidth >= 1260;
+     },
+  },
 
+  created() {
+  this.checkWindowWidth();
+  window.addEventListener('resize', this.checkWindowWidth);
+  },
+
+  beforeDestroy() {
+  window.removeEventListener('resize', this.checkWindowWidth);
   },
 }
 </script>
 
 <template>
-  <v-container >
+  <v-container class="px-4 pa-0 ma-0" fluid v-if = "showDrawer">
     <div class="text-h3 font-weight-medium">
       Расписание школы
     </div>

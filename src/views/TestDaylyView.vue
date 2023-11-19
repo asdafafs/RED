@@ -1,5 +1,5 @@
 <template>
-  <v-container >
+  <v-container fluid>
     <v-row >
       <v-col>
         <v-sheet
@@ -205,7 +205,7 @@ export default {
 .day-calendar {
   :only-child {
     .theme--light.v-calendar-daily .v-calendar-daily__day-interval {
-      border-top: none;
+      border-top: #e0e0e0 0px;
     }
     .theme--light.v-calendar-daily {
       border-top: none;
@@ -215,5 +215,8 @@ export default {
 }
 .v-calendar-daily__scroll-area{
   overflow-y: hidden;
+}
+.theme--light.v-calendar-daily .v-calendar-daily__day-interval {
+    border-top: #e0e0e0 0px;
 }
 </style>

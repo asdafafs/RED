@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container fluid>
     <v-row>
     <v-col>
       <v-sheet
@@ -230,7 +230,7 @@ hr {
   color: white;
 }
 
-.v-c alendar-daily__interval-text {
+.v-calendar-daily__interval-text {
   color: #424242;
   font-size: 19px;
   font-weight: bold;

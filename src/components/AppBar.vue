@@ -12,6 +12,7 @@ export default {
       lastPressedIndex: -1,
       drawer: false,
       showDrawer: true,
+      student: false,
     }
   },
 
@@ -40,7 +41,7 @@ export default {
 </script>
 
 <template>
-  <v-container class="position_component">
+  <v-container >
     <v-navigation-drawer v-model="drawer" app clipped color="#1e1f22" v-if = "!showDrawer">
   <v-list height="inherit" class="d-flex flex-column">
     <v-list-item
@@ -49,7 +50,7 @@ export default {
       <span class="mdi mdi-plus rotate" @click.stop="drawer = !drawer"></span>
     </v-list-item>
     <v-list-item
-        @click.stop="$router.push('/schedule').catch(err => {})"
+        @click.stop="$router.push('/schedule/testMonth').catch(err => {})"
         class="white--text align-start align-center"
         style="max-height: 4em; overflow-y: auto;">
       Расписание
@@ -67,7 +68,7 @@ export default {
       Лекции
     </v-list-item>
     <v-list-item
-        @click.stop="$router.push('/').catch(err => {})"
+        @click.stop="$router.push('/testPlan').catch(err => {})"
         class="white--text align-start align-center"
         style="max-height: 4em; overflow-y: auto;">
       Мой план
@@ -90,7 +91,7 @@ export default {
     </v-list-item>
   </v-list>
   </v-navigation-drawer>
-  <v-app-bar app density="compact" color="#1e1f22" class = "appbar">
+  <v-app-bar app density="compact" color="#1e1f22" class = "appbar position_component" >
     <v-container  class="pa-0 my-0" v-if = "showDrawer" fluid>
     <v-row no-gutters >
     <v-col cols = 2 >
@@ -142,7 +143,7 @@ export default {
                     Лекции
                 </v-btn>
               </v-col>
-              <v-col cols = 2 v-if="true">
+              <v-col cols = 2 v-if="student">
                 <v-btn :class="{ 'custom-bg': isButtonPressed [3]}"
                        @click="changeButtonState(3); $router.push('/testPlan').catch(err => {})"
                        text
@@ -155,9 +156,9 @@ export default {
                 </v-btn>
               </v-col>
               <v-spacer cols="1"></v-spacer>
-              <v-col cols = 2 v-if="false">
+              <v-col cols = 2 v-if="!student">
                 <v-btn :class="{ 'custom-bg': isButtonPressed [3]}"
-                       @click="changeButtonState(3)"
+                       @click="changeButtonState(3); $router.push('/admin').catch(err => {})"
                        text
                        min-height="3em"
                        color="white"
