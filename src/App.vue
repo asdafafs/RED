@@ -4,8 +4,7 @@
     </AppBar>
     <v-main>
       <router-view/>
-      <v-sheet>
-      </v-sheet>
+
     </v-main>
   </v-app>
 </template>

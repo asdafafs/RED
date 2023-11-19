@@ -53,8 +53,6 @@ export default {
       }
       this.$set(this.isButtonPressed, index, true);
       this.lastPressedIndex = index;
-      console.log(this.isButtonPressed)
-      console.log(index)
     }
   }
 }

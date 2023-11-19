@@ -120,9 +120,9 @@ export default {
 </script>
 
 <template>
-  <v-container>
+  <v-container fluid>
     <v-row>
-      <v-col>
+      <v-col >
     <v-sheet
       tile
       height="54"

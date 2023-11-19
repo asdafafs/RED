@@ -1,5 +1,5 @@
 <template>
-  <v-container class="px-4 pa-0 ma-0" fluid>
+  <v-container class="px-4 pa-0 ma-0" fluid v-if = "showDrawer">
     <v-row no-gutters align="center"
           class="spacer" >
       <v-col cols="1" class="d-flex align-center justify-space-around">
@@ -34,7 +34,7 @@
       </v-col>
     </v-row>
     <hr>
-    <router-view></router-view>
+    <router-view ></router-view>
   </v-container>
 </template>
 <script>
@@ -42,6 +42,7 @@
 export default {
   components: {},
   data: () => ({
+    showDrawer: true,
     name: 'Сергей',
     groupId: 1,
     isButtonMenuPressed: [false, false,],
@@ -54,7 +55,21 @@ export default {
       this.$set(this.isButtonMenuPressed, index, true);
       this.lastPressedIndex = index;
     },
-  }
+    checkWindowWidth() {
+    this.showDrawer = window.innerWidth >= 1260;
+     },
+  },
+
+  created() {
+  this.checkWindowWidth();
+  window.addEventListener('resize', this.checkWindowWidth);
+  },
+
+  beforeDestroy() {
+  window.removeEventListener('resize', this.checkWindowWidth);
+  },
+
+
 }
 
 </script>
