@@ -51,16 +51,16 @@ export default {
 </script>
 
 <template>
-  <v-container class="px-4 pa-0 ma-0" fluid v-if = "showDrawer">
-    <div class="text-h3 font-weight-medium">
+  <v-container class="px-4 pa-0 ma-0" fluid v-if = "true">
+    <div class="text-h3 font-weight-medium px-4">
       Расписание школы
     </div>
     <hr>
-    <div class="text-h6">
+    <div class="text-h6 px-4">
       Выберите день, чтобы записаться на занятие
     </div>
     <v-row class="d-flex mt-0 ga-3 " no-gutters>
-      <v-col cols="1">
+      <v-col  lg="1" md="2" sm="3">
         <v-btn text class="black--text btn pa-0" width="100%"
                :class="{'custom-bg': isButtonPressed[0],}"
                @click="changeButtonState(0);"
@@ -68,14 +68,14 @@ export default {
           <span :class="{ 'custom_text':isButtonPressed[0]}">Смотреть все</span>
         </v-btn>
       </v-col >
-      <v-col cols="1">
+      <v-col  lg="1" md="2" sm="3">
         <v-btn text  class="black--text btn pa-0" width="100%"
                :class="{'custom-bg': isButtonPressed[1]}"
                @click="changeButtonState(1);">
           <span :class="{ 'custom_text':isButtonPressed[1]}">Теория</span>
         </v-btn>
       </v-col>
-      <v-col cols="1">
+      <v-col  lg="1" md="2" sm="3">
         <v-btn text class="black--text btn pa-0" width="100%"
                :class="{'custom-bg': isButtonPressed[2]}"
                @click="changeButtonState(2);">
@@ -92,24 +92,8 @@ export default {
 </template>
 
 <style lang="scss">
-.v-calendar-weekly__week {
-    min-height: 20em;
-}
 .theme--light.v-btn {
     color: #4E7AEC;
-}
-.v-event{
-  display: flex;
-  justify-content: center;
-  width: 98% !important;
-  height: 70px;
-  background-color: rgb(157, 185, 255);
-  border-color: rgb(157, 185, 255);
-  margin: 0px 0px 0px 1.1%;
-}
-
-.v-event-more{
-  font-size: 1em !important;
 }
 
 hr {
