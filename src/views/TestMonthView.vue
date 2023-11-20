@@ -1,6 +1,9 @@
 <script>
+import CarLogo from "@/components/logos/CarLogo.vue";
+import LectureLogo from "@/components/logos/LectureLogo.vue";
+
 export default {
-  components: {},
+  components: {LectureLogo, CarLogo},
   mounted() {
     const buttonStyleReplace = [
       'v-btn',
@@ -21,8 +24,17 @@ export default {
           })
         })
     this.test = true
+    window.addEventListener('resize', this.handleResize);
+    this.handleResize();
   },
+
+  beforeDestroy() {
+    window.removeEventListener('resize', this.handleResize);
+  },
+
   data: () => ({
+    num: 70,
+    isMobile: false,
     isButtonPressed: [false, false, false,],
     test: false,
     classesSelectorsToRemove: [],
@@ -92,19 +104,21 @@ export default {
     ],
   }),
   methods: {
-    updateRange () {
+    updateRange () {},
 
-      },
-      rnd (a, b) {
-        return Math.floor((b - a + 1) * Math.random()) + a
-      },
-  getEventColor(event) {
-    if (event.type === 'lecture') {
-      return '#9DB9FF';
-    } else if (event.type === 'practice') {
-      return '#E9E9E8';
-    } else {
-      return 'rgba(0,0,0,0)'
+    rnd (a, b) {
+      return Math.floor((b - a + 1) * Math.random()) + a
+    },
+
+    getEventColor(event) {
+      if (event.type === 'lecture') {
+        return '#9DB9FF';
+    }
+      else if (event.type === 'practice') {
+        return '#E9E9E8';
+    }
+      else {
+        return 'rgba(0,0,0,0)'
     }
   },
    changeButtonState(index) {
@@ -114,11 +128,16 @@ export default {
       this.$set(this.isButtonPressed, index, true);
       this.lastPressedIndex = index;
     },
-
+     handleResize() {
+      if (window.innerWidth < 1260) {
+        this.num = 30;
+      } else {
+        this.num = 70;
+      }
+    },
   },
 }
 </script>
-
 <template>
   <v-container fluid>
     <v-row>
@@ -154,21 +173,28 @@ export default {
           :events="events"
           :event-color = "getEventColor"
           :event-ripple="false"
-          :event-height = "70"
+          :event-height = "num"
           :hide-header = false
            @change = "updateRange"
           event-more-text="+ {0}"
       >
         <template v-slot:event="{event}">
          <v-container class="pa-1 mx-0 d-flex " >
-            <v-row class="ma-0" >
-              <v-col cols="4" class = "black--text pa-0 align-self-center" >
+            <v-row class="ma-0  " >
+              <v-col cols="4" class = "black--text pa-0 align-self-center d-none d-lg-block" >
                 <div class="text-subtitle-2 d-flex justify-center">{{event.startTime}}</div>
               </v-col>
-              <v-col class = "black--text pa-0 align-self-center">
+              <v-col class = "d-lg-none pa-0" style="display: flex; align-items: center; justify-content: center;">
+                <div class="logo ">
+                  <car-logo v-if="event.type === 'practice'"/>
+                  <lecture-logo v-if="event.type === 'lecture'"/>
+                </div>
+              </v-col>
+              <v-col class = "black--text pa-0 align-self-center d-none d-lg-block">
                 <div class="font-weight-bold">{{event.name}}</div>
                 <div>Преподаватель:<br>{{event.teacher}}</div>
               </v-col>
+
             </v-row>
             </v-container>
           </template>
@@ -181,43 +207,53 @@ export default {
 
 <style lang="scss">
 .v-calendar-weekly__week {
-    min-height: 20em;
+  min-height: 20em;
 }
+
+@media screen and (max-width: 1260px){
+  .v-calendar-weekly__week {
+    min-height: 10em;
+  }
+}
+
+@media screen and (max-width: 600px){
+  .v-calendar-weekly__week {
+    min-height: 5em;
+  }
+}
+
 .theme--light.v-btn {
     color: #4E7AEC;
 }
+
 .v-event{
   display: flex;
   justify-content: center;
   width: 98% ;
-  height: 70px;
   background-color: rgb(157, 185, 255);
   border-color: rgb(157, 185, 255);
   margin: 0px 0px 0px 1.1%;
 }
-.v-event-more{
 
+.v-event.v-event-start.v-event-end.white--text{
+  min-width: 98%;
+}
+
+.v-event-more{
   font-size: 1em !important;
-  //color: white;
-  //background-color: black !important;
 }
-hr {
-    display: block;
-    height: 1px;
-    border: 0;
-    border-top: 1px solid #ccc;
-    margin: 1em 0;
-    padding: 0;
-}
+
 .btn
 {
   text-transform: unset !important;
   font-size: 1.5em;
 }
+
 .custom-bg
 {
   background-color: #1e1f22;
 }
+
 .custom_text
 {
   color: white;

@@ -47,7 +47,7 @@
             </div>
             <div class="custom-info">
               {{ data.event.name }}
-              <div v-if="data.event.teacher" class="teacher">
+              <div v-if="data.event.teacher" class="teacher text-wrap">
                 Преподаватель: {{ data.event.teacher }}
               </div>
             </div>
@@ -165,6 +165,7 @@ export default {
 </script>
 
 <style lang="scss">
+
 .day-event {
   display: flex;
   height: 100%;

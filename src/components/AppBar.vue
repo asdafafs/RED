@@ -12,7 +12,7 @@ export default {
       lastPressedIndex: -1,
       drawer: false,
       showDrawer: true,
-      student: false,
+      student: true,
     }
   },
 

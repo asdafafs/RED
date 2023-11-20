@@ -1,12 +1,7 @@
 <template>
   <v-container fluid>
     <v-row>
-    <v-col>
-      <v-sheet
-      tile
-      height="54"
-      class="d-flex justify-center"
-    ><v-row class="justify-center">
+      <v-row class="justify-center">
       <v-btn
         icon
         class="ma-0  align-self-center"
@@ -14,7 +9,7 @@
       >
         <v-icon>mdi-chevron-left</v-icon>
       </v-btn>
-        <div  class="d-flex flex-row justify-space-between align-center col-2">
+        <div  class="d-flex flex-row justify-space-between align-center col-lg-2 col-md-4 col-sm-8 col-9">
           <div class="col-5 text-center pa-0">
             <div class="grey--text">понедельник
             </div>
@@ -42,7 +37,9 @@
         <v-icon>mdi-chevron-right</v-icon>
       </v-btn>
       </v-row>
-    </v-sheet>
+    </v-row>
+    <v-row>
+      <v-col>
       <v-sheet>
         <v-calendar
           ref="calendar"
@@ -54,13 +51,19 @@
           :event-height = "50"
           :weekdays = "weekday"
         >
-          <template v-slot:event="{event}">
-         <v-container class="pa-1 mx-0 d-flex " >
-            <v-row class="ma-0" >
-              <v-col cols="4" class = "black--text pa-0 align-self-center" >
+          <template v-slot:event="{event}" >
+         <v-container class="pa-0 mx-0 d-flex " fill>
+            <v-row class="ma-0" fill>
+              <v-col cols="4" class = "black--text pa-0 align-self-center d-none d-lg-block" >
                 <div class="text-subtitle-2 d-flex justify-center">{{event.startTime}}</div>
               </v-col>
-              <v-col class = "black--text pa-0 align-self-center">
+              <v-col class = "d-lg-none pa-0" fill>
+                <div class="logo d-flex justify-center align-center">
+                  <car-logo v-if="event.type === 'practice'"/>
+                  <lecture-logo v-if="event.type === 'lecture'"/>
+                </div>
+              </v-col>
+              <v-col class = "black--text pa-0 align-self-center d-none d-lg-block">
                 <div class="font-weight-bold">{{event.name}}</div>
                 <div>Преподаватель:<br>{{event.teacher}}</div>
               </v-col>
@@ -76,10 +79,12 @@
 
 <script>
 import moment from 'moment';
+import CarLogo from "@/components/logos/CarLogo.vue";
+import LectureLogo from "@/components/logos/LectureLogo.vue";
   export default {
-    components: {},
+    components: {CarLogo, LectureLogo},
         mounted() {
-    const buttonStyleReplace = [
+        const buttonStyleReplace = [
       'v-btn',
       'v-btn--fab',
       'v-btn--has-bg',
@@ -88,16 +93,16 @@ import moment from 'moment';
       'v-size--small',
       'transparent',
     ]
-      this.$refs.calendar.$el
-          .querySelectorAll('.v-btn.v-btn--fab.v-btn--has-bg.v-btn--round.theme--light.v-size--small.primary')
-          .forEach(item => {
-            console.log(item);
-            item.classList = '';
-            buttonStyleReplace.forEach(x => {
-              item.classList.toggle(x)
-            })
+    this.$refs.calendar.$el
+        .querySelectorAll('.v-btn.v-btn--fab.v-btn--has-bg.v-btn--round.theme--light.v-size--default.primary')
+        .forEach(item => {
+          console.log(item);
+          item.classList = '';
+          buttonStyleReplace.forEach(x => {
+            item.classList.toggle(x)
           })
-      this.test = true
+        });
+         this.test = true
     },
     data: () => ({
       currentDate: moment(),
@@ -145,12 +150,12 @@ import moment from 'moment';
 
       getEventColor(event) {
         if (event.type === 'lecture') {
-          return '#9DB9FF'; // Blue color for 'lecture' type
+          return '#9DB9FF';
         } else if (event.type === 'practice') {
-          return '#E9E9E8'; // Gray color for 'practice' type
+          return '#E9E9E8';
         } else {
-      // Default color if type is not 'lecture' or 'practice'
-          return 'rgba(0,0,0,0)'; // You can set your default color here
+
+          return 'rgba(0,0,0,0)';
         }
       },
 
@@ -183,8 +188,10 @@ import moment from 'moment';
   }
 </script>
 <style lang="scss">
-.v-calendar-weekly__week {
-    min-height: 20em;
+.v-event-timed.white--text{
+  //display: flex;
+  //justify-content: center;
+  //align-items: center;
 }
 
 .theme--light.v-btn {
@@ -199,19 +206,7 @@ import moment from 'moment';
 }
 
 .v-event-more{
-
   font-size: 1em !important;
-  //color: white;
-  //background-color: black !important;
-}
-
-hr {
-    display: block;
-    height: 1px;
-    border: 0;
-    border-top: 1px solid #ccc;
-    margin: 1em 0;
-    padding: 0;
 }
 
 .btn
@@ -234,5 +229,30 @@ hr {
   color: #424242;
   font-size: 19px;
   font-weight: bold;
+}
+
+@media screen and (max-width: 1260px){
+  .v-calendar-daily__interval-text {
+    color: #424242;
+    font-size: 10px;
+    font-weight: bold;
+  }
+  .v-calendar-daily__intervals-body{
+    max-width: 30px;
+}
+  .v-calendar-daily__intervals-head{
+    max-width: 30px;
+  }
+}
+
+.v-btn--fab.v-size--default {
+  height: min-content;
+  width: min-content;
+  font-size: 0.8em;
+}
+.v-btn--fab.v-size--small {
+  height: min-content;
+  width: min-content;
+  font-size: 0.8em;
 }
 </style>

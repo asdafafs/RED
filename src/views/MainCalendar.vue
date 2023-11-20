@@ -1,44 +1,45 @@
 <template>
   <div>
-  <v-row class="px-12">
-    <v-col cols="12">
-      <div class="text-h6 font-weight-bold">Мое расписание</div>
-    </v-col>
-  </v-row>
-  <v-row class="d-flex mt-0 ga-3 " no-gutters>
-    <v-col cols="1">
-      <v-btn text class="black--text btn pa-0" width="100%"
-             :class="{'custom-bg': isButtonPressed[0],}"
-             @click="changeButtonState(0);
-               $router.push('/testPlan/mainCal/testDay').catch(err => {})"
-      >
-        <span :class="{ 'custom_text':isButtonPressed[0]}">День</span>
-      </v-btn>
-    </v-col>
-    <v-col cols="1">
-      <v-btn text class="black--text btn pa-0" width="100%"
-             :class="{'custom-bg': isButtonPressed[1]}"
-             @click="changeButtonState(1);
-               $router.push('/testPlan/mainCal/testWeek').catch(err => {})">
-        <span :class="{ 'custom_text':isButtonPressed[1]}">Неделя</span>
-      </v-btn>
-    </v-col>
-    <v-col cols="1">
-      <v-btn text class="black--text btn pa-0" width="100%"
-             :class="{'custom-bg': isButtonPressed[2]}"
-             @click="changeButtonState(2);
-               $router.push('/testPlan/mainCal/testMonth').catch(err => {})">
-        <span :class="{ 'custom_text':isButtonPressed[2]}">Месяц</span>
-      </v-btn>
-    </v-col>
-  </v-row>
-  <v-row>
-    <v-col>
-      <router-view></router-view>
-    </v-col>
-  </v-row>
+    <v-row class="px-12">
+      <v-col cols="12" class="">
+        <div class="text-h6 font-weight-bold">Мое расписание</div>
+      </v-col>
+    </v-row>
+    <v-row class="d-flex mt-0 ga-3" no-gutters>
+      <v-col  sm="3" md="3" lg="1"> <!-- Задайте различные значения для разных размеров экрана -->
+        <v-btn text class="black--text btn pa-0" width="100%"
+               :class="{'custom-bg': isButtonPressed[0],}"
+               @click="changeButtonState(0);
+                 $router.push('/testPlan/mainCal/testDay').catch(err => {})"
+        >
+          <span :class="{ 'custom_text':isButtonPressed[0]}">День</span>
+        </v-btn>
+      </v-col>
+      <v-col  sm="3" md="3" lg="1">
+        <v-btn text class="black--text btn pa-0" width="100%"
+               :class="{'custom-bg': isButtonPressed[1]}"
+               @click="changeButtonState(1);
+                 $router.push('/testPlan/mainCal/testWeek').catch(err => {})">
+          <span :class="{ 'custom_text':isButtonPressed[1]}">Неделя</span>
+        </v-btn>
+      </v-col>
+      <v-col  sm="3" md="3" lg="1">
+        <v-btn text class="black--text btn pa-0" width="100%"
+               :class="{'custom-bg': isButtonPressed[2]}"
+               @click="changeButtonState(2);
+                 $router.push('/testPlan/mainCal/testMonth').catch(err => {})">
+          <span :class="{ 'custom_text':isButtonPressed[2]}">Месяц</span>
+        </v-btn>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col>
+        <router-view></router-view>
+      </v-col>
+    </v-row>
   </div>
 </template>
+
 <script>
 export default {
   components: {},
