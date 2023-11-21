@@ -11,13 +11,15 @@
            </v-img>
         </v-avatar>
       </v-col>
-      <v-col cols="" >
-        <div class="text-h4 font-weight-bold" style="">Здравствуйте, {{ name }}!</div>
+      <v-col lg="" >
+        <div class="text-h4 font-weight-bold">Здравствуйте, {{ name }}!</div>
       </v-col>
-      <v-col cols="" class="align-self-end text-start">
+      <v-col lg="3" class="align-self-end text-start justify-start">
         <div class="text-subtitle-1 uno">Вы зачислены в группу №{{groupId}}</div>
       </v-col>
-      <v-col cols="1"></v-col>
+      <v-col cols="">
+
+      </v-col>
       <v-col cols="1">
         <v-btn text class="grey--text btn pa-0" width="100%"
                @click="changeButtonMenuState(0); $router.push('/testPlan/mainCal').catch(err => {})">
