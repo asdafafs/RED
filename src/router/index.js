@@ -83,11 +83,6 @@ const routes = [
       },
     ]
   },
-  {
-    path: "/mainCal",
-    name: 'main',
-    component: MainCalendar,
-  }
 ]
 
 const router = new VueRouter({

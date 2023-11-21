@@ -145,7 +145,7 @@ export default {
               </v-col>
               <v-col cols = 2 v-if="student">
                 <v-btn :class="{ 'custom-bg': isButtonPressed [3]}"
-                       @click="changeButtonState(3); $router.push('/testPlan').catch(err => {})"
+                       @click="changeButtonState(3); $router.push('/testPlan/mainCal/testMonth').catch(err => {})"
                        text
                        min-height="3em"
                        color="white"
