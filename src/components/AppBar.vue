@@ -12,7 +12,7 @@ export default {
       lastPressedIndex: -1,
       drawer: false,
       showDrawer: true,
-      student: true,
+      student: false,
     }
   },
 
@@ -68,12 +68,19 @@ export default {
       Лекции
     </v-list-item>
     <v-list-item
-        @click.stop="$router.push('/testPlan').catch(err => {})"
+        v-if="student"
+        @click.stop="$router.push('/testPlan/mainCal/testMonth').catch(err => {})"
         class="white--text align-start align-center"
         style="max-height: 4em; overflow-y: auto;">
       Мой план
     </v-list-item>
-
+    <v-list-item
+        v-if="!student"
+        @click.stop="$router.push('/admin').catch(err => {})"
+        class="white--text align-start align-center"
+        style="max-height: 4em; overflow-y: auto;">
+      Админпанель
+    </v-list-item>
     <v-list-item
         @click.stop="$router.push('/').catch(err => {})"
         class="white--text align-end mt-auto align-center"
@@ -84,14 +91,14 @@ export default {
           {{ user }}
         </div>
         <div style="text-align: left;">
-          {{ role[0] }}
+          {{student ? role[0] : role[1]}}
         </div>
       </div>
       <span class="mdi mdi-login" style="transform: scale(1.5)"></span>
     </v-list-item>
   </v-list>
   </v-navigation-drawer>
-  <v-app-bar app density="compact" color="#1e1f22" class = "appbar position_component" >
+    <v-app-bar app density="compact" color="#1e1f22" class = "appbar position_component" >
     <v-container  class="pa-0 my-0" v-if = "showDrawer" fluid>
     <v-row no-gutters >
     <v-col cols = 2 >
@@ -189,7 +196,7 @@ export default {
                         {{user}}
                       </div>
                       <div style="text-align: left;">
-                        {{role[0]}}
+                        {{student ? role[0] : role[1]}}
                       </div>
                     </div>
                   <span class="mdi mdi-login" style="transform: scale(1.5)"></span>

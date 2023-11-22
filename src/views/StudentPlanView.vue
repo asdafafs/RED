@@ -63,7 +63,7 @@
       </v-col>
       <v-col cols="">
         <v-btn text class="grey--text btn pa-0" width="100%"
-               @click="changeButtonMenuState(1); $router.push('').catch(err => {})">
+               @click="changeButtonMenuState(1); $router.push('/testPlan/progress').catch(err => {})">
          <span :class="{'uno': isButtonMenuPressed[1],}">Прогресс</span>
         </v-btn>
         <div v-show="isButtonMenuPressed[1]" class="button-line"></div>

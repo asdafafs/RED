@@ -6,7 +6,7 @@
       </v-col>
     </v-row>
     <v-row class="d-flex mt-0 ga-3" no-gutters>
-      <v-col  sm="3" md="3" lg="1"> <!-- Задайте различные значения для разных размеров экрана -->
+      <v-col  sm="3" md="3" lg="1">
         <v-btn text class="black--text btn pa-0" width="100%"
                :class="{'custom-bg': isButtonPressed[0],}"
                @click="changeButtonState(0);

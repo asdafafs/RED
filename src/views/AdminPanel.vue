@@ -1,30 +1,19 @@
 <script>
-
-  const generateRandomFullName = () => {
-    const firstNames = ['Иван', 'Мария', 'Александр', 'Екатерина', 'Дмитрий'];
-    const lastNames = ['Иванов', 'Петров', 'Сидоров', 'Смирнова', 'Козлов'];
-
-    const randomFirstName = firstNames[Math.floor(Math.random() * firstNames.length)];
-    const randomLastName = lastNames[Math.floor(Math.random() * lastNames.length)];
-
-    return `${randomFirstName} ${randomLastName}`;
-  };
-
   export default {
     data: () => ({
+      test: null,
       dialog: false,
       dialogDelete: false,
       headers: [
-        {
-          text: 'ФИО',
-          align: 'start',
-          sortable: false,
-          value: 'name',
-        },
-        { text: 'Действия', value: 'actions', sortable: false },
+        {text: 'ID', align: 'start', sortable: false, value: 'id' },
+        {text: 'Имя', align: 'start', sortable: false, value: 'name' },
+        {text: 'Фамилия', align: 'start', sortable: false, value: 'surname',},
+        {text: 'Отчество', align: 'start', sortable: false, value: 'lastName',},
+        {text: 'Действия', value: 'actions', sortable: false },
       ],
       persons: [],
       editedIndex: -1,
+      deletedIndex: -1,
       editedItem: {
         name: '',
       },
@@ -53,27 +42,49 @@
     },
 
     methods: {
-      initialize() {
-        this.persons = Array.from({ length: 10 }, () => ({
-          name: generateRandomFullName(),
-        }));
+      async initialize() {
+          const requestTest = {
+            method: 'GET',
+            headers: {'accept': 'text/plain'},
+            query: 'Id=?'
+          }
+
+          this.test = await fetch('http://localhost:5105/api/User?Id=1', requestTest);
+          let cal = await this.test.json()
+          // console.log( cal)
+
+        this.persons = cal;
       },
 
       editItem(item) {
         this.editedIndex = this.persons.indexOf(item);
-        this.editedItem = { name: item.name };
+        this.editedItem = {
+          name: item.name,
+          surname: item.surname,
+          lastName: item.lastName,
+          id: item.id,
+        };
+
         this.dialog = true;
+        console.log(this.editedItem)
       },
 
       deleteItem(item) {
         this.editedIndex = this.persons.indexOf(item);
         this.editedItem = { name: item.name };
+        this.deletedIndex = item.id
         this.dialogDelete = true;
       },
 
-      deleteItemConfirm() {
+      async deleteItemConfirm() {
         this.persons.splice(this.editedIndex, 1);
         this.closeDelete();
+        const requestTest = {
+          method: 'DELETE',
+          headers: {'accept': 'text/plain', 'Content-Type' : 'application/json'},
+          body: JSON.stringify({"id": this.deletedIndex})
+        };
+        await fetch('http://localhost:5105/api/User', requestTest)
       },
 
       close() {
@@ -92,16 +103,38 @@
         });
       },
 
-      save() {
+      async save() {
         if (this.editedIndex > -1) {
           this.$set(this.persons, this.editedIndex, this.editedItem);
+          const requestTest = {
+          method: 'PUT',
+          headers: {'accept': 'text/plain', 'Content-Type' : 'application/json'},
+          body: JSON.stringify(this.editedItem,)
+          }
+          await fetch('http://localhost:5105/api/User', requestTest)
+          this.close();
+          console.log(0)
         } else {
           this.persons.push(this.editedItem);
+          const requestTest = {
+            method: 'POST',
+            headers: {'accept': 'text/plain', 'Content-Type' : 'application/json'},
+            body: JSON.stringify({
+              "name" : this.editedItem.name,
+              "surname" : this.editedItem.surname,
+              "lastname": this.editedItem.lastName,
+              "vkid": 0,
+              "groupId": 2
+            })
+          }
+          await fetch('http://localhost:5105/api/User', requestTest)
+          this.close();
+          console.log(1)
         }
-        this.close();
       },
     },
   };
+
 </script>
 
 <template>
@@ -110,8 +143,8 @@
       'items-per-page-text': 'Записей на странице:',
       'items-per-page-all-text': 'Все',
       'page-text': '{0}-{1} из {2}',
-      'prev-icon': 'mdi-chevron-left', // замените на ваш иконка
-      'next-icon': 'mdi-chevron-right', // замените на ваш иконка
+      'prev-icon': 'mdi-chevron-left',
+      'next-icon': 'mdi-chevron-right',
       'prev-page-text': 'Предыдущая страница',
       'next-page-text': 'Следующая страница',
       'no-data-text': 'Нет данных для отображения'
@@ -150,7 +183,20 @@
                   >
                     <v-text-field
                       v-model="editedItem.name"
-                      label="ФИО"
+                      label="Имя"
+                    ></v-text-field>
+                    <v-text-field
+                      v-model="editedItem.surname"
+                      label="Фамилия"
+                    ></v-text-field>
+                    <v-text-field
+                      v-model="editedItem.lastName"
+                      label="Отчество"
+                    ></v-text-field>
+                    <v-text-field
+                      v-model="editedItem.id"
+                      label="ID"
+                      v-if="formTitle !== 'Новый элемент'"
                     ></v-text-field>
                   </v-col>
                 </v-row>
@@ -164,14 +210,14 @@
                 text
                 @click="close"
               >
-                Cancel
+                Отмена
               </v-btn>
               <v-btn
                 color="blue darken-1"
                 text
                 @click="save"
               >
-                Save
+                OK
               </v-btn>
             </v-card-actions>
           </v-card>
@@ -181,7 +227,7 @@
             <v-card-title class="text-h5">Сносим?</v-card-title>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="blue darken-1" text @click="closeDelete">Cancel</v-btn>
+              <v-btn color="blue darken-1" text @click="closeDelete">Отмена</v-btn>
               <v-btn color="blue darken-1" text @click="deleteItemConfirm">OK</v-btn>
               <v-spacer></v-spacer>
             </v-card-actions>
