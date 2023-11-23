@@ -114,7 +114,8 @@
           await fetch('http://localhost:5105/api/User', requestTest)
           this.close();
           console.log(0)
-        } else {
+        }
+        else {
           this.persons.push(this.editedItem);
           const requestTest = {
             method: 'POST',

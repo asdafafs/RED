@@ -11,6 +11,7 @@ import TestWeeklyView from "@/views/WeeklyView.vue";
 import scheduleView from "@/views/scheduleView.vue";
 import MainCalendar from "@/views/MainCalendar.vue";
 import ProgressBar from "@/views/ProgressBar.vue";
+import TestTest from "@/views/TestTest.vue";
 
 
 Vue.use(VueRouter)
@@ -83,6 +84,10 @@ const routes = [
       },
     ]
   },
+  {
+    path: "/test",
+    component: TestTest
+  }
 ]
 
 const router = new VueRouter({
