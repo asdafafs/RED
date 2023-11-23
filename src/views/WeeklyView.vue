@@ -50,14 +50,18 @@
           :event-color = "getEventColor"
           :event-height = "50"
           :weekdays = "weekday"
+          @change="updateRange"
+          @mousedown:event="startDrag"
+          @mousemove:event="mouseMove"
+          @mouseup:event="endDrag"
         >
           <template v-slot:event="{event}" >
-         <v-container class="pa-0 mx-0 d-flex " fill>
-            <v-row class="ma-0" fill>
-              <v-col cols="4" class = "black--text pa-0 align-self-center d-none d-lg-block" >
-                <div class="text-subtitle-2 d-flex justify-center">{{event.startTime}}</div>
-              </v-col>
-              <v-col class = "d-lg-none pa-0" fill>
+              <v-container class="pa-0 mx-0 d-flex " fill>
+                <v-row class="ma-0" fill>
+                  <v-col cols="4" class = "black--text pa-0 align-self-center d-none d-lg-block" >
+                    <div class="text-subtitle-2 d-flex justify-center">{{event.startTime}}</div>
+                  </v-col>
+                  <v-col class = "d-lg-none pa-0" fill>
                 <div class="logo d-flex justify-center align-center">
                   <car-logo v-if="event.type === 'practice'"/>
                   <lecture-logo v-if="event.type === 'lecture'"/>
@@ -81,9 +85,11 @@
 import moment from 'moment';
 import CarLogo from "@/components/logos/CarLogo.vue";
 import LectureLogo from "@/components/logos/LectureLogo.vue";
-import {mapState} from "vuex";
+import Draggable from 'vuedraggable';
+
   export default {
-    components: {CarLogo, LectureLogo},
+    // eslint-disable-next-line vue/no-unused-components
+    components: {CarLogo, LectureLogo, Draggable},
     mounted() {
         const buttonStyleReplace = [
           'v-btn',
@@ -106,11 +112,55 @@ import {mapState} from "vuex";
          this.test = true
     },
 
-    computed:{
-      ...mapState(['events'])
-    },
-
     data: () => ({
+      events: [
+        {
+        name: 'Лекция',
+        start: new Date(2023, 10, 13, 3, 0),
+        end: new Date(2023, 10, 13, 5, 0),
+        startTime: '11:00',
+        type: 'lecture',
+        timed: true,
+        teacher: 'Каминский С.В.'
+      },
+      {
+        name: 'Вождение',
+        start: new Date(2023, 10, 15, 3, 0),
+        end: new Date(2023, 10, 15, 5, 0),
+        startTime: '14:00',
+        type: 'practice',
+        timed: true,
+        teacher: 'Каминский С.В.'
+      },
+      {
+        name: 'Лекция',
+        start: new Date(2023, 10, 11, 3, 0),
+        end: new Date(2023, 10, 11, 5, 0),
+        startTime: '14:00',
+        type: 'lecture',
+        timed: true,
+        teacher: 'Каминский С.В.'
+      },
+
+      {
+        name: 'Вождение',
+        start: new Date(2023, 10, 23, 3, 0),
+        end: new Date(2023, 10, 23, 5, 0),
+        startTime: '14:00',
+        type: 'practice',
+        timed: true,
+        teacher: 'Каминский С.В.'
+      },
+      {
+        name: 'Лекция',
+        start: new Date(2023, 10, 24, 3, 0),
+        end: new Date(2023, 10, 24, 5, 0),
+        startTime: '14:00',
+        type: 'lecture',
+        timed: true,
+        teacher: 'Каминский С.В.'
+      }
+      ],
       currentDate: moment(),
       focus: '',
       weekday: [1, 2, 3, 4, 5, 6, 0],
@@ -120,11 +170,6 @@ import {mapState} from "vuex";
       dateSunday: moment().subtract(0, 'weeks').endOf('isoWeek').format('DD'),
     }),
     methods: {
-      updateRange () {},
-      rnd (a, b) {
-        return Math.floor((b - a + 1) * Math.random()) + a
-      },
-
       getEventColor(event) {
         if (event.type === 'lecture') {
           return '#9DB9FF';
@@ -160,6 +205,32 @@ import {mapState} from "vuex";
       this.dateMonday = this.currentDate.clone().startOf('isoWeek').format('DD');
       this.dateSunday = this.currentDate.clone().endOf('isoWeek').format('DD');
     },
+      updateRange () {
+        console.log('Обновляем')
+      }
+      ,
+      startDrag() {
+        console.log('начинаем')
+    },
+
+    mouseMove() {
+        console.log('двигаем')
+    },
+
+    endDrag() {
+        console.log('заканчиваем')
+    },
+
+    cancelDrag() {
+      if (this.dragEvent) {
+        // Restore the original event state if dragging is canceled.
+        // You may want to revert any changes made during dragging.
+        // For example, if you have a temporary event during dragging.
+        this.dragEvent = null;
+        this.dragStart = null;
+      }
+    },
+
   },
 
   }
