@@ -1,6 +1,7 @@
 <script>
 import CarLogo from "@/components/logos/CarLogo.vue";
 import LectureLogo from "@/components/logos/LectureLogo.vue";
+import {mapState} from "vuex";
 
 export default {
   components: {LectureLogo, CarLogo},
@@ -28,6 +29,10 @@ export default {
     this.handleResize();
   },
 
+  computed:{
+    ...mapState(['events'])
+  },
+
   beforeDestroy() {
     window.removeEventListener('resize', this.handleResize);
   },
@@ -46,62 +51,6 @@ export default {
     weekday: [1, 2, 3, 4, 5, 6, 0],
 
     value: '',
-    events: [
-      {
-        name: 'Вождение',
-        start: new Date(2023, 10, 13, 1, 0),
-        end: new Date(2023, 10, 13, 3, 0),
-        startTime: '12:00',
-        timed: true,
-        type: 'practice',
-        teacher: 'Каминский С.В.',
-      },
-      {
-        name: 'Лекция',
-        start: new Date(2023, 10, 13, 3, 0),
-        end: new Date(2023, 10, 13, 5, 0),
-        startTime: '14:00',
-        type: 'lecture',
-        timed: true,
-        teacher: 'Каминский С.В.'
-      },
-      {
-        name: 'Лекция',
-        start: new Date(2023, 10, 13, 3, 0),
-        end: new Date(2023, 10, 13, 5, 0),
-        startTime: '14:00',
-        type: 'lecture',
-        timed: true,
-        teacher: 'Каминский С.В.'
-      },
-      {
-        name: 'Лекция',
-        start: new Date(2023, 10, 13, 3, 0),
-        end: new Date(2023, 10, 13, 5, 0),
-        startTime: '14:00',
-        type: 'lecture',
-        timed: true,
-        teacher: 'Каминский С.В.'
-      },
-      {
-        name: 'Вождение',
-        start: new Date(2023, 10, 15, 3, 0),
-        end: new Date(2023, 10, 15, 5, 0),
-        startTime: '14:00',
-        type: 'practice',
-        timed: true,
-        teacher: 'Каминский С.В.'
-      },
-      {
-        name: 'Лекция',
-        start: new Date(2023, 10, 11, 3, 0),
-        end: new Date(2023, 10, 11, 5, 0),
-        startTime: '14:00',
-        type: 'lecture',
-        timed: true,
-        teacher: 'Каминский С.В.'
-      }
-    ],
   }),
   methods: {
     updateRange () {},

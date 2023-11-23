@@ -81,19 +81,20 @@
 import moment from 'moment';
 import CarLogo from "@/components/logos/CarLogo.vue";
 import LectureLogo from "@/components/logos/LectureLogo.vue";
+import {mapState} from "vuex";
   export default {
     components: {CarLogo, LectureLogo},
-        mounted() {
+    mounted() {
         const buttonStyleReplace = [
-      'v-btn',
-      'v-btn--fab',
-      'v-btn--has-bg',
-      'v-btn--round',
-      'theme--light',
-      'v-size--small',
-      'transparent',
-    ]
-    this.$refs.calendar.$el
+          'v-btn',
+          'v-btn--fab',
+          'v-btn--has-bg',
+          'v-btn--round',
+          'theme--light',
+          'v-size--small',
+          'transparent',
+        ]
+      this.$refs.calendar.$el
         .querySelectorAll('.v-btn.v-btn--fab.v-btn--has-bg.v-btn--round.theme--light.v-size--default.primary')
         .forEach(item => {
           console.log(item);
@@ -104,6 +105,11 @@ import LectureLogo from "@/components/logos/LectureLogo.vue";
         });
          this.test = true
     },
+
+    computed:{
+      ...mapState(['events'])
+    },
+
     data: () => ({
       currentDate: moment(),
       focus: '',
@@ -112,35 +118,53 @@ import LectureLogo from "@/components/logos/LectureLogo.vue";
       test: false,
       dateMonday: moment().subtract(0, 'weeks').startOf('isoWeek').format('DD'),
       dateSunday: moment().subtract(0, 'weeks').endOf('isoWeek').format('DD'),
-      events: [
-        {
-        name: 'Лекция',
-        start: new Date(2023, 10, 13, 3, 0),
-        end: new Date(2023, 10, 13, 5, 0),
-        startTime: '11:00',
-        type: 'lecture',
-        timed: true,
-        teacher: 'Каминский С.В.'
-      },
-      {
-        name: 'Вождение',
-        start: new Date(2023, 10, 15, 3, 0),
-        end: new Date(2023, 10, 15, 5, 0),
-        startTime: '14:00',
-        type: 'practice',
-        timed: true,
-        teacher: 'Каминский С.В.'
-      },
-      {
-        name: 'Лекция',
-        start: new Date(2023, 10, 11, 3, 0),
-        end: new Date(2023, 10, 11, 5, 0),
-        startTime: '14:00',
-        type: 'lecture',
-        timed: true,
-        teacher: 'Каминский С.В.'
-      }
-      ],
+      // events: [
+      //   {
+      //   name: 'Лекция',
+      //   start: new Date(2023, 10, 13, 3, 0),
+      //   end: new Date(2023, 10, 13, 5, 0),
+      //   startTime: '11:00',
+      //   type: 'lecture',
+      //   timed: true,
+      //   teacher: 'Каминский С.В.'
+      // },
+      // {
+      //   name: 'Вождение',
+      //   start: new Date(2023, 10, 15, 3, 0),
+      //   end: new Date(2023, 10, 15, 5, 0),
+      //   startTime: '14:00',
+      //   type: 'practice',
+      //   timed: true,
+      //   teacher: 'Каминский С.В.'
+      // },
+      // {
+      //   name: 'Лекция',
+      //   start: new Date(2023, 10, 11, 3, 0),
+      //   end: new Date(2023, 10, 11, 5, 0),
+      //   startTime: '14:00',
+      //   type: 'lecture',
+      //   timed: true,
+      //   teacher: 'Каминский С.В.'
+      // },
+      //           {
+      //   name: 'Вождение',
+      //   start: new Date(2023, 10, 23, 3, 0),
+      //   end: new Date(2023, 10, 23, 5, 0),
+      //   startTime: '14:00',
+      //   type: 'practice',
+      //   timed: true,
+      //   teacher: 'Каминский С.В.'
+      // },
+      // {
+      //   name: 'Лекция',
+      //   start: new Date(2023, 10, 24, 3, 0),
+      //   end: new Date(2023, 10, 24, 5, 0),
+      //   startTime: '14:00',
+      //   type: 'lecture',
+      //   timed: true,
+      //   teacher: 'Каминский С.В.'
+      // }
+      // ],
     }),
     methods: {
       updateRange () {},
