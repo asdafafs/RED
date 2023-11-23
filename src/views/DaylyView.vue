@@ -64,10 +64,14 @@
 import LectureLogo from "@/components/logos/LectureLogo";
 import CarLogo from "@/components/logos/CarLogo";
 import moment from "moment";
+import {mapState} from "vuex";
 
 export default {
   name: "ExampleDay.vue",
   components: {LectureLogo, CarLogo},
+  computed:{
+    ...mapState(['events'])
+  },
   data: () => ({
       focus: '',
       test: false,
@@ -84,52 +88,6 @@ export default {
       ],
       value: '2023-11-13',
       mode: 'stack',
-      events: [
-        {
-          name: 'Лекция',
-          start: new Date(2023, 10, 13, 1, 0),
-          end: new Date(2023, 10, 13, 3, 0),
-          startTime: '12:00',
-          timed: true,
-          type: 'practice',
-        },
-        {
-          name: 'Вождение',
-          start: new Date(2023, 10, 13, 3, 0),
-          end: new Date(2023, 10, 13, 5, 0),
-          startTime: '14:00',
-          type: 'lecture',
-          timed: true,
-          teacher: 'Каминский С.В.'
-        },
-        {
-          name: 'Вождение',
-          start: new Date(2023, 10, 17, 3, 0),
-          end: new Date(2023, 10, 17, 5, 0),
-          startTime: '14:00',
-          type: 'lecture',
-          timed: true,
-          teacher: 'Каминский С.В.'
-        },
-        {
-          name: 'Вождение',
-          start: new Date(2023, 10, 18, 3, 0),
-          end: new Date(2023, 10, 18, 5, 0),
-          startTime: '14:00',
-          type: 'lecture',
-          timed: true,
-          teacher: 'Каминский С.В.'
-        },
-        {
-          name: 'Вождение',
-          start: new Date(2023, 10, 19, 3, 0),
-          end: new Date(2023, 10, 19, 5, 0),
-          startTime: '14:00',
-          type: 'lecture',
-          timed: true,
-          teacher: 'Каминский С.В.'
-        }
-      ]
   }),
 
   mounted() {
