@@ -12,6 +12,8 @@ import scheduleView from "@/views/scheduleView.vue";
 import MainCalendar from "@/views/MainCalendar.vue";
 import ProgressBar from "@/views/ProgressBar.vue";
 import TestTest from "@/views/TestTest.vue";
+import PhoneAuthorization from "@/views/PhoneAuthorization.vue";
+import RecoveryPassword from "@/views/RecoveryPassword.vue";
 
 
 Vue.use(VueRouter)
@@ -87,7 +89,16 @@ const routes = [
   {
     path: "/test",
     component: TestTest
+  },
+  {
+    path: '/phone',
+    component: PhoneAuthorization
+  },
+  {
+    path: '/recovery',
+    component: RecoveryPassword
   }
+
 ]
 
 const router = new VueRouter({
