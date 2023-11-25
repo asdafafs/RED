@@ -1,9 +1,11 @@
 <script>
 
 import LogoRed from "@/components/logos/LogoRed.vue";
+import NavigationBar from "@/components/NavigationBar.vue";
+
 
 export default {
-  components: {LogoRed},
+  components: {NavigationBar, LogoRed},
   data() {
     return {
       isButtonPressed: [false, false, false, false],
@@ -12,7 +14,7 @@ export default {
       lastPressedIndex: -1,
       drawer: false,
       showDrawer: true,
-      student: false,
+      student: true,
     }
   },
 
@@ -42,68 +44,7 @@ export default {
 
 <template>
   <v-container >
-    <v-navigation-drawer v-model="drawer" app clipped color="#1e1f22" v-if = "!showDrawer">
-      <v-list height="inherit" class="d-flex flex-column">
-        <v-list-item
-            class="white--text align-start align-center"
-            style="max-height: 4em; overflow-y: auto;">
-          <span class="mdi mdi-plus rotate" @click.stop="drawer = !drawer"></span>
-        </v-list-item>
-        <v-list-item
-            @click.stop="$router.push('/schedule/testMonth').catch(err => {})"
-            class="white--text align-start align-center"
-            style="max-height: 4em; overflow-y: auto;">
-          Расписание
-        </v-list-item>
-        <v-list-item
-            @click.stop="$router.push('/').catch(err => {})"
-            class="white--text align-start align-center"
-            style="max-height: 4em; overflow-y: auto;">
-          Запись на экзамен
-        </v-list-item>
-        <v-list-item
-            @click.stop="$router.push('/').catch(err => {})"
-            class="white--text align-start align-center"
-            style="max-height: 4em; overflow-y: auto;">
-          Лекции
-        </v-list-item>
-        <v-list-item
-            v-if="student"
-            @click.stop="$router.push('/testPlan/mainCal/testMonth').catch(err => {})"
-            class="white--text align-start align-center"
-            style="max-height: 4em; overflow-y: auto;">
-          Мой план
-        </v-list-item>
-        <v-list-item
-            v-if="!student"
-            @click.stop="$router.push('/admin').catch(err => {})"
-            class="white--text align-start align-center"
-            style="max-height: 4em; overflow-y: auto;">
-          Админпанель
-        </v-list-item>
-        <v-list-item
-            @click.stop="$router.push('/admin').catch(err => {})"
-            class="white--text align-start align-center"
-            style="max-height: 4em; overflow-y: auto;">
-          Привязать аккуант к вк
-        </v-list-item>
-        <v-list-item
-            @click.stop="$router.push('/').catch(err => {})"
-            class="white--text align-end mt-auto align-center"
-            style="max-height: 4em;">
-          <div class="d-flex flex-column">
-            <div>
-              <span class="mdi mdi-account-outline"></span>
-              {{ user }}
-            </div>
-            <div style="text-align: left;">
-              {{student ? role[0] : role[1]}}
-            </div>
-          </div>
-          <span class="mdi mdi-login" style="transform: scale(1.5)"></span>
-        </v-list-item>
-      </v-list>
-    </v-navigation-drawer>
+    <NavigationBar :drawer.sync="drawer" :role="role" :show-drawer="showDrawer" :student="student" :user="user"/>
     <v-app-bar app density="compact" color="#1e1f22" class = "appbar position_component" >
     <v-container  class="pa-0 my-0" v-if = "showDrawer" fluid>
     <v-row no-gutters >
@@ -268,10 +209,7 @@ export default {
   font-size: 1.0rem;
   font-weight: lighter;
 }
-.rotate
-{
-  transform: rotate(45deg)scale(1.8);
-}
+
 .position_component{
   z-index: 2;
 }
