@@ -65,7 +65,7 @@
           <v-card-actions v-if="passwordsMatch">
             <v-btn
                 color="#4E7AEC"
-                @click="form = false"
+                @click="overlay = false"
                 class="rounded-lg pa-0"
                 block
             >

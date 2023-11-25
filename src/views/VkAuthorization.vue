@@ -1,6 +1,6 @@
 <template>
   <v-overlay
-      v-model="overlay"
+      :value="overlay"
       contained
       class="blur"
   >
@@ -25,7 +25,6 @@
         </v-card>
       </v-col>
     </v-row>
-
   </v-overlay>
 </template>
 <script>
@@ -40,6 +39,7 @@ export default {
        required: true
      }
   },
+
 
 }
 </script>

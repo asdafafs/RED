@@ -1,5 +1,29 @@
 <script>
+import TestRequest from "@/views/TestRequest";
+
+async function  makeRequest(url, method, headers, body) {
+        const requestConfig = {
+            method,
+            headers: {
+                'accept': 'text/plain',
+                'Content-Type': 'application/json',
+                ...headers
+            },
+            body: JSON.stringify(body)
+        };
+
+        const response = await fetch(url, requestConfig);
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        return response.json();
+        }
+
+
   export default {
+
     data: () => ({
       test: null,
       dialog: false,
@@ -41,17 +65,35 @@
       this.initialize();
     },
 
-    methods: {
-      async initialize() {
-          const requestTest = {
-            method: 'GET',
-            headers: {'accept': 'text/plain'},
-            query: 'Id=?'
-          }
 
-          this.test = await fetch('http://localhost:5105/api/User?Id=1', requestTest);
-          let cal = await this.test.json()
-          // console.log( cal)
+    methods: {
+      async getUser(){
+        const user = new TestRequest();
+        await user.getUser().catch(x => console.log(x)).then(x=>{this.test = x.data})
+      },
+
+      async addUser(){
+        const user = new TestRequest();
+        await user.postUser().catch(x => console.log(x)).then(()=>{})
+      },
+
+      async putUser(){
+        const user = new TestRequest();
+        await user.putUser().catch(x => console.log(x)).then(()=>{})
+      },
+
+      async deleteUser(){
+        const user = new TestRequest();
+        let cal = JSON.stringify({"id": this.deletedIndex})
+        console.log(cal)
+        await user.deleteUser({"id": this.deletedIndex}).catch(x => console.log(x))
+      },
+
+      async initialize() {
+
+          await this.getUser()
+          let cal = await this.test
+           //console.log( cal)
 
         this.persons = cal;
       },
@@ -79,12 +121,7 @@
       async deleteItemConfirm() {
         this.persons.splice(this.editedIndex, 1);
         this.closeDelete();
-        const requestTest = {
-          method: 'DELETE',
-          headers: {'accept': 'text/plain', 'Content-Type' : 'application/json'},
-          body: JSON.stringify({"id": this.deletedIndex})
-        };
-        await fetch('http://localhost:5105/api/User', requestTest)
+        await this.deleteUser()
       },
 
       close() {
@@ -111,7 +148,10 @@
           headers: {'accept': 'text/plain', 'Content-Type' : 'application/json'},
           body: JSON.stringify(this.editedItem,)
           }
-          await fetch('http://localhost:5105/api/User', requestTest)
+          await fetch('http://localhost:5105/api/User/UpdateStudent', requestTest)
+
+
+
           this.close();
           console.log(0)
         }
@@ -128,7 +168,7 @@
               "groupId": 2
             })
           }
-          await fetch('http://localhost:5105/api/User', requestTest)
+          await fetch('http://localhost:5105/api/User/AddStudent', requestTest)
           this.close();
           console.log(1)
         }
