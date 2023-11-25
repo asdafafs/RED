@@ -1,5 +1,5 @@
 <script>
-import TestRequest from "@/views/TestRequest";
+import TestRequest from "@/services/TestRequest";
 
 async function  makeRequest(url, method, headers, body) {
         const requestConfig = {

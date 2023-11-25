@@ -1,4 +1,4 @@
-import {HTTPService} from "@/views/HTTPService";
+import {HTTPService} from "@/services/HTTPService";
 
 export default class TestRequest extends HTTPService {
     constructor() {
