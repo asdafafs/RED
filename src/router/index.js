@@ -4,10 +4,10 @@ import InstructorView from "@/views/InstructorView.vue";
 import AdminPanel from "@/views/AdminPanel.vue";
 import NotFoundView from "@/views/NotFoundView.vue";
 import AuthorizationView from "@/views/AuthorizationView.vue";
-import TestDaylyView from "@/views/DaylyView.vue";
-import TestMonthView from "@/views/MonthView.vue";
+import DaylyView from "@/views/DaylyView.vue";
+import MonthView from "@/views/MonthView.vue";
 import StudentPlanView from "@/views/StudentPlanView.vue";
-import TestWeeklyView from "@/views/WeeklyView.vue";
+import WeeklyView from "@/views/WeeklyView.vue";
 import scheduleView from "@/views/scheduleView.vue";
 import MainCalendar from "@/views/MainCalendar.vue";
 import ProgressBar from "@/views/ProgressBar.vue";
@@ -53,17 +53,17 @@ const routes = [
               {
                 path: "testDay",
                 name: 'day',
-                component: TestDaylyView,
+                component: DaylyView,
               },
             {
               path: "testWeek",
               name: 'week',
-              component: TestWeeklyView,
+              component: WeeklyView,
             },
             {
               path: "testMonth",
               name: 'month',
-              component: TestMonthView,
+              component: MonthView,
             },
           ]
         },
@@ -82,7 +82,7 @@ const routes = [
         {
         path: "testMonth",
         name: 'month',
-        component: TestMonthView,
+        component: MonthView,
       },
     ]
   },

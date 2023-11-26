@@ -35,24 +35,24 @@
           event-color="white"
           mode="stack"
           class="day-calendar"
-      >
-        <template v-slot:event="data">
-          <div class="day-event">
-            <div class="day">
-              {{ data.event.startTime }}
-            </div>
-            <div class="logo">
-              <car-logo v-if="data.event.type === 'practice'"/>
-              <lecture-logo v-if="data.event.type === 'lecture'"/>
-            </div>
-            <div class="custom-info">
-              {{ data.event.name }}
-              <div v-if="data.event.teacher" class="teacher text-wrap">
-                Преподаватель: {{ data.event.teacher }}
+          >
+            <template v-slot:event="data">
+              <div class="day-event">
+                <div class="day">
+                  {{ data.event.startTime }}
+                </div>
+                <div class="logo">
+                  <car-logo v-if="data.event.type === 'practice'"/>
+                  <lecture-logo v-if="data.event.type === 'lecture'"/>
+                </div>
+                <div class="custom-info">
+                  {{ data.event.name }}
+                  <div v-if="data.event.teacher" class="teacher text-wrap">
+                    Преподаватель: {{ data.event.teacher }}
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
-        </template>
+            </template>
           </v-calendar>
         </v-sheet>
       </v-col>
