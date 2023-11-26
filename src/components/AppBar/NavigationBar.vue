@@ -4,48 +4,48 @@
       <v-list-item
           class="white--text align-start align-center"
           style="max-height: 4em; overflow-y: auto;">
-        <span class="mdi mdi-plus rotate" @click.stop="$emit('update:drawer', false)"></span>
+        <span class="mdi mdi-plus rotate" @click.stop="$emit('update:drawer', false);"></span>
       </v-list-item>
       <v-list-item
-          @click.stop="$router.push('/schedule/testMonth').catch(err => {})"
+          @click.stop="$router.push('/schedule/testMonth').catch(err => {}); $emit('update:drawer', false)"
           class="white--text align-start align-center"
           style="max-height: 4em; overflow-y: auto;">
         Расписание
       </v-list-item>
       <v-list-item
-          @click.stop="$router.push('/').catch(err => {})"
+          @click.stop="$router.push('/').catch(err => {}); $emit('update:drawer', false)"
           class="white--text align-start align-center"
           style="max-height: 4em; overflow-y: auto;">
         Запись на экзамен
       </v-list-item>
       <v-list-item
-          @click.stop="$router.push('/').catch(err => {})"
+          @click.stop="$router.push('/').catch(err => {}); $emit('update:drawer', false)"
           class="white--text align-start align-center"
           style="max-height: 4em; overflow-y: auto;">
         Лекции
       </v-list-item>
       <v-list-item
           v-if="student"
-          @click.stop="$router.push('/testPlan/mainCal/testMonth').catch(err => {})"
+          @click.stop="$router.push('/testPlan/mainCal/testMonth').catch(err => {}); $emit('update:drawer', false)"
           class="white--text align-start align-center"
           style="max-height: 4em; overflow-y: auto;">
         Мой план
       </v-list-item>
       <v-list-item
           v-if="!student"
-          @click.stop="$router.push('/admin').catch(err => {})"
+          @click.stop="$router.push('/admin').catch(err => {}); $emit('update:drawer', false)"
           class="white--text align-start align-center"
           style="max-height: 4em; overflow-y: auto;">
         Админпанель
       </v-list-item>
       <v-list-item
-          @click.stop="$router.push('/admin').catch(err => {})"
+          @click.stop="$router.push('/admin').catch(err => {}); $emit('update:drawer', false)"
           class="white--text align-start align-center"
           style="max-height: 4em; overflow-y: auto;">
         Привязать аккуант к вк
       </v-list-item>
       <v-list-item
-          @click.stop="$router.push('/').catch(err => {})"
+          @click.stop="$router.push('/').catch(err => {}); $emit('update:drawer', false)"
           class="white--text align-end mt-auto align-center"
           style="max-height: 4em;">
         <div class="d-flex flex-column">
@@ -71,6 +71,11 @@ export default {
     showDrawer: {},
     student: {},
     user: {}
+  },
+  methods:{
+    clickLog(drawer){
+      console.log(drawer)
+    }
   }
 }
 </script>

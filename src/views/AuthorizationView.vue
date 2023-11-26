@@ -2,7 +2,6 @@
 import AuthorizationForm from "@/views/VkAuthorization.vue";
 
 export default {
-
     components: {AuthorizationForm},
     data: () => ({
       overlay: true,
@@ -19,6 +18,5 @@ export default {
       <v-row justify="center">
         <AuthorizationForm :overlay.sync="overlay"/>
       </v-row>
-
   </v-row>
 </template>
