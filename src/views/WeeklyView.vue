@@ -2,82 +2,82 @@
   <v-container fluid>
     <v-row>
       <v-row class="justify-center">
-      <v-btn
-        icon
-        class="ma-0  align-self-center"
-        @click="prev"
-      >
-        <v-icon>mdi-chevron-left</v-icon>
-      </v-btn>
-        <div  class="d-flex flex-row justify-space-between align-center col-lg-2 col-md-4 col-sm-8 col-9">
-          <div class="col-5 text-center pa-0">
-            <div class="grey--text">понедельник
+        <v-btn
+          icon
+          class="ma-0  align-self-center"
+          @click="prev"
+        >
+          <v-icon>mdi-chevron-left</v-icon>
+        </v-btn>
+          <div  class="d-flex flex-row justify-space-between align-center col-lg-2 col-md-4 col-sm-8 col-9">
+            <div class="col-5 text-center pa-0">
+              <div class="grey--text">понедельник
+              </div>
+              <div class="text-h6 " v-if="test">
+                {{ dateMonday }}
+              </div>
             </div>
-            <div class="text-h6 " v-if="test">
-              {{ dateMonday }}
+            <v-spacer></v-spacer>
+            <v-divider class="mx-0 col-1 align-center pa-0 ma-0"></v-divider>
+            <v-spacer></v-spacer>
+            <div class="col-5 text-center pa-0">
+              <div class="grey--text">
+                воскресенье
+              </div>
+              <div class="text-h6" v-if="test">
+                {{ dateSunday }}
+              </div>
             </div>
           </div>
-          <v-spacer></v-spacer>
-          <v-divider class="mx-0 col-1 align-center pa-0 ma-0"></v-divider>
-          <v-spacer></v-spacer>
-          <div class="col-5 text-center pa-0">
-            <div class="grey--text">
-              воскресенье
-            </div>
-            <div class="text-h6" v-if="test">
-              {{ dateSunday }}
-            </div>
-          </div>
-        </div>
-      <v-btn
-        icon
-        class="ma-0  align-self-center"
-        @click="next"
-      >
-        <v-icon>mdi-chevron-right</v-icon>
-      </v-btn>
+        <v-btn
+            icon
+            class="ma-0  align-self-center"
+            @click="next"
+        >
+          <v-icon>mdi-chevron-right</v-icon>
+        </v-btn>
       </v-row>
     </v-row>
     <v-row>
       <v-col>
-      <v-sheet>
-        <v-calendar
-          ref="calendar"
-          v-model="focus"
-          :events="events"
-          color="primary"
-          type="week"
-          :event-color = "getEventColor"
-          :event-height = "50"
-          :weekdays = "weekday"
-          @change="updateRange"
-          @mousedown:event="startDrag"
-          @mousemove:event="mouseMove"
-          @mouseup:event="endDrag"
-        >
-          <template v-slot:event="{event}" >
+        <v-sheet>
+          <v-calendar
+            ref="calendar"
+            v-model="focus"
+            :events="events"
+            color="primary"
+            type="week"
+            :event-color = "getEventColor"
+            :event-height = "50"
+            :weekdays = "weekday"
+            @change="updateRange"
+            @mousedown:event="startDrag"
+            @mousemove:event="mouseMove"
+            @mouseup:event="endDrag"
+          >
+            <template v-slot:event="{event}" >
               <v-container class="pa-0 mx-0 d-flex " fill>
                 <v-row class="ma-0" fill>
                   <v-col cols="4" class = "black--text pa-0 align-self-center d-none d-lg-block" >
                     <div class="text-subtitle-2 d-flex justify-center">{{event.startTime}}</div>
                   </v-col>
                   <v-col class = "d-lg-none pa-0" fill>
-                <div class="logo d-flex justify-center align-center">
-                  <car-logo v-if="event.type === 'practice'"/>
-                  <lecture-logo v-if="event.type === 'lecture'"/>
-                </div>
-              </v-col>
-              <v-col class = "black--text pa-0 align-self-center d-none d-lg-block">
-                <div class="font-weight-bold">{{event.name}}</div>
-                <div>Преподаватель:<br>{{event.teacher}}</div>
-              </v-col>
-            </v-row>
-            </v-container>
-          </template>
-        </v-calendar>
-      </v-sheet>
-    </v-col>
-  </v-row>
+                    <div class="logo d-flex justify-center align-center">
+                      <car-logo v-if="event.type === 'practice'"/>
+                      <lecture-logo v-if="event.type === 'lecture'"/>
+                    </div>
+                  </v-col>
+                  <v-col class = "black--text pa-0 align-self-center d-none d-lg-block">
+                    <div class="font-weight-bold">{{event.name}}</div>
+                    <div>Преподаватель:<br>{{event.teacher}}</div>
+                  </v-col>
+                </v-row>
+              </v-container>
+            </template>
+          </v-calendar>
+        </v-sheet>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 

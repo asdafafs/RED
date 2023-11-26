@@ -1,14 +1,14 @@
 <script>
 
-import LogoRed from "@/components/logos/LogoRed.vue";
 import NavigationBar from "@/components/AppBar/NavigationBar.vue";
 import AppButtons from "@/components/AppBar/AppButtons.vue";
 import MobileAppBar from "@/components/AppBar/MobileAppBar.vue";
 import UserProfile from "@/components/AppBar/UserProfile.vue";
+import DesktopLogo from "@/components/AppBar/DesktopLogo.vue";
 
 
 export default {
-  components: {UserProfile, MobileAppBar, AppButtons, NavigationBar, LogoRed},
+  components: {DesktopLogo, UserProfile, MobileAppBar, AppButtons, NavigationBar},
   data() {
     return {
       user: "Петров С.А.",
@@ -42,13 +42,7 @@ export default {
       <v-container  class="pa-0 my-0" v-if = "showDrawer" fluid>
         <v-row no-gutters >
           <v-col cols = 2 >
-            <v-container class="pa-0"  fluid style="height: 100%;">
-              <v-row  no-gutters  align="center" style="height: 100%;" >
-                <v-col cols = 12 class="d-flex justify-center align-center">
-                  <LogoRed ></LogoRed>
-                </v-col>
-              </v-row>
-            </v-container>
+            <DesktopLogo/>
           </v-col>
           <v-col>
             <AppButtons :student="student"/>
