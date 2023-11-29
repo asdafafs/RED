@@ -1,5 +1,5 @@
 <script>
-import AuthorizationForm from "@/views/VkAuthorization.vue";
+import AuthorizationForm from "@/views/SelectAuthorization.vue";
 
 export default {
     components: {AuthorizationForm},

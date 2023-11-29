@@ -2,7 +2,12 @@
   <div>
       <v-row align="center" justify="center" class="" style="position: relative; z-index: 1;" >
       <v-col cols="4" class=" pa-0">
-        <v-card class="d-flex justify-space-between flex-column height  rounded-lg ma-2" >
+              <v-dialog
+      v-model="overlay"
+      persistent
+      width="auto"
+    >
+        <v-card class="d-flex justify-space-between flex-column height width rounded-lg ma-2" >
           <v-card-title class="black--text"> Авторизация</v-card-title>
           <v-card-subtitle class="black--text">
             Для продолжения работы в RED: Расписание, пожалуйста, авторизуйтесь через электронную почту.
@@ -47,6 +52,7 @@
             </v-btn>
           </v-card-actions>
         </v-card>
+              </v-dialog>
       </v-col>
     </v-row>
 

@@ -15,7 +15,7 @@ import TestTest from "@/views/TestTest.vue";
 import PhoneAuthorization from "@/views/PhoneAuthorization.vue";
 import RecoveryPassword from "@/views/RecoveryPassword.vue";
 import MailAuthorization from "@/views/MailAuthorization.vue";
-import VkAuthorization from "@/views/VkAuthorization.vue";
+import VkAuthorization from "@/views/SelectAuthorization.vue";
 import Registration from "@/views/Registration.vue";
 
 
