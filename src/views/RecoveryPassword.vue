@@ -1,44 +1,42 @@
 <template>
-  <v-overlay
-      v-model="overlay"
-      contained
-      class="blur"
-  >
-    <v-row align="center" justify="center" class="width ">
-      <v-col cols="4" class=" pa-0">
-        <v-card class="d-flex justify-space-between flex-column white rounded-lg ma-2" v-if="form">
+
+    <v-row align="center" justify="center" class=" ">
+      <v-col cols="4" class=" pa-0" align="center">
+        <v-card class="d-flex justify-space-between flex-column white rounded-lg ma-2 width" v-if="form">
           <v-card-title class="black--text"> Восстановление пароля</v-card-title>
           <v-card-subtitle class="black--text">
             Для восстановления пароля введите номер телефона
           </v-card-subtitle>
           <v-card-text class="pb-0 " >
-            <vue-text-mask
-                class="grey phone white--text"
-                v-model="value"
-                :mask="mask"
-                placeholderChar="#"
-            >
-            </vue-text-mask>
+            <v-text-field
+                solo
+                color="black"
+              v-model="email"
+              :readonly="loading"
+              :rules="[required]"
+              class="mb-2"
+              clearable
+              label="Email"
+            ></v-text-field>
           </v-card-text>
           <v-card-actions>
             <v-btn
                 color="#4E7AEC"
                 @click=" form = false"
-                class="rounded-lg pa-0 "
+                class="rounded-lg pa-0 white--text"
                 block
             >
               Ввести новый пароль
             </v-btn>
           </v-card-actions>
         </v-card>
-        <v-card class="d-flex justify-space-between flex-column white rounded-lg ma-2" v-if="!form">
+        <v-card class="d-flex justify-space-between flex-column white rounded-lg ma-2 width" v-if="!form">
           <v-card-title class="black--text"> Восстановление пароля</v-card-title>
           <v-card-subtitle class="black--text">
             Введите новый пароль
           </v-card-subtitle>
           <v-card-text class="pb-0 " >
             <v-text-field
-                background-color="grey"
                 solo
                 v-model="password"
                 :rules="[rulesPassword.required, rulesPassword.min]"
@@ -48,7 +46,6 @@
                 counter
             ></v-text-field>
             <v-text-field
-                background-color="grey"
                 solo
                 v-model="passwordRepeat"
                 :append-icon="show2 ? 'mdi-eye ' : 'mdi-eye-off '"
@@ -66,7 +63,7 @@
             <v-btn
                 color="#4E7AEC"
                 @click="overlay = false"
-                class="rounded-lg pa-0"
+                class="rounded-lg pa-0 white--text"
                 block
             >
               Ввести новый пароль
@@ -75,20 +72,18 @@
         </v-card>
       </v-col>
     </v-row>
-  </v-overlay>
 </template>
 <script>
-import VueTextMask from "vue-text-mask";
-
 export default {
   name: 'AuthorizationForm',
-  components: {VueTextMask, },
+  components: { },
   data:() =>({
     overlay: true,
     form:true,
-    mask: ['+', '7', '(', /[1-9]/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, '-', /\d/, /\d/],
     value: '',
     show2: false,
+    email: null,
+    loading: false,
     password: '',
     passwordRepeat:'',
     rulesPassword: {
@@ -105,23 +100,16 @@ export default {
       return value => (value === this.password ? true : 'Пароли не совпадают');
     },
   },
+  methods:{
+    required (v) {
+        return !!v || 'Введите email'
+      },
+  }
 
 }
 </script>
 <style scoped>
-.phone{
-  width: inherit;
-  padding: 13px;
-  margin-bottom: 2px;
-  font-size: 16px;
-  border-radius: 5px;
-}
-
-.blur {
-  backdrop-filter: blur(0px);
-}
-
 .width {
-  width: 60em;
+  width: 20em;
 }
 </style>

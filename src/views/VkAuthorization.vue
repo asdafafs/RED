@@ -12,15 +12,41 @@
             Для продолжения работы в RED: Расписание, пожалуйста, авторизуйтесь через Вконтакте.
           </v-card-subtitle>
           <LogoRed class="pos"></LogoRed>
-          <v-card-actions>
+          <v-card-actions class="flex-column">
+            <v-btn
+                color="#4E7AEC"
+                @click="$router.push('/mail').catch(err => {})"
+                class="rounded-lg pa-0 ma-0"
+                block
+            >
+              Войти
+            </v-btn>
+            <v-btn
+                color="#4E7AEC"
+                @click="$router.push('/recoveryPassWord').catch(err => {})"
+                class="rounded-lg pa-0 ma-0"
+                block
+                text
+            >
+              Забыли пароль?
+            </v-btn>
+            <v-btn
+                color="#4E7AEC"
+                @click="$router.push('/registration').catch(err => {})"
+                class="rounded-lg pa-0 ma-0"
+                block
+            >
+              Регистрация
+            </v-btn>
             <v-btn
                 color="#4E7AEC"
                 @click="$emit('update:overlay', false); vkLogIn "
-                class="rounded-lg pa-0 "
+                class="rounded-lg pa-0 ma-0"
                 block
             >
               Войти через VK
             </v-btn>
+
           </v-card-actions>
         </v-card>
       </v-col>
@@ -63,7 +89,7 @@ export default {
 }
 
 .height {
-  min-height: 20rem;
+  min-height: 28rem;
 }
 
 .pos {
