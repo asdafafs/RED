@@ -2,7 +2,7 @@ import axios from "axios";
 
 export class HTTPService{
     basePath = 'api'
-    backendUrl = 'http://localhost:5105'
+    backendUrl = 'https://localhost:7012'
 
     constructor(controller) {
         this.basePath = `${this.backendUrl}/${this.basePath}/${controller}`
@@ -12,18 +12,21 @@ export class HTTPService{
         const url = `${this.basePath}/${path}`
         const requestConfig = {
             withCredentials: false,
-            baseURL: this.backendUrl
+            baseURL: this.backendUrl,
+            headers: {
+                'Content-Type': 'application/json'
+            },
         }
 
         switch (methodType){
             case "GET":
                 return axios.get(url, requestConfig )
             case "POST":
-                return axios.post(url,  body, requestConfig)
+                return axios.post(url,  body, )
             case "PUT":
                 return axios.put(url, body, requestConfig)
             case "DELETE":
-                return axios.delete(url, requestConfig )
+                return axios.delete(url, { data: body});
         }
     }
 
@@ -39,7 +42,7 @@ export class HTTPService{
         return this.baseRequest(path, "PUT", body)
     }
 
-    delete(path) {
-        return this.baseRequest(path, "DELETE");
+    delete(path, body) {
+        return this.baseRequest(path, "DELETE", body);
     }
 }

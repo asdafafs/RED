@@ -10,14 +10,14 @@ export default class TestRequest extends HTTPService {
     }
 
     postUser(code){
-        return this.post("AddStudent", {code})
+        return this.post("AddStudent", code)
     }
 
     putUser(code){
-        return this.put("UpdateStudent", {code})
+        return this.put("UpdateStudent", code)
     }
 
     deleteUser(code){
-        return this.delete("DeleteStudent", {data: code})
+        return this.delete("DeleteStudent", {id : code})
     }
 }

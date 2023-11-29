@@ -15,7 +15,7 @@ export default {
       role: ["Ученик", "Учитель"],
       drawer: false,
       showDrawer: true,
-      student: true,
+      student: false,
     }
   },
 

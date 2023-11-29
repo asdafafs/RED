@@ -1,27 +1,5 @@
 <script>
 import TestRequest from "@/services/TestRequest";
-
-async function  makeRequest(url, method, headers, body) {
-        const requestConfig = {
-            method,
-            headers: {
-                'accept': 'text/plain',
-                'Content-Type': 'application/json',
-                ...headers
-            },
-            body: JSON.stringify(body)
-        };
-
-        const response = await fetch(url, requestConfig);
-
-        if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-
-        return response.json();
-        }
-
-
   export default {
 
     data: () => ({
@@ -72,29 +50,26 @@ async function  makeRequest(url, method, headers, body) {
         await user.getUser().catch(x => console.log(x)).then(x=>{this.test = x.data})
       },
 
-      async addUser(){
+      async postUser(body){
         const user = new TestRequest();
-        await user.postUser().catch(x => console.log(x)).then(()=>{})
+        await user.postUser(body).catch(x => console.log(x))
       },
 
-      async putUser(){
+      async putUser(body){
         const user = new TestRequest();
-        await user.putUser().catch(x => console.log(x)).then(()=>{})
+        console.log(body)
+        await user.putUser(body ).catch(x => console.log(x))
       },
 
       async deleteUser(){
         const user = new TestRequest();
-        let cal = JSON.stringify({"id": this.deletedIndex})
+        const cal = await user.deleteUser(this.deletedIndex).catch(x => console.log(x))
         console.log(cal)
-        await user.deleteUser({"id": this.deletedIndex}).catch(x => console.log(x))
       },
 
       async initialize() {
-
-          await this.getUser()
-          let cal = await this.test
-           //console.log( cal)
-
+        await this.getUser()
+        let cal = await this.test
         this.persons = cal;
       },
 
@@ -143,34 +118,43 @@ async function  makeRequest(url, method, headers, body) {
       async save() {
         if (this.editedIndex > -1) {
           this.$set(this.persons, this.editedIndex, this.editedItem);
-          const requestTest = {
-          method: 'PUT',
-          headers: {'accept': 'text/plain', 'Content-Type' : 'application/json'},
-          body: JSON.stringify(this.editedItem,)
-          }
-          await fetch('http://localhost:5105/api/User/UpdateStudent', requestTest)
-
-
-
+          let body = JSON.stringify(this.editedItem,)
+          console.log(0, body)
+          await this.putUser(body)
           this.close();
-          console.log(0)
         }
         else {
           this.persons.push(this.editedItem);
-          const requestTest = {
-            method: 'POST',
-            headers: {'accept': 'text/plain', 'Content-Type' : 'application/json'},
-            body: JSON.stringify({
+          // const requestTest = {
+          //   method: 'POST',
+          //   headers: {'accept': 'text/plain', 'Content-Type' : 'application/json'},
+          //   body: JSON.stringify({
+          //     "name" : this.editedItem.name,
+          //     "surname" : this.editedItem.surname,
+          //     "lastname": this.editedItem.lastName,
+          //     "vkid": 0,
+          //     "groupId": 2
+          //   })
+          // }
+          // await fetch('http://localhost:5105/api/User/AddStudent', requestTest)
+
+          let body = JSON.stringify({
               "name" : this.editedItem.name,
               "surname" : this.editedItem.surname,
               "lastname": this.editedItem.lastName,
               "vkid": 0,
               "groupId": 2
             })
-          }
-          await fetch('http://localhost:5105/api/User/AddStudent', requestTest)
+          console.log(body)
+          await this.postUser({
+              "name" : this.editedItem.name,
+              "surname" : this.editedItem.surname,
+              "lastname": this.editedItem.lastName,
+              "vkid": 0,
+              "groupId": 2
+            })
+
           this.close();
-          console.log(1)
         }
       },
     },
