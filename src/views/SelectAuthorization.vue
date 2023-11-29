@@ -40,7 +40,7 @@
             </v-btn>
             <v-btn
                 color="#4E7AEC"
-                @click="$emit('update:overlay', false); vkLogIn "
+                @click="$emit('update:overlay', false); vkLogIn ; $router.push('/post-login').catch(err => {})"
                 class="rounded-lg pa-0 ma-0"
                 block
             >

@@ -17,6 +17,7 @@ import RecoveryPassword from "@/views/RecoveryPassword.vue";
 import MailAuthorization from "@/views/MailAuthorization.vue";
 import VkAuthorization from "@/views/SelectAuthorization.vue";
 import Registration from "@/views/Registration.vue";
+import PostLoginPage from "@/views/PostLoginPage.vue";
 
 
 Vue.use(VueRouter)
@@ -29,7 +30,7 @@ const routes = [
     children: [
     ]
   },
-{
+  {
     path:'/mail',
     name: 'mail',
     component: MailAuthorization
@@ -122,7 +123,12 @@ const routes = [
   {
     path: '/recovery',
     component: RecoveryPassword
-  }
+  },
+  {
+    path: '/post-login',
+    name: 'post-login',
+    component: PostLoginPage
+  },
 
 ]
 
