@@ -14,6 +14,9 @@ import ProgressBar from "@/views/ProgressBar.vue";
 import TestTest from "@/views/TestTest.vue";
 import PhoneAuthorization from "@/views/PhoneAuthorization.vue";
 import RecoveryPassword from "@/views/RecoveryPassword.vue";
+import MailAuthorization from "@/views/MailAuthorization.vue";
+import VkAuthorization from "@/views/VkAuthorization.vue";
+import Registration from "@/views/Registration.vue";
 
 
 Vue.use(VueRouter)
@@ -23,6 +26,28 @@ const routes = [
     path: '/',
     name: 'main',
     component: AuthorizationView,
+    children: [
+    ]
+  },
+{
+    path:'/mail',
+    name: 'mail',
+    component: MailAuthorization
+  },
+  {
+    path: '/vkAuthorization',
+    name: 'vk',
+    component: VkAuthorization
+  },
+  {
+    path: '/registration',
+    name: 'registration',
+    component: Registration
+  },
+  {
+    path: '/recoveryPassWord',
+    name: 'recPass',
+    component: RecoveryPassword
   },
   {
     path: '/instructor',
