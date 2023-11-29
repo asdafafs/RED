@@ -9,7 +9,6 @@ export default {
   name: "LoginPage.vue",
   methods: {
     async vkLogIn() {
-      console.log('here')
       const clientId = '51785736'
       const redirectUri = 'http://red.mlsat.ru/post-login'
       const display = 'popup'

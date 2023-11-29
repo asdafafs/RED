@@ -1,42 +1,51 @@
 <template>
   <div>Страница после логина ВК</div>
-  <div>{{ userVkId }}</div>
-  <button @click="getUserVkId">Получить юзер вк ид</button>
-  <button @click="authenticate">Аутентифицироваться </button>
+  {{ registerData }}
+  <v-btn @click="register">Регистрация</v-btn>
+  <v-btn @click="registertwo">Регистрация 2</v-btn>
 </template>
 
 <script>
-import VkAuthorizationService from "@/services/VkAuthorizationService/VkAuthorizationService";
+import IdentityService from "@/services/VkAuthorizationService/IdentityService";
 
 export default {
   name: "PostLoginPage.vue",
-  async mounted() {
-    
-  },
-  methods: {
-    async getUserVkId() {
-      const vkService = new VkAuthorizationService();
-      await vkService.getUserVkId()
-          .catch(x => console.log(x))
-          .then(x => {this.userVkId = x.data});
-    },
-    async authenticate() {
-      const code = this.$route.query.code;
-      const vkService = new VkAuthorizationService()
-
-      const result = await vkService.authenticate(code)
-
-      console.log(result);
-
-      const data = result.data;
-    }
-  },
   data() {
     return {
       code: null,
-      userVkId: 0
+      userVkId: 0,
+      registerData: {
+        email: "sakhnikarseni@mail.ru",
+        name: "Арсений",
+        surname: "Сахник",
+        middleName: "Алексеевич",
+        phoneNumber: "89021945789",
+        password: "password",
+        userType: 1,
+        vkUserId: null,
+      }
     }
-  }
+  },
+  methods: {
+    async getUserVkId() {
+      const vkService = new IdentityService();
+      await vkService.register()
+          .catch(x => console.log(x))
+          .then(x => {
+            this.userVkId = x.data
+          });
+    },
+    async register() {
+      const code = this.$route.query.code;
+      const vkService = new IdentityService()
+      const result = await vkService.registerWithVk(code)
+      this.registerData.vkUserId = result.data.vkUserId;
+    },
+    async registertwo() {
+      const vkService = new IdentityService();
+      const result = vkService.register(this.registerData)
+    }
+  },
 }
 </script>
 
