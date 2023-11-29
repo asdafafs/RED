@@ -1,13 +1,13 @@
 <template>
   <div>
-    <v-overlay
-      v-model="overlay"
-      contained
-      transparent
-      class="blur"
-    >
+
     <v-row align="center" justify="center" class=" width">
       <v-col cols="4" class=" pa-0" >
+        <v-dialog
+      v-model="overlay"
+      persistent
+      width="auto"
+    >
         <v-card  class="d-flex justify-space-between flex-column height width rounded-lg ma-2" v-if="form" >
           <v-card-title class="black--text"> Регистрация</v-card-title>
           <v-card-subtitle class="black--text">
@@ -61,9 +61,10 @@
             </v-btn>
           </v-card-actions>
         </v-card>
+          </v-dialog>
       </v-col>
     </v-row>
-       </v-overlay>
+
 
   </div>
 </template>
@@ -123,7 +124,7 @@ export default {
 </script>
 <style scoped>
 .width {
-  width: 60em;
+  width: 20em;
 }
 
 .phone{

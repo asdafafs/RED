@@ -1,7 +1,11 @@
 <template>
-
+  <div>
     <v-row align="center" justify="center" class=" ">
       <v-col cols="4" class=" pa-0" align="center">
+        <v-dialog
+            v-model="overlay"
+            persistent
+            width="auto">
         <v-card class="d-flex justify-space-between flex-column white rounded-lg ma-2 width" v-if="form">
           <v-card-title class="black--text"> Восстановление пароля</v-card-title>
           <v-card-subtitle class="black--text">
@@ -70,8 +74,10 @@
             </v-btn>
           </v-card-actions>
         </v-card>
+        </v-dialog>
       </v-col>
     </v-row>
+    </div>
 </template>
 <script>
 export default {
