@@ -125,27 +125,6 @@ import TestRequest from "@/services/TestRequest";
         }
         else {
           this.persons.push(this.editedItem);
-          // const requestTest = {
-          //   method: 'POST',
-          //   headers: {'accept': 'text/plain', 'Content-Type' : 'application/json'},
-          //   body: JSON.stringify({
-          //     "name" : this.editedItem.name,
-          //     "surname" : this.editedItem.surname,
-          //     "lastname": this.editedItem.lastName,
-          //     "vkid": 0,
-          //     "groupId": 2
-          //   })
-          // }
-          // await fetch('http://localhost:5105/api/User/AddStudent', requestTest)
-
-          let body = JSON.stringify({
-              "name" : this.editedItem.name,
-              "surname" : this.editedItem.surname,
-              "lastname": this.editedItem.lastName,
-              "vkid": 0,
-              "groupId": 2
-            })
-          console.log(body)
           await this.postUser({
               "name" : this.editedItem.name,
               "surname" : this.editedItem.surname,
@@ -153,7 +132,6 @@ import TestRequest from "@/services/TestRequest";
               "vkid": 0,
               "groupId": 2
             })
-
           this.close();
         }
       },

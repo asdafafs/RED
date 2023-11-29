@@ -1,53 +1,67 @@
 <template>
   <div>
-
     <v-row align="center" justify="center" class=" width">
       <v-col cols="4" class=" pa-0" >
         <v-dialog
-      v-model="overlay"
-      persistent
-      width="auto"
-    >
-        <v-card  class="d-flex justify-space-between flex-column height width rounded-lg ma-2" v-if="form" >
+            v-model="overlay"
+            persistent
+            width="auto"
+            content-class="elevation-0"
+        >
+        <v-card  class="d-flex justify-space-between flex-column height width rounded-lg ma-2" v-if="overlay" >
           <v-card-title class="black--text"> Регистрация</v-card-title>
           <v-card-subtitle class="black--text">
             Для продолжения работы в RED: Расписание, пожалуйста, зарегистрируйтесь
           </v-card-subtitle>
           <LogoRed class="pos"></LogoRed>
           <v-card-text class="pb-0 " >
-
             <v-text-field
+                v-model="name"
                 solo
                 label="Фамилия"
-                :rules="[required]"
+                :rules="[rulesFullname.required]"
             ></v-text-field>
             <v-text-field
+                v-model="surname"
                 solo
                 label="Имя"
-                :rules="[required]"
+                :rules="[rulesFullname.required]"
             ></v-text-field>
             <v-text-field
+                v-model="lastName"
                 solo
                 label="Отчество"
-                :rules="[required]"
+                :rules="[rulesFullname.required]"
             ></v-text-field>
             <v-text-field
               solo
               color="black"
               v-model="email"
               :readonly="loading"
-              :rules="[required]"
+              :rules="[rulesEmail.required]"
               class="mb-2"
               clearable
               label="Email"
             ></v-text-field>
             <vue-text-mask
               class="phone"
-              v-model="value"
+              v-model="phoneNumber"
               :mask="mask"
               placeholderChar="#"
-              :rules="[required]"
+              style="background-color: white;  box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);"
             ></vue-text-mask>
+            <v-col v-if="!isPhoneNumberValid" class="red--text">{{ requiredMessage }}</v-col>
+            <v-text-field
+                solo
+                v-model="password"
+                :rules="[rulesPassword.required, rulesPassword.min]"
+                :append-icon="showPass ? 'mdi-eye ' : 'mdi-eye-off '"
+                 :type="showPass ? 'text' : 'password'"
+                @click:append="showPass = !showPass"
+                name="input-10-1"
+                label="Пароль"
+                counter
+            ></v-text-field>
           </v-card-text>
           <v-card-actions>
             <v-btn
@@ -55,7 +69,6 @@
               @click="validateForm"
               class="rounded-lg pa-0 white--text"
               block
-
             >
               Зарегистрироваться
             </v-btn>
@@ -64,8 +77,6 @@
           </v-dialog>
       </v-col>
     </v-row>
-
-
   </div>
 </template>
 <script>
@@ -77,15 +88,23 @@ export default {
   components: {VueTextMask,  LogoRed },
   data: () => ({
     overlay: true,
-    form: true,
-    showPhoneNumberAlert: false,
-    showPasswordAlert: false,
-    email: null,
+    showPass: true,
     loading: false,
-    value: '7',
     show1: false,
+    email: '',
+    name:'',
+    surname:'',
+    lastName:'',
+    phoneNumber: '7',
+    requiredMessage: 'Номер телефона обязателен',
     password: '',
     mask: ['+', /\d/, '(', /[1-9]/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, '-', /\d/, /\d/],
+    rulesFullname:{
+      required: v=>!!v || 'Введите ФИО'
+    },
+    rulesEmail:{
+      required: v=>!!v || 'Введите email'
+    },
     rulesPassword: {
       required: value => !!value || 'Введите пароль.',
       min: v => v.length >= 8 || 'Минимум 8 символов',
@@ -94,27 +113,24 @@ export default {
   }),
   methods: {
     validateForm() {
-      this.showPhoneNumberAlert = true;
-      this.showPasswordAlert = true;
-
-      if (!this.isPhoneNumberValid) {
+      if (!this.isPhoneNumberValid || !this.isEmailValid || !this.isPasswordValid || !this.isNameValid) {
         return;
       }
-
-      if (!this.isPasswordValid) {
-        return;
-      }
-
-      this.form = false;
+      this.$router.push( '/post-login' ).catch(err => {})
+      this.overlay = false;
     },
-    required (v,) {
-        return !!v || 'Обязательное поле'
-      },
-
   },
   computed: {
+    isNameValid() {
+    return this.rulesFullname.required(this.name) === true && this.rulesFullname.required(this.surname) === true && this.rulesFullname.required(this.lastName) === true
+  },
+
+    isEmailValid() {
+    return this.rulesEmail.required(this.email) === true;
+  },
+
     isPhoneNumberValid() {
-      return this.value.replace(/\D/g, '').length === 11;
+      return this.phoneNumber.replace(/\D/g, '').length === 11;
     },
     isPasswordValid() {
       return this.rulesPassword.required(this.password) === true && this.rulesPassword.min(this.password) === true;
