@@ -1,5 +1,5 @@
 <script>
-import TestRequest from "@/services/TestRequest";
+import UsersRequest from "@/services/UsersRequest";
   export default {
 
     data: () => ({
@@ -7,7 +7,7 @@ import TestRequest from "@/services/TestRequest";
       dialog: false,
       dialogDelete: false,
       headers: [
-        {text: 'ID', align: 'start', sortable: false, value: 'id' },
+
         {text: 'Имя', align: 'start', sortable: false, value: 'name' },
         {text: 'Фамилия', align: 'start', sortable: false, value: 'surname',},
         {text: 'Отчество', align: 'start', sortable: false, value: 'lastName',},
@@ -46,25 +46,23 @@ import TestRequest from "@/services/TestRequest";
 
     methods: {
       async getUser(){
-        const user = new TestRequest();
+        const user = new UsersRequest();
         await user.getUser().catch(x => console.log(x)).then(x=>{this.test = x.data})
       },
 
       async postUser(body){
-        const user = new TestRequest();
+        const user = new UsersRequest();
         await user.postUser(body).catch(x => console.log(x))
       },
 
       async putUser(body){
-        const user = new TestRequest();
-        console.log(body)
+        const user = new UsersRequest();
         await user.putUser(body ).catch(x => console.log(x))
       },
 
       async deleteUser(){
-        const user = new TestRequest();
-        const cal = await user.deleteUser(this.deletedIndex).catch(x => console.log(x))
-        console.log(cal)
+        const user = new UsersRequest();
+        await user.deleteUser(this.deletedIndex).catch(x => console.log(x))
       },
 
       async initialize() {
@@ -81,9 +79,7 @@ import TestRequest from "@/services/TestRequest";
           lastName: item.lastName,
           id: item.id,
         };
-
         this.dialog = true;
-        console.log(this.editedItem)
       },
 
       deleteItem(item) {
@@ -119,19 +115,18 @@ import TestRequest from "@/services/TestRequest";
         if (this.editedIndex > -1) {
           this.$set(this.persons, this.editedIndex, this.editedItem);
           let body = JSON.stringify(this.editedItem,)
-          console.log(0, body)
           await this.putUser(body)
           this.close();
         }
         else {
           this.persons.push(this.editedItem);
-          await this.postUser({
+          const cock = {
               "name" : this.editedItem.name,
               "surname" : this.editedItem.surname,
               "lastname": this.editedItem.lastName,
               "vkid": 0,
-              "groupId": 2
-            })
+              "groupId": 2}
+          await this.postUser(cock)
           this.close();
         }
       },
@@ -139,7 +134,6 @@ import TestRequest from "@/services/TestRequest";
   };
 
 </script>
-
 <template>
   <v-data-table :headers="headers" :items="persons" class="elevation-1"
                :footer-props="{
@@ -175,7 +169,6 @@ import TestRequest from "@/services/TestRequest";
             <v-card-title>
               <span class="text-h5">{{ formTitle }}</span>
             </v-card-title>
-
             <v-card-text>
               <v-container>
                 <v-row>
@@ -196,16 +189,10 @@ import TestRequest from "@/services/TestRequest";
                       v-model="editedItem.lastName"
                       label="Отчество"
                     ></v-text-field>
-                    <v-text-field
-                      v-model="editedItem.id"
-                      label="ID"
-                      v-if="formTitle !== 'Новый элемент'"
-                    ></v-text-field>
                   </v-col>
                 </v-row>
               </v-container>
             </v-card-text>
-
             <v-card-actions>
               <v-spacer></v-spacer>
               <v-btn
@@ -255,7 +242,5 @@ import TestRequest from "@/services/TestRequest";
     </template>
   </v-data-table>
 </template>
-
 <style scoped>
-
 </style>

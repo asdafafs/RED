@@ -16,12 +16,12 @@
               <v-text-field
                   solo
                   color="black"
-                v-model="email"
-                :readonly="loading"
-                :rules="[rulesEmail.required]"
-                class="mb-2"
-                clearable
-                label="Email"
+                  v-model="email"
+                  :readonly="loading"
+                  :rules="[rulesEmail.required]"
+                  class="mb-2"
+                  clearable
+                  label="Email"
               ></v-text-field>
             </v-card-text>
             <v-card-actions>
@@ -78,7 +78,7 @@
         </v-dialog>
       </v-col>
     </v-row>
-    </div>
+  </div>
 </template>
 <script>
 export default {

@@ -80,7 +80,6 @@
     </v-row>
   </v-container>
 </template>
-
 <script>
 import moment from 'moment';
 import CarLogo from "@/components/logos/CarLogo.vue";

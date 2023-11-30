@@ -2,79 +2,72 @@
   <div>
     <v-row align="center" justify="center" class=" width">
       <v-col cols="4" class=" pa-0" >
-        <v-dialog
-            v-model="overlay"
-            persistent
-            width="auto"
-            content-class="elevation-0"
-        >
-        <v-card  class="d-flex justify-space-between flex-column height width rounded-lg ma-2" v-if="overlay" >
-          <v-card-title class="black--text"> Регистрация</v-card-title>
-          <v-card-subtitle class="black--text">
-            Для продолжения работы в RED: Расписание, пожалуйста, зарегистрируйтесь
-          </v-card-subtitle>
-          <LogoRed class="pos"></LogoRed>
-          <v-card-text class="pb-0 " >
-            <v-text-field
-                v-model="name"
+        <v-dialog v-model="overlay" persistent width="auto" content-class="elevation-0">
+          <v-card  class="d-flex justify-space-between flex-column height width rounded-lg ma-2" v-if="overlay" >
+            <v-card-title class="black--text"> Регистрация</v-card-title>
+            <v-card-subtitle class="black--text">
+              Для продолжения работы в RED: Расписание, пожалуйста, зарегистрируйтесь
+            </v-card-subtitle>
+            <LogoRed class="pos"></LogoRed>
+            <v-card-text class="pb-0 " >
+              <v-text-field
+                  v-model="name"
+                  solo
+                  label="Фамилия"
+                  :rules="[rulesFullname.required]"
+              ></v-text-field>
+              <v-text-field
+                  v-model="surname"
+                  solo
+                  label="Имя"
+                  :rules="[rulesFullname.required]"
+              ></v-text-field>
+              <v-text-field
+                  v-model="lastName"
+                  solo
+                  label="Отчество"
+                  :rules="[rulesFullname.required]"
+              ></v-text-field>
+              <v-text-field
                 solo
-                label="Фамилия"
-                :rules="[rulesFullname.required]"
-            ></v-text-field>
-            <v-text-field
-                v-model="surname"
-                solo
-                label="Имя"
-                :rules="[rulesFullname.required]"
-            ></v-text-field>
-            <v-text-field
-                v-model="lastName"
-                solo
-                label="Отчество"
-                :rules="[rulesFullname.required]"
-            ></v-text-field>
-            <v-text-field
-              solo
-              color="black"
-              v-model="email"
-              :readonly="loading"
-              :rules="[rulesEmail.required]"
-              class="mb-2"
-              clearable
-              label="Email"
-            ></v-text-field>
-            <vue-text-mask
-              class="phone"
-              v-model="phoneNumber"
-              :mask="mask"
-              placeholderChar="#"
-              style="background-color: white;  box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);"
-            ></vue-text-mask>
-            <v-col v-if="!isPhoneNumberValid" class="red--text">{{ requiredMessage }}</v-col>
-            <v-text-field
-                solo
-                v-model="password"
-                :rules="[rulesPassword.required, rulesPassword.min]"
-                :append-icon="showPass ? 'mdi-eye ' : 'mdi-eye-off '"
-                 :type="showPass ? 'text' : 'password'"
-                @click:append="showPass = !showPass"
-                name="input-10-1"
-                label="Пароль"
-                counter
-            ></v-text-field>
-          </v-card-text>
-          <v-card-actions>
-            <v-btn
-              color="#4E7AEC"
-              @click="validateForm"
-              class="rounded-lg pa-0 white--text"
-              block
-            >
-              Зарегистрироваться
-            </v-btn>
-          </v-card-actions>
-        </v-card>
-          </v-dialog>
+                color="black"
+                v-model="email"
+                :readonly="loading"
+                :rules="[rulesEmail.required]"
+                class="mb-2"
+                clearable
+                label="Email"
+              ></v-text-field>
+              <vue-text-mask
+                class="phone"
+                v-model="phoneNumber"
+                :mask="mask"
+                placeholderChar="#"
+              ></vue-text-mask>
+              <v-col v-if="!isPhoneNumberValid" class="red--text">{{ requiredMessage }}</v-col>
+              <v-text-field
+                  solo
+                  v-model="password"
+                  :rules="[rulesPassword.required, rulesPassword.min]"
+                  :append-icon="showPass ? 'mdi-eye ' : 'mdi-eye-off '"
+                   :type="showPass ? 'text' : 'password'"
+                  @click:append="showPass = !showPass"
+                  name="input-10-1"
+                  label="Пароль"
+                  counter
+              ></v-text-field>
+            </v-card-text>
+            <v-card-actions>
+              <v-btn
+                color="#4E7AEC"
+                @click="validateForm"
+                class="rounded-lg pa-0 white--text"
+                block>
+                Зарегистрироваться
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
       </v-col>
     </v-row>
   </div>
@@ -149,6 +142,11 @@ export default {
   margin-bottom: 2px;
   font-size: 16px;
   border-radius: 5px;
+  background-color: white;
+  box-shadow:
+      0px 3px 1px -2px rgba(0, 0, 0, 0.2),
+      0px 2px 2px 0px rgba(0, 0, 0, 0.14),
+      0px 1px 5px 0px rgba(0, 0, 0, 0.12);
 }
 
 .height {
@@ -162,4 +160,5 @@ export default {
   margin-bottom: 2em;
 
 }
+
 </style>

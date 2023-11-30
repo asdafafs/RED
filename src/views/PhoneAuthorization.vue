@@ -103,6 +103,7 @@ export default {
     },
     smsCode: ''
   }),
+
   methods: {
     validateForm() {
       this.showPhoneNumberAlert = true;
@@ -115,10 +116,10 @@ export default {
       if (!this.isPasswordValid) {
         return;
       }
-
       this.form = false;
-    }
+    },
   },
+
   computed: {
     isPhoneNumberValid() {
       return this.value.replace(/\D/g, '').length === 11;

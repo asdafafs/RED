@@ -2,13 +2,7 @@
   <div>
     <v-row align="center" justify="center" class="" >
       <v-col cols="4" class=" pa-0">
-        <v-dialog
-            v-model="overlay"
-
-            persistent
-            width="auto"
-            content-class="elevation-0"
-            >
+        <v-dialog v-model="overlay" persistent width="auto" content-class="elevation-0">
           <v-card class="d-flex justify-space-between flex-column height width rounded-lg ma-2" v-if="overlay" >
           <v-card-title class="black--text"> Авторизация</v-card-title>
           <v-card-subtitle class="black--text">
@@ -19,33 +13,33 @@
               <v-text-field
                   solo
                   color="black"
-                v-model="email"
-                :readonly="loading"
-                :rules="[rulesEmail.required]"
-                class="mb-2"
-                clearable
-                label="Email"
+                  v-model="email"
+                  :readonly="loading"
+                  :rules="[rulesEmail.required]"
+                  class="mb-2"
+                  clearable
+                  label="Email"
               ></v-text-field>
               <v-text-field
-                solo
-                color="black"
-                v-model="password"
-                :append-icon="show1 ? 'mdi-eye ' : 'mdi-eye-off '"
-                :rules="[rulesPassword.required, rulesPassword.min]"
-                :type="show1 ? 'text' : 'password'"
-                name="input-10-4"
-                label="Пароль"
-                hint="Минимум 8 символов"
-                counter
-                @click:append="show1 = !show1"
+                  solo
+                  color="black"
+                  v-model="password"
+                  :append-icon="show1 ? 'mdi-eye ' : 'mdi-eye-off '"
+                  :rules="[rulesPassword.required, rulesPassword.min]"
+                  :type="show1 ? 'text' : 'password'"
+                  name="input-10-4"
+                  label="Пароль"
+                  hint="Минимум 8 символов"
+                  counter
+                  @click:append="show1 = !show1"
               ></v-text-field>
             </v-card-text>
             <v-card-actions>
               <v-btn
-                color="#4E7AEC"
-                @click="validateForm"
-                class="rounded-lg pa-0 white--text"
-                block
+                  color="#4E7AEC"
+                  @click="validateForm"
+                  class="rounded-lg pa-0 white--text"
+                  block
               >
                 Войти
               </v-btn>

@@ -1,6 +1,6 @@
 import {HTTPService} from "@/services/HTTPService";
 
-export default class TestRequest extends HTTPService {
+export default class UsersRequest extends HTTPService {
     constructor() {
         super("user");
     }

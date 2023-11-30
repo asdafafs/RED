@@ -1,6 +1,6 @@
 <template>
-  <v-container class="pa-0" fluid style="height: 100%;">
-    <v-row no-gutters align="center" style="height: 100%;">
+  <v-container class="pa-0 height-container" fluid >
+    <v-row no-gutters align="center" class="height-container">
       <v-col cols=12 class="d-flex justify-center align-center">
         <LogoRed></LogoRed>
       </v-col>
@@ -15,3 +15,8 @@ export default {
   components: {LogoRed}
 }
 </script>
+<style>
+.height-container{
+  height: 100%;
+}
+</style>

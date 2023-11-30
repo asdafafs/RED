@@ -46,7 +46,6 @@
             >
               Войти через VK
             </v-btn>
-
           </v-card-actions>
         </v-card>
       </v-col>
@@ -95,6 +94,5 @@ export default {
 .pos {
   align-self: center;
   transform: scale(2.1);
-
 }
 </style>

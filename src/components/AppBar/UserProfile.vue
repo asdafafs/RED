@@ -39,10 +39,8 @@ export default {
 }
 </script>
 <style scoped>
-
 .btn {
   text-transform: unset !important;
   font-size: 1.125rem;
 }
-
 </style>
