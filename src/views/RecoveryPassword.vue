@@ -2,11 +2,7 @@
   <div>
     <v-row align="center" justify="center" class=" ">
       <v-col cols="4" class=" pa-0" align="center">
-        <v-dialog
-            v-model="overlay"
-            persistent
-            width="auto"
-            content-class="elevation-0">
+        <v-dialog v-model="overlay" persistent  width="auto" content-class="elevation-0">
           <v-card class="d-flex justify-space-between flex-column white rounded-lg ma-2 width" v-if="form">
             <v-card-title class="black--text"> Восстановление пароля</v-card-title>
             <v-card-subtitle class="black--text">

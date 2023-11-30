@@ -1,52 +1,51 @@
 <template>
-  <v-overlay
-      v-model="overlay"
-      contained
-      class="blur"
-  >
+  <v-overlay v-model="overlay" contained class="blur">
     <v-row align="center" justify="center" class="width ">
       <v-col cols="4" class=" pa-0">
         <v-card class="d-flex justify-space-between flex-column height white rounded-lg ma-2" v-if="form">
-    <v-card-title class="black--text"> Добро пожаловать!</v-card-title>
-    <v-card-subtitle class="black--text">
-      Для продолжения работы в RED: Расписание, пожалуйста, авторизуйтесь через номер телефона.
-    </v-card-subtitle>
-    <LogoRed class="pos"></LogoRed>
-    <v-card-text class="pb-0 " >
-      <vue-text-mask
-        class="grey phone white--text"
-        v-model="value"
-        :mask="mask"
-        placeholderChar="#"
-      ></vue-text-mask>
-      <v-alert v-if="showPhoneNumberAlert && !isPhoneNumberValid" type="error">Введите корректный номер телефона (10 цифр)</v-alert>
-      <v-text-field
-        background-color="grey"
-        solo
-        v-model="password"
-        :append-icon="show1 ? 'mdi-eye ' : 'mdi-eye-off '"
-        :rules="[rulesPassword.required, rulesPassword.min]"
-        :type="show1 ? 'text' : 'password'"
-        name="input-10-1"
-        label="Пароль"
-        hint="Минимум 8 символов"
-        counter
-        @click:append="show1 = !show1"
-      ></v-text-field>
-      <v-alert v-if="showPasswordAlert && !isPasswordValid" type="error">Введите корректный пароль (минимум 8 символов)</v-alert>
-    </v-card-text>
-
-    <v-card-actions>
-      <v-btn
-        color="#4E7AEC"
-        @click="validateForm"
-        class="rounded-lg pa-0 "
-        block
-      >
-        Получить код в СМС
-      </v-btn>
-    </v-card-actions>
-  </v-card>
+          <v-card-title class="black--text"> Добро пожаловать!</v-card-title>
+          <v-card-subtitle class="black--text">
+            Для продолжения работы в RED: Расписание, пожалуйста, авторизуйтесь через номер телефона.
+          </v-card-subtitle>
+          <LogoRed class="pos"></LogoRed>
+          <v-card-text class="pb-0 " >
+            <vue-text-mask
+              class="grey phone white--text"
+              v-model="value"
+              :mask="mask"
+              placeholderChar="#"
+            ></vue-text-mask>
+            <v-alert v-if="showPhoneNumberAlert && !isPhoneNumberValid" type="error">
+              Введите корректный номер телефона (10 цифр)
+            </v-alert>
+            <v-text-field
+              background-color="grey"
+              solo
+              v-model="password"
+              :append-icon="show1 ? 'mdi-eye ' : 'mdi-eye-off '"
+              :rules="[rulesPassword.required, rulesPassword.min]"
+              :type="show1 ? 'text' : 'password'"
+              name="input-10-1"
+              label="Пароль"
+              hint="Минимум 8 символов"
+              counter
+              @click:append="show1 = !show1"
+            ></v-text-field>
+            <v-alert v-if="showPasswordAlert && !isPasswordValid" type="error">
+              Введите корректный пароль (минимум 8 символов)
+            </v-alert>
+          </v-card-text>
+          <v-card-actions>
+            <v-btn
+              color="#4E7AEC"
+              @click="validateForm"
+              class="rounded-lg pa-0 "
+              block
+            >
+              Получить код в СМС
+            </v-btn>
+          </v-card-actions>
+        </v-card>
         <v-card class="d-flex justify-space-between flex-column white rounded-lg ma-2" v-if="!form">
           <v-card-title class="black--text"> Подтверждение по СМС</v-card-title>
           <v-card-subtitle class="black--text">
@@ -64,21 +63,14 @@
                 @click:append="show1 = !show1"
             ></v-text-field>
           </v-card-text>
-
           <v-card-actions>
-            <v-btn
-                color="#4E7AEC"
-                @click="overlay = false"
-                class="rounded-lg pa-0 "
-                block
-            >
+            <v-btn color="#4E7AEC" @click="overlay = false" class="rounded-lg pa-0 " block>
               Продолжить
             </v-btn>
           </v-card-actions>
         </v-card>
       </v-col>
     </v-row>
-
   </v-overlay>
 </template>
 <script>
@@ -93,15 +85,15 @@ export default {
     form: true,
     showPhoneNumberAlert: false,
     showPasswordAlert: false,
-    mask: ['+', '7', '(', /[1-9]/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, '-', /\d/, /\d/],
-    value: '',
     show1: false,
+    value: '',
+    smsCode: '',
     password: '',
     rulesPassword: {
       required: value => !!value || 'Введите пароль.',
       min: v => v.length >= 8 || 'Минимум 8 символов',
     },
-    smsCode: ''
+    mask: ['+', '7', '(', /[1-9]/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, '-', /\d/, /\d/],
   }),
 
   methods: {

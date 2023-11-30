@@ -10,24 +10,9 @@
             </v-card-subtitle>
             <LogoRed class="pos"></LogoRed>
             <v-card-text class="pb-0 " >
-              <v-text-field
-                  v-model="name"
-                  solo
-                  label="Фамилия"
-                  :rules="[rulesFullname.required]"
-              ></v-text-field>
-              <v-text-field
-                  v-model="surname"
-                  solo
-                  label="Имя"
-                  :rules="[rulesFullname.required]"
-              ></v-text-field>
-              <v-text-field
-                  v-model="lastName"
-                  solo
-                  label="Отчество"
-                  :rules="[rulesFullname.required]"
-              ></v-text-field>
+              <v-text-field v-model="name" solo label="Фамилия" :rules="[rulesFullname.required]" ></v-text-field>
+              <v-text-field v-model="surname" solo label="Имя" :rules="[rulesFullname.required]" ></v-text-field>
+              <v-text-field v-model="lastName" solo label="Отчество" :rules="[rulesFullname.required]" ></v-text-field>
               <v-text-field
                 solo
                 color="black"
@@ -38,12 +23,7 @@
                 clearable
                 label="Email"
               ></v-text-field>
-              <vue-text-mask
-                class="phone"
-                v-model="phoneNumber"
-                :mask="mask"
-                placeholderChar="#"
-              ></vue-text-mask>
+              <vue-text-mask class="phone" v-model="phoneNumber" :mask="mask" placeholderChar="#"></vue-text-mask>
               <v-col v-if="!isPhoneNumberValid" class="red--text">{{ requiredMessage }}</v-col>
               <v-text-field
                   solo
@@ -58,11 +38,7 @@
               ></v-text-field>
             </v-card-text>
             <v-card-actions>
-              <v-btn
-                color="#4E7AEC"
-                @click="validateForm"
-                class="rounded-lg pa-0 white--text"
-                block>
+              <v-btn color="#4E7AEC" @click="validateForm" class="rounded-lg pa-0 white--text" block>
                 Зарегистрироваться
               </v-btn>
             </v-card-actions>
@@ -158,7 +134,6 @@ export default {
   transform: scale(2.1);
   margin-top: 2em;
   margin-bottom: 2em;
-
 }
 
 </style>
