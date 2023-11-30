@@ -19,10 +19,8 @@ export default {
 
 <template>
   <v-container class="px-4 pa-0 ma-0 " fluid >
-
     <div class="text-h5 font-weight-bold" style="">Мои успехи</div>
-
-    <v-row class="flex-wrap "  no-gutters>
+    <v-row class="flex-wrap"  no-gutters>
       <v-col lg="4" md="4" sm="6" xs="12" class="justify-center">
         <div class=" d-flex flex-column justify-center" >
           <div class="d-flex justify-center">
@@ -141,7 +139,3 @@ export default {
     </v-row>
   </v-container>
 </template>
-
-<style scoped>
-
-</style>

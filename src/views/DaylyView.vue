@@ -64,8 +64,6 @@
 import LectureLogo from "@/components/logos/LectureLogo";
 import CarLogo from "@/components/logos/CarLogo";
 import moment from "moment";
-
-
 export default {
   name: "ExampleDay.vue",
   components: {LectureLogo, CarLogo},
@@ -168,7 +166,6 @@ export default {
 </script>
 
 <style lang="scss">
-
 .day-event {
   display: flex;
   height: 100%;

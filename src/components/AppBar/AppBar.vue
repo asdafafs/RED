@@ -1,12 +1,9 @@
 <script>
-
 import NavigationBar from "@/components/AppBar/NavigationBar.vue";
 import AppButtons from "@/components/AppBar/AppButtons.vue";
 import MobileAppBar from "@/components/AppBar/MobileAppBar.vue";
 import UserProfile from "@/components/AppBar/UserProfile.vue";
 import DesktopLogo from "@/components/AppBar/DesktopLogo.vue";
-
-
 export default {
   components: {DesktopLogo, UserProfile, MobileAppBar, AppButtons, NavigationBar},
   data() {
@@ -32,8 +29,8 @@ export default {
 
   beforeDestroy() {
   window.removeEventListener('resize', this.checkWindowWidth);
-},
-  }
+  },
+}
 </script>
 <template>
   <v-container >

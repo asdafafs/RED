@@ -1,8 +1,7 @@
 <template>
   <div>
     <v-container class="px-4 pa-0 ma-0" fluid v-if = "showDrawer">
-      <v-row no-gutters align="center"
-            class="spacer" >
+      <v-row no-gutters align="center" class="spacer" >
         <v-col cols="1" class="d-flex align-center justify-space-around">
           <v-avatar class="">
              <v-img
@@ -18,7 +17,6 @@
           <div class="text-subtitle-1 uno">Вы зачислены в группу №{{groupId}}</div>
         </v-col>
         <v-col cols="">
-
         </v-col>
         <v-col cols="1">
           <v-btn text class="grey--text btn pa-0" width="100%"
@@ -105,8 +103,6 @@ export default {
   beforeDestroy() {
   window.removeEventListener('resize', this.checkWindowWidth);
   },
-
-
 }
 
 </script>

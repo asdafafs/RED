@@ -8,7 +8,6 @@ export default {
     }),
   }
 </script>
-
 <template>
  <v-row
     align="center"

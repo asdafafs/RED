@@ -1,8 +1,6 @@
 <script>
 import CarLogo from "@/components/logos/CarLogo.vue";
 import LectureLogo from "@/components/logos/LectureLogo.vue";
-
-
 export default {
   components: {LectureLogo, CarLogo},
   mounted() {

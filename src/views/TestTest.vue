@@ -1,6 +1,5 @@
 <script>
   export default {
-
     data: () => ({
       value: '',
       events: [],
@@ -36,10 +35,8 @@
             end: this.createStart,
             timed: true,
           }
-
           this.events.push(this.createEvent)
           console.log('стартуем')
-
         }
       },
 
@@ -75,7 +72,7 @@
       },
 
       roundTime (time, down = true) {
-        const roundTo = 15 // minutes
+        const roundTo = 15
         const roundDownTime = roundTo * 60 * 1000
 
         return down

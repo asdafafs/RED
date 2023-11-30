@@ -2,17 +2,6 @@
 export default {
   components: {},
   mounted() {
-    // eslint-disable-next-line no-unused-vars
-    const buttonStyleReplace = [
-      'v-btn',
-      'v-btn--fab',
-      'v-btn--has-bg',
-      'v-btn--round',
-      'theme--light',
-      'v-size--small',
-      'transparent',
-    ]
-
     this.test = true
   },
   data: () => ({

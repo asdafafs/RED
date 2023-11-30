@@ -5,48 +5,28 @@
       <v-col cols=2>
         <v-btn :class="{'custom-bg': isButtonPressed[0]}"
                @click="changeButtonState(0); $router.push('/schedule/testMonth').catch(err => {})"
-               text
-               min-height="3em"
-               color="white"
-               class="pa-0 btn"
-               width="100%"
-        >
+               text  min-height="3em"  color="white"  class="pa-0 btn"  width="100%">
           Расписание
         </v-btn>
       </v-col>
       <v-col cols>
         <v-btn :class="{ 'custom-bg': isButtonPressed [1]}"
                @click="changeButtonState(1)"
-               text
-               min-height="3em"
-               color="white"
-               class="pa-0 btn"
-               width="100%"
-        >
+               text  min-height="3em"   class="pa-0 btn" width="100%" color="white">
           Запись на экзамен
         </v-btn>
       </v-col>
       <v-col cols=2>
         <v-btn :class="{ 'custom-bg': isButtonPressed [2]}"
                @click="changeButtonState(2)"
-               text
-               min-height="3em"
-               color="white"
-               class="pa-0 btn"
-               width="100%"
-        >
+               text min-height="3em" color="white" class="pa-0 btn" width="100%">
           Лекции
         </v-btn>
       </v-col>
       <v-col cols=2 v-if="student">
         <v-btn :class="{ 'custom-bg': isButtonPressed [3]}"
                @click="changeButtonState(3); $router.push('/testPlan/mainCal/testMonth').catch(err => {})"
-               text
-               min-height="3em"
-               color="white"
-               class="pa-0 btn"
-               width="100%"
-        >
+               text min-height="3em" color="white" class="pa-0 btn" width="100%">
           Мой план
         </v-btn>
       </v-col>
@@ -54,14 +34,7 @@
       <v-col cols=2 v-if="!student">
         <v-btn :class="{ 'custom-bg': isButtonPressed [3]}"
                @click="changeButtonState(3); $router.push('/admin').catch(err => {})"
-               text
-               min-height="3em"
-               color="white"
-               class="pa-0 btn2"
-               width="100%"
-               height="100%"
-               thin
-        >
+               text min-height="3em" color="white" class="pa-0 btn2" width="100%" height="100%" thin >
           <span class="mdi mdi-vector-arrange-above"></span>
           <div class="d-flex flex-row ">
             <div>
@@ -95,9 +68,8 @@ export default {
     return {
       isButtonPressed: [false, false, false, false],
       lastPressedIndex: -1,
-
     }
-}
+  },
 }
 </script>
 <style scoped>
@@ -116,5 +88,4 @@ export default {
   font-size: 1.0rem;
   font-weight: lighter;
 }
-
 </style>
