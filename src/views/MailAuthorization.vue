@@ -35,12 +35,7 @@
               ></v-text-field>
             </v-card-text>
             <v-card-actions>
-              <v-btn
-                  color="#4E7AEC"
-                  @click="validateForm"
-                  class="rounded-lg pa-0 white--text"
-                  block
-              >
+              <v-btn color="#4E7AEC" @click="validateForm" class="rounded-lg pa-0 white--text" block >
                 Войти
               </v-btn>
             </v-card-actions>

@@ -2,24 +2,12 @@
   <v-container fluid>
     <v-row >
       <v-col>
-        <v-sheet
-            tile
-            height="54"
-            class="d-flex justify-center"
-        >
-          <v-btn
-              icon
-              class="ma-0  align-self-center"
-              @click="prev()"
-          >
+        <v-sheet tile height="54" class="d-flex justify-center" >
+          <v-btn icon class="ma-0  align-self-center"  @click="prev()" >
             <v-icon>mdi-chevron-left</v-icon>
           </v-btn>
           <v-toolbar-title v-if="test" class="text-h6 align-self-center">{{dateDay }}</v-toolbar-title>
-          <v-btn
-              icon
-              class="ma-0  align-self-center"
-              @click="next()"
-          >
+          <v-btn icon class="ma-0  align-self-center" @click="next()" >
             <v-icon>mdi-chevron-right</v-icon>
           </v-btn>
         </v-sheet>

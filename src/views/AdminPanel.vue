@@ -1,7 +1,6 @@
 <script>
 import UsersRequest from "@/services/UsersRequest";
   export default {
-
     data: () => ({
       test: null,
       dialog: false,
@@ -135,8 +134,8 @@ import UsersRequest from "@/services/UsersRequest";
 
 </script>
 <template>
-  <v-data-table :headers="headers" :items="persons" class="elevation-1"
-               :footer-props="{
+  <v-data-table :headers="headers" :items="persons" class="elevation-1" no-data-text="Нет данных для отображения"
+                :footer-props="{
       'items-per-page-text': 'Записей на странице:',
       'items-per-page-all-text': 'Все',
       'page-text': '{0}-{1} из {2}',
@@ -144,24 +143,14 @@ import UsersRequest from "@/services/UsersRequest";
       'next-icon': 'mdi-chevron-right',
       'prev-page-text': 'Предыдущая страница',
       'next-page-text': 'Следующая страница',
-      'no-data-text': 'Нет данных для отображения'
-    }" no-data-text="Нет данных для отображения"
+      'no-data-text': 'Нет данных для отображения'}"
   >
     <template v-slot:top>
       <v-toolbar flat>
         <v-spacer></v-spacer>
-        <v-dialog
-          v-model="dialog"
-          max-width="500px"
-        >
+        <v-dialog v-model="dialog" max-width="500px" >
           <template v-slot:activator="{ on, attrs }">
-            <v-btn
-              color="primary"
-              dark
-              class="mb-2"
-              v-bind="attrs"
-              v-on="on"
-            >
+            <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on">
               Новый юзер
             </v-btn>
           </template>
@@ -172,11 +161,7 @@ import UsersRequest from "@/services/UsersRequest";
             <v-card-text>
               <v-container>
                 <v-row>
-                  <v-col
-                    cols="12"
-                    sm="6"
-                    md="4"
-                  >
+                  <v-col cols="12" sm="6" md="4" >
                     <v-text-field
                       v-model="editedItem.name"
                       label="Имя"
@@ -195,18 +180,10 @@ import UsersRequest from "@/services/UsersRequest";
             </v-card-text>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn
-                color="blue darken-1"
-                text
-                @click="close"
-              >
+              <v-btn  color="blue darken-1" text @click="close">
                 Отмена
               </v-btn>
-              <v-btn
-                color="blue darken-1"
-                text
-                @click="save"
-              >
+              <v-btn color="blue darken-1" text @click="save">
                 OK
               </v-btn>
             </v-card-actions>
