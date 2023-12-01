@@ -2,7 +2,7 @@ import {HTTPService} from "@/services/HTTPService";
 
 export default class UsersRequest extends HTTPService {
     constructor() {
-        super("user");
+        super("User/Student");
     }
 
     getUser(){

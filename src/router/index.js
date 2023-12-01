@@ -4,20 +4,19 @@ import InstructorView from "@/views/InstructorView.vue";
 import AdminPanel from "@/views/AdminPanel.vue";
 import NotFoundView from "@/views/NotFoundView.vue";
 import AuthorizationView from "@/views/AuthorizationView.vue";
-import DaylyView from "@/views/DaylyView.vue";
+import DayView from "@/views/DaylyView.vue";
 import MonthView from "@/views/MonthView.vue";
 import StudentPlanView from "@/views/StudentPlanView.vue";
 import WeeklyView from "@/views/WeeklyView.vue";
 import scheduleView from "@/views/scheduleView.vue";
 import MainCalendar from "@/views/MainCalendar.vue";
 import ProgressBar from "@/views/ProgressBar.vue";
-import TestTest from "@/views/TestTest.vue";
-import PhoneAuthorization from "@/views/PhoneAuthorization.vue";
 import RecoveryPassword from "@/views/RecoveryPassword.vue";
 import MailAuthorization from "@/views/MailAuthorization.vue";
 import VkAuthorization from "@/views/SelectAuthorization.vue";
 import Registration from "@/views/Registration.vue";
 import PostLoginPage from "@/views/PostLoginPage.vue";
+import CoursesList from "@/views/CoursesList.vue";
 
 
 Vue.use(VueRouter)
@@ -33,22 +32,27 @@ const routes = [
   {
     path:'/mail',
     name: 'mail',
-    component: MailAuthorization
+    component: MailAuthorization,
   },
   {
     path: '/vkAuthorization',
     name: 'vk',
-    component: VkAuthorization
+    component: VkAuthorization,
   },
   {
     path: '/registration',
     name: 'registration',
-    component: Registration
+    component: Registration,
   },
   {
     path: '/recoveryPassWord',
     name: 'recPass',
-    component: RecoveryPassword
+    component: RecoveryPassword,
+  },
+  {
+    path: '/post-login',
+    name: 'post-login',
+    component: PostLoginPage,
   },
   {
     path: '/instructor',
@@ -79,7 +83,7 @@ const routes = [
               {
                 path: "testDay",
                 name: 'day',
-                component: DaylyView,
+                component: DayView,
               },
             {
               path: "testWeek",
@@ -113,23 +117,10 @@ const routes = [
     ]
   },
   {
-    path: "/test",
-    component: TestTest
+    path: "/courses",
+    name: 'courses',
+    component: CoursesList,
   },
-  {
-    path: '/phone',
-    component: PhoneAuthorization
-  },
-  {
-    path: '/recovery',
-    component: RecoveryPassword
-  },
-  {
-    path: '/post-login',
-    name: 'post-login',
-    component: PostLoginPage
-  },
-
 ]
 
 const router = new VueRouter({

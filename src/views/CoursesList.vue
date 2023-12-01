@@ -6,9 +6,10 @@ import UsersRequest from "@/services/UsersRequest";
       dialog: false,
       dialogDelete: false,
       headers: [
-        {text: 'Имя', align: 'start', sortable: false, value: 'name' },
-        {text: 'Фамилия', align: 'start', sortable: false, value: 'surname',},
-        {text: 'Отчество', align: 'start', sortable: false, value: 'lastName',},
+        {text: 'Название', align: 'start', sortable: false, value: 'title' },
+        {text: 'Начало', align: 'start', sortable: false, value: 'startTime',},
+        {text: 'Конец', align: 'start', sortable: false, value: 'endTime',},
+        {text: 'Тип занятия',align: 'start', sortable: false, value: 'eventType',},
         {text: 'Действия', value: 'actions', sortable: false },
       ],
       persons: [],
@@ -64,25 +65,22 @@ import UsersRequest from "@/services/UsersRequest";
       },
 
       async initialize() {
-        await this.getUser()
-        let cal = await this.test
-        this.persons = cal;
       },
 
       editItem(item) {
         this.editedIndex = this.persons.indexOf(item);
         this.editedItem = {
-          name: item.name,
-          surname: item.surname,
-          lastName: item.lastName,
-          id: item.id,
+          title: item.title,
+          startTime: item.startTime,
+          endTime: item.endTime,
+          eventType: item.eventType,
         };
         this.dialog = true;
       },
 
       deleteItem(item) {
         this.editedIndex = this.persons.indexOf(item);
-        this.editedItem = { name: item.name };
+        this.editedItem = { name: item.title };
         this.deletedIndex = item.id
         this.dialogDelete = true;
       },
@@ -90,7 +88,6 @@ import UsersRequest from "@/services/UsersRequest";
       async deleteItemConfirm() {
         this.persons.splice(this.editedIndex, 1);
         this.closeDelete();
-        await this.deleteUser()
       },
 
       close() {
@@ -112,19 +109,10 @@ import UsersRequest from "@/services/UsersRequest";
       async save() {
         if (this.editedIndex > -1) {
           this.$set(this.persons, this.editedIndex, this.editedItem);
-          let body = JSON.stringify(this.editedItem,)
-          await this.putUser(body)
           this.close();
         }
         else {
           this.persons.push(this.editedItem);
-          const cock = {
-              "name" : this.editedItem.name,
-              "surname" : this.editedItem.surname,
-              "lastname": this.editedItem.lastName,
-              "vkid": Math.floor(Math.random() * 10000000),
-              "groupId": 2}
-          await this.postUser(cock)
           this.close();
         }
       },
@@ -150,7 +138,7 @@ import UsersRequest from "@/services/UsersRequest";
         <v-dialog v-model="dialog" max-width="500px" >
           <template v-slot:activator="{ on, attrs }">
             <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on">
-              Новый юзер
+              Новое занятие
             </v-btn>
           </template>
           <v-card>
@@ -162,16 +150,20 @@ import UsersRequest from "@/services/UsersRequest";
                 <v-row>
                   <v-col cols="12" sm="6" md="4" >
                     <v-text-field
-                      v-model="editedItem.name"
-                      label="Имя"
+                      v-model="editedItem.title"
+                      label="Название"
                     ></v-text-field>
                     <v-text-field
-                      v-model="editedItem.surname"
-                      label="Фамилия"
+                      v-model="editedItem.startTime"
+                      label="Начало занятия"
                     ></v-text-field>
                     <v-text-field
-                      v-model="editedItem.lastName"
-                      label="Отчество"
+                      v-model="editedItem.endTime"
+                      label="Конец занятия"
+                    ></v-text-field>
+                    <v-text-field
+                      v-model="editedItem.eventType"
+                      label="Тип занятия"
                     ></v-text-field>
                   </v-col>
                 </v-row>
@@ -202,14 +194,23 @@ import UsersRequest from "@/services/UsersRequest";
       </v-toolbar>
     </template>
     <template v-slot:item.actions="{ item }">
-      <v-icon small class="mr-2" @click="editItem(item)" >
+      <v-icon
+        small
+        class="mr-2"
+        @click="editItem(item)"
+      >
         mdi-pencil
       </v-icon>
-      <v-icon small @click="deleteItem(item)" >
+      <v-icon
+        small
+        @click="deleteItem(item)"
+      >
         mdi-delete
       </v-icon>
     </template>
   </v-data-table>
 </template>
+
 <style scoped>
+
 </style>
