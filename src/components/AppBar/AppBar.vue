@@ -18,17 +18,17 @@ export default {
 
    methods: {
      checkWindowWidth() {
-    this.showDrawer = window.innerWidth >= 1260;
+       this.showDrawer = window.innerWidth >= 1260;
      },
    },
 
   created() {
-  this.checkWindowWidth();
-  window.addEventListener('resize', this.checkWindowWidth);
+    this.checkWindowWidth();
+    window.addEventListener('resize', this.checkWindowWidth);
   },
 
   beforeDestroy() {
-  window.removeEventListener('resize', this.checkWindowWidth);
+    window.removeEventListener('resize', this.checkWindowWidth);
   },
 }
 </script>
