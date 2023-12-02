@@ -49,8 +49,8 @@
 </template>
 
 <script>
-import LectureLogo from "@/components/logos/LectureLogo";
-import CarLogo from "@/components/logos/CarLogo";
+import LectureLogo from "@/components/logos/LectureLogo.vue";
+import CarLogo from "@/components/logos/CarLogo.vue";
 import moment from "moment";
 
 export default {

@@ -3,19 +3,19 @@ import VueRouter from 'vue-router'
 import InstructorView from "@/views/InstructorView.vue";
 import AdminPanel from "@/views/AdminPanel.vue";
 import NotFoundView from "@/views/NotFoundView.vue";
-import AuthorizationView from "@/views/AuthorizationView.vue";
-import DayView from "@/views/DaylyView.vue";
-import MonthView from "@/views/MonthView.vue";
-import StudentPlanView from "@/views/StudentPlanView.vue";
-import WeeklyView from "@/views/WeeklyView.vue";
-import scheduleView from "@/views/scheduleView.vue";
-import MainCalendar from "@/views/MainCalendar.vue";
+import AuthorizationView from "@/views/AuthorizationViews/AuthorizationView.vue";
+import DayView from "@/views/SchedulersVIews/DayView.vue";
+import MonthView from "@/views/SchedulersVIews/MonthView.vue";
+import StudentPlanView from "@/views/SchedulersVIews/StudentPlanView.vue";
+import WeeklyView from "@/views/SchedulersVIews/WeekView.vue";
+import scheduleView from "@/views/SchedulersVIews/scheduleView.vue";
+import MainCalendar from "@/views/SchedulersVIews/MainCalendar.vue";
 import ProgressBar from "@/views/ProgressBar.vue";
-import RecoveryPassword from "@/views/RecoveryPassword.vue";
-import MailAuthorization from "@/views/MailAuthorization.vue";
-import VkAuthorization from "@/views/SelectAuthorization.vue";
-import Registration from "@/views/Registration.vue";
-import PostLoginPage from "@/views/PostLoginPage.vue";
+import RecoveryPassword from "@/views/AuthorizationViews/RecoveryPassword.vue";
+import MailAuthorization from "@/views/AuthorizationViews/MailAuthorization.vue";
+import VkAuthorization from "@/views/AuthorizationViews/SelectAuthorization.vue";
+import Registration from "@/views/AuthorizationViews/Registration.vue";
+import PostLoginPage from "@/views/AuthorizationViews/PostLoginPage.vue";
 import CoursesList from "@/views/CoursesList.vue";
 
 
