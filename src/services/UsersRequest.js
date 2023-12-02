@@ -1,4 +1,4 @@
-import {HTTPService} from "@/services/HTTPService";
+import HTTPService from "@/services/HTTPService";
 
 export default class UsersRequest extends HTTPService {
     constructor() {
