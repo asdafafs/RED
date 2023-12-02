@@ -2,13 +2,13 @@
   <div>
     <v-row align="center" justify="center" class=" ">
       <v-col cols="4" class=" pa-0" align="center">
-        <v-dialog v-model="overlay" persistent  width="auto" content-class="elevation-0">
+        <v-dialog v-model="overlay" persistent width="auto" content-class="elevation-0">
           <v-card class="d-flex justify-space-between flex-column white rounded-lg ma-2 width" v-if="form">
             <v-card-title class="black--text"> Восстановление пароля</v-card-title>
             <v-card-subtitle class="black--text">
               Для восстановления пароля введите номер телефона
             </v-card-subtitle>
-            <v-card-text class="pb-0 " >
+            <v-card-text class="pb-0 ">
               <v-text-field
                   solo
                   color="black"
@@ -36,7 +36,7 @@
             <v-card-subtitle class="black--text">
               Введите новый пароль
             </v-card-subtitle>
-            <v-card-text class="pb-0 " >
+            <v-card-text class="pb-0 ">
               <v-text-field
                   solo
                   v-model="password"
@@ -49,14 +49,14 @@
               <v-text-field
                   solo
                   v-model="passwordRepeat"
-                  :append-icon="show2 ? 'mdi-eye ' : 'mdi-eye-off '"
+                  :append-icon="show ? 'mdi-eye ' : 'mdi-eye-off '"
                   :rules="[rulesPassword.required, rulesPassword.min, checkPasswordMatch]"
-                  :type="show2 ? 'text' : 'password'"
+                  :type="show ? 'text' : 'password'"
                   name="input-10-2"
                   label="Повторите пароль"
                   hint="Минимум 8 символов"
                   counter
-                  @click:append="show2 = !show2"
+                  @click:append="show = !show"
               ></v-text-field>
               <v-alert v-if="!passwordsMatch" type="error">Пароли не совпадают</v-alert>
             </v-card-text>
@@ -77,20 +77,22 @@
   </div>
 </template>
 <script>
+import IdentityRequest from "@/services/IdentityRequest";
+
 export default {
   name: 'RecoveryPassword',
-  components: { },
-  data:() =>({
+  components: {},
+  data: () => ({
     overlay: true,
-    form:true,
-    show2: false,
-    email: null,
+    form: true,
+    show: false,
+    email: '',
     loading: false,
     value: '',
     password: '',
-    passwordRepeat:'',
-    rulesEmail:{
-      required: v=>!!v || 'Введите email'
+    passwordRepeat: '',
+    rulesEmail: {
+      required: v => !!v || 'Введите email'
     },
     rulesPassword: {
       required: value => !!value || 'Введите пароль.',
@@ -105,22 +107,29 @@ export default {
     checkPasswordMatch() {
       return value => (value === this.password ? true : 'Пароли не совпадают');
     },
-    isEmailValid(){
+    isEmailValid() {
       return this.rulesEmail.required(this.email) === true
     }
   },
-  methods:{
+  methods: {
+    async confirmEmail(body) {
+      const email = new IdentityRequest()
+      await email.postEmail(body)
+    },
+
     validateEmail() {
       if (!this.isEmailValid) {
         return;
       }
+      this.confirmEmail(this.email)
       this.form = false
     },
-    validatePassword(){
-      if(!(this.rulesPassword.required(this.password) === true && this.rulesPassword.min(this.password) === true)) {
+    validatePassword() {
+      if (!(this.rulesPassword.required(this.password) === true && this.rulesPassword.min(this.password) === true)) {
         return;
       }
-      this.$router.push( '/post-login' ).catch(err => {})
+      this.$router.push('/post-login').catch(err => {
+      })
       this.overlay = false;
     }
   },
