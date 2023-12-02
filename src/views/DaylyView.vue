@@ -1,28 +1,28 @@
 <template>
   <v-container fluid>
-    <v-row >
+    <v-row>
       <v-col>
-        <v-sheet tile height="54" class="d-flex justify-center" >
-          <v-btn icon class="ma-0  align-self-center"  @click="prev()" >
+        <v-sheet tile height="54" class="d-flex justify-center">
+          <v-btn icon class="ma-0  align-self-center" @click="prev()">
             <v-icon>mdi-chevron-left</v-icon>
           </v-btn>
-          <v-toolbar-title v-if="test" class="text-h6 align-self-center">{{dateDay }}</v-toolbar-title>
-          <v-btn icon class="ma-0  align-self-center" @click="next()" >
+          <v-toolbar-title v-if="test" class="text-h6 align-self-center">{{ dateDay }}</v-toolbar-title>
+          <v-btn icon class="ma-0  align-self-center" @click="next()">
             <v-icon>mdi-chevron-right</v-icon>
           </v-btn>
         </v-sheet>
-        <v-sheet >
+        <v-sheet>
           <v-calendar
-          v-model="focus"
-          style="overflow: hidden;"
-          ref="cal"
-          type="day"
-          event-overlap-mode="stack"
-          :events="events"
-          color="white"
-          event-color="white"
-          mode="stack"
-          class="day-calendar"
+              v-model="focus"
+              style="overflow: hidden;"
+              ref="cal"
+              type="day"
+              event-overlap-mode="stack"
+              :events="events"
+              color="white"
+              event-color="white"
+              mode="stack"
+              class="day-calendar"
           >
             <template v-slot:event="data">
               <div class="day-event">
@@ -52,12 +52,13 @@
 import LectureLogo from "@/components/logos/LectureLogo";
 import CarLogo from "@/components/logos/CarLogo";
 import moment from "moment";
+
 export default {
   name: "ExampleDay.vue",
   components: {LectureLogo, CarLogo},
   data: () => ({
     events: [
-        {
+      {
         name: 'Лекция',
         start: new Date(2023, 10, 13, 3, 0),
         end: new Date(2023, 10, 13, 5, 0),
@@ -103,22 +104,22 @@ export default {
         timed: true,
         teacher: 'Каминский С.В.'
       }
-      ],
-      focus: '',
-      test: false,
-      dateDay: moment().locale('ru').format('Do MMMM'),
-      currentDate: moment(),
-      classesSelectorsToRemove: [
-        '.v-calendar-daily__interval-text',
-        '.v-calendar-daily__interval',
-        '.v-calendar-daily_head-day-label',
-        '.v-calendar-daily_head-weekday',
-        '.v-calendar-daily__day-interval',
-        '.v-calendar-daily__intervals-body',
-        '.v-calendar-daily_head-day'
-      ],
-      value: '2023-11-13',
-      mode: 'stack',
+    ],
+    focus: '',
+    test: false,
+    dateDay: moment().locale('ru').format('Do MMMM'),
+    currentDate: moment(),
+    classesSelectorsToRemove: [
+      '.v-calendar-daily__interval-text',
+      '.v-calendar-daily__interval',
+      '.v-calendar-daily_head-day-label',
+      '.v-calendar-daily_head-weekday',
+      '.v-calendar-daily__day-interval',
+      '.v-calendar-daily__intervals-body',
+      '.v-calendar-daily_head-day'
+    ],
+    value: '2023-11-13',
+    mode: 'stack',
   }),
 
   mounted() {
@@ -132,24 +133,25 @@ export default {
   },
 
   methods: {
-    updateRange () {},
+    updateRange() {
+    },
 
     prev() {
-        this.$refs.cal.prev(1);
-        this.currentDate = this.currentDate.clone().subtract(1, 'day');
-        this.updateDateRange()
-      },
+      this.$refs.cal.prev(1);
+      this.currentDate = this.currentDate.clone().subtract(1, 'day');
+      this.updateDateRange()
+    },
 
     next() {
-        this.$refs.cal.next(1);
-        this.currentDate = this.currentDate.clone().add(1, 'day');
-        this.updateDateRange()
-      },
+      this.$refs.cal.next(1);
+      this.currentDate = this.currentDate.clone().add(1, 'day');
+      this.updateDateRange()
+    },
 
     updateDateRange() {
-     this.dateDay = this.currentDate.clone().locale('ru').format('Do MMMM');
+      this.dateDay = this.currentDate.clone().locale('ru').format('Do MMMM');
     }
-  } ,
+  },
 }
 </script>
 
@@ -196,16 +198,20 @@ export default {
     .theme--light.v-calendar-daily .v-calendar-daily__day-interval {
       border-top: #e0e0e0 0px;
     }
+
     .theme--light.v-calendar-daily {
       border-top: none;
     }
   }
+
   border-top: none;
 }
-.v-calendar-daily__scroll-area{
+
+.v-calendar-daily__scroll-area {
   overflow-y: hidden;
 }
+
 .theme--light.v-calendar-daily .v-calendar-daily__day-interval {
-    border-top: #e0e0e0 0px;
+  border-top: #e0e0e0 0px;
 }
 </style>

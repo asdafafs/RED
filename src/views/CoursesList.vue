@@ -1,123 +1,125 @@
 <script>
 import UsersRequest from "@/services/UsersRequest";
-  export default {
-    data: () => ({
-      test: null,
-      dialog: false,
-      dialogDelete: false,
-      headers: [
-        {text: 'Название', align: 'start', sortable: false, value: 'title' },
-        {text: 'Начало', align: 'start', sortable: false, value: 'startTime',},
-        {text: 'Конец', align: 'start', sortable: false, value: 'endTime',},
-        {text: 'Тип занятия',align: 'start', sortable: false, value: 'eventType',},
-        {text: 'Действия', value: 'actions', sortable: false },
-      ],
-      persons: [],
-      editedIndex: -1,
-      deletedIndex: -1,
-      editedItem: {
-        name: '',
-      },
-      defaultItem: {
-        name: '',
-      },
-    }),
 
-    computed: {
-      formTitle() {
-        return this.editedIndex === -1 ? 'Новый элемент' : 'Редактировать элемент';
-      },
+export default {
+  data: () => ({
+    test: null,
+    dialog: false,
+    dialogDelete: false,
+    headers: [
+      {text: 'Название', align: 'start', sortable: false, value: 'title'},
+      {text: 'Начало', align: 'start', sortable: false, value: 'startTime',},
+      {text: 'Конец', align: 'start', sortable: false, value: 'endTime',},
+      {text: 'Тип занятия', align: 'start', sortable: false, value: 'eventType',},
+      {text: 'Действия', value: 'actions', sortable: false},
+    ],
+    persons: [],
+    editedIndex: -1,
+    deletedIndex: -1,
+    editedItem: {
+      name: '',
+    },
+    defaultItem: {
+      name: '',
+    },
+  }),
+
+  computed: {
+    formTitle() {
+      return this.editedIndex === -1 ? 'Новый элемент' : 'Редактировать элемент';
+    },
+  },
+
+  watch: {
+    dialog(val) {
+      val || this.close();
+    },
+    dialogDelete(val) {
+      val || this.closeDelete();
+    },
+  },
+
+  created() {
+    this.initialize();
+  },
+
+
+  methods: {
+    async getUser() {
+      const user = new UsersRequest();
+      await user.getUser().catch(x => console.log(x)).then(x => {
+        this.test = x.data
+      })
     },
 
-    watch: {
-      dialog(val) {
-        val || this.close();
-      },
-      dialogDelete(val) {
-        val || this.closeDelete();
-      },
+    async postUser(body) {
+      const user = new UsersRequest();
+      await user.postUser(body).catch(x => console.log(x))
     },
 
-    created() {
-      this.initialize();
+    async putUser(body) {
+      const user = new UsersRequest();
+      await user.putUser(body).catch(x => console.log(x))
     },
 
-
-    methods: {
-      async getUser(){
-        const user = new UsersRequest();
-        await user.getUser().catch(x => console.log(x)).then(x=>{this.test = x.data})
-      },
-
-      async postUser(body){
-        const user = new UsersRequest();
-        await user.postUser(body).catch(x => console.log(x))
-      },
-
-      async putUser(body){
-        const user = new UsersRequest();
-        await user.putUser(body ).catch(x => console.log(x))
-      },
-
-      async deleteUser(){
-        const user = new UsersRequest();
-        await user.deleteUser(this.deletedIndex).catch(x => console.log(x))
-      },
-
-      async initialize() {
-      },
-
-      editItem(item) {
-        this.editedIndex = this.persons.indexOf(item);
-        this.editedItem = {
-          title: item.title,
-          startTime: item.startTime,
-          endTime: item.endTime,
-          eventType: item.eventType,
-        };
-        this.dialog = true;
-      },
-
-      deleteItem(item) {
-        this.editedIndex = this.persons.indexOf(item);
-        this.editedItem = { name: item.title };
-        this.deletedIndex = item.id
-        this.dialogDelete = true;
-      },
-
-      async deleteItemConfirm() {
-        this.persons.splice(this.editedIndex, 1);
-        this.closeDelete();
-      },
-
-      close() {
-        this.dialog = false;
-        this.$nextTick(() => {
-          this.editedItem = { name: '' };
-          this.editedIndex = -1;
-        });
-      },
-
-      closeDelete() {
-        this.dialogDelete = false;
-        this.$nextTick(() => {
-          this.editedItem = { name: '' };
-          this.editedIndex = -1;
-        });
-      },
-
-      async save() {
-        if (this.editedIndex > -1) {
-          this.$set(this.persons, this.editedIndex, this.editedItem);
-          this.close();
-        }
-        else {
-          this.persons.push(this.editedItem);
-          this.close();
-        }
-      },
+    async deleteUser() {
+      const user = new UsersRequest();
+      await user.deleteUser(this.deletedIndex).catch(x => console.log(x))
     },
-  };
+
+    async initialize() {
+    },
+
+    editItem(item) {
+      this.editedIndex = this.persons.indexOf(item);
+      this.editedItem = {
+        title: item.title,
+        startTime: item.startTime,
+        endTime: item.endTime,
+        eventType: item.eventType,
+      };
+      this.dialog = true;
+    },
+
+    deleteItem(item) {
+      this.editedIndex = this.persons.indexOf(item);
+      this.editedItem = {name: item.title};
+      this.deletedIndex = item.id
+      this.dialogDelete = true;
+    },
+
+    async deleteItemConfirm() {
+      this.persons.splice(this.editedIndex, 1);
+      this.closeDelete();
+    },
+
+    close() {
+      this.dialog = false;
+      this.$nextTick(() => {
+        this.editedItem = {name: ''};
+        this.editedIndex = -1;
+      });
+    },
+
+    closeDelete() {
+      this.dialogDelete = false;
+      this.$nextTick(() => {
+        this.editedItem = {name: ''};
+        this.editedIndex = -1;
+      });
+    },
+
+    async save() {
+      if (this.editedIndex > -1) {
+        this.$set(this.persons, this.editedIndex, this.editedItem);
+        this.close();
+      } else {
+        this.persons.push(this.editedItem);
+        this.close();
+      }
+    },
+  },
+};
 
 </script>
 <template>
@@ -135,7 +137,7 @@ import UsersRequest from "@/services/UsersRequest";
     <template v-slot:top>
       <v-toolbar flat>
         <v-spacer></v-spacer>
-        <v-dialog v-model="dialog" max-width="500px" >
+        <v-dialog v-model="dialog" max-width="500px">
           <template v-slot:activator="{ on, attrs }">
             <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on">
               Новое занятие
@@ -148,22 +150,22 @@ import UsersRequest from "@/services/UsersRequest";
             <v-card-text>
               <v-container>
                 <v-row>
-                  <v-col cols="12" sm="6" md="4" >
+                  <v-col cols="12" sm="6" md="4">
                     <v-text-field
-                      v-model="editedItem.title"
-                      label="Название"
+                        v-model="editedItem.title"
+                        label="Название"
                     ></v-text-field>
                     <v-text-field
-                      v-model="editedItem.startTime"
-                      label="Начало занятия"
+                        v-model="editedItem.startTime"
+                        label="Начало занятия"
                     ></v-text-field>
                     <v-text-field
-                      v-model="editedItem.endTime"
-                      label="Конец занятия"
+                        v-model="editedItem.endTime"
+                        label="Конец занятия"
                     ></v-text-field>
                     <v-text-field
-                      v-model="editedItem.eventType"
-                      label="Тип занятия"
+                        v-model="editedItem.eventType"
+                        label="Тип занятия"
                     ></v-text-field>
                   </v-col>
                 </v-row>
@@ -171,7 +173,7 @@ import UsersRequest from "@/services/UsersRequest";
             </v-card-text>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn  color="blue darken-1" text @click="close">
+              <v-btn color="blue darken-1" text @click="close">
                 Отмена
               </v-btn>
               <v-btn color="blue darken-1" text @click="save">
@@ -195,15 +197,15 @@ import UsersRequest from "@/services/UsersRequest";
     </template>
     <template v-slot:item.actions="{ item }">
       <v-icon
-        small
-        class="mr-2"
-        @click="editItem(item)"
+          small
+          class="mr-2"
+          @click="editItem(item)"
       >
         mdi-pencil
       </v-icon>
       <v-icon
-        small
-        @click="deleteItem(item)"
+          small
+          @click="deleteItem(item)"
       >
         mdi-delete
       </v-icon>

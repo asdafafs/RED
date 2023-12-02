@@ -8,28 +8,28 @@
             Для продолжения работы в RED: Расписание, пожалуйста, авторизуйтесь через номер телефона.
           </v-card-subtitle>
           <LogoRed class="pos"></LogoRed>
-          <v-card-text class="pb-0 " >
+          <v-card-text class="pb-0 ">
             <vue-text-mask
-              class="grey phone white--text"
-              v-model="value"
-              :mask="mask"
-              placeholderChar="#"
+                class="grey phone white--text"
+                v-model="value"
+                :mask="mask"
+                placeholderChar="#"
             ></vue-text-mask>
             <v-alert v-if="showPhoneNumberAlert && !isPhoneNumberValid" type="error">
               Введите корректный номер телефона (10 цифр)
             </v-alert>
             <v-text-field
-              background-color="grey"
-              solo
-              v-model="password"
-              :append-icon="show1 ? 'mdi-eye ' : 'mdi-eye-off '"
-              :rules="[rulesPassword.required, rulesPassword.min]"
-              :type="show1 ? 'text' : 'password'"
-              name="input-10-1"
-              label="Пароль"
-              hint="Минимум 8 символов"
-              counter
-              @click:append="show1 = !show1"
+                background-color="grey"
+                solo
+                v-model="password"
+                :append-icon="show1 ? 'mdi-eye ' : 'mdi-eye-off '"
+                :rules="[rulesPassword.required, rulesPassword.min]"
+                :type="show1 ? 'text' : 'password'"
+                name="input-10-1"
+                label="Пароль"
+                hint="Минимум 8 символов"
+                counter
+                @click:append="show1 = !show1"
             ></v-text-field>
             <v-alert v-if="showPasswordAlert && !isPasswordValid" type="error">
               Введите корректный пароль (минимум 8 символов)
@@ -37,10 +37,10 @@
           </v-card-text>
           <v-card-actions>
             <v-btn
-              color="#4E7AEC"
-              @click="validateForm"
-              class="rounded-lg pa-0 "
-              block
+                color="#4E7AEC"
+                @click="validateForm"
+                class="rounded-lg pa-0 "
+                block
             >
               Получить код в СМС
             </v-btn>
@@ -51,7 +51,7 @@
           <v-card-subtitle class="black--text">
             Для потверждения входа введите код из СМС.
           </v-card-subtitle>
-          <v-card-text class="pb-0 " >
+          <v-card-text class="pb-0 ">
             <v-text-field
                 background-color="grey"
                 solo
@@ -79,7 +79,7 @@ import LogoRed from "@/components/logos/LogoRed.vue";
 
 export default {
   name: 'AuthorizationForm',
-  components: { VueTextMask, LogoRed },
+  components: {VueTextMask, LogoRed},
   data: () => ({
     overlay: true,
     form: true,
@@ -123,7 +123,7 @@ export default {
 };
 </script>
 <style scoped>
-.phone{
+.phone {
   width: inherit;
   padding: 13px;
   margin-bottom: 2px;

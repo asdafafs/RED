@@ -1,6 +1,7 @@
 <script>
 import CarLogo from "@/components/logos/CarLogo.vue";
 import LectureLogo from "@/components/logos/LectureLogo.vue";
+
 export default {
   components: {LectureLogo, CarLogo},
   mounted() {
@@ -33,7 +34,7 @@ export default {
 
   data: () => ({
     events: [
-        {
+      {
         name: 'Лекция',
         start: new Date(2023, 10, 13, 3, 0),
         end: new Date(2023, 10, 13, 5, 0),
@@ -79,7 +80,7 @@ export default {
         timed: true,
         teacher: 'Каминский С.В.'
       }
-      ],
+    ],
     num: 70,
     isMobile: false,
     isButtonPressed: [false, false, false,],
@@ -94,31 +95,30 @@ export default {
     value: '',
   }),
   methods: {
-    updateRange () {},
+    updateRange() {
+    },
 
-    rnd (a, b) {
+    rnd(a, b) {
       return Math.floor((b - a + 1) * Math.random()) + a
     },
 
     getEventColor(event) {
       if (event.type === 'lecture') {
         return '#9DB9FF';
-    }
-      else if (event.type === 'practice') {
+      } else if (event.type === 'practice') {
         return '#E9E9E8';
-    }
-      else {
+      } else {
         return 'rgba(0,0,0,0)'
-    }
-  },
-   changeButtonState(index) {
-     if (this.lastPressedIndex !== -1) {
+      }
+    },
+    changeButtonState(index) {
+      if (this.lastPressedIndex !== -1) {
         this.$set(this.isButtonPressed, this.lastPressedIndex, false);
       }
       this.$set(this.isButtonPressed, index, true);
       this.lastPressedIndex = index;
     },
-     handleResize() {
+    handleResize() {
       if (window.innerWidth < 1260) {
         this.num = 30;
       } else {
@@ -132,13 +132,13 @@ export default {
   <v-container fluid>
     <v-row>
       <v-col>
-        <v-sheet tile height="54" class="d-flex justify-center" >
-          <v-btn icon class="ma-0  align-self-center" @click="$refs.calendar.prev()" >
+        <v-sheet tile height="54" class="d-flex justify-center">
+          <v-btn icon class="ma-0  align-self-center" @click="$refs.calendar.prev()">
             <v-icon>mdi-chevron-left</v-icon>
           </v-btn>
           <v-toolbar-title v-if="test" class="text-h6 align-self-center">{{ $refs.calendar.title.split(' ')[0] }}
           </v-toolbar-title>
-          <v-btn icon class="ma-0  align-self-center" @click="$refs.calendar.next()" >
+          <v-btn icon class="ma-0  align-self-center" @click="$refs.calendar.next()">
             <v-icon>mdi-chevron-right</v-icon>
           </v-btn>
         </v-sheet>
@@ -150,31 +150,31 @@ export default {
               :event-overlap-mode="mode"
               :type="type"
               :events="events"
-              :event-color = "getEventColor"
+              :event-color="getEventColor"
               :event-ripple="false"
-              :event-height = "num"
-              :hide-header = false
-               @change = "updateRange"
+              :event-height="num"
+              :hide-header=false
+              @change="updateRange"
               event-more-text="+ {0}"
           >
             <template v-slot:event="{event}">
-             <v-container class="pa-1 mx-0 d-flex " >
-                <v-row class="ma-0  " >
-                  <v-col cols="4" class = "black--text pa-0 align-self-center d-none d-lg-block" >
-                    <div class="text-subtitle-2 d-flex justify-center">{{event.startTime}}</div>
+              <v-container class="pa-1 mx-0 d-flex ">
+                <v-row class="ma-0  ">
+                  <v-col cols="4" class="black--text pa-0 align-self-center d-none d-lg-block">
+                    <div class="text-subtitle-2 d-flex justify-center">{{ event.startTime }}</div>
                   </v-col>
-                  <v-col class = "d-lg-none pa-0" style="display: flex; align-items: center; justify-content: center;">
+                  <v-col class="d-lg-none pa-0" style="display: flex; align-items: center; justify-content: center;">
                     <div class="logo ">
                       <car-logo v-if="event.type === 'practice'"/>
                       <lecture-logo v-if="event.type === 'lecture'"/>
                     </div>
                   </v-col>
-                  <v-col class = "black--text pa-0 align-self-center d-none d-lg-block">
-                    <div class="font-weight-bold">{{event.name}}</div>
-                    <div>Преподаватель:<br>{{event.teacher}}</div>
+                  <v-col class="black--text pa-0 align-self-center d-none d-lg-block">
+                    <div class="font-weight-bold">{{ event.name }}</div>
+                    <div>Преподаватель:<br>{{ event.teacher }}</div>
                   </v-col>
                 </v-row>
-             </v-container>
+              </v-container>
             </template>
           </v-calendar>
         </v-sheet>
@@ -188,52 +188,49 @@ export default {
   min-height: 20em;
 }
 
-@media screen and (max-width: 1260px){
+@media screen and (max-width: 1260px) {
   .v-calendar-weekly__week {
     min-height: 10em;
   }
 }
 
-@media screen and (max-width: 600px){
+@media screen and (max-width: 600px) {
   .v-calendar-weekly__week {
     min-height: 5em;
   }
 }
 
 .theme--light.v-btn {
-    color: #4E7AEC;
+  color: #4E7AEC;
 }
 
-.v-event{
+.v-event {
   display: flex;
   justify-content: center;
-  width: 98% ;
+  width: 98%;
   background-color: rgb(157, 185, 255);
   border-color: rgb(157, 185, 255);
   margin: 0px 0px 0px 1.1%;
 }
 
-.v-event.v-event-start.v-event-end.white--text{
+.v-event.v-event-start.v-event-end.white--text {
   min-width: 98%;
 }
 
-.v-event-more{
+.v-event-more {
   font-size: 1em !important;
 }
 
-.btn
-{
+.btn {
   text-transform: unset !important;
   font-size: 1.5em;
 }
 
-.custom-bg
-{
+.custom-bg {
   background-color: #1e1f22;
 }
 
-.custom_text
-{
+.custom_text {
   color: white;
 }
 </style>

@@ -1,4 +1,5 @@
 <script>
+// eslint-disable-next-line no-unused-vars
 import TestService from "@/services/TestService";
 
 export default {
@@ -7,17 +8,17 @@ export default {
     console.log('here')
   },
   async mounted() {
-    const testService = new TestService()
-    await testService.getTest()
-        .then(x => console.log(x))
-    await testService.getTestException()
-        .then(x => console.log(x))
+    // const testService = new TestService()
+    //  await testService.getTest()
+    //     .then(x => console.log(x))
+    // await testService.getTestException()
+    //     .then(x => console.log(x))
   }
 }
 </script>
 
 <template>
-<div></div>
+  <div></div>
 </template>
 
 <style scoped>

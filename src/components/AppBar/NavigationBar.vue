@@ -47,7 +47,7 @@
             {{ user }}
           </div>
           <div style="text-align: left;">
-            {{student ? role[0] : role[1]}}
+            {{ student ? role[0] : role[1] }}
           </div>
         </div>
         <span class="mdi mdi-login" style="transform: scale(1.5)"></span>
@@ -65,8 +65,8 @@ export default {
     student: {},
     user: {}
   },
-  methods:{
-    clickLog(drawer){
+  methods: {
+    clickLog(drawer) {
       console.log(drawer)
     }
   }
@@ -76,7 +76,8 @@ export default {
 .rotate {
   transform: rotate(45deg) scale(1.8);
 }
-.list-item{
+
+.list-item {
   max-height: 4em;
   overflow-y: auto;
 }

@@ -1,5 +1,5 @@
 <template>
-  <v-overlay :value="overlay"  contained class="blur" >
+  <v-overlay :value="overlay" contained class="blur">
     <v-row align="center" justify="center" class="width ">
       <v-col cols="4" class=" pa-0">
         <v-card class="d-flex justify-space-between flex-column height white rounded-lg ma-2">
@@ -55,10 +55,10 @@ export default {
   name: 'AuthorizationForm',
   components: {LogoRed},
   props: {
-     overlay: {
-       type: Boolean,
-       required: true
-     }
+    overlay: {
+      type: Boolean,
+      required: true
+    }
   },
   methods: {
     async vkLogIn() {
