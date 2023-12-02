@@ -47,6 +47,7 @@
 </template>
 <script>
 import LogoRed from "@/components/logos/LogoRed.vue";
+import IdentityRequest from "@/services/IdentityRequest";
 
 export default {
   name: 'MailAuthorization',
@@ -69,11 +70,19 @@ export default {
     smsCode: ''
   }),
   methods: {
-    validateForm() {
+    async login(body){
+      const login = new IdentityRequest()
+      await login.postLogin(body).catch(x => console.log(x))
+    },
+
+    async validateForm() {
       if (!this.isPasswordValid) {
         return;
       }
 
+      const body = {"email": this.email,  "password": this.password }
+
+      await this.login(body)
       this.$router.push( '/post-login' ).catch(err => {})
       this.overlay = false
     }

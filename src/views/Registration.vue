@@ -1,27 +1,27 @@
 <template>
   <div>
     <v-row align="center" justify="center" class=" width">
-      <v-col cols="4" class=" pa-0" >
+      <v-col cols="4" class=" pa-0">
         <v-dialog v-model="overlay" persistent width="auto" content-class="elevation-0">
-          <v-card  class="d-flex justify-space-between flex-column height width rounded-lg ma-2" v-if="overlay" >
+          <v-card class="d-flex justify-space-between flex-column height width rounded-lg ma-2" v-if="overlay">
             <v-card-title class="black--text"> Регистрация</v-card-title>
             <v-card-subtitle class="black--text">
               Для продолжения работы в RED: Расписание, пожалуйста, зарегистрируйтесь
             </v-card-subtitle>
             <LogoRed class="pos"></LogoRed>
-            <v-card-text class="pb-0 " >
-              <v-text-field v-model="name" solo label="Фамилия" :rules="[rulesFullname.required]" ></v-text-field>
-              <v-text-field v-model="surname" solo label="Имя" :rules="[rulesFullname.required]" ></v-text-field>
-              <v-text-field v-model="lastName" solo label="Отчество" :rules="[rulesFullname.required]" ></v-text-field>
+            <v-card-text class="pb-0 ">
+              <v-text-field v-model="name" solo label="Фамилия" :rules="[rulesFullname.required]"></v-text-field>
+              <v-text-field v-model="surname" solo label="Имя" :rules="[rulesFullname.required]"></v-text-field>
+              <v-text-field v-model="lastName" solo label="Отчество" :rules="[rulesFullname.required]"></v-text-field>
               <v-text-field
-                solo
-                color="black"
-                v-model="email"
-                :readonly="loading"
-                :rules="[rulesEmail.required]"
-                class="mb-2"
-                clearable
-                label="Email"
+                  solo
+                  color="black"
+                  v-model="email"
+                  :readonly="loading"
+                  :rules="[rulesEmail.required]"
+                  class="mb-2"
+                  clearable
+                  label="Email"
               ></v-text-field>
               <vue-text-mask class="phone" v-model="phoneNumber" :mask="mask" placeholderChar="#"></vue-text-mask>
               <v-col v-if="!isPhoneNumberValid" class="red--text">{{ requiredMessage }}</v-col>
@@ -30,7 +30,7 @@
                   v-model="password"
                   :rules="[rulesPassword.required, rulesPassword.min]"
                   :append-icon="showPass ? 'mdi-eye ' : 'mdi-eye-off '"
-                   :type="showPass ? 'text' : 'password'"
+                  :type="showPass ? 'text' : 'password'"
                   @click:append="showPass = !showPass"
                   name="input-10-1"
                   label="Пароль"
@@ -51,28 +51,29 @@
 <script>
 import LogoRed from "@/components/logos/LogoRed.vue";
 import VueTextMask from "vue-text-mask";
+import IdentityRequest from "@/services/IdentityRequest";
 
 export default {
   name: 'AuthorizationForm',
-  components: {VueTextMask,  LogoRed },
+  components: {VueTextMask, LogoRed},
   data: () => ({
     overlay: true,
     showPass: true,
     loading: false,
     show1: false,
     email: '',
-    name:'',
-    surname:'',
-    lastName:'',
+    name: '',
+    surname: '',
+    lastName: '',
     phoneNumber: '7',
     requiredMessage: 'Номер телефона обязателен',
     password: '',
     mask: ['+', /\d/, '(', /[1-9]/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, '-', /\d/, /\d/],
-    rulesFullname:{
-      required: v=>!!v || 'Введите ФИО'
+    rulesFullname: {
+      required: v => !!v || 'Введите ФИО'
     },
-    rulesEmail:{
-      required: v=>!!v || 'Введите email'
+    rulesEmail: {
+      required: v => !!v || 'Введите email'
     },
     rulesPassword: {
       required: value => !!value || 'Введите пароль.',
@@ -81,22 +82,41 @@ export default {
     smsCode: ''
   }),
   methods: {
-    validateForm() {
+    async registration(body) {
+      const registr = new IdentityRequest()
+      await registr.postRegister(body).catch(x => console.log(x))
+    },
+
+    async validateForm() {
+      const body = {
+        "email": this.email,
+        "name": this.name,
+        "surname": this.surname,
+        "middleName": this.lastName,
+        "phoneNumber": this.phoneNumber,
+        "password": this.password,
+        "userType": 1
+      }
+      console.log(body)
       if (!this.isPhoneNumberValid || !this.isEmailValid || !this.isPasswordValid || !this.isNameValid) {
+        console.log(1)
         return;
       }
-      this.$router.push( '/post-login' ).catch(err => {})
-      this.overlay = false;
+
+      console.log(body)
+      await this.registration(body)
+      console.log(2)
+      //this.$router.push( '/post-login' ).catch(err => {})
     },
   },
   computed: {
     isNameValid() {
-    return this.rulesFullname.required(this.name) === true && this.rulesFullname.required(this.surname) === true && this.rulesFullname.required(this.lastName) === true
-  },
+      return this.rulesFullname.required(this.name) === true && this.rulesFullname.required(this.surname) === true && this.rulesFullname.required(this.lastName) === true
+    },
 
     isEmailValid() {
-    return this.rulesEmail.required(this.email) === true;
-  },
+      return this.rulesEmail.required(this.email) === true;
+    },
 
     isPhoneNumberValid() {
       return this.phoneNumber.replace(/\D/g, '').length === 11;
@@ -112,17 +132,16 @@ export default {
   width: 20em;
 }
 
-.phone{
+.phone {
   width: inherit;
   padding: 13px;
   margin-bottom: 2px;
   font-size: 16px;
   border-radius: 5px;
   background-color: white;
-  box-shadow:
-      0px 3px 1px -2px rgba(0, 0, 0, 0.2),
-      0px 2px 2px 0px rgba(0, 0, 0, 0.14),
-      0px 1px 5px 0px rgba(0, 0, 0, 0.12);
+  box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2),
+  0px 2px 2px 0px rgba(0, 0, 0, 0.14),
+  0px 1px 5px 0px rgba(0, 0, 0, 0.12);
 }
 
 .height {
