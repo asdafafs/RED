@@ -4,6 +4,7 @@ import AppButtons from "@/components/AppBar/AppButtons.vue";
 import MobileAppBar from "@/components/AppBar/MobileAppBar.vue";
 import UserProfile from "@/components/AppBar/UserProfile.vue";
 import DesktopLogo from "@/components/AppBar/DesktopLogo.vue";
+
 export default {
   components: {DesktopLogo, UserProfile, MobileAppBar, AppButtons, NavigationBar},
   data() {
@@ -16,11 +17,11 @@ export default {
     }
   },
 
-   methods: {
-     checkWindowWidth() {
-       this.showDrawer = window.innerWidth >= 1260;
-     },
-   },
+  methods: {
+    checkWindowWidth() {
+      this.showDrawer = window.innerWidth >= 1260;
+    },
+  },
 
   created() {
     this.checkWindowWidth();
@@ -33,12 +34,12 @@ export default {
 }
 </script>
 <template>
-  <v-container >
+  <v-container>
     <NavigationBar :drawer.sync="drawer" :role="role" :show-drawer="showDrawer" :student="student" :user="user"/>
-    <v-app-bar app density="compact" color="#1e1f22" class = "appbar position_component" >
-      <v-container  class="pa-0 my-0" v-if = "showDrawer" fluid>
-        <v-row no-gutters >
-          <v-col cols = 2 >
+    <v-app-bar app density="compact" color="#1e1f22" class="appbar position_component">
+      <v-container class="pa-0 my-0" v-if="showDrawer" fluid>
+        <v-row no-gutters>
+          <v-col cols=2>
             <DesktopLogo/>
           </v-col>
           <v-col>
@@ -58,12 +59,12 @@ export default {
 /deep/ .v-toolbar__content {
   padding: 0 !important;
 }
-.appbar
-{
+
+.appbar {
   z-index: auto;
 }
 
-.position_component{
+.position_component {
   z-index: 2;
 }
 </style>

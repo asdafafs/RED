@@ -2,16 +2,16 @@
 import AuthorizationForm from "@/views/SelectAuthorization.vue";
 
 export default {
-    components: {AuthorizationForm},
-    data: () => ({
-      overlay: true,
-    }),
-  }
+  components: {AuthorizationForm},
+  data: () => ({
+    overlay: true,
+  }),
+}
 </script>
 <template>
- <v-row align="center" class="ma-4" justify="center">
-      <v-row justify="center">
-        <AuthorizationForm :overlay.sync="overlay"/>
-      </v-row>
+  <v-row align="center" class="ma-4" justify="center">
+    <v-row justify="center">
+      <AuthorizationForm :overlay.sync="overlay"/>
+    </v-row>
   </v-row>
 </template>

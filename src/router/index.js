@@ -22,110 +22,109 @@ import CoursesList from "@/views/CoursesList.vue";
 Vue.use(VueRouter)
 
 const routes = [
-  {
-    path: '/',
-    name: 'main',
-    component: AuthorizationView,
-    children: [
-    ]
-  },
-  {
-    path:'/mail',
-    name: 'mail',
-    component: MailAuthorization,
-  },
-  {
-    path: '/vkAuthorization',
-    name: 'vk',
-    component: VkAuthorization,
-  },
-  {
-    path: '/registration',
-    name: 'registration',
-    component: Registration,
-  },
-  {
-    path: '/recoveryPassWord',
-    name: 'recPass',
-    component: RecoveryPassword,
-  },
-  {
-    path: '/post-login',
-    name: 'post-login',
-    component: PostLoginPage,
-  },
-  {
-    path: '/instructor',
-    name: 'instructor',
-    component: InstructorView,
-  },
-  {
-    path: '/admin',
-    name: 'admin',
-    component: AdminPanel,
-  },
-  {
-    path: '*',
-    name: 'notFound',
-    component: NotFoundView,
-  },
+    {
+        path: '/',
+        name: 'main',
+        component: AuthorizationView,
+        children: []
+    },
+    {
+        path: '/mail',
+        name: 'mail',
+        component: MailAuthorization,
+    },
+    {
+        path: '/vkAuthorization',
+        name: 'vk',
+        component: VkAuthorization,
+    },
+    {
+        path: '/registration',
+        name: 'registration',
+        component: Registration,
+    },
+    {
+        path: '/recoveryPassWord',
+        name: 'recPass',
+        component: RecoveryPassword,
+    },
+    {
+        path: '/post-login',
+        name: 'post-login',
+        component: PostLoginPage,
+    },
+    {
+        path: '/instructor',
+        name: 'instructor',
+        component: InstructorView,
+    },
+    {
+        path: '/admin',
+        name: 'admin',
+        component: AdminPanel,
+    },
+    {
+        path: '*',
+        name: 'notFound',
+        component: NotFoundView,
+    },
 
-  {
-    path: "/testPlan",
-    name: 'plan',
-    component: StudentPlanView,
-    children:[
-        {
-          path: "mainCal",
-          name: 'main',
-          component: MainCalendar,
-          children:[
-              {
-                path: "testDay",
-                name: 'day',
-                component: DayView,
-              },
+    {
+        path: "/testPlan",
+        name: 'plan',
+        component: StudentPlanView,
+        children: [
             {
-              path: "testWeek",
-              name: 'week',
-              component: WeeklyView,
+                path: "mainCal",
+                name: 'main',
+                component: MainCalendar,
+                children: [
+                    {
+                        path: "testDay",
+                        name: 'day',
+                        component: DayView,
+                    },
+                    {
+                        path: "testWeek",
+                        name: 'week',
+                        component: WeeklyView,
+                    },
+                    {
+                        path: "testMonth",
+                        name: 'month',
+                        component: MonthView,
+                    },
+                ]
             },
             {
-              path: "testMonth",
-              name: 'month',
-              component: MonthView,
+                path: 'progress',
+                name: 'progress',
+                component: ProgressBar,
+            }
+        ]
+    },
+    {
+        path: "/schedule",
+        name: 'schedule',
+        component: scheduleView,
+        children: [
+            {
+                path: "testMonth",
+                name: 'month',
+                component: MonthView,
             },
-          ]
-        },
-      {
-        path: 'progress',
-        name: 'progress',
-        component: ProgressBar,
-      }
-    ]
-  },
-  {
-    path: "/schedule",
-    name: 'schedule',
-    component: scheduleView,
-    children: [
-        {
-        path: "testMonth",
-        name: 'month',
-        component: MonthView,
-      },
-    ]
-  },
-  {
-    path: "/courses",
-    name: 'courses',
-    component: CoursesList,
-  },
+        ]
+    },
+    {
+        path: "/courses",
+        name: 'courses',
+        component: CoursesList,
+    },
 ]
 
 const router = new VueRouter({
-  routes,
-  mode: 'history'
+    routes,
+    mode: 'history'
 })
 
 export default router

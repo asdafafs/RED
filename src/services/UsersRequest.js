@@ -5,19 +5,19 @@ export default class UsersRequest extends HTTPService {
         super("User/Student");
     }
 
-    getUser(){
+    getUser() {
         return this.get("GetStudent")
     }
 
-    postUser(code){
+    postUser(code) {
         return this.post("AddStudent", code)
     }
 
-    putUser(code){
+    putUser(code) {
         return this.put("UpdateStudent", code)
     }
 
-    deleteUser(code){
-        return this.delete("DeleteStudent", {id : code})
+    deleteUser(code) {
+        return this.delete("DeleteStudent", {id: code})
     }
 }

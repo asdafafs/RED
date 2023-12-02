@@ -1,5 +1,5 @@
 <template>
-  <v-container class="pa-0 my-0"  fluid>
+  <v-container class="pa-0 my-0" fluid>
     <v-row no-gutters>
       <v-col cols=12>
         <v-container class="pa-0 height-container" fluid>
@@ -25,18 +25,17 @@ export default {
   name: 'MovileAppBar',
   components: {LogoRed},
   props: {
-    drawer: {
-    }
+    drawer: {}
   },
-  methods:{
-    clickLog(drawer){
+  methods: {
+    clickLog(drawer) {
       console.log(drawer)
     }
   }
 }
 </script>
 <style>
-.height-container{
+.height-container {
   height: 100%;
 }
 </style>

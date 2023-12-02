@@ -6,7 +6,7 @@
       </v-col>
     </v-row>
     <v-row class="d-flex mt-0 ga-3" no-gutters>
-      <v-col  sm="3" md="3" lg="1">
+      <v-col sm="3" md="3" lg="1">
         <v-btn text class="black--text btn pa-0" width="100%"
                :class="{'custom-bg': isButtonPressed[0],}"
                @click="changeButtonState(0);
@@ -15,7 +15,7 @@
           <span :class="{ 'custom_text':isButtonPressed[0]}">День</span>
         </v-btn>
       </v-col>
-      <v-col  sm="3" md="3" lg="1">
+      <v-col sm="3" md="3" lg="1">
         <v-btn text class="black--text btn pa-0" width="100%"
                :class="{'custom-bg': isButtonPressed[1]}"
                @click="changeButtonState(1);
@@ -23,7 +23,7 @@
           <span :class="{ 'custom_text':isButtonPressed[1]}">Неделя</span>
         </v-btn>
       </v-col>
-      <v-col  sm="3" md="3" lg="1">
+      <v-col sm="3" md="3" lg="1">
         <v-btn text class="black--text btn pa-0" width="100%"
                :class="{'custom-bg': isButtonPressed[2]}"
                @click="changeButtonState(2);
@@ -47,8 +47,8 @@ export default {
   data: () => ({
     isButtonPressed: [false, false, false]
   }),
-    methods:{
-    changeButtonState(index){
+  methods: {
+    changeButtonState(index) {
       if (this.lastPressedIndex !== -1) {
         this.$set(this.isButtonPressed, this.lastPressedIndex, false);
       }
@@ -62,13 +62,12 @@ export default {
 .btn {
   font-size: 1.125rem;
 }
-.custom-bg
-{
+
+.custom-bg {
   background-color: #1e1f22;
 }
 
-.custom_text
-{
+.custom_text {
   color: white;
 }
 </style>

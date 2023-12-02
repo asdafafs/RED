@@ -117,14 +117,14 @@ export default {
         this.close();
       } else {
         this.persons.push(this.editedItem);
-        const cock = {
+        const body = {
           "name": this.editedItem.name,
           "surname": this.editedItem.surname,
           "lastname": this.editedItem.lastName,
           "vkid": Math.floor(Math.random() * 10000000),
           "groupId": 2
         }
-        await this.postUser(cock)
+        await this.postUser(body)
         this.close();
       }
     },

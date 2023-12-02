@@ -1,5 +1,5 @@
 <template>
-  <v-container class="pa-0 height-container" fluid >
+  <v-container class="pa-0 height-container" fluid>
     <v-row no-gutters align="center" class="height-container">
       <v-col cols=12 class="d-flex justify-center align-center">
         <LogoRed></LogoRed>
@@ -16,7 +16,7 @@ export default {
 }
 </script>
 <style>
-.height-container{
+.height-container {
   height: 100%;
 }
 </style>
