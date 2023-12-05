@@ -2,22 +2,22 @@ import HTTPService from "@/services/HTTPService";
 
 export default class UsersRequest extends HTTPService {
     constructor() {
-        super("User/Student");
+        super("User");
     }
 
     getUser() {
-        return this.get("GetStudent")
+        return this.get("student")
     }
 
     postUser(code) {
-        return this.post("AddStudent", code)
+        return this.post("student", code)
     }
 
     putUser(code) {
-        return this.put("UpdateStudent", code)
+        return this.put("student", code)
     }
 
     deleteUser(code) {
-        return this.delete("DeleteStudent", {id: code})
+        return this.delete("student", {id: code})
     }
 }

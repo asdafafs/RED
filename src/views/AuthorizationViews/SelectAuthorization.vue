@@ -9,37 +9,20 @@
           </v-card-subtitle>
           <LogoRed class="pos"></LogoRed>
           <v-card-actions class="flex-column">
-            <v-btn
-                color="#4E7AEC"
-                @click="$router.push('/mail').catch(err => {})"
-                class="rounded-lg pa-0 ma-0"
-                block
-            >
+            <v-btn color="#4E7AEC" @click="$router.push('/mail').catch(err => {})"
+                   class="rounded-lg pa-0 ma-0" block>
               Войти
             </v-btn>
-            <v-btn
-                color="#4E7AEC"
-                @click="$router.push('/recoveryPassWord').catch(err => {})"
-                class="rounded-lg pa-0 ma-0"
-                block
-                text
-            >
+            <v-btn color="#4E7AEC" @click="$router.push('/recoveryPassWord').catch(err => {})"
+                class="rounded-lg pa-0 ma-0" block text >
               Забыли пароль?
             </v-btn>
-            <v-btn
-                color="#4E7AEC"
-                @click="$router.push('/registration').catch(err => {})"
-                class="rounded-lg pa-0 ma-0"
-                block
-            >
+            <v-btn color="#4E7AEC" @click="$router.push('/registration').catch(err => {})"
+                class="rounded-lg pa-0 ma-0" block >
               Регистрация
             </v-btn>
-            <v-btn
-                color="#4E7AEC"
-                @click="vkLogIn"
-                class="rounded-lg pa-0 ma-0"
-                block
-            >
+            <v-btn color="#4E7AEC" @click="vkLogIn"
+                class="rounded-lg pa-0 ma-0" block >
               Войти через VK
             </v-btn>
           </v-card-actions>

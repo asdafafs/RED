@@ -84,9 +84,11 @@ export default {
   methods: {
     async registration(body) {
       const registr = new IdentityRequest()
-      await registr.postRegister(body).catch(x => console.log(x))
+      await registr.postRegister(body)
+          .then(result => console.log(result))
+          .catch(x => console.log(x))
     },
-
+    
     async validateForm() {
       const body = {
         "email": this.email,
@@ -97,16 +99,12 @@ export default {
         "password": this.password,
         "userType": 1
       }
-      console.log(body)
       if (!this.isPhoneNumberValid || !this.isEmailValid || !this.isPasswordValid || !this.isNameValid) {
-        console.log(1)
         return;
       }
 
-      console.log(body)
       await this.registration(body)
-      console.log(2)
-      //this.$router.push( '/post-login' ).catch(err => {})
+      this.$router.push('/post-login').catch(err => {})
     },
   },
   computed: {

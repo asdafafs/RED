@@ -67,6 +67,9 @@ export default {
     },
 
     async initialize() {
+      await this.getUser()
+      let cal = await this.test
+      this.persons = cal;
     },
 
     editItem(item) {
@@ -161,18 +164,9 @@ export default {
               <v-container>
                 <v-row>
                   <v-col cols="12" sm="6" md="4">
-                    <v-text-field
-                        v-model="editedItem.name"
-                        label="Имя"
-                    ></v-text-field>
-                    <v-text-field
-                        v-model="editedItem.surname"
-                        label="Фамилия"
-                    ></v-text-field>
-                    <v-text-field
-                        v-model="editedItem.lastName"
-                        label="Отчество"
-                    ></v-text-field>
+                    <v-text-field v-model="editedItem.name" label="Имя" ></v-text-field>
+                    <v-text-field v-model="editedItem.surname" label="Фамилия" ></v-text-field>
+                    <v-text-field v-model="editedItem.lastName" label="Отчество" ></v-text-field>
                   </v-col>
                 </v-row>
               </v-container>

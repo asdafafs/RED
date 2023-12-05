@@ -2,11 +2,7 @@
   <v-container fluid>
     <v-row>
       <v-row class="justify-center">
-        <v-btn
-            icon
-            class="ma-0  align-self-center"
-            @click="prev"
-        >
+        <v-btn icon class="ma-0  align-self-center" @click="prev" >
           <v-icon>mdi-chevron-left</v-icon>
         </v-btn>
         <div class="d-flex flex-row justify-space-between align-center col-lg-2 col-md-4 col-sm-8 col-9">
@@ -29,11 +25,7 @@
             </div>
           </div>
         </div>
-        <v-btn
-            icon
-            class="ma-0  align-self-center"
-            @click="next"
-        >
+        <v-btn icon class="ma-0  align-self-center" @click="next" >
           <v-icon>mdi-chevron-right</v-icon>
         </v-btn>
       </v-row>

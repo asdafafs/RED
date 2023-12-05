@@ -9,12 +9,8 @@
           </v-card-subtitle>
           <LogoRed class="pos"></LogoRed>
           <v-card-text class="pb-0 ">
-            <vue-text-mask
-                class="grey phone white--text"
-                v-model="value"
-                :mask="mask"
-                placeholderChar="#"
-            ></vue-text-mask>
+            <vue-text-mask class="grey phone white--text" v-model="value" :mask="mask" placeholderChar="#">
+            </vue-text-mask>
             <v-alert v-if="showPhoneNumberAlert && !isPhoneNumberValid" type="error">
               Введите корректный номер телефона (10 цифр)
             </v-alert>
@@ -36,12 +32,7 @@
             </v-alert>
           </v-card-text>
           <v-card-actions>
-            <v-btn
-                color="#4E7AEC"
-                @click="validateForm"
-                class="rounded-lg pa-0 "
-                block
-            >
+            <v-btn color="#4E7AEC" @click="validateForm" class="rounded-lg pa-0 " block>
               Получить код в СМС
             </v-btn>
           </v-card-actions>
@@ -148,6 +139,5 @@ export default {
   transform: scale(2.1);
   margin-top: 2em;
   margin-bottom: 2em;
-
 }
 </style>
