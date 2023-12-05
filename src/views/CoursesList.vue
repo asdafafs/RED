@@ -151,22 +151,10 @@ export default {
               <v-container>
                 <v-row>
                   <v-col cols="12" sm="6" md="4">
-                    <v-text-field
-                        v-model="editedItem.title"
-                        label="Название"
-                    ></v-text-field>
-                    <v-text-field
-                        v-model="editedItem.startTime"
-                        label="Начало занятия"
-                    ></v-text-field>
-                    <v-text-field
-                        v-model="editedItem.endTime"
-                        label="Конец занятия"
-                    ></v-text-field>
-                    <v-text-field
-                        v-model="editedItem.eventType"
-                        label="Тип занятия"
-                    ></v-text-field>
+                    <v-text-field v-model="editedItem.title" label="Название" ></v-text-field>
+                    <v-text-field v-model="editedItem.startTime" label="Начало занятия" ></v-text-field>
+                    <v-text-field v-model="editedItem.endTime" label="Конец занятия" ></v-text-field>
+                    <v-text-field v-model="editedItem.eventType" label="Тип занятия" ></v-text-field>
                   </v-col>
                 </v-row>
               </v-container>

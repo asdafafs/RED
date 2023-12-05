@@ -21,12 +21,7 @@
               ></v-text-field>
             </v-card-text>
             <v-card-actions>
-              <v-btn
-                  color="#4E7AEC"
-                  @click=" validateEmail"
-                  class="rounded-lg pa-0 white--text"
-                  block
-              >
+              <v-btn color="#4E7AEC" @click=" validateEmail" class="rounded-lg pa-0 white--text" block>
                 Ввести новый пароль
               </v-btn>
             </v-card-actions>
@@ -61,12 +56,7 @@
               <v-alert v-if="!passwordsMatch" type="error">Пароли не совпадают</v-alert>
             </v-card-text>
             <v-card-actions v-if="passwordsMatch">
-              <v-btn
-                  color="#4E7AEC"
-                  @click="validatePassword"
-                  class="rounded-lg pa-0 white--text"
-                  block
-              >
+              <v-btn color="#4E7AEC" @click="validatePassword" class="rounded-lg pa-0 white--text" block>
                 Ввести новый пароль
               </v-btn>
             </v-card-actions>
@@ -128,8 +118,7 @@ export default {
       if (!(this.rulesPassword.required(this.password) === true && this.rulesPassword.min(this.password) === true)) {
         return;
       }
-      this.$router.push('/post-login').catch(err => {
-      })
+      this.$router.push('/post-login').catch(err => {})
       this.overlay = false;
     }
   },
