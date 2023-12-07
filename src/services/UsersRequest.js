@@ -17,7 +17,7 @@ export default class UsersRequest extends HTTPService {
         return this.put("student", code)
     }
 
-    deleteUser(code) {
-        return this.delete("student", {id: code})
+    deleteUser() {
+        return this.delete("student")
     }
 }
