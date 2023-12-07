@@ -9,14 +9,15 @@ export default {
     headers: [
       {text: 'Имя', align: 'start', sortable: false, value: 'name'},
       {text: 'Фамилия', align: 'start', sortable: false, value: 'surname',},
-      {text: 'Отчество', align: 'start', sortable: false, value: 'lastName',},
+      {text: 'Отчество', align: 'start', sortable: false, value: 'middleName',},
       {text: 'Действия', value: 'actions', sortable: false},
     ],
-    persons: [],
+    persons: {},
     editedIndex: -1,
     deletedIndex: -1,
     editedItem: {
       name: '',
+      email: ''
     },
     defaultItem: {
       name: '',
@@ -54,6 +55,7 @@ export default {
     async postUser(body) {
       const user = new UsersRequest();
       await user.postUser(body).catch(x => console.log(x))
+
     },
 
     async putUser(body) {
@@ -63,35 +65,42 @@ export default {
 
     async deleteUser() {
       const user = new UsersRequest();
-      await user.deleteUser(this.deletedIndex).catch(x => console.log(x))
+      console.log(this.deletedIndex)
+      const deletedItem = {"id": this.deletedIndex}
+      console.log(deletedItem)
+      await user.deleteUser(deletedItem).catch(x => console.log(x))
     },
 
     async initialize() {
-      await this.getUser()
-      let cal = await this.test
+      await this.getUser();
+      let cal = await this.test;
       this.persons = cal;
     },
 
     editItem(item) {
-      this.editedIndex = this.persons.indexOf(item);
+      this.editedIndex = this.persons.students.indexOf(item);
       this.editedItem = {
+        studentId: item.id,
+        email: item.email,
+        phoneNumber: item.phoneNumber,
         name: item.name,
         surname: item.surname,
-        lastName: item.lastName,
-        id: item.id,
+        middleName: item.middleName,
+        groupId: 1,
       };
+      console.log(this.editedItem)
       this.dialog = true;
     },
 
     deleteItem(item) {
-      this.editedIndex = this.persons.indexOf(item);
+      this.editedIndex = this.persons.students.indexOf(item);
       this.editedItem = {name: item.name};
       this.deletedIndex = item.id
       this.dialogDelete = true;
     },
 
     async deleteItemConfirm() {
-      this.persons.splice(this.editedIndex, 1);
+      this.persons.students.splice(this.editedIndex, 1);
       this.closeDelete();
       await this.deleteUser()
     },
@@ -114,18 +123,20 @@ export default {
 
     async save() {
       if (this.editedIndex > -1) {
-        this.$set(this.persons, this.editedIndex, this.editedItem);
-        let body = JSON.stringify(this.editedItem,)
+        this.$set(this.persons.students, this.editedIndex, this.editedItem);
+        const body = this.editedItem
         await this.putUser(body)
         this.close();
-      } else {
-        this.persons.push(this.editedItem);
+      }
+      else {
+        this.persons.students.push(this.editedItem);
         const body = {
+          "email": this.editedItem.email,
+          "phoneNumber": this.editedItem.phoneNumber,
           "name": this.editedItem.name,
           "surname": this.editedItem.surname,
-          "lastname": this.editedItem.lastName,
-          "vkid": Math.floor(Math.random() * 10000000),
-          "groupId": 2
+          "middleName": this.editedItem.middleName,
+          "groupId": 1,
         }
         await this.postUser(body)
         this.close();
@@ -136,7 +147,7 @@ export default {
 
 </script>
 <template>
-  <v-data-table :headers="headers" :items="persons" class="elevation-1" no-data-text="Нет данных для отображения"
+  <v-data-table :headers="headers" :items="persons.students" class="elevation-1" no-data-text="Нет данных для отображения"
                 :footer-props="{
       'items-per-page-text': 'Записей на странице:',
       'items-per-page-all-text': 'Все',
@@ -166,7 +177,9 @@ export default {
                   <v-col cols="12" sm="6" md="4">
                     <v-text-field v-model="editedItem.name" label="Имя" ></v-text-field>
                     <v-text-field v-model="editedItem.surname" label="Фамилия" ></v-text-field>
-                    <v-text-field v-model="editedItem.lastName" label="Отчество" ></v-text-field>
+                    <v-text-field v-model="editedItem.middleName" label="Отчество" ></v-text-field>
+                    <v-text-field v-model="editedItem.email" label="email" ></v-text-field>
+                    <v-text-field v-model="editedItem.phoneNumber" label="phoneNumber" ></v-text-field>
                   </v-col>
                 </v-row>
               </v-container>

@@ -13,6 +13,9 @@ export default class HttpService {
     baseRequest(path, methodType, body) {
         const url = `${this.basePath}/${path}`
         const requestConfig = {
+            headers: {
+                'Content-Type': 'application/json'
+            },
             withCredentials: false,
             baseURL: this.backendUrl
         }
