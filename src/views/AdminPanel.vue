@@ -68,7 +68,7 @@ export default {
       console.log(this.deletedIndex)
       const deletedItem = {"id": this.deletedIndex}
       console.log(deletedItem)
-      await user.deleteUser(deletedItem).catch(x => console.log(x))
+      await user.deleteUser(deletedItem.id).catch(x => console.log(x))
     },
 
     async initialize() {
