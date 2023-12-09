@@ -86,7 +86,7 @@ export default {
           title: item.title,
           startTime: this.formatDatetime(item.startTime),
           endTime: this.formatDatetime(item.endTime),
-          lectureTypeId: item.lectureTypeId,
+          lectureType: item.lectureType,
           groupId: item.groupId,
         };
       });
@@ -95,12 +95,13 @@ export default {
     editItem(item) {
       this.editedIndex = this.courses.indexOf(item);
       this.editedItem = {
-        id: item.id,
-        title: item.title,
-        startTime: this.formatDatetime(item.startTime),
-        endTime: this.formatDatetime(item.endTime),
-        lectureTypeId: this.editedItem.lectureTypeId,
-        groupId: 1,
+        "lecture": {
+          id: item.id,
+          title: item.title,
+          startTime: this.formatDatetime(item.startTime),
+          endTime: this.formatDatetime(item.endTime),
+          lectureType: parseInt(this.editedItem.lectureType),
+        }
       };
       this.dialog = true;
     },
@@ -119,8 +120,8 @@ export default {
 
     getTableRowClass(item) {
       return {
-        'blue-background': item.lectureTypeId === 1,
-        'gray-background': item.lectureTypeId === 2,
+        'blue-background': item.lectureType === 3,
+        'gray-background': item.lectureType === 2,
       };
     },
 
@@ -136,7 +137,6 @@ export default {
       await this.deleteLecture()
       await this.initialize()
       this.closeDelete();
-
     },
 
     close() {
@@ -168,7 +168,7 @@ export default {
           "title": this.editedItem.title,
           "startTime": this.editedItem.startTime,
           "endTime": this.editedItem.endTime,
-          "lectureTypeId": parseInt(this.editedItem.lectureTypeId),
+          "lectureType": parseInt(this.editedItem.lectureType),
           "groupId": 1,
         }
         console.log(await this.postLecture(body))
@@ -213,7 +213,7 @@ export default {
                     </v-text-field>
                     <v-text-field v-model="editedItem.endTime" label="Конец занятия" type="datetime-local">
                     </v-text-field>
-                    <v-text-field v-model="editedItem.lectureTypeId"  label="Тип занятия"></v-text-field>
+                    <v-text-field v-model="editedItem.lectureType"  label="Тип занятия"></v-text-field>
                   </v-col>
                 </v-row>
               </v-container>
