@@ -1,5 +1,6 @@
 <script>
 import EventsRequest from "@/services/EventsRequest";
+import CoursesRequest from "@/services/CoursesRequest";
 
 export default {
   data: () => ({
@@ -46,6 +47,14 @@ export default {
 
 
   methods: {
+    async getCourse(id){
+      const course = new CoursesRequest()
+      const getItem = {"id": id}
+      await course.getCourses(getItem.id).catch(x => console.log(x)).then(x => {
+        this.test = x.data.lecture
+      })
+    },
+
     async getLecture() {
       const user = new EventsRequest();
       await user.getLecture().catch(x => console.log(x)).then(x => {
@@ -70,7 +79,7 @@ export default {
     },
 
     async initialize() {
-      await this.getLecture();
+      await this.getCourse(1);
       this.courses = this.test.map(item => {
         return {
           id: item.id,
