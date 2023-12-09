@@ -2,11 +2,11 @@ import HTTPService from "@/services/HTTPService";
 
 export default class CoursesRequest extends HTTPService {
     constructor() {
-        super("");
+        super("Course");
     }
 
-    getCourses() {
-        return this.get("")
+    getCourses(id) {
+        return this.get("" + id)
     }
 
     postCourse(code) {
@@ -17,7 +17,4 @@ export default class CoursesRequest extends HTTPService {
         return this.put("", code)
     }
 
-    deleteCourse(id) {
-        return this.delete("" + id)
-    }
 }
