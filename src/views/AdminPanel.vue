@@ -65,9 +65,7 @@ export default {
 
     async deleteUser() {
       const user = new UsersRequest();
-      console.log(this.deletedIndex)
       const deletedItem = {"id": this.deletedIndex}
-      console.log(deletedItem)
       await user.deleteUser(deletedItem.id).catch(x => console.log(x))
     },
 
@@ -101,8 +99,8 @@ export default {
 
     async deleteItemConfirm() {
       this.persons.students.splice(this.editedIndex, 1);
-      this.closeDelete();
       await this.deleteUser()
+      this.closeDelete();
     },
 
     close() {
