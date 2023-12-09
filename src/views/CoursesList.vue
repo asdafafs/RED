@@ -168,10 +168,10 @@ export default {
           "title": this.editedItem.title,
           "startTime": this.editedItem.startTime,
           "endTime": this.editedItem.endTime,
-          "lectureTypeId": this.editedItem.lectureTypeId,
+          "lectureTypeId": parseInt(this.editedItem.lectureTypeId),
           "groupId": 1,
         }
-        await this.postLecture(body)
+        console.log(await this.postLecture(body))
         console.log(body)
         this.courses.push(this.editedItem);
         await this.initialize()
@@ -213,7 +213,7 @@ export default {
                     </v-text-field>
                     <v-text-field v-model="editedItem.endTime" label="Конец занятия" type="datetime-local">
                     </v-text-field>
-                    <v-text-field v-model="editedItem.lectureTypeId" label="Тип занятия"></v-text-field>
+                    <v-text-field v-model="editedItem.lectureTypeId"  label="Тип занятия"></v-text-field>
                   </v-col>
                 </v-row>
               </v-container>
