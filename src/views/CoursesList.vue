@@ -211,6 +211,10 @@ export default {
         this.close();
       }
     },
+
+    isItemEdited(item) {
+      return item.id === this.editedItem.lecture.id;
+    },
   },
 };
 </script>
@@ -264,7 +268,7 @@ export default {
         </v-dialog>
         <v-dialog v-model="dialogDelete" max-width="500px">
           <v-card>
-            <v-card-title class="text-h5">Сносим?</v-card-title>
+            <v-card-title class="text-h5">Удалить занятие?</v-card-title>
             <v-card-actions>
               <v-spacer></v-spacer>
               <v-btn color="blue darken-1" text @click="closeDelete">Отмена</v-btn>
@@ -278,8 +282,14 @@ export default {
     <template v-slot:item="{ item }">
       <tr :class="getTableRowClass(item)">
         <td>{{ item.title }}</td>
-        <td>{{ globalStartTime + " - 00"}}</td>
-        <td>{{ globalEndTime + " - 00"}}</td>
+        <td>
+          {{ isItemEdited(item) ? formatDatetime(item.startTime)
+            : (item.startTime ? formatDatetime(item.startTime) : globalStartTime + " - 00") }}
+        </td>
+        <td>
+          {{ isItemEdited(item) ? formatDatetime(item.endTime)
+            : (item.endTime ? formatDatetime(item.endTime) : globalEndTime + " - 00") }}
+        </td>
         <td class="text-xs-right">
           <v-icon small class="mr-2" @click="editItem(item)">mdi-pencil</v-icon>
           <v-icon small @click="deleteItem(item)">mdi-delete</v-icon>

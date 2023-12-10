@@ -3,7 +3,7 @@
     <h1>Not Found!</h1>
     <p>
       <v-btn @click.stop="$router.push('/')">
-        Вернись домой друг
+        Страница не найдена
       </v-btn>
     </p>
   </div>
