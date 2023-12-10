@@ -29,14 +29,11 @@ export default {
         lectureType: null,
       },
     },
-    defaultItem: {
-      name: '',
-    },
   }),
 
   computed: {
     formTitle() {
-      return this.editedIndex === -1 ? 'Новый элемент' : 'Редактировать элемент';
+      return this.editedIndex === -1 ? 'Новое занятие' : 'Редактировать занятие';
     },
   },
 
@@ -53,7 +50,6 @@ export default {
     this.initialize();
   },
 
-
   methods: {
     async getCourse(id) {
       const course = new CoursesRequest()
@@ -66,26 +62,36 @@ export default {
     },
 
     async getLecture() {
-      const user = new EventsRequest();
-      await user.getLecture().catch(x => console.log(x)).then(x => {
+      const event = new EventsRequest();
+      await event.getLecture().catch(x => console.log(x)).then(x => {
         this.test = x.data
       })
     },
 
+    async putCourse(body){
+      const course = new CoursesRequest()
+      await course.putCourse(body).catch(x => console.log(x))
+    },
+
+    async postCourse(body){
+      const course = new CoursesRequest()
+      await course.postCourse(body).catch(x => console.log(x))
+    },
+
     async postLecture(body) {
-      const user = new EventsRequest();
-      await user.postLecture(body).catch(x => console.log(x))
+      const event = new EventsRequest();
+      await event.postLecture(body).catch(x => console.log(x))
     },
 
     async putLecture(body) {
-      const user = new EventsRequest();
-      await user.putLecture(body).catch(x => console.log(x))
+      const event = new EventsRequest();
+      await event.putLecture(body).catch(x => console.log(x))
     },
 
     async deleteLecture() {
-      const user = new EventsRequest();
+      const event = new EventsRequest();
       const deletedItem = {"id": this.deletedIndex}
-      await user.deleteLecture(deletedItem.id).catch(x => console.log(x))
+      await event.deleteLecture(deletedItem.id).catch(x => console.log(x))
     },
 
     async initialize() {
@@ -124,7 +130,6 @@ export default {
       const day = String(date.getDate()).padStart(2, '0');
       const hours = String(date.getHours()).padStart(2, '0');
       const minutes = String(date.getMinutes()).padStart(2, '0');
-
       return `${month}-${day} ${hours}:${minutes}`;
     },
 
@@ -231,7 +236,7 @@ export default {
     <template v-slot:top>
       <v-toolbar flat>
         <v-spacer></v-spacer>
-        <v-dialog v-model="dialog" max-width="500px">
+        <v-dialog v-model="dialog" max-width="500px" persistent>
           <template v-slot:activator="{ on, attrs }">
             <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on">
               Новое занятие
@@ -244,7 +249,7 @@ export default {
             <v-card-text>
               <v-container>
                 <v-row>
-                  <v-col cols="12" sm="6" md="4">
+                  <v-col cols="12" sm="12" md="12">
                     <v-text-field v-model="editedItem.lecture.title" label="Название"></v-text-field>
                     <v-text-field v-model="editedItem.lecture.startTime" label="Начало занятия" type="datetime-local">
                     </v-text-field>
