@@ -17,6 +17,7 @@ import VkAuthorization from "@/views/AuthorizationViews/SelectAuthorization.vue"
 import Registration from "@/views/AuthorizationViews/Registration.vue";
 import PostLoginPage from "@/views/AuthorizationViews/PostLoginPage.vue";
 import CoursesList from "@/views/CoursesList.vue";
+import ConfirmEmail from "@/views/AuthorizationViews/ConfirmEmail.vue";
 
 
 Vue.use(VueRouter)
@@ -119,6 +120,14 @@ const routes = [
         path: "/courses",
         name: 'courses',
         component: CoursesList,
+    },
+    {
+        path: '/confirm-email',
+        name: 'ConfirmEmail',
+        component: ConfirmEmail,
+        meta: {
+            layout: 'System'
+        }
     },
 ]
 

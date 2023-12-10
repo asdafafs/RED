@@ -61,23 +61,6 @@ export default {
       })
     },
 
-    async getLecture() {
-      const event = new EventsRequest();
-      await event.getLecture().catch(x => console.log(x)).then(x => {
-        this.test = x.data
-      })
-    },
-
-    async putCourse(body){
-      const course = new CoursesRequest()
-      await course.putCourse(body).catch(x => console.log(x))
-    },
-
-    async postCourse(body){
-      const course = new CoursesRequest()
-      await course.postCourse(body).catch(x => console.log(x))
-    },
-
     async postLecture(body) {
       const event = new EventsRequest();
       await event.postLecture(body).catch(x => console.log(x))
