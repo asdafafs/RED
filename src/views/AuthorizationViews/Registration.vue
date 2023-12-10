@@ -103,6 +103,7 @@ export default {
         return;
       }
 
+      console.log(body)
       await this.registration(body)
       this.$router.push('/post-login').catch(err => {})
     },

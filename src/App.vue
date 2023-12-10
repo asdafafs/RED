@@ -17,9 +17,12 @@ export default {
   components: {AppBar},
 
   data: () => ({
-
-    //
+    isDataLoaded : false
   }),
+  // async created() {
+  //   await this.getIdentity()
+  //       .then(() => this.isDataLoaded = true);
+  // }
 };
 </script>
 <style>
