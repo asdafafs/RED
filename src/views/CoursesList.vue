@@ -19,7 +19,13 @@ export default {
     editedIndex: -1,
     deletedIndex: -1,
     editedItem: {
-      name: '',
+      lecture: {  // Ensure 'lecture' property is initialized
+        id: null,
+        title: '',
+        startTime: null,
+        endTime: null,
+        lectureType: null,
+      },
     },
     defaultItem: {
       name: '',
@@ -47,7 +53,7 @@ export default {
 
 
   methods: {
-    async getCourse(id){
+    async getCourse(id) {
       const course = new CoursesRequest()
       const getItem = {"id": id}
       await course.getCourses(getItem.id).catch(x => console.log(x)).then(x => {
@@ -100,16 +106,16 @@ export default {
           title: item.title,
           startTime: this.formatDatetime(item.startTime),
           endTime: this.formatDatetime(item.endTime),
-          lectureType: parseInt(this.editedItem.lectureType),
+          lectureType: parseInt(item.lectureType),
         }
       };
+      console.log(this.editedItem)
       this.dialog = true;
     },
 
     formatDatetime(timestamp) {
       if (!timestamp) return null;
       const date = new Date(timestamp);
-      // const year = date.getFullYear();
       const month = String(date.getMonth() + 1).padStart(2, '0');
       const day = String(date.getDate()).padStart(2, '0');
       const hours = String(date.getHours()).padStart(2, '0');
@@ -127,7 +133,15 @@ export default {
 
     deleteItem(item) {
       this.editedIndex = this.courses.indexOf(item);
-      this.editedItem = {name: item.title};
+      this.editedItem = {
+        lecture: {
+          id: item.id,
+          title: item.title,
+          startTime: this.formatDatetime(item.startTime),
+          endTime: this.formatDatetime(item.endTime),
+          lectureType: parseInt(item.lectureType),
+        },
+      };
       this.deletedIndex = item.id
       this.dialogDelete = true;
     },
@@ -142,7 +156,15 @@ export default {
     close() {
       this.dialog = false;
       this.$nextTick(() => {
-        this.editedItem = {name: ''};
+        this.editedItem = {
+          lecture: {
+            id: null,
+            title: '',
+            startTime: null,
+            endTime: null,
+            lectureType: null,
+          },
+        };
         this.editedIndex = -1;
       });
     },
@@ -150,7 +172,15 @@ export default {
     closeDelete() {
       this.dialogDelete = false;
       this.$nextTick(() => {
-        this.editedItem = {name: ''};
+        this.editedItem = this.editedItem = {
+          lecture: {
+            id: null,
+            title: '',
+            startTime: null,
+            endTime: null,
+            lectureType: null,
+          },
+        };
         this.editedIndex = -1;
       });
     },
@@ -159,7 +189,6 @@ export default {
       if (this.editedIndex > -1) {
         this.$set(this.courses, this.editedIndex, this.editedItem);
         const body = this.editedItem
-        console.log(body)
         await this.putLecture(body)
         await this.initialize()
         this.close();
@@ -171,8 +200,7 @@ export default {
           "lectureType": parseInt(this.editedItem.lectureType),
           "groupId": 1,
         }
-        console.log(await this.postLecture(body))
-        console.log(body)
+        await this.postLecture(body)
         this.courses.push(this.editedItem);
         await this.initialize()
         this.close();
@@ -208,12 +236,12 @@ export default {
               <v-container>
                 <v-row>
                   <v-col cols="12" sm="6" md="4">
-                    <v-text-field v-model="editedItem.title" label="Название"></v-text-field>
-                    <v-text-field v-model="editedItem.startTime" label="Начало занятия" type="datetime-local">
+                    <v-text-field v-model="editedItem.lecture.title" label="Название"></v-text-field>
+                    <v-text-field v-model="editedItem.lecture.startTime" label="Начало занятия" type="datetime-local">
                     </v-text-field>
-                    <v-text-field v-model="editedItem.endTime" label="Конец занятия" type="datetime-local">
+                    <v-text-field v-model="editedItem.lecture.endTime" label="Конец занятия" type="datetime-local">
                     </v-text-field>
-                    <v-text-field v-model="editedItem.lectureType"  label="Тип занятия"></v-text-field>
+                    <v-text-field v-model="editedItem.lecture.lectureType" label="Тип занятия"></v-text-field>
                   </v-col>
                 </v-row>
               </v-container>
