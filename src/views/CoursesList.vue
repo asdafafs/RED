@@ -6,6 +6,8 @@ export default {
   data: () => ({
     sortBy: 'startTime',
     sortDesc: false,
+    globalStartTime: null,
+    globalEndTime: null,
     test: null,
     dialog: false,
     dialogDelete: false,
@@ -19,7 +21,7 @@ export default {
     editedIndex: -1,
     deletedIndex: -1,
     editedItem: {
-      lecture: {  // Ensure 'lecture' property is initialized
+      lecture: {
         id: null,
         title: '',
         startTime: null,
@@ -58,6 +60,8 @@ export default {
       const getItem = {"id": id}
       await course.getCourses(getItem.id).catch(x => console.log(x)).then(x => {
         this.test = x.data.lecture
+        this.globalStartTime = x.data.startTime
+        this.globalEndTime = x.data.endTime
       })
     },
 
@@ -109,7 +113,7 @@ export default {
           lectureType: parseInt(item.lectureType),
         }
       };
-      console.log(this.editedItem)
+      console.log(this.editedItem, 'editItem')
       this.dialog = true;
     },
 
@@ -194,12 +198,13 @@ export default {
         this.close();
       } else {
         const body = {
-          "title": this.editedItem.title,
-          "startTime": this.editedItem.startTime,
-          "endTime": this.editedItem.endTime,
-          "lectureType": parseInt(this.editedItem.lectureType),
+          "title": this.editedItem.lecture.title,
+          "startTime": this.editedItem.lecture.startTime,
+          "endTime": this.editedItem.lecture.endTime,
+          "lectureType": parseInt(this.editedItem.lecture.lectureType),
           "groupId": 1,
         }
+        console.log(body, 'push')
         await this.postLecture(body)
         this.courses.push(this.editedItem);
         await this.initialize()
@@ -273,8 +278,8 @@ export default {
     <template v-slot:item="{ item }">
       <tr :class="getTableRowClass(item)">
         <td>{{ item.title }}</td>
-        <td>{{ formatDatetime(item.startTime) }}</td>
-        <td>{{ formatDatetime(item.endTime) }}</td>
+        <td>{{ globalStartTime + " - 00"}}</td>
+        <td>{{ globalEndTime + " - 00"}}</td>
         <td class="text-xs-right">
           <v-icon small class="mr-2" @click="editItem(item)">mdi-pencil</v-icon>
           <v-icon small @click="deleteItem(item)">mdi-delete</v-icon>
