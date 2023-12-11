@@ -22,7 +22,7 @@
                 @click.stop="$router.push('*').catch(err => {})">
               Привязать аккуант к вк
             </v-list-item>
-            <v-list-item
+            <v-list-item v-if="!student"
                 @click.stop="$router.push('/courses').catch(err => {})">
               Добавить курс
             </v-list-item>

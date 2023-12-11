@@ -47,7 +47,7 @@ export default {
     async vkLogIn() {
       console.log('here')
       const clientId = '51785736'
-      const redirectUri = 'http://anton.mlsat.ru/post-login'
+      const redirectUri = 'https://anton.mlsat.ru/post-login'
       const display = 'popup'
       const responseType = 'code'
       window.location.replace(`https://oauth.vk.com/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&display=${display}&response_type=${responseType}`)
