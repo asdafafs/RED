@@ -2,9 +2,9 @@ import axios from "axios";
 
 export default class HttpService {
     basePath = 'api'
-    backendUrl = 'http://localhost:5105'
+    //backendUrl = 'http://localhost:5105'
 
-    //backendUrl = 'https://red.mlsat.ru'
+    backendUrl = 'https://kamen.mlsat.ru'
 
     constructor(controller) {
         this.basePath = `${this.backendUrl}/${this.basePath}/${controller}`
@@ -20,27 +20,37 @@ export default class HttpService {
             baseURL: this.backendUrl
         }
 
-        try {
-            switch (methodType) {
-                case "GET":
-                    return axios.get(url, requestConfig)
-                case "POST":
-                    return axios.post(url, body, requestConfig)
-                case "PUT":
-                    return axios.put(url, body, requestConfig)
-                case "DELETE":
-                    return axios.delete(url, requestConfig)
-            }
-        } catch (error) {
-            if (error.response.status === 401) {
-                alert("Не авторизован");
-                this.$router.push('/main').catch(err => {})
-            }
-            return error
-
+        let request
+        console.log(methodType)
+        switch (methodType) {
+            case "GET":
+                request = axios.get(url, requestConfig)
+                break
+            case "POST":
+                request = axios.post(url, body, requestConfig)
+                break
+            case "PUT":
+                request = axios.put(url, body, requestConfig)
+                break
+            case "DELETE":
+                request = axios.delete(url, requestConfig)
+                break
         }
 
+        request.catch(error => {
+            console.log(window.location.href !== (`https://anton.mlsat.ru`))
+            if (window.location.href !== (`https://anton.mlsat.ru`)) {
+                if (error.response.status === 401) {
+                    alert("Не авторизован");
+                    window.location.replace(`https://anton.mlsat.ru`)
+                }
+            }
+
+        })
+
+        return request
     }
+
 
     get(path) {
         return this.baseRequest(path, "GET")
