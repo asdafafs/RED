@@ -11,6 +11,7 @@
 <script>
 
 import AppBar from "@/components/AppBar/AppBar.vue";
+import IdentityRequest from "@/services/IdentityRequest";
 
 export default {
   name: 'App',
@@ -19,10 +20,11 @@ export default {
   data: () => ({
     isDataLoaded : false
   }),
-  // async created() {
-  //   await this.getIdentity()
-  //       .then(() => this.isDataLoaded = true);
-  // }
+  async created() {
+    let identity = new IdentityRequest()
+    await identity.getIdentity()
+        .then(() => this.isDataLoaded = true);
+  }
 };
 </script>
 <style>
