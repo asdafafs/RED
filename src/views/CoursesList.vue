@@ -8,7 +8,7 @@ export default {
     sortDesc: false,
     globalStartTime: null,
     globalEndTime: null,
-    test: null,
+    coursesData: null,
     dialog: false,
     dialogDelete: false,
     headers: [
@@ -55,7 +55,7 @@ export default {
       const course = new CoursesRequest()
       const getItem = {"id": id}
       await course.getCourses(getItem.id).catch(x => console.log(x)).then(x => {
-        this.test = x.data.lecture
+        this.coursesData = x.data.lecture
         this.globalStartTime = x.data.startTime
         this.globalEndTime = x.data.endTime
       })
@@ -79,7 +79,7 @@ export default {
 
     async initialize() {
       await this.getCourse(1);
-      this.courses = this.test.map(item => {
+      this.courses = this.coursesData.map(item => {
         return {
           id: item.id,
           title: item.title,
@@ -104,23 +104,6 @@ export default {
       };
       console.log(this.editedItem, 'editItem')
       this.dialog = true;
-    },
-
-    formatDatetime(timestamp) {
-      if (!timestamp) return null;
-      const date = new Date(timestamp);
-      const month = String(date.getMonth() + 1).padStart(2, '0');
-      const day = String(date.getDate()).padStart(2, '0');
-      const hours = String(date.getHours()).padStart(2, '0');
-      const minutes = String(date.getMinutes()).padStart(2, '0');
-      return `${month}-${day} ${hours}:${minutes}`;
-    },
-
-    getTableRowClass(item) {
-      return {
-        'blue-background': item.lectureType === 3,
-        'gray-background': item.lectureType === 2,
-      };
     },
 
     deleteItem(item) {
@@ -203,6 +186,24 @@ export default {
     isItemEdited(item) {
       return item.id === this.editedItem.lecture.id;
     },
+
+    getTableRowClass(item) {
+      return {
+        'blue-background': item.lectureType === 3,
+        'gray-background': item.lectureType === 2,
+      };
+    },
+
+    formatDatetime(timestamp) {
+      if (!timestamp) return null;
+      const date = new Date(timestamp);
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      const hours = String(date.getHours()).padStart(2, '0');
+      const minutes = String(date.getMinutes()).padStart(2, '0');
+      return `${month}-${day} ${hours}:${minutes}`;
+    },
+
   },
 };
 </script>
@@ -271,12 +272,16 @@ export default {
       <tr :class="getTableRowClass(item)">
         <td>{{ item.title }}</td>
         <td>
-          {{ isItemEdited(item) ? formatDatetime(item.startTime)
-            : (item.startTime ? formatDatetime(item.startTime) : globalStartTime + " - 00") }}
+          {{
+            isItemEdited(item) ? formatDatetime(item.startTime)
+                : (item.startTime ? formatDatetime(item.startTime) : globalStartTime + " - 00")
+          }}
         </td>
         <td>
-          {{ isItemEdited(item) ? formatDatetime(item.endTime)
-            : (item.endTime ? formatDatetime(item.endTime) : globalEndTime + " - 00") }}
+          {{
+            isItemEdited(item) ? formatDatetime(item.endTime)
+                : (item.endTime ? formatDatetime(item.endTime) : globalEndTime + " - 00")
+          }}
         </td>
         <td class="text-xs-right">
           <v-icon small class="mr-2" @click="editItem(item)">mdi-pencil</v-icon>

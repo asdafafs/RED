@@ -3,7 +3,7 @@ import UsersRequest from "@/services/UsersRequest";
 
 export default {
   data: () => ({
-    test: null,
+    userData: null,
     dialog: false,
     dialogDelete: false,
     headers: [
@@ -48,7 +48,7 @@ export default {
     async getUser() {
       const user = new UsersRequest();
       await user.getUser().catch(x => console.log(x)).then(x => {
-        this.test = x.data
+        this.userData = x.data
       })
     },
 
@@ -71,7 +71,7 @@ export default {
 
     async initialize() {
       await this.getUser();
-      let cal = await this.test;
+      let cal = await this.userData;
       this.persons = cal;
     },
 
