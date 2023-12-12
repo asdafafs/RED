@@ -38,15 +38,19 @@ export default class HttpService {
         }
 
         request.catch(error => {
-            console.log(window.location.href !== (`https://anton.mlsat.ru`))
-            if (window.location.href !== (`https://anton.mlsat.ru`)) {
-                if (error.response.status === 401) {
-                    alert("Не авторизован");
-                    window.location.replace(`https://anton.mlsat.ru`)
+            // Check if the current URL is not equal to "https://anton.mlsat.ru"
+            console.log(window.location.href !== "https://anton.mlsat.ru/")
+            if (window.location.href !== "https://anton.mlsat.ru/") {
+                // Check if the error status is 401 (Unauthorized)
+                if (error.response && error.response.status === 401 && window.location.href !== "https://anton.mlsat.ru/") {
+                    // Display an alert
+                    alert("Не авторизован (Not authorized)");
+
+                    // Redirect the user to "https://anton.mlsat.ru"
+                    window.location.replace("https://anton.mlsat.ru");
                 }
             }
-
-        })
+        });
 
         return request
     }

@@ -19,7 +19,7 @@ export default  {
     async confirmEmail(userId, code ){
       const identity = new IdentityRequest()
       await identity.postEmail({userId, code}).then(() => {
-          this.getIdentity();
+          identity.getIdentity();
           this.$router.push('/')
         })
 
