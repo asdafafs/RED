@@ -1,9 +1,9 @@
 <template>
-  <div>
+  <div class="overflow-hidden">
     <v-row align="center" justify="center" class=" width">
       <v-col cols="4" class=" pa-0">
-        <v-dialog v-model="overlay" persistent width="auto" content-class="elevation-0">
-          <v-card class="d-flex justify-space-between flex-column height width rounded-lg ma-2" v-if="overlay">
+        <v-dialog v-model="overlay" persistent width="auto" content-class="elevation-0"  class="overflow-hidden">
+          <v-card class="d-flex justify-space-between flex-column height width rounded-lg ma-2 overflow-hidden" v-if="overlay">
             <v-card-title class="black--text"> Регистрация</v-card-title>
             <v-card-subtitle class="black--text">
               Для продолжения работы в RED: Расписание, пожалуйста, зарегистрируйтесь
@@ -154,4 +154,11 @@ export default {
   margin-bottom: 2em;
 }
 
+
+
+.overflow-hidden {
+  overflow-y: hidden !important;
+}
+
+html { overflow-y: auto !important;}
 </style>
