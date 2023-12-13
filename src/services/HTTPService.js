@@ -2,9 +2,11 @@ import axios from "axios";
 
 export default class HttpService {
     basePath = 'api'
-    //backendUrl = 'http://localhost:5105'
+    backendUrl = 'http://localhost:5105'
+    frontPageUrl = 'http://localhost:8080/'
 
-    backendUrl = 'https://kamen.mlsat.ru'
+    //frontPageUrl = 'https://anton.mlsat.ru'
+    //backendUrl = 'https://kamen.mlsat.ru'
 
     constructor(controller) {
         this.basePath = `${this.backendUrl}/${this.basePath}/${controller}`
@@ -39,15 +41,15 @@ export default class HttpService {
 
         request.catch(error => {
             // Check if the current URL is not equal to "https://anton.mlsat.ru"
-            console.log(window.location.href !== "https://anton.mlsat.ru/")
-            if (window.location.href !== "https://anton.mlsat.ru/") {
+            console.log(window.location.href !== this.frontPageUrl)
+            if (window.location.href !== this.frontPageUrl) {
                 // Check if the error status is 401 (Unauthorized)
-                if (error.response && error.response.status === 401 && window.location.href !== "https://anton.mlsat.ru/") {
+                if (error.response && error.response.status === 401 && window.location.href !== this.frontPageUrl) {
                     // Display an alert
                     alert("Не авторизован (Not authorized)");
 
                     // Redirect the user to "https://anton.mlsat.ru"
-                    window.location.replace("https://anton.mlsat.ru");
+                    window.location.replace(this.frontPageUrl);
                 }
             }
         });
