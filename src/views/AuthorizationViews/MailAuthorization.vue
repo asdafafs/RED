@@ -52,32 +52,35 @@ import IdentityRequest from "@/services/IdentityRequest";
 export default {
   name: 'MailAuthorization',
   components: {LogoRed},
-  data: () => ({
-    overlay: true,
-    form: true,
-    value: '',
-    show1: false,
-    email: null,
-    loading: false,
-    test: false,
-    password: '',
-    rulesEmail: {
-      required: v => !!v || 'Введите email'
-    },
-    rulesPassword: {
-      required: value => !!value || 'Введите пароль',
-      min: v => v.length >= 8 || 'Минимум 8 символов',
-    },
+  data: () => {
+    return ({
+      overlay: true,
+      form: true,
+      value: '',
+      show1: false,
+      email: null,
+      loading: false,
+      test: false,
+      password: '',
+      rulesEmail: {
+        required: v => !!v || 'Введите email'
+      },
+      rulesPassword: {
+        required: value => !!value || 'Введите пароль',
+        min: v => v.length >= 8 || 'Минимум 8 символов',
+      },
+      wrongAuth: false
 
-  }),
+    });
+  },
   methods: {
     async login(body) {
       const login = new IdentityRequest()
-      await login.postLogin(body).catch(x => {
-            console.log(x);
+      await login.postLogin(body).catch(() => {
             alert("Ошибка авторизации: неверный логин или пароль");
             this.password = ''
-            this.test = true
+            this.test = true;
+            this.wrongAuth = true;
           }
       )
     },
@@ -89,14 +92,11 @@ export default {
 
       const body = {"email": this.email, "password": this.password}
 
-      try {
-        await this.login(body).catch(error => {
-        })
-        await this.$router.push('/post-login').catch(error => {
-        })
-      } catch (error) {
-         console.error("Login error:", error);
-      }
+      await this.login(body)
+
+      if (this.wrongAuth);
+      else await this.$router.push('/post-login').catch(Promise.reject)
+      this.wrongAuth = true;
     }
   },
   computed: {
