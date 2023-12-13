@@ -25,7 +25,7 @@ export default class IdentityRequest extends HTTPService {
         return this.post("confirm-email", code)
     }
 
-    postResetPassword(code) {
+    postForgetPassword(code) {
         return this.post('ForgetPassword', code)
     }
 
@@ -33,7 +33,7 @@ export default class IdentityRequest extends HTTPService {
         return this.post('ConfirmNewPassword',code)
     }
 
-    postLogout(code) {
-        return this.post("logout", code)
+    postLogout() {
+        return this.post("logout")
     }
 }

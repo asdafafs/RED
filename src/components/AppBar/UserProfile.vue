@@ -22,8 +22,12 @@
                 @click.stop="$router.push('*').catch(err => {})">
               Привязать аккуант к вк
             </v-list-item>
+            <v-list-item
+                @click.stop="exit(); $router.push('/').catch(err => {})">
+              Выйти из приложения
+            </v-list-item>
             <v-list-item v-if="!student"
-                @click.stop="$router.push('/courses').catch(err => {})">
+                         @click.stop="$router.push('/courses').catch(err => {})">
               Добавить курс
             </v-list-item>
           </v-list>
@@ -33,12 +37,24 @@
   </v-container>
 </template>
 <script>
+import IdentityRequest from "@/services/IdentityRequest";
+
 export default {
   name: 'UserProfile',
   props: {
     role: {},
     student: {},
     user: {}
+  },
+  methods:{
+    async logout(){
+      const user = new IdentityRequest()
+      await user.postLogout()
+    },
+
+    exit(){
+      this.logout()
+    }
   }
 }
 </script>

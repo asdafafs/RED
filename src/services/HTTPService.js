@@ -23,7 +23,6 @@ export default class HttpService {
         }
 
         let request
-        console.log(methodType)
         switch (methodType) {
             case "GET":
                 request = axios.get(url, requestConfig)
@@ -41,9 +40,6 @@ export default class HttpService {
 
         request.catch(error => {
             // Check if the current URL is not equal to "https://anton.mlsat.ru"
-            console.log(window.location.href)
-            console.log(this.frontPageUrl)
-            console.log(window.location.href !== this.frontPageUrl)
             if (window.location.href !== this.frontPageUrl) {
                 // Check if the error status is 401 (Unauthorized)
                 if (error.response && error.response.status === 401 && window.location.href !== this.frontPageUrl) {
@@ -55,7 +51,6 @@ export default class HttpService {
                 }
             }
         });
-
         return request
     }
 

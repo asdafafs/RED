@@ -18,6 +18,7 @@ import Registration from "@/views/AuthorizationViews/Registration.vue";
 import PostLoginPage from "@/views/AuthorizationViews/PostLoginPage.vue";
 import CoursesList from "@/views/CoursesList.vue";
 import ConfirmEmail from "@/views/AuthorizationViews/ConfirmEmail.vue";
+import ForgetPassword from "@/views/AuthorizationViews/ForgetPassword.vue";
 
 
 Vue.use(VueRouter)
@@ -48,6 +49,9 @@ const routes = [
         path: '/recoveryPassWord',
         name: 'recPass',
         component: RecoveryPassword,
+        children: [
+
+        ]
     },
     {
         path: '/post-login',
@@ -125,10 +129,15 @@ const routes = [
         path: '/confirm-email',
         name: 'ConfirmEmail',
         component: ConfirmEmail,
-        meta: {
-            layout: 'System'
-        }
+        // meta: {
+        //     layout: 'System'
+        // }
     },
+    {
+        path: '/forget-password',
+        name: 'ForgetPassword',
+        component: ForgetPassword,
+    }
 ]
 
 const router = new VueRouter({
