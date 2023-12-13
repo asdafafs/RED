@@ -21,9 +21,14 @@
               ></v-text-field>
             </v-card-text>
             <v-card-actions>
-              <v-btn color="#4E7AEC" @click=" validateEmail" class="rounded-lg pa-0 white--text" block>
-                Ввести новый пароль
-              </v-btn>
+              <v-col>
+                <v-btn color="#4E7AEC" @click=" validateEmail" class="rounded-lg pa-0 white--text" block>
+                  Ввести новый пароль
+                </v-btn>
+                <v-btn color="##E9E9E8" @click="$router.push('/')" class="rounded-lg pa-0" block>
+                  Выйти
+                </v-btn>
+              </v-col>
             </v-card-actions>
           </v-card>
           <v-card class="d-flex justify-space-between flex-column white rounded-lg ma-2 width" v-if="!form">
@@ -53,11 +58,12 @@
                   counter
                   @click:append="show = !show"
               ></v-text-field>
+              ы
               <v-alert v-if="!passwordsMatch" type="error">Пароли не совпадают</v-alert>
             </v-card-text>
             <v-card-actions v-if="passwordsMatch">
               <v-btn color="#4E7AEC" @click="validatePassword" class="rounded-lg pa-0 white--text" block>
-                Ввести новый пароль
+                Обновить пароль
               </v-btn>
             </v-card-actions>
           </v-card>
@@ -102,23 +108,36 @@ export default {
     }
   },
   methods: {
-    async confirmEmail(body) {
+    async checkEmail(body) {
       const email = new IdentityRequest()
-      await email.postEmail(body)
+      await email.postResetPassword(body)
+    },
+
+    async newPassword(body) {
+      const password = new IdentityRequest()
+      await password.postNewPassword(body)
     },
 
     validateEmail() {
       if (!this.isEmailValid) {
         return;
       }
-      this.confirmEmail(this.email)
+      this.checkEmail(this.email)
       this.form = false
     },
     validatePassword() {
       if (!(this.rulesPassword.required(this.password) === true && this.rulesPassword.min(this.password) === true)) {
         return;
       }
-      this.$router.push('/post-login').catch(err => {})
+      const body = {
+        "userId": 0,
+        "newPassword": this.password,
+        "code": "string"
+      }
+      this.newPassword(body)
+      this.$router.push('/post-login').catch(err => {
+        console.log(err)
+      })
       this.overlay = false;
     }
   },

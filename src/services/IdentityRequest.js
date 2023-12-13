@@ -25,6 +25,14 @@ export default class IdentityRequest extends HTTPService {
         return this.post("confirm-email", code)
     }
 
+    postResetPassword(code) {
+        return this.post('ForgetPassword', code)
+    }
+
+    postNewPassword(code) {
+        return this.post('ConfirmNewPassword',code)
+    }
+
     postLogout(code) {
         return this.post("logout", code)
     }

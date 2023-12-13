@@ -1,9 +1,9 @@
 <template>
-  <div class="overflow-hidden">
+  <div class="overflow-x-hidden">
     <v-row align="center" justify="center" class=" width">
       <v-col cols="4" class=" pa-0">
-        <v-dialog v-model="overlay" persistent width="auto" content-class="elevation-0"  class="overflow-hidden">
-          <v-card class="d-flex justify-space-between flex-column height width rounded-lg ma-2 overflow-hidden" v-if="overlay">
+        <v-dialog v-model="overlay" persistent width="auto" content-class="elevation-0" class="overflow-x-hidden">
+          <v-card class="d-flex justify-space-between flex-column height width rounded-lg ma-2 " v-if="overlay">
             <v-card-title class="black--text"> Регистрация</v-card-title>
             <v-card-subtitle class="black--text">
               Для продолжения работы в RED: Расписание, пожалуйста, зарегистрируйтесь
@@ -38,9 +38,14 @@
               ></v-text-field>
             </v-card-text>
             <v-card-actions>
-              <v-btn color="#4E7AEC" @click="validateForm" class="rounded-lg pa-0 white--text" block>
-                Зарегистрироваться
-              </v-btn>
+              <v-col>
+                <v-btn color="#4E7AEC" @click="validateForm" class="rounded-lg pa-0 white--text" block>
+                  Зарегистрироваться
+                </v-btn>
+                <v-btn color="##E9E9E8" @click="$router.push('/')" class="rounded-lg pa-0" block>
+                  Выйти
+                </v-btn>
+              </v-col>
             </v-card-actions>
           </v-card>
         </v-dialog>
@@ -88,7 +93,7 @@ export default {
           .then(result => console.log(result))
           .catch(x => console.log(x))
     },
-    
+
     async validateForm() {
       const body = {
         "email": this.email,
@@ -105,7 +110,9 @@ export default {
 
       console.log(body)
       await this.registration(body)
-      this.$router.push('/post-login').catch(err => {})
+      this.$router.push('/post-login').catch(err => {
+        console.log(err)
+      })
     },
   },
   computed: {
@@ -138,9 +145,9 @@ export default {
   font-size: 16px;
   border-radius: 5px;
   background-color: white;
-  box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2),
-  0px 2px 2px 0px rgba(0, 0, 0, 0.14),
-  0px 1px 5px 0px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2),
+  0 2px 2px 0 rgba(0, 0, 0, 0.14),
+  0 1px 5px 0 rgba(0, 0, 0, 0.12);
 }
 
 .height {
@@ -153,12 +160,4 @@ export default {
   margin-top: 2em;
   margin-bottom: 2em;
 }
-
-
-
-.overflow-hidden {
-  overflow-y: hidden !important;
-}
-
-html { overflow-y: auto !important;}
 </style>
