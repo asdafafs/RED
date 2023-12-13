@@ -2,11 +2,11 @@ import axios from "axios";
 
 export default class HttpService {
     basePath = 'api'
-    backendUrl = 'http://localhost:5105'
-    frontPageUrl = 'http://localhost:8080/'
+    //backendUrl = 'http://localhost:5105'
+    //frontPageUrl = 'http://localhost:8080/'
 
-    //frontPageUrl = 'https://anton.mlsat.ru'
-    //backendUrl = 'https://kamen.mlsat.ru'
+    frontPageUrl = 'https://anton.mlsat.ru/'
+    backendUrl = 'https://kamen.mlsat.ru'
 
     constructor(controller) {
         this.basePath = `${this.backendUrl}/${this.basePath}/${controller}`
@@ -41,6 +41,8 @@ export default class HttpService {
 
         request.catch(error => {
             // Check if the current URL is not equal to "https://anton.mlsat.ru"
+            console.log(window.location.href)
+            console.log(this.frontPageUrl)
             console.log(window.location.href !== this.frontPageUrl)
             if (window.location.href !== this.frontPageUrl) {
                 // Check if the error status is 401 (Unauthorized)
