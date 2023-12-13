@@ -88,8 +88,8 @@ export default {
   }),
   methods: {
     async registration(body) {
-      const registr = new IdentityRequest()
-      await registr.postRegister(body)
+      const register = new IdentityRequest()
+      await register.postRegister(body)
           .then(result => console.log(result))
           .catch(x => console.log(x))
     },
