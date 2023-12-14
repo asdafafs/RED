@@ -22,15 +22,12 @@
 import LogoRed from "@/components/logos/LogoRed.vue"
 
 export default {
-  name: 'MovileAppBar',
+  name: 'MobileAppBar',
   components: {LogoRed},
   props: {
     drawer: {}
   },
   methods: {
-    clickLog(drawer) {
-      console.log(drawer)
-    }
   }
 }
 </script>

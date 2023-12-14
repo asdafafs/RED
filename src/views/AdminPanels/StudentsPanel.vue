@@ -10,6 +10,7 @@ export default {
       {text: 'Имя', align: 'start', sortable: false, value: 'name'},
       {text: 'Фамилия', align: 'start', sortable: false, value: 'surname',},
       {text: 'Отчество', align: 'start', sortable: false, value: 'middleName',},
+      {text: 'Группа', align: 'start', sortable: false, value: 'groupId'},
       {text: 'Действия', value: 'actions', sortable: false},
     ],
     persons: {},
@@ -84,7 +85,7 @@ export default {
         name: item.name,
         surname: item.surname,
         middleName: item.middleName,
-        groupId: 1,
+        groupId: item.groupId,
       };
       console.log(this.editedItem)
       this.dialog = true;
@@ -134,7 +135,7 @@ export default {
           "name": this.editedItem.name,
           "surname": this.editedItem.surname,
           "middleName": this.editedItem.middleName,
-          "groupId": 1,
+          "groupId": this.editedItem.groupId,
         }
         await this.postUser(body)
         this.close();
@@ -162,7 +163,7 @@ export default {
         <v-dialog v-model="dialog" max-width="500px">
           <template v-slot:activator="{ on, attrs }">
             <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on">
-              Новый юзер
+              Новый ученик
             </v-btn>
           </template>
           <v-card>
@@ -178,6 +179,7 @@ export default {
                     <v-text-field v-model="editedItem.middleName" label="Отчество" ></v-text-field>
                     <v-text-field v-model="editedItem.email" label="email" ></v-text-field>
                     <v-text-field v-model="editedItem.phoneNumber" label="phoneNumber" ></v-text-field>
+                    <v-text-field v-model="editedItem.groupId" label="phoneNumber" ></v-text-field>
                   </v-col>
                 </v-row>
               </v-container>
