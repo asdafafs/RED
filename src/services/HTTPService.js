@@ -6,7 +6,7 @@ export default class HttpService {
     //frontPageUrl = 'http://localhost:8080/'
 
     frontPageUrl = 'https://anton.mlsat.ru/'
-    backendUrl = 'https://red.mlsat.ru'
+    backendUrl = 'https://kamen.mlsat.ru'
 
     constructor(controller) {
         this.basePath = `${this.backendUrl}/${this.basePath}/${controller}`
