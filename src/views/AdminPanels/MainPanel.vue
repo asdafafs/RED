@@ -42,6 +42,19 @@ export default {
 
 </template>
 
-<style scoped>
+<style>
+.uno {
+  color: #4E7AEC;
+}
 
+.btn {
+  font-size: 1.125rem;
+}
+
+.button-line {
+  width: 100%;
+  height: 2px;
+  background-color: black;
+  margin-top: 5px;
+}
 </style>

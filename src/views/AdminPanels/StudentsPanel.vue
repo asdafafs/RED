@@ -79,7 +79,7 @@ export default {
     editItem(item) {
       this.editedIndex = this.persons.students.indexOf(item);
       this.editedItem = {
-        studentId: item.id,
+        id: item.id,
         email: item.email,
         phoneNumber: item.phoneNumber,
         name: item.name,

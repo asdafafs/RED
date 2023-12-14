@@ -4,15 +4,13 @@ import AppButtons from "@/components/AppBar/AppButtons.vue";
 import MobileAppBar from "@/components/AppBar/MobileAppBar.vue";
 import UserProfile from "@/components/AppBar/UserProfile.vue";
 import DesktopLogo from "@/components/AppBar/DesktopLogo.vue";
-import {mapState} from "vuex";
 
 export default {
   components: {DesktopLogo, UserProfile, MobileAppBar, AppButtons, NavigationBar},
   data() {
     return {
-      ...mapState({
-      user: state => state.surname,
-    }),
+
+      user: 'FFFFFFFF',
       role: ["Ученик", "Учитель"],
       drawer: false,
       showDrawer: true,

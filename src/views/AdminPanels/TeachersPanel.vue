@@ -10,7 +10,6 @@ export default {
       {text: 'Имя', align: 'start', sortable: false, value: 'name'},
       {text: 'Фамилия', align: 'start', sortable: false, value: 'surname',},
       {text: 'Отчество', align: 'start', sortable: false, value: 'middleName',},
-      {text: 'Группа', align: 'start', sortable: false, value: 'groupId'},
       {text: 'Действия', value: 'actions', sortable: false},
     ],
     persons: {},
@@ -48,26 +47,26 @@ export default {
   methods: {
     async getUser() {
       const user = new UsersRequest();
-      await user.getUser().catch(x => console.log(x)).then(x => {
+      await user.getActiveUser().catch(x => console.log(x)).then(x => {
         this.userData = x.data
       })
     },
 
     async postUser(body) {
       const user = new UsersRequest();
-      await user.postUser(body).catch(x => console.log(x))
+      await user.postActiveUser(body).catch(x => console.log(x))
 
     },
 
-    async putUser(body) {
+    async putActiveUser(body) {
       const user = new UsersRequest();
-      await user.putUser(body).catch(x => console.log(x))
+      await user.putActiveUser(body).catch(x => console.log(x))
     },
 
     async deleteUser() {
       const user = new UsersRequest();
       const deletedItem = {"id": this.deletedIndex}
-      await user.deleteUser(deletedItem.id).catch(x => console.log(x))
+      await user.deleteActiveUser(deletedItem.id).catch(x => console.log(x))
     },
 
     async initialize() {
@@ -77,29 +76,28 @@ export default {
     },
 
     editItem(item) {
-      this.editedIndex = this.persons.students.indexOf(item);
+      this.editedIndex = this.persons.activeUsers.indexOf(item);
       this.editedItem = {
-        studentId: item.id,
+        id: item.id,
         email: item.email,
         phoneNumber: item.phoneNumber,
         name: item.name,
         surname: item.surname,
         middleName: item.middleName,
-        groupId: 1,
       };
       console.log(this.editedItem)
       this.dialog = true;
     },
 
     deleteItem(item) {
-      this.editedIndex = this.persons.students.indexOf(item);
+      this.editedIndex = this.persons.activeUsers.indexOf(item);
       this.editedItem = {name: item.name};
       this.deletedIndex = item.id
       this.dialogDelete = true;
     },
 
     async deleteItemConfirm() {
-      this.persons.students.splice(this.editedIndex, 1);
+      this.persons.activeUsers.splice(this.editedIndex, 1);
       await this.deleteUser()
       this.closeDelete();
     },
@@ -122,9 +120,9 @@ export default {
 
     async save() {
       if (this.editedIndex > -1) {
-        this.$set(this.persons.students, this.editedIndex, this.editedItem);
+        this.$set(this.persons.activeUsers, this.editedIndex, this.editedItem);
         const body = this.editedItem
-        await this.putUser(body)
+        await this.putActiveUser(body)
         this.close();
       }
       else {
@@ -135,7 +133,6 @@ export default {
           "name": this.editedItem.name,
           "surname": this.editedItem.surname,
           "middleName": this.editedItem.middleName,
-          "groupId": 1,
         }
         await this.postUser(body)
         this.close();
@@ -146,7 +143,7 @@ export default {
 
 </script>
 <template>
-  <v-data-table :headers="headers" :items="persons.students" class="elevation-1" no-data-text="Нет данных для отображения"
+  <v-data-table :headers="headers" :items="persons.activeUsers" class="elevation-1" no-data-text="Нет данных для отображения"
                 :footer-props="{
       'items-per-page-text': 'Записей на странице:',
       'items-per-page-all-text': 'Все',
