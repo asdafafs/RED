@@ -4,19 +4,24 @@ import AppButtons from "@/components/AppBar/AppButtons.vue";
 import MobileAppBar from "@/components/AppBar/MobileAppBar.vue";
 import UserProfile from "@/components/AppBar/UserProfile.vue";
 import DesktopLogo from "@/components/AppBar/DesktopLogo.vue";
+import {mapState} from "vuex";
 
 export default {
   components: {DesktopLogo, UserProfile, MobileAppBar, AppButtons, NavigationBar},
   data() {
     return {
-      user: "Петров С.А.",
+      ...mapState({
+      user: state => state.surname,
+    }),
       role: ["Ученик", "Учитель"],
       drawer: false,
       showDrawer: true,
       student: false,
     }
   },
-
+  props: {
+    isDataLoaded: Boolean,
+  },
   methods: {
     checkWindowWidth() {
       this.showDrawer = window.innerWidth >= 1260;
@@ -35,7 +40,7 @@ export default {
 </script>
 <template>
   <v-container>
-    <NavigationBar :drawer.sync="drawer" :role="role" :show-drawer="showDrawer" :student="student" :user="user"/>
+    <NavigationBar :drawer.sync="drawer" :role="role" :show-drawer="showDrawer" :student="student" :user="user" v-if="isDataLoaded"/>
     <v-app-bar app density="compact" color="#1e1f22" class="appbar position_component">
       <v-container class="pa-0 my-0" v-if="showDrawer" fluid>
         <v-row no-gutters>
@@ -43,10 +48,10 @@ export default {
             <DesktopLogo/>
           </v-col>
           <v-col>
-            <AppButtons :student="student"/>
+            <AppButtons :student="student" v-if="isDataLoaded"/>
           </v-col>
           <v-col cols="2">
-            <UserProfile :role="role" :student="student" :user="user"/>
+            <UserProfile :role="role" :student="student" :user="user" v-if="isDataLoaded"/>
           </v-col>
         </v-row>
       </v-container>

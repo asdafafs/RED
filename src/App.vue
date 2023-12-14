@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <AppBar>
+    <AppBar :isDataLoaded="isDataLoaded">
     </AppBar>
     <v-main>
       <router-view/>
@@ -19,6 +19,7 @@ export default {
 
   data: () => ({
     isDataLoaded : false
+
   }),
   async created() {
     let identity = new IdentityRequest()

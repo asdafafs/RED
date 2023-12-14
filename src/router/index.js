@@ -1,9 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import InstructorView from "@/views/InstructorView.vue";
-import AdminPanel from "@/views/AdminPanel.vue";
 import NotFoundView from "@/views/NotFoundView.vue";
-import AuthorizationView from "@/views/AuthorizationViews/AuthorizationView.vue";
+import AuthorizationView from "@/views/AuthorizationViews/MainView.vue";
 import DayView from "@/views/SchedulersVIews/DayView.vue";
 import MonthView from "@/views/SchedulersVIews/MonthView.vue";
 import StudentPlanView from "@/views/SchedulersVIews/StudentPlanView.vue";
@@ -19,6 +17,9 @@ import PostLoginPage from "@/views/AuthorizationViews/PostLoginPage.vue";
 import CoursesList from "@/views/CoursesList.vue";
 import ConfirmEmail from "@/views/AuthorizationViews/ConfirmEmail.vue";
 import ForgetPassword from "@/views/AuthorizationViews/ForgetPassword.vue";
+import StudentsPanel from "@/views/AdminPanels/StudentsPanel.vue";
+import TeachersPanel from "@/views/AdminPanels/TeachersPanel.vue";
+import MainPanel from "@/views/AdminPanels/MainPanel.vue";
 
 
 Vue.use(VueRouter)
@@ -49,9 +50,7 @@ const routes = [
         path: '/recoveryPassWord',
         name: 'recPass',
         component: RecoveryPassword,
-        children: [
-
-        ]
+        children: []
     },
     {
         path: '/post-login',
@@ -59,14 +58,34 @@ const routes = [
         component: PostLoginPage,
     },
     {
-        path: '/instructor',
-        name: 'instructor',
-        component: InstructorView,
+        path: '/confirm-email',
+        name: 'ConfirmEmail',
+        component: ConfirmEmail,
+        // meta: {
+        //     layout: 'System'
+        // }
+    },
+    {
+        path: '/forget-password',
+        name: 'ForgetPassword',
+        component: ForgetPassword,
     },
     {
         path: '/admin',
         name: 'admin',
-        component: AdminPanel,
+        component: MainPanel,
+        children: [
+            {
+                path: 'students',
+                name: 'students',
+                component: StudentsPanel
+            },
+            {
+                path: 'teachers',
+                name: 'teachers',
+                component: TeachersPanel
+            },
+        ]
     },
     {
         path: '*',
@@ -125,19 +144,7 @@ const routes = [
         name: 'courses',
         component: CoursesList,
     },
-    {
-        path: '/confirm-email',
-        name: 'ConfirmEmail',
-        component: ConfirmEmail,
-        // meta: {
-        //     layout: 'System'
-        // }
-    },
-    {
-        path: '/forget-password',
-        name: 'ForgetPassword',
-        component: ForgetPassword,
-    }
+
 ]
 
 const router = new VueRouter({
