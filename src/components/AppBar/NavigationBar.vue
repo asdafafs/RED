@@ -51,6 +51,7 @@
           </div>
         </div>
         <span class="mdi mdi-login" style="transform: scale(1.5)"></span>
+
       </v-list-item>
     </v-list>
   </v-navigation-drawer>
@@ -66,9 +67,6 @@ export default {
     user: {}
   },
   methods: {
-    clickLog(drawer) {
-      console.log(drawer)
-    }
   }
 }
 </script>

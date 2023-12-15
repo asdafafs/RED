@@ -12,7 +12,7 @@
             <v-card-text class="pb-0 ">
               <v-text-field v-model="name" solo label="Фамилия" :rules="[rulesFullname.required]"></v-text-field>
               <v-text-field v-model="surname" solo label="Имя" :rules="[rulesFullname.required]"></v-text-field>
-              <v-text-field v-model="lastName" solo label="Отчество" :rules="[rulesFullname.required]"></v-text-field>
+              <v-text-field v-model="middleName" solo label="Отчество" :rules="[rulesFullname.required]"></v-text-field>
               <v-text-field
                   solo
                   color="black"
@@ -69,7 +69,7 @@ export default {
     email: '',
     name: '',
     surname: '',
-    lastName: '',
+    middleName: '',
     phoneNumber: '7',
     requiredMessage: 'Номер телефона обязателен',
     password: '',
@@ -99,7 +99,7 @@ export default {
         "email": this.email,
         "name": this.name,
         "surname": this.surname,
-        "middleName": this.lastName,
+        "middleName": this.middleName,
         "phoneNumber": this.phoneNumber,
         "password": this.password,
         "userType": 1
@@ -108,7 +108,6 @@ export default {
         return;
       }
 
-      console.log(body)
       await this.registration(body)
       this.$router.push('/post-login').catch(err => {
         console.log(err)

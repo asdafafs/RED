@@ -51,12 +51,6 @@ export default {
     },
   }),
   computed: {
-    // passwordsMatch() {
-    //   return this.password === this.passwordRepeat;
-    // },
-    // checkPasswordMatch() {
-    //   return value => (value === this.password ? true : 'Пароли не совпадают');
-    // },
     isEmailValid() {
       return this.rulesEmail.required(this.email) === true
     }
@@ -78,21 +72,6 @@ export default {
         console.log(err)
       })
     },
-    // validatePassword() {
-    //   if (!(this.rulesPassword.required(this.password) === true && this.rulesPassword.min(this.password) === true)) {
-    //     return;
-    //   }
-    //   const body = {
-    //     "userId": 0,
-    //     "newPassword": this.password,
-    //     "code": "string"
-    //   }
-    //   this.newPassword(body)
-    //   this.$router.push('/forget-password').catch(err => {
-    //     console.log(err)
-    //   })
-    //   this.overlay = false;
-    // }
   },
 }
 </script>

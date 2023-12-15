@@ -196,7 +196,7 @@ export default {
 .day-calendar {
   :only-child {
     .theme--light.v-calendar-daily .v-calendar-daily__day-interval {
-      border-top: #e0e0e0 0px;
+      border-top: #e0e0e0 0;
     }
 
     .theme--light.v-calendar-daily {
@@ -212,6 +212,6 @@ export default {
 }
 
 .theme--light.v-calendar-daily .v-calendar-daily__day-interval {
-  border-top: #e0e0e0 0px;
+  border-top: #e0e0e0 0;
 }
 </style>

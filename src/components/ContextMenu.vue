@@ -1,15 +1,3 @@
-<script>
-export default {
-  data: () => ({
-    items: [
-      {title: '1'},
-      {title: '2'},
-      {title: '3'},
-      {title: '4'},
-    ],
-  }),
-}
-</script>
 <template>
   <div class="text-center">
     <v-menu offset-y>
@@ -32,5 +20,15 @@ export default {
     </v-menu>
   </div>
 </template>
-<style scoped>
-</style>
+<script>
+export default {
+  data: () => ({
+    items: [
+      {title: '1'},
+      {title: '2'},
+      {title: '3'},
+      {title: '4'},
+    ],
+  }),
+}
+</script>

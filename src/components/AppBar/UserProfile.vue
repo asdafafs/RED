@@ -49,7 +49,7 @@ export default {
   methods:{
     async logout(){
       const user = new IdentityRequest()
-      await user.postLogout()
+      await user.postLogout({})
     },
 
     exit(){

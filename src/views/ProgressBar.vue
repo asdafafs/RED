@@ -1,23 +1,3 @@
-<script>
-export default {
-  data: () => ({
-    interval: -1,
-    value: 0,
-  }),
-  mounted() {
-    this.interval = setInterval(() => {
-      if (this.value === 100) {
-        return (this.value = 0)
-      }
-      this.value += 10
-    }, 1000)
-  },
-  beforeMount() {
-    clearInterval(this.interval)
-  }
-}
-</script>
-
 <template>
   <v-container class="px-4 pa-0 ma-0 " fluid>
     <div class="text-h5 font-weight-bold" style="">Мои успехи</div>
@@ -140,3 +120,22 @@ export default {
     </v-row>
   </v-container>
 </template>
+<script>
+export default {
+  data: () => ({
+    interval: -1,
+    value: 0,
+  }),
+  mounted() {
+    this.interval = setInterval(() => {
+      if (this.value === 100) {
+        return (this.value = 0)
+      }
+      this.value += 10
+    }, 1000)
+  },
+  beforeMount() {
+    clearInterval(this.interval)
+  }
+}
+</script>

@@ -85,7 +85,6 @@ export default {
         surname: item.surname,
         middleName: item.middleName,
       };
-      console.log(this.editedItem)
       this.dialog = true;
     },
 

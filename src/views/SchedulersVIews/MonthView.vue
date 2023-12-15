@@ -210,7 +210,7 @@ export default {
   width: 98%;
   background-color: rgb(157, 185, 255);
   border-color: rgb(157, 185, 255);
-  margin: 0px 0px 0px 1.1%;
+  margin: 0 0 0 1.1%;
 }
 
 .v-event.v-event-start.v-event-end.white--text {
