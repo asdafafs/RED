@@ -212,16 +212,6 @@ export default {
       console.log('заканчиваем')
     },
 
-    cancelDrag() {
-      if (this.dragEvent) {
-        // Restore the original event state if dragging is canceled.
-        // You may want to revert any changes made during dragging.
-        // For example, if you have a temporary event during dragging.
-        this.dragEvent = null;
-        this.dragStart = null;
-      }
-    },
-
   },
 
 }
@@ -241,7 +231,7 @@ export default {
   width: 100%;
   background-color: rgb(157, 185, 255);
   border-color: rgb(157, 185, 255);
-  margin: 0px 0px 0px 5px;
+  margin: 0 0 0 5px;
 }
 
 .v-event-more {

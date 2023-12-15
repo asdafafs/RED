@@ -1,3 +1,24 @@
+<template>
+  <v-container>
+    <NavigationBar :drawer.sync="drawer" :role="role" :show-drawer="showDrawer" :student="student" :user="user" v-if="isDataLoaded"/>
+    <v-app-bar app density="compact" color="#1e1f22" class="appbar position_component">
+      <v-container class="pa-0 my-0" v-if="showDrawer" fluid>
+        <v-row no-gutters>
+          <v-col cols=2>
+            <DesktopLogo/>
+          </v-col>
+          <v-col>
+            <AppButtons :student="student" v-if="isDataLoaded"/>
+          </v-col>
+          <v-col cols="2">
+            <UserProfile :role="role" :student="student" :user="user" v-if="isDataLoaded"/>
+          </v-col>
+        </v-row>
+      </v-container>
+      <MobileAppBar :drawer.sync="drawer" v-else/>
+    </v-app-bar>
+  </v-container>
+</template>
 <script>
 import NavigationBar from "@/components/AppBar/NavigationBar.vue";
 import AppButtons from "@/components/AppBar/AppButtons.vue";
@@ -36,29 +57,7 @@ export default {
   },
 }
 </script>
-<template>
-  <v-container>
-    <NavigationBar :drawer.sync="drawer" :role="role" :show-drawer="showDrawer" :student="student" :user="user" v-if="isDataLoaded"/>
-    <v-app-bar app density="compact" color="#1e1f22" class="appbar position_component">
-      <v-container class="pa-0 my-0" v-if="showDrawer" fluid>
-        <v-row no-gutters>
-          <v-col cols=2>
-            <DesktopLogo/>
-          </v-col>
-          <v-col>
-            <AppButtons :student="student" v-if="isDataLoaded"/>
-          </v-col>
-          <v-col cols="2">
-            <UserProfile :role="role" :student="student" :user="user" v-if="isDataLoaded"/>
-          </v-col>
-        </v-row>
-      </v-container>
-      <MobileAppBar :drawer.sync="drawer" v-else/>
-    </v-app-bar>
-  </v-container>
-</template>
-
-<style scoped>
+<style>
 /deep/ .v-toolbar__content {
   padding: 0 !important;
 }

@@ -2,7 +2,7 @@
   <div style="text-align: center;">
     <h1>Not Found!</h1>
     <p>
-      <v-btn @click.stop="$router.push('/')">
+      <v-btn @click.stop="$router.push('/schedule')">
         Страница не найдена
       </v-btn>
     </p>

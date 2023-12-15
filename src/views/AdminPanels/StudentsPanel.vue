@@ -87,7 +87,6 @@ export default {
         middleName: item.middleName,
         groupId: item.groupId,
       };
-      console.log(this.editedItem)
       this.dialog = true;
     },
 

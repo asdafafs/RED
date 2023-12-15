@@ -5,7 +5,6 @@
 </template>
 
 <script>
-
 import IdentityRequest from "@/services/IdentityRequest";
 
 export default  {

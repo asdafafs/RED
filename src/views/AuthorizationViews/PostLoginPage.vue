@@ -8,11 +8,6 @@ export default {
     console.log('here')
   },
   async mounted() {
-    // const testService = new TestService()
-    //  await testService.getTest()
-    //     .then(x => console.log(x))
-    // await testService.getTestException()
-    //     .then(x => console.log(x))
   }
 }
 </script>

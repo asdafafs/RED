@@ -1,3 +1,48 @@
+<template>
+  <div>
+    <v-row align="center" justify="center" class=" ">
+      <v-col cols="4" class=" pa-0" align="center">
+        <v-dialog v-model="overlay" persistent width="auto" content-class="elevation-0">
+          <v-card class="d-flex justify-space-between flex-column white rounded-lg ma-2 width">
+            <v-card-title class="black--text"> Восстановление пароля</v-card-title>
+            <v-card-subtitle class="black--text">
+              Введите новый пароль
+            </v-card-subtitle>
+            <v-card-text class="pb-0 ">
+              <v-text-field
+                  solo
+                  v-model="password"
+                  :rules="[rulesPassword.required, rulesPassword.min]"
+                  name="input-10-1"
+                  label="Пароль"
+                  hint="Минимум 8 символов"
+                  counter
+              ></v-text-field>
+              <v-text-field
+                  solo
+                  v-model="passwordRepeat"
+                  :append-icon="show ? 'mdi-eye ' : 'mdi-eye-off '"
+                  :rules="[rulesPassword.required, rulesPassword.min, checkPasswordMatch]"
+                  :type="show ? 'text' : 'password'"
+                  name="input-10-2"
+                  label="Повторите пароль"
+                  hint="Минимум 8 символов"
+                  counter
+                  @click:append="show = !show"
+              ></v-text-field>
+              <v-alert v-if="!passwordsMatch" type="error">Пароли не совпадают</v-alert>
+            </v-card-text>
+            <v-card-actions v-if="passwordsMatch">
+              <v-btn color="#4E7AEC" @click="validatePassword" class="rounded-lg pa-0 white--text" block>
+                Обновить пароль
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+      </v-col>
+    </v-row>
+  </div>
+</template>
 <script>
 import IdentityRequest from "@/services/IdentityRequest";
 
@@ -65,52 +110,6 @@ export default {
   }
 }
 </script>
-
-<template>
-  <div>
-    <v-row align="center" justify="center" class=" ">
-      <v-col cols="4" class=" pa-0" align="center">
-        <v-dialog v-model="overlay" persistent width="auto" content-class="elevation-0">
-          <v-card class="d-flex justify-space-between flex-column white rounded-lg ma-2 width">
-            <v-card-title class="black--text"> Восстановление пароля</v-card-title>
-            <v-card-subtitle class="black--text">
-              Введите новый пароль
-            </v-card-subtitle>
-            <v-card-text class="pb-0 ">
-              <v-text-field
-                  solo
-                  v-model="password"
-                  :rules="[rulesPassword.required, rulesPassword.min]"
-                  name="input-10-1"
-                  label="Пароль"
-                  hint="Минимум 8 символов"
-                  counter
-              ></v-text-field>
-              <v-text-field
-                  solo
-                  v-model="passwordRepeat"
-                  :append-icon="show ? 'mdi-eye ' : 'mdi-eye-off '"
-                  :rules="[rulesPassword.required, rulesPassword.min, checkPasswordMatch]"
-                  :type="show ? 'text' : 'password'"
-                  name="input-10-2"
-                  label="Повторите пароль"
-                  hint="Минимум 8 символов"
-                  counter
-                  @click:append="show = !show"
-              ></v-text-field>
-              <v-alert v-if="!passwordsMatch" type="error">Пароли не совпадают</v-alert>
-            </v-card-text>
-            <v-card-actions v-if="passwordsMatch">
-              <v-btn color="#4E7AEC" @click="validatePassword" class="rounded-lg pa-0 white--text" block>
-                Обновить пароль
-              </v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
-      </v-col>
-    </v-row>
-  </div>
-</template>
 <style>
 .width {
   width: 20em;

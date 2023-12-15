@@ -1,21 +1,3 @@
-<script>
-export default {
-  components: {},
-  data: () => ({
-    isButtonMenuPressed: [false, false,],
-  }),
-  methods: {
-    changeButtonMenuState(index) {
-      if (this.lastPressedIndex !== -1) {
-        this.$set(this.isButtonMenuPressed, this.lastPressedIndex, false);
-      }
-      this.$set(this.isButtonMenuPressed, index, true);
-      this.lastPressedIndex = index;
-    },
-  },
-}
-</script>
-
 <template>
   <v-container>
     <v-row>
@@ -35,13 +17,31 @@ export default {
       </v-col>
     </v-row>
     <v-row>
-      <v-col><router-view></router-view></v-col>
+      <v-col>
+        <router-view></router-view>
+      </v-col>
 
     </v-row>
   </v-container>
 
 </template>
-
+<script>
+export default {
+  components: {},
+  data: () => ({
+    isButtonMenuPressed: [false, false,],
+  }),
+  methods: {
+    changeButtonMenuState(index) {
+      if (this.lastPressedIndex !== -1) {
+        this.$set(this.isButtonMenuPressed, this.lastPressedIndex, false);
+      }
+      this.$set(this.isButtonMenuPressed, index, true);
+      this.lastPressedIndex = index;
+    },
+  },
+}
+</script>
 <style>
 .uno {
   color: #4E7AEC;

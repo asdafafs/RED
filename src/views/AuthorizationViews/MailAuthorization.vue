@@ -100,7 +100,6 @@ export default {
 
       if (this.wrongAuth) ;
       else await this.$router.push('/post-login').catch(err =>{console.log(err)})
-      this.wrongAuth = true;
     }
   },
   computed: {

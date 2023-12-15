@@ -1,3 +1,32 @@
+<template>
+  <v-row class="fill-height">
+    <v-col>
+      <v-sheet height="600">
+        <v-calendar
+            ref="calendar"
+            v-model="value"
+            color="primary"
+            type="4day"
+            :events="events"
+            :event-color="getEventColor"
+            :event-ripple="false"
+            @change="getEvents"
+            @mousedown:event="startDrag"
+            @mousedown:time="startTime"
+            @mousemove:time="mouseMove"
+            @mouseup:time="endDrag"
+
+        >
+          <template v-slot:event="{ eventSummary }">
+            <div class="v-event-draggable">
+              <component :is="{ render: eventSummary }"></component>
+            </div>
+          </template>
+        </v-calendar>
+      </v-sheet>
+    </v-col>
+  </v-row>
+</template>
 <script>
 export default {
   data: () => ({
@@ -129,37 +158,6 @@ export default {
   },
 }
 </script>
-
-<template>
-  <v-row class="fill-height">
-    <v-col>
-      <v-sheet height="600">
-        <v-calendar
-            ref="calendar"
-            v-model="value"
-            color="primary"
-            type="4day"
-            :events="events"
-            :event-color="getEventColor"
-            :event-ripple="false"
-            @change="getEvents"
-            @mousedown:event="startDrag"
-            @mousedown:time="startTime"
-            @mousemove:time="mouseMove"
-            @mouseup:time="endDrag"
-
-        >
-          <template v-slot:event="{ eventSummary }">
-            <div class="v-event-draggable">
-              <component :is="{ render: eventSummary }"></component>
-            </div>
-          </template>
-        </v-calendar>
-      </v-sheet>
-    </v-col>
-  </v-row>
-</template>
-
 <style scoped lang="scss">
 .v-event-draggable {
   padding-left: 6px;
