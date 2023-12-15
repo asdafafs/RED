@@ -1,8 +1,8 @@
 <template>
-  <div class="overflow-x-hidden">
+  <div class="">
     <v-row align="center" justify="center" class=" width">
       <v-col cols="4" class=" pa-0">
-        <v-dialog v-model="overlay" persistent width="auto" content-class="elevation-0" class="overflow-x-hidden">
+        <v-dialog v-model="overlay" persistent width="auto" content-class="elevation-0" class="">
           <v-card class="d-flex justify-space-between flex-column height width rounded-lg ma-2 " v-if="overlay">
             <v-card-title class="black--text"> Регистрация</v-card-title>
             <v-card-subtitle class="black--text">
@@ -104,10 +104,12 @@ export default {
         "password": this.password,
         "userType": 1
       }
+      console.log(body)
+      console.log(!this.isPhoneNumberValid || !this.isEmailValid || !this.isPasswordValid || !this.isNameValid)
       if (!this.isPhoneNumberValid || !this.isEmailValid || !this.isPasswordValid || !this.isNameValid) {
         return;
       }
-
+      console.log(body)
       await this.registration(body)
       this.$router.push('/post-login').catch(err => {
         console.log(err)
@@ -116,7 +118,7 @@ export default {
   },
   computed: {
     isNameValid() {
-      return this.rulesFullname.required(this.name) === true && this.rulesFullname.required(this.surname) === true && this.rulesFullname.required(this.lastName) === true
+      return this.rulesFullname.required(this.name) === true && this.rulesFullname.required(this.surname) === true && this.rulesFullname.required(this.middleName) === true
     },
 
     isEmailValid() {
