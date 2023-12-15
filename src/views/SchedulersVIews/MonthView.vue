@@ -1,3 +1,57 @@
+<template>
+  <v-container fluid>
+    <v-row>
+      <v-col>
+        <v-sheet tile height="54" class="d-flex justify-center">
+          <v-btn icon class="ma-0  align-self-center" @click="$refs.calendar.prev()">
+            <v-icon>mdi-chevron-left</v-icon>
+          </v-btn>
+          <v-toolbar-title v-if="test" class="text-h6 align-self-center">{{ $refs.calendar.title.split(' ')[0] }}
+          </v-toolbar-title>
+          <v-btn icon class="ma-0  align-self-center" @click="$refs.calendar.next()">
+            <v-icon>mdi-chevron-right</v-icon>
+          </v-btn>
+        </v-sheet>
+        <v-sheet height="600">
+          <v-calendar
+              ref="calendar"
+              v-model="value"
+              :weekdays="weekday"
+              :event-overlap-mode="mode"
+              :type="type"
+              :events="events"
+              :event-color="getEventColor"
+              :event-ripple="false"
+              :event-height="num"
+              :hide-header=false
+              @change="updateRange"
+              event-more-text="+ {0}"
+          >
+            <template v-slot:event="{event}">
+              <v-container class="pa-1 mx-0 d-flex ">
+                <v-row class="ma-0  ">
+                  <v-col cols="4" class="black--text pa-0 align-self-center d-none d-lg-block">
+                    <div class="text-subtitle-2 d-flex justify-center">{{ event.startTime }}</div>
+                  </v-col>
+                  <v-col class="d-lg-none pa-0" style="display: flex; align-items: center; justify-content: center;">
+                    <div class="logo ">
+                      <car-logo v-if="event.type === 'practice'"/>
+                      <lecture-logo v-if="event.type === 'lecture'"/>
+                    </div>
+                  </v-col>
+                  <v-col class="black--text pa-0 align-self-center d-none d-lg-block">
+                    <div class="font-weight-bold">{{ event.name }}</div>
+                    <div>Преподаватель:<br>{{ event.teacher }}</div>
+                  </v-col>
+                </v-row>
+              </v-container>
+            </template>
+          </v-calendar>
+        </v-sheet>
+      </v-col>
+    </v-row>
+  </v-container>
+</template>
 <script>
 import CarLogo from "@/components/logos/CarLogo.vue";
 import LectureLogo from "@/components/logos/LectureLogo.vue";
@@ -128,61 +182,6 @@ export default {
   },
 }
 </script>
-<template>
-  <v-container fluid>
-    <v-row>
-      <v-col>
-        <v-sheet tile height="54" class="d-flex justify-center">
-          <v-btn icon class="ma-0  align-self-center" @click="$refs.calendar.prev()">
-            <v-icon>mdi-chevron-left</v-icon>
-          </v-btn>
-          <v-toolbar-title v-if="test" class="text-h6 align-self-center">{{ $refs.calendar.title.split(' ')[0] }}
-          </v-toolbar-title>
-          <v-btn icon class="ma-0  align-self-center" @click="$refs.calendar.next()">
-            <v-icon>mdi-chevron-right</v-icon>
-          </v-btn>
-        </v-sheet>
-        <v-sheet height="600">
-          <v-calendar
-              ref="calendar"
-              v-model="value"
-              :weekdays="weekday"
-              :event-overlap-mode="mode"
-              :type="type"
-              :events="events"
-              :event-color="getEventColor"
-              :event-ripple="false"
-              :event-height="num"
-              :hide-header=false
-              @change="updateRange"
-              event-more-text="+ {0}"
-          >
-            <template v-slot:event="{event}">
-              <v-container class="pa-1 mx-0 d-flex ">
-                <v-row class="ma-0  ">
-                  <v-col cols="4" class="black--text pa-0 align-self-center d-none d-lg-block">
-                    <div class="text-subtitle-2 d-flex justify-center">{{ event.startTime }}</div>
-                  </v-col>
-                  <v-col class="d-lg-none pa-0" style="display: flex; align-items: center; justify-content: center;">
-                    <div class="logo ">
-                      <car-logo v-if="event.type === 'practice'"/>
-                      <lecture-logo v-if="event.type === 'lecture'"/>
-                    </div>
-                  </v-col>
-                  <v-col class="black--text pa-0 align-self-center d-none d-lg-block">
-                    <div class="font-weight-bold">{{ event.name }}</div>
-                    <div>Преподаватель:<br>{{ event.teacher }}</div>
-                  </v-col>
-                </v-row>
-              </v-container>
-            </template>
-          </v-calendar>
-        </v-sheet>
-      </v-col>
-    </v-row>
-  </v-container>
-</template>
-
 <style lang="scss">
 .v-calendar-weekly__week {
   min-height: 20em;
