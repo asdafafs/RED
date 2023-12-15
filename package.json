@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve --host 0.0.0.0 -s  build",
+    "serve": "vue-cli-service serve --host 0.0.0.0 --https true  -s  build",
     "start-dev": "serve -s dist",
     "build-dev": "vue-cli-service build --watch",
     "build": "vue-cli-service build",

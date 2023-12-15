@@ -25,13 +25,13 @@ import AppButtons from "@/components/AppBar/AppButtons.vue";
 import MobileAppBar from "@/components/AppBar/MobileAppBar.vue";
 import UserProfile from "@/components/AppBar/UserProfile.vue";
 import DesktopLogo from "@/components/AppBar/DesktopLogo.vue";
+import store from "@/store";
 
 export default {
   components: {DesktopLogo, UserProfile, MobileAppBar, AppButtons, NavigationBar},
   data() {
     return {
-
-      user: 'FFFFFFFF',
+      user: '',
       role: ["Ученик", "Учитель"],
       drawer: false,
       showDrawer: true,
@@ -45,6 +45,13 @@ export default {
     checkWindowWidth() {
       this.showDrawer = window.innerWidth >= 1260;
     },
+  },
+
+  async mounted() {
+    await store.dispatch('GET_CURRENT_USER')
+    console.log(this.$store.state.user.name)
+    this.user = await this.$store.state.user.name
+    // this.role = this.$store.state.user.discriminator
   },
 
   created() {
