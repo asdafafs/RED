@@ -20,6 +20,8 @@ import ForgetPassword from "@/views/AuthorizationViews/ForgetPassword.vue";
 import StudentsPanel from "@/views/AdminPanels/StudentsPanel.vue";
 import TeachersPanel from "@/views/AdminPanels/TeachersPanel.vue";
 import MainPanel from "@/views/AdminPanels/MainPanel.vue";
+import TestTest from "@/views/SchedulersVIews/TestTest.vue";
+import MonthViewSchedule from "@/views/SchedulersVIews/MonthViewSchedule.vue";
 
 
 Vue.use(VueRouter)
@@ -133,9 +135,9 @@ const routes = [
         component: scheduleView,
         children: [
             {
-                path: "testMonth",
+                path: "lessons",
                 name: 'month',
-                component: MonthView,
+                component: MonthViewSchedule,
             },
         ]
     },
@@ -144,6 +146,11 @@ const routes = [
         name: 'courses',
         component: CoursesList,
     },
+    {
+        path: "/test",
+        name:"test",
+        component: TestTest
+    }
 
 ]
 

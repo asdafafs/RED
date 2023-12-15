@@ -4,7 +4,7 @@
       <v-spacer cols="1"></v-spacer>
       <v-col cols=2>
         <v-btn :class="{'custom-bg': isButtonPressed[0]}"
-               @click="changeButtonState(0); $router.push('/schedule/testMonth').catch(err => {})"
+               @click="changeButtonState(0); $router.push('/schedule/lessons').catch(err => {})"
                text min-height="3em" color="white" class="pa-0 btn" width="100%">
           Расписание
         </v-btn>
