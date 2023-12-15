@@ -1,9 +1,9 @@
 <template>
-  <div>
+  <div class="no-scroll">
     <v-row align="center" justify="center" class="">
-      <v-col cols="4" class=" pa-0">
-        <v-dialog v-model="overlay" persistent width="auto" content-class="elevation-0">
-          <v-card class="d-flex justify-space-between flex-column height width rounded-lg ma-2" v-if="overlay">
+      <v-col cols="4" class=" pa-0 overflow-x-hidden">
+        <v-dialog v-model="overlay" persistent width="auto" content-class="elevation-0" class="custom-dialog">
+          <v-card class="d-flex justify-space-between flex-column height width rounded-lg ma-2 " v-if="overlay">
             <v-card-title class="black--text"> Авторизация</v-card-title>
             <v-card-subtitle class="black--text">
               Для продолжения работы в RED: Расписание, пожалуйста, авторизуйтесь через электронную почту.
@@ -99,7 +99,9 @@ export default {
       await this.login(body)
 
       if (this.wrongAuth) ;
-      else await this.$router.push('/post-login').catch(err =>{console.log(err)})
+      else await this.$router.push('/post-login').catch(err => {
+        console.log(err)
+      })
     }
   },
   computed: {
@@ -108,8 +110,8 @@ export default {
     },
   },
 };
-</script>
-<style scoped>
+</script> 
+<style>
 .width {
   width: 20em;
 }
@@ -125,4 +127,20 @@ export default {
   margin-bottom: 2em;
 }
 
+.no-scroll {
+  overflow: hidden;
+}
+
+.custom-dialog .v-overlay--active .v-overlay__scrim {
+    display: none;
+}
+
+.custom-dialog .v-overlay--active {
+    backdrop-filter: blur(2px);
+    background: rgb(0 0 0 / 0.8);
+}
+
+.custom-dialog @media (prefers-color-scheme: dark) {
+    background: rgb(0 0 0 / 0.4);
+}
 </style>
