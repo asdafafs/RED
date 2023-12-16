@@ -23,11 +23,12 @@ export default {
 
   }),
   async created() {
-    let identity = new IdentityRequest()
-    await identity.getIdentity()
-        .then(async () =>  this.isDataLoaded = true,
-            )
-    // await store.dispatch('GET_CURRENT_USER', response)
+    const identity = new IdentityRequest()
+    identity.getIdentity()
+        .then(async (x) => {
+          await store.dispatch('GET_CURRENT_USER', x)
+          this.isDataLoaded = true
+        })
 
   }
 };

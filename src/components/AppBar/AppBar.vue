@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <NavigationBar :drawer.sync="drawer" :role="role" :show-drawer="showDrawer" :student="student" :user="user" v-if="isDataLoaded"/>
+    <NavigationBar :drawer.sync="drawer" :role="role" :show-drawer="showDrawer" :student="student" :user="userName"/>
     <v-app-bar app density="compact" color="#1e1f22" class="appbar position_component">
       <v-container class="pa-0 my-0" v-if="showDrawer" fluid>
         <v-row no-gutters>
@@ -11,7 +11,7 @@
             <AppButtons :student="student" v-if="isDataLoaded"/>
           </v-col>
           <v-col cols="2">
-            <UserProfile :role="role" :student="student" :user="user" v-if="isDataLoaded"/>
+            <UserProfile :role="role" :student="student" :user="userName" v-if="isDataLoaded"/>
           </v-col>
         </v-row>
       </v-container>
@@ -25,13 +25,12 @@ import AppButtons from "@/components/AppBar/AppButtons.vue";
 import MobileAppBar from "@/components/AppBar/MobileAppBar.vue";
 import UserProfile from "@/components/AppBar/UserProfile.vue";
 import DesktopLogo from "@/components/AppBar/DesktopLogo.vue";
-import store from "@/store";
+import {mapState} from "vuex";
 
 export default {
   components: {DesktopLogo, UserProfile, MobileAppBar, AppButtons, NavigationBar},
   data() {
     return {
-      user: '',
       role: ["Ученик", "Учитель"],
       drawer: false,
       showDrawer: true,
@@ -47,11 +46,11 @@ export default {
     },
   },
 
-  async mounted() {
-    await store.dispatch('GET_CURRENT_USER')
-    console.log(this.$store.state.user.name)
-    this.user = await this.$store.state.user.name
-    // this.role = this.$store.state.user.discriminator
+  computed: {
+    ...mapState(['user']),
+    userName() {
+      return this.user.name
+    }
   },
 
   created() {
