@@ -96,7 +96,6 @@ export default {
     this.$refs.calendar.$el
         .querySelectorAll('.v-btn.v-btn--fab.v-btn--has-bg.v-btn--round.theme--light.v-size--small.primary')
         .forEach(item => {
-          console.log(item);
           item.classList = '';
           buttonStyleReplace.forEach(x => {
             item.classList.toggle(x)
@@ -136,7 +135,6 @@ export default {
           end: new Date(event.endTime)
         }));
       })
-      console.log(this.events)
       return this.events
     },
 
@@ -149,20 +147,14 @@ export default {
           end: new Date(event.endTime)
         }));
       })
-      console.log(this.events)
       return this.events
     },
 
     async getAllEvents() {
       const lessons = await this.getLessons();
       const practices = await this.getPractices();
-
-      console.log('Lessons:', lessons);
-      console.log('Practices:', practices);
-
       this.events = [...lessons, ...practices];
 
-      console.log('Combined Events:', this.events);
     },
 
     formatTime(startTime) {
@@ -188,6 +180,7 @@ export default {
         return '#E9E9E8'
       }
     },
+
     changeButtonState(index) {
       if (this.lastPressedIndex !== -1) {
         this.$set(this.isButtonPressed, this.lastPressedIndex, false);
@@ -204,7 +197,6 @@ export default {
     },
   },
   created() {
-    console.log(this.events)
   }
 }
 </script>

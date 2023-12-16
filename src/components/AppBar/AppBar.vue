@@ -56,7 +56,6 @@ export default {
     discriminatorUser() {
       // eslint-disable-next-line vue/no-side-effects-in-computed-properties
       this.student = this.user.discriminator !== 'Учитель';
-      console.log(this.student, '?')
       return this.student
     }
   },

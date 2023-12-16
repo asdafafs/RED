@@ -31,17 +31,17 @@
               <v-container class="pa-1 mx-0 d-flex ">
                 <v-row class="ma-0  ">
                   <v-col cols="4" class="black--text pa-0 align-self-center d-none d-lg-block">
-                    <div class="text-subtitle-2 d-flex justify-center">{{ event.startTime }}</div>
+                    <div class="text-subtitle-2 d-flex justify-center">{{ formatTime(event.startTime) }}</div>
                   </v-col>
                   <v-col class="d-lg-none pa-0" style="display: flex; align-items: center; justify-content: center;">
                     <div class="logo ">
-                      <car-logo v-if="event.type === 'practice'"/>
-                      <lecture-logo v-if="event.type === 'lecture'"/>
+                      <car-logo v-if="event.lectureType === 3"/>
+                      <lecture-logo
+                          v-if="event.lectureType === 2 || event.lectureType === 1 || event.lectureType === null"/>
                     </div>
                   </v-col>
                   <v-col class="black--text pa-0 align-self-center d-none d-lg-block">
-                    <div class="font-weight-bold">{{ event.name }}</div>
-                    <div>Преподаватель:<br>{{ event.teacher }}</div>
+                    <div class="font-weight-bold">{{ event.title }}</div>
                   </v-col>
                 </v-row>
               </v-container>
@@ -55,6 +55,7 @@
 <script>
 import CarLogo from "@/components/logos/CarLogo.vue";
 import LectureLogo from "@/components/logos/LectureLogo.vue";
+import EventsRequest from "@/services/EventsRequest";
 
 export default {
   components: {LectureLogo, CarLogo},
@@ -71,7 +72,6 @@ export default {
     this.$refs.calendar.$el
         .querySelectorAll('.v-btn.v-btn--fab.v-btn--has-bg.v-btn--round.theme--light.v-size--small.primary')
         .forEach(item => {
-          console.log(item);
           item.classList = '';
           buttonStyleReplace.forEach(x => {
             item.classList.toggle(x)
@@ -80,6 +80,7 @@ export default {
     this.test = true
     window.addEventListener('resize', this.handleResize);
     this.handleResize();
+    this.getAllEvents()
   },
 
   beforeDestroy() {
@@ -87,54 +88,7 @@ export default {
   },
 
   data: () => ({
-    events: [
-      {
-        name: 'Лекция',
-        start: new Date(2023, 10, 13, 3, 0),
-        end: new Date(2023, 10, 13, 5, 0),
-        startTime: '11:00',
-        type: 'lecture',
-        timed: true,
-        teacher: 'Каминский С.В.'
-      },
-      {
-        name: 'Вождение',
-        start: new Date(2023, 10, 15, 3, 0),
-        end: new Date(2023, 10, 15, 5, 0),
-        startTime: '14:00',
-        type: 'practice',
-        timed: true,
-        teacher: 'Каминский С.В.'
-      },
-      {
-        name: 'Лекция',
-        start: new Date(2023, 10, 11, 3, 0),
-        end: new Date(2023, 10, 11, 5, 0),
-        startTime: '14:00',
-        type: 'lecture',
-        timed: true,
-        teacher: 'Каминский С.В.'
-      },
-
-      {
-        name: 'Вождение',
-        start: new Date(2023, 10, 23, 3, 0),
-        end: new Date(2023, 10, 23, 5, 0),
-        startTime: '14:00',
-        type: 'practice',
-        timed: true,
-        teacher: 'Каминский С.В.'
-      },
-      {
-        name: 'Лекция',
-        start: new Date(2023, 10, 24, 3, 0),
-        end: new Date(2023, 10, 24, 5, 0),
-        startTime: '14:00',
-        type: 'lecture',
-        timed: true,
-        teacher: 'Каминский С.В.'
-      }
-    ],
+    events: [],
     num: 70,
     isMobile: false,
     isButtonPressed: [false, false, false,],
@@ -148,7 +102,57 @@ export default {
     weekday: [1, 2, 3, 4, 5, 6, 0],
     value: '',
   }),
+
+
   methods: {
+    async getLessons() {
+      const lessons = new EventsRequest()
+      await lessons.getLecture().catch(x => console.log(x)).then(x => {
+        this.events = x.data.lecture.map(event => ({
+          ...event,
+          start: new Date(event.startTime),
+          end: new Date(event.endTime)
+        }));
+      })
+      return this.events
+    },
+
+    async getPractices() {
+      const practices = new EventsRequest()
+      await practices.getPractice().catch(x => console.log(x)).then(x => {
+        this.events = x.data.practice.map(event => ({
+          ...event,
+          start: new Date(event.startTime),
+          end: new Date(event.endTime)
+        }));
+      })
+      return this.events
+    },
+
+    async getAllEvents() {
+      const lessons = await this.getLessons();
+      const practices = await this.getPractices();
+      this.events = [...lessons, ...practices];
+      console.log(this.events)
+    },
+
+    formatTime(startTime) {
+      const date = new Date(startTime);
+      const hours = date.getHours().toString().padStart(2, '0');
+      const minutes = date.getMinutes().toString().padStart(2, '0');
+      return `${hours}:${minutes}`;
+    },
+
+    getEventColor(event) {
+      if (event.lectureType === 3) {
+        return '#9DB9FF';
+      } else if (event.lectureType === 2) {
+        return '#E9E9E8';
+      } else {
+        return '#E9E9E8'
+      }
+    },
+
     updateRange() {
     },
 
@@ -156,15 +160,7 @@ export default {
       return Math.floor((b - a + 1) * Math.random()) + a
     },
 
-    getEventColor(event) {
-      if (event.type === 'lecture') {
-        return '#9DB9FF';
-      } else if (event.type === 'practice') {
-        return '#E9E9E8';
-      } else {
-        return 'rgba(0,0,0,0)'
-      }
-    },
+
     changeButtonState(index) {
       if (this.lastPressedIndex !== -1) {
         this.$set(this.isButtonPressed, this.lastPressedIndex, false);

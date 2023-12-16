@@ -2,7 +2,7 @@
   <v-container fluid>
     <v-row>
       <v-row class="justify-center">
-        <v-btn icon class="ma-0  align-self-center" @click="prev" >
+        <v-btn icon class="ma-0  align-self-center" @click="prev">
           <v-icon>mdi-chevron-left</v-icon>
         </v-btn>
         <div class="d-flex flex-row justify-space-between align-center col-lg-2 col-md-4 col-sm-8 col-9">
@@ -25,7 +25,7 @@
             </div>
           </div>
         </div>
-        <v-btn icon class="ma-0  align-self-center" @click="next" >
+        <v-btn icon class="ma-0  align-self-center" @click="next">
           <v-icon>mdi-chevron-right</v-icon>
         </v-btn>
       </v-row>
@@ -51,17 +51,18 @@
               <v-container class="pa-0 mx-0 d-flex " fill>
                 <v-row class="ma-0" fill>
                   <v-col cols="4" class="black--text pa-0 align-self-center d-none d-lg-block">
-                    <div class="text-subtitle-2 d-flex justify-center">{{ event.startTime }}</div>
+                    <div class="text-subtitle-2 d-flex justify-center">{{ formatTime(event.start) }}</div>
                   </v-col>
                   <v-col class="d-lg-none pa-0" fill>
-                    <div class="logo d-flex justify-center align-center">
-                      <car-logo v-if="event.type === 'practice'"/>
-                      <lecture-logo v-if="event.type === 'lecture'"/>
+                    <div class="logo ">
+                      <car-logo v-if="event.lectureType === 3"/>
+                      <lecture-logo
+                          v-if="event.lectureType === 2 || event.lectureType === 1 || event.lectureType === null"/>
                     </div>
                   </v-col>
                   <v-col class="black--text pa-0 align-self-center d-none d-lg-block">
-                    <div class="font-weight-bold">{{ event.name }}</div>
-                    <div>Преподаватель:<br>{{ event.teacher }}</div>
+                    <div class="font-weight-bold">{{ event.title }}</div>
+
                   </v-col>
                 </v-row>
               </v-container>
@@ -77,6 +78,7 @@ import moment from 'moment';
 import CarLogo from "@/components/logos/CarLogo.vue";
 import LectureLogo from "@/components/logos/LectureLogo.vue";
 import Draggable from 'vuedraggable';
+import EventsRequest from "@/services/EventsRequest";
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
@@ -94,64 +96,17 @@ export default {
     this.$refs.calendar.$el
         .querySelectorAll('.v-btn.v-btn--fab.v-btn--has-bg.v-btn--round.theme--light.v-size--default.primary')
         .forEach(item => {
-          console.log(item);
           item.classList = '';
           buttonStyleReplace.forEach(x => {
             item.classList.toggle(x)
           })
         });
     this.test = true
+    this.getAllEvents()
   },
 
   data: () => ({
-    events: [
-      {
-        name: 'Лекция',
-        start: new Date(2023, 10, 13, 3, 0),
-        end: new Date(2023, 10, 13, 5, 0),
-        startTime: '11:00',
-        type: 'lecture',
-        timed: true,
-        teacher: 'Каминский С.В.'
-      },
-      {
-        name: 'Вождение',
-        start: new Date(2023, 10, 15, 3, 0),
-        end: new Date(2023, 10, 15, 5, 0),
-        startTime: '14:00',
-        type: 'practice',
-        timed: true,
-        teacher: 'Каминский С.В.'
-      },
-      {
-        name: 'Лекция',
-        start: new Date(2023, 10, 11, 3, 0),
-        end: new Date(2023, 10, 11, 5, 0),
-        startTime: '14:00',
-        type: 'lecture',
-        timed: true,
-        teacher: 'Каминский С.В.'
-      },
-
-      {
-        name: 'Вождение',
-        start: new Date(2023, 10, 23, 3, 0),
-        end: new Date(2023, 10, 23, 5, 0),
-        startTime: '14:00',
-        type: 'practice',
-        timed: true,
-        teacher: 'Каминский С.В.'
-      },
-      {
-        name: 'Лекция',
-        start: new Date(2023, 10, 24, 3, 0),
-        end: new Date(2023, 10, 24, 5, 0),
-        startTime: '14:00',
-        type: 'lecture',
-        timed: true,
-        teacher: 'Каминский С.В.'
-      }
-    ],
+    events: [],
     currentDate: moment(),
     focus: '',
     weekday: [1, 2, 3, 4, 5, 6, 0],
@@ -161,14 +116,56 @@ export default {
     dateSunday: moment().subtract(0, 'weeks').endOf('isoWeek').format('DD'),
   }),
   methods: {
+    async getLessons() {
+      const lessons = new EventsRequest()
+      await lessons.getLecture().catch(x => console.log(x)).then(x => {
+        this.events = x.data.lecture.map(event => ({
+          ...event,
+          start: event.startTime,
+          end: event.endTime
+        }));
+      })
+      return this.events
+    },
+
+    async getPractices() {
+      const practices = new EventsRequest()
+      await practices.getPractice().catch(x => console.log(x)).then(x => {
+        this.events = x.data.practice.map(event => ({
+          ...event,
+          start: event.startTime,
+          end: event.endTime
+        }));
+      })
+      return this.events
+    },
+
+    async getAllEvents() {
+      const lessons = await this.getLessons();
+      const practices = await this.getPractices();
+
+      console.log('Lessons:', lessons);
+      console.log('Practices:', practices);
+
+      this.events = [...lessons, ...practices];
+
+      console.log('Combined Events:', this.events);
+    },
+
+    formatTime(startTime) {
+      const date = new Date(startTime);
+      const hours = date.getHours().toString().padStart(2, '0');
+      const minutes = date.getMinutes().toString().padStart(2, '0');
+      return `${hours}:${minutes}`;
+    },
+
     getEventColor(event) {
-      if (event.type === 'lecture') {
+      if (event.lectureType === 3) {
         return '#9DB9FF';
-      } else if (event.type === 'practice') {
+      } else if (event.lectureType === 2) {
         return '#E9E9E8';
       } else {
-
-        return 'rgba(0,0,0,0)';
+        return '#E9E9E8'
       }
     },
 

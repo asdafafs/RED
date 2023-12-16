@@ -38,7 +38,7 @@
         Привязать аккуант к вк
       </v-list-item>
       <v-list-item
-          @click.stop="$router.push('/').catch(err => {}); $emit('update:drawer', false)"
+          @click.stop="exit(); $router.push('/').catch(err => {}); $emit('update:drawer', false)"
           class="white--text align-end mt-auto align-center"
           style="max-height: 4em;">
         <div class="d-flex flex-column">
@@ -57,6 +57,8 @@
   </v-navigation-drawer>
 </template>
 <script>
+import IdentityRequest from "@/services/IdentityRequest";
+
 export default {
   name: 'NavigationBar',
   props: {
@@ -67,6 +69,14 @@ export default {
     user: {}
   },
   methods: {
+    async logout(){
+      const user = new IdentityRequest()
+      await user.postLogout({})
+    },
+
+    exit(){
+      this.logout()
+    }
   }
 }
 </script>

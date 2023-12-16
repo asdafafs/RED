@@ -27,17 +27,15 @@
             <template v-slot:event="data">
               <div class="day-event">
                 <div class="day">
-                  {{ data.event.startTime }}
+                  {{ data.event.start }}
                 </div>
-                <div class="logo">
-                  <car-logo v-if="data.event.type === 'practice'"/>
-                  <lecture-logo v-if="data.event.type === 'lecture'"/>
+                <div class="logo ">
+                  <car-logo v-if="data.event.lectureType === 3"/>
+                  <lecture-logo
+                      v-if="data.event.lectureType !== 3"/>
                 </div>
                 <div class="custom-info">
-                  {{ data.event.name }}
-                  <div v-if="data.event.teacher" class="teacher text-wrap">
-                    Преподаватель: {{ data.event.teacher }}
-                  </div>
+                  {{ data.event.title }}
                 </div>
               </div>
             </template>
@@ -52,59 +50,13 @@
 import LectureLogo from "@/components/logos/LectureLogo.vue";
 import CarLogo from "@/components/logos/CarLogo.vue";
 import moment from "moment";
+import EventsRequest from "@/services/EventsRequest";
 
 export default {
   name: "ExampleDay.vue",
   components: {LectureLogo, CarLogo},
   data: () => ({
-    events: [
-      {
-        name: 'Лекция',
-        start: new Date(2023, 10, 13, 3, 0),
-        end: new Date(2023, 10, 13, 5, 0),
-        startTime: '11:00',
-        type: 'lecture',
-        timed: true,
-        teacher: 'Каминский С.В.'
-      },
-      {
-        name: 'Вождение',
-        start: new Date(2023, 10, 15, 3, 0),
-        end: new Date(2023, 10, 15, 5, 0),
-        startTime: '14:00',
-        type: 'practice',
-        timed: true,
-        teacher: 'Каминский С.В.'
-      },
-      {
-        name: 'Лекция',
-        start: new Date(2023, 10, 11, 3, 0),
-        end: new Date(2023, 10, 11, 5, 0),
-        startTime: '14:00',
-        type: 'lecture',
-        timed: true,
-        teacher: 'Каминский С.В.'
-      },
-
-      {
-        name: 'Вождение',
-        start: new Date(2023, 10, 23, 3, 0),
-        end: new Date(2023, 10, 23, 5, 0),
-        startTime: '14:00',
-        type: 'practice',
-        timed: true,
-        teacher: 'Каминский С.В.'
-      },
-      {
-        name: 'Лекция',
-        start: new Date(2023, 10, 24, 3, 0),
-        end: new Date(2023, 10, 24, 5, 0),
-        startTime: '14:00',
-        type: 'lecture',
-        timed: true,
-        teacher: 'Каминский С.В.'
-      }
-    ],
+    events: [],
     focus: '',
     test: false,
     dateDay: moment().locale('ru').format('Do MMMM'),
@@ -118,7 +70,7 @@ export default {
       '.v-calendar-daily__intervals-body',
       '.v-calendar-daily_head-day'
     ],
-    value: '2023-11-13',
+    value: '2023-12-13',
     mode: 'stack',
   }),
 
@@ -130,9 +82,64 @@ export default {
     })
     this.test = true
     this.$refs.cal.checkChange()
+    this.getAllEvents()
+
   },
 
   methods: {
+    async getLessons() {
+      const lessons = new EventsRequest()
+      await lessons.getLecture().catch(x => console.log(x)).then(x => {
+        this.events = x.data.lecture.map(event => ({
+          ...event,
+          start: new Date(event.startTime),
+          end: new Date(event.endTime)
+        }));
+      })
+      return this.events
+    },
+
+    async getPractices() {
+      const practices = new EventsRequest()
+      await practices.getPractice().catch(x => console.log(x)).then(x => {
+        this.events = x.data.practice.map(event => ({
+          ...event,
+          start: new Date(event.startTime),
+          end: new Date(event.endTime)
+        }));
+      })
+      return this.events
+    },
+
+    async getAllEvents() {
+      const lessons = await this.getLessons();
+      const practices = await this.getPractices();
+
+      // console.log('Lessons:', lessons);
+      // console.log('Practices:', practices);
+
+      this.events = [...lessons, ...practices];
+
+      console.log('Combined Events:', this.events);
+    },
+
+    formatTime(startTime) {
+      const date = new Date(startTime);
+      const hours = date.getHours().toString().padStart(2, '0');
+      const minutes = date.getMinutes().toString().padStart(2, '0');
+      return `${hours}:${minutes}`;
+    },
+
+    getEventColor(event) {
+      if (event.lectureType === 3) {
+        return '#9DB9FF';
+      } else if (event.lectureType === 2) {
+        return '#E9E9E8';
+      } else {
+        return '#E9E9E8'
+      }
+    },
+
     updateRange() {
     },
 
