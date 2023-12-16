@@ -104,8 +104,6 @@ export default {
         "password": this.password,
         "userType": 1
       }
-      console.log(body)
-      console.log(!this.isPhoneNumberValid || !this.isEmailValid || !this.isPasswordValid || !this.isNameValid)
       if (!this.isPhoneNumberValid || !this.isEmailValid || !this.isPasswordValid || !this.isNameValid) {
         return;
       }

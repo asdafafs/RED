@@ -1,5 +1,28 @@
 <template>
   <v-container fluid>
+    <v-row class="d-flex mt-0 ga-3 " no-gutters>
+      <v-col lg="2" md="2" sm="3">
+        <v-btn text class="black--text btn pa-0" width="100%"
+               :class="{'custom-bg': isButtonPressed[0],}"
+               @click="changeButtonState(0);getAllEvents();">
+          <span :class="{ 'custom_text':isButtonPressed[0]}">Смотреть все</span>
+        </v-btn>
+      </v-col>
+      <v-col lg="2" md="2" sm="3">
+        <v-btn text class="black--text btn pa-0" width="100%"
+               :class="{'custom-bg': isButtonPressed[1]}"
+               @click="changeButtonState(1); getLessons();">
+          <span :class="{ 'custom_text':isButtonPressed[1]}">Теория</span>
+        </v-btn>
+      </v-col>
+      <v-col lg="2" md="2" sm="3">
+        <v-btn text class="black--text btn pa-0" width="100%"
+               :class="{'custom-bg': isButtonPressed[2]}"
+               @click="changeButtonState(2); getPractices();">
+          <span :class="{ 'custom_text':isButtonPressed[2]}">Практика</span>
+        </v-btn>
+      </v-col>
+    </v-row>
     <v-row>
       <v-col>
         <v-sheet tile height="54" class="d-flex justify-center">
@@ -29,14 +52,15 @@
           >
             <template v-slot:event="{event}">
               <v-container class="pa-1 mx-0 d-flex ">
-                <v-row class="ma-0 flex-wrap" >
+                <v-row class="ma-0">
                   <v-col cols="4" class="black--text pa-0 align-self-center d-none d-lg-block">
                     <div class="text-subtitle-2 d-flex justify-center">{{ formatTime(event.startTime) }}</div>
                   </v-col>
                   <v-col class="d-lg-none pa-0 event">
                     <div class="logo ">
                       <car-logo v-if="event.lectureType === 3"/>
-                      <lecture-logo v-if="event.lectureType === 2 || event.lectureType === 1 || event.lectureType === null" />
+                      <lecture-logo
+                          v-if="event.lectureType === 2 || event.lectureType === 1 || event.lectureType === null"/>
                     </div>
                   </v-col>
                   <v-col class="black--text pa-0 align-self-center d-none d-lg-block">
@@ -81,8 +105,6 @@ export default {
     this.test = true
     window.addEventListener('resize', this.handleResize);
     this.handleResize();
-
-    this.getLessons()
   },
 
   beforeDestroy() {
@@ -115,14 +137,40 @@ export default {
         }));
       })
       console.log(this.events)
+      return this.events
+    },
+
+    async getPractices() {
+      const practices = new EventsRequest()
+      await practices.getPractice().catch(x => console.log(x)).then(x => {
+        this.events = x.data.practice.map(event => ({
+          ...event,
+          start: new Date(event.startTime),
+          end: new Date(event.endTime)
+        }));
+      })
+      console.log(this.events)
+      return this.events
+    },
+
+    async getAllEvents() {
+      const lessons = await this.getLessons();
+      const practices = await this.getPractices();
+
+      console.log('Lessons:', lessons);
+      console.log('Practices:', practices);
+
+      this.events = [...lessons, ...practices];
+
+      console.log('Combined Events:', this.events);
     },
 
     formatTime(startTime) {
-    const date = new Date(startTime);
-    const hours = date.getHours().toString().padStart(2, '0');
-    const minutes = date.getMinutes().toString().padStart(2, '0');
-    return `${hours}:${minutes}`;
-  },
+      const date = new Date(startTime);
+      const hours = date.getHours().toString().padStart(2, '0');
+      const minutes = date.getMinutes().toString().padStart(2, '0');
+      return `${hours}:${minutes}`;
+    },
 
     updateRange() {
     },
@@ -134,10 +182,10 @@ export default {
     getEventColor(event) {
       if (event.lectureType === 3) {
         return '#9DB9FF';
-      } else if (event.type === 2) {
+      } else if (event.lectureType === 2) {
         return '#E9E9E8';
       } else {
-        return 'rgba(0,0,0,0)'
+        return '#E9E9E8'
       }
     },
     changeButtonState(index) {
@@ -151,7 +199,7 @@ export default {
       if (window.innerWidth < 1260) {
         this.num = 30;
       } else {
-        this.num = 70;
+        this.num = 120;
       }
     },
   },
@@ -186,8 +234,12 @@ export default {
   justify-content: center;
   max-width: 98%;
   background-color: rgb(157, 185, 255);
-  border-color: rgb(157, 185, 255);
+  border: black 1px;
   margin: 0 0 0 1.1%;
+}
+
+.v-calendar .v-event {
+  white-space: normal;
 }
 
 .v-event.v-event-start.v-event-end.white--text {
