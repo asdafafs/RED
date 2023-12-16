@@ -7,29 +7,7 @@
     <div class="text-h6 px-4">
       Выберите день, чтобы записаться на занятие
     </div>
-    <v-row class="d-flex mt-0 ga-3 " no-gutters>
-      <v-col lg="1" md="2" sm="3">
-        <v-btn text class="black--text btn pa-0" width="100%"
-               :class="{'custom-bg': isButtonPressed[0],}"
-               @click="changeButtonState(0);">
-          <span :class="{ 'custom_text':isButtonPressed[0]}">Смотреть все</span>
-        </v-btn>
-      </v-col>
-      <v-col lg="1" md="2" sm="3">
-        <v-btn text class="black--text btn pa-0" width="100%"
-               :class="{'custom-bg': isButtonPressed[1]}"
-               @click="changeButtonState(1);">
-          <span :class="{ 'custom_text':isButtonPressed[1]}">Теория</span>
-        </v-btn>
-      </v-col>
-      <v-col lg="1" md="2" sm="3">
-        <v-btn text class="black--text btn pa-0" width="100%"
-               :class="{'custom-bg': isButtonPressed[2]}"
-               @click="changeButtonState(2);">
-          <span :class="{ 'custom_text':isButtonPressed[2]}">Практика</span>
-        </v-btn>
-      </v-col>
-    </v-row>
+
     <v-row>
       <v-col>
         <router-view></router-view>

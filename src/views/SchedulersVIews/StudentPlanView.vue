@@ -8,7 +8,7 @@
           </v-avatar>
         </v-col>
         <v-col lg="">
-          <div class="text-h4 font-weight-bold">Здравствуйте, {{ name }}!</div>
+          <div class="text-h4 font-weight-bold">Здравствуйте, {{ userName }}!</div>
         </v-col>
         <v-col lg="3" class="align-self-end text-start justify-start">
           <div class="text-subtitle-1 uno">Вы зачислены в группу №{{ groupId }}</div>
@@ -70,11 +70,12 @@
 </template>
 <script>
 
+import {mapState} from "vuex";
+
 export default {
   components: {},
   data: () => ({
     showDrawer: true,
-    name: 'Сергей',
     groupId: 1,
     isButtonMenuPressed: [false, false,],
   }),
@@ -90,7 +91,14 @@ export default {
       this.showDrawer = window.innerWidth >= 1260;
     },
   },
+  computed: {
+    ...mapState(['user']),
+    userName() {
+      return this.user.name
+    },
 
+
+  },
   created() {
     this.checkWindowWidth();
     window.addEventListener('resize', this.checkWindowWidth);

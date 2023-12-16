@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import IdentityRequest from "@/services/IdentityRequest";
 
 Vue.use(Vuex)
 
@@ -35,10 +34,6 @@ export default new Vuex.Store({
     actions: {
         async GET_CURRENT_USER({commit}, data) {
             try {
-                console.log(this.state.user.name)
-                console.log(data)
-                // const response = new IdentityRequest()
-                // const user = await response.getIdentity();
                 commit('SET_CURRENT_USER', data);
             } catch (error) {
                 console.error("Error fetching user data:", error);

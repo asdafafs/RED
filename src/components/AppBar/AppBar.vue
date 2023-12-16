@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <NavigationBar :drawer.sync="drawer" :role="role" :show-drawer="showDrawer" :student="student" :user="userName"/>
+    <NavigationBar :drawer.sync="drawer" :role="role" :show-drawer="showDrawer" :student="discriminatorUser" :user="userName"/>
     <v-app-bar app density="compact" color="#1e1f22" class="appbar position_component">
       <v-container class="pa-0 my-0" v-if="showDrawer" fluid>
         <v-row no-gutters>
@@ -8,10 +8,10 @@
             <DesktopLogo/>
           </v-col>
           <v-col>
-            <AppButtons :student="student" v-if="isDataLoaded"/>
+            <AppButtons :student="discriminatorUser" v-if="isDataLoaded"/>
           </v-col>
           <v-col cols="2">
-            <UserProfile :role="role" :student="student" :user="userName" v-if="isDataLoaded"/>
+            <UserProfile :role="role" :student="discriminatorUser" :user="userName" v-if="isDataLoaded"/>
           </v-col>
         </v-row>
       </v-container>
@@ -44,12 +44,20 @@ export default {
     checkWindowWidth() {
       this.showDrawer = window.innerWidth >= 1260;
     },
+
   },
 
   computed: {
     ...mapState(['user']),
     userName() {
       return this.user.name
+    },
+    // eslint-disable-next-line vue/return-in-computed-property
+    discriminatorUser() {
+      // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+      this.student = this.user.discriminator !== 'Учитель';
+      console.log(this.student, '?')
+      return this.student
     }
   },
 
