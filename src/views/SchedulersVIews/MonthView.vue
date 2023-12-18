@@ -41,7 +41,7 @@
                     </div>
                   </v-col>
                   <v-col class="black--text pa-0 align-self-center d-none d-lg-block">
-                    <div class="font-weight-bold">{{ event.title }}</div>
+                    <div class="font-weight-bold text-format">{{ event.title }}</div>
                   </v-col>
                 </v-row>
               </v-container>
@@ -56,6 +56,7 @@
 import CarLogo from "@/components/logos/CarLogo.vue";
 import LectureLogo from "@/components/logos/LectureLogo.vue";
 import EventsRequest from "@/services/EventsRequest";
+import moment from "moment/moment";
 
 export default {
   components: {LectureLogo, CarLogo},
@@ -107,32 +108,41 @@ export default {
   methods: {
     async getLessons() {
       const lessons = new EventsRequest()
+      let cal
       await lessons.getLecture().catch(x => console.log(x)).then(x => {
-        this.events = x.data.lecture.map(event => ({
+        cal = x.data.lecture.map(event => ({
           ...event,
           start: new Date(event.startTime),
           end: new Date(event.endTime)
         }));
       })
-      return this.events
+      return cal
     },
 
     async getPractices() {
       const practices = new EventsRequest()
+      let cal
       await practices.getPractice().catch(x => console.log(x)).then(x => {
-        this.events = x.data.practice.map(event => ({
+        cal = x.data.practice.map(event => ({
           ...event,
           start: new Date(event.startTime),
           end: new Date(event.endTime)
         }));
       })
-      return this.events
+      return cal
     },
 
     async getAllEvents() {
       const lessons = await this.getLessons();
       const practices = await this.getPractices();
       this.events = [...lessons, ...practices];
+      this.events = this.events.map(item => {
+        return {
+          ...item,
+          start: moment(item.start).format("YYYY-MM-DD HH:mm"),
+          end: moment(item.end).format("YYYY-MM-DD HH:mm"),
+        }
+      })
       console.log(this.events)
     },
 
@@ -227,5 +237,13 @@ export default {
 
 .custom_text {
   color: white;
+}
+
+.text-format {
+  white-space: pre-wrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-height: 6em;
+  max-width: 10em;
 }
 </style>

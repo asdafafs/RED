@@ -27,14 +27,14 @@
             <template v-slot:event="data">
               <div class="day-event">
                 <div class="day">
-                  {{ data.event.start }}
+                  {{ formatTime(data.event.start) }}
                 </div>
                 <div class="logo ">
                   <car-logo v-if="data.event.lectureType === 3"/>
                   <lecture-logo
                       v-if="data.event.lectureType !== 3"/>
                 </div>
-                <div class="custom-info">
+                <div class="custom-info text-format-day">
                   {{ data.event.title }}
                 </div>
               </div>
@@ -89,38 +89,42 @@ export default {
   methods: {
     async getLessons() {
       const lessons = new EventsRequest()
+      let cal
       await lessons.getLecture().catch(x => console.log(x)).then(x => {
-        this.events = x.data.lecture.map(event => ({
+        cal = x.data.lecture.map(event => ({
           ...event,
           start: new Date(event.startTime),
           end: new Date(event.endTime)
         }));
       })
-      return this.events
+      return cal
     },
 
     async getPractices() {
       const practices = new EventsRequest()
+      let cal
       await practices.getPractice().catch(x => console.log(x)).then(x => {
-        this.events = x.data.practice.map(event => ({
+        cal = x.data.practice.map(event => ({
           ...event,
           start: new Date(event.startTime),
           end: new Date(event.endTime)
         }));
       })
-      return this.events
+      return cal
     },
 
     async getAllEvents() {
       const lessons = await this.getLessons();
       const practices = await this.getPractices();
 
-      // console.log('Lessons:', lessons);
-      // console.log('Practices:', practices);
-
       this.events = [...lessons, ...practices];
-
-      console.log('Combined Events:', this.events);
+      this.events = this.events.map(item => {
+        return {
+          ...item,
+          start: moment(item.start).format("YYYY-MM-DD HH:mm"),
+          end: moment(item.end).format("YYYY-MM-DD HH:mm"),
+        }
+      })
     },
 
     formatTime(startTime) {
@@ -186,6 +190,7 @@ export default {
     font-weight: bold;
     display: flex;
     flex-direction: column;
+    white-space: normal;
 
     .teacher {
       font-family: Roboto, sans-serif;
@@ -220,5 +225,13 @@ export default {
 
 .theme--light.v-calendar-daily .v-calendar-daily__day-interval {
   border-top: #e0e0e0 0;
+}
+
+.text-format-day {
+  white-space: pre-wrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-height: 6em;
+  max-width: inherit;
 }
 </style>
