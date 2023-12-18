@@ -68,6 +68,26 @@
               </v-container>
             </template>
           </v-calendar>
+          <v-menu
+              v-model="selectedOpen"
+              :close-on-content-click="false"
+              :activator="selectedElement"
+              offset-x
+          >
+            <v-card color="grey lighten-4" min-width="350px" flat>
+              <v-toolbar>
+                <v-toolbar-title v-html="formatTime(selectedEvent.startTime)"></v-toolbar-title>
+              </v-toolbar>
+              <v-card-text>
+                <span v-html="selectedEvent.title"></span>
+              </v-card-text>
+              <v-card-actions>
+                <v-btn textcolor="secondary" @click="selectedOpen = false">
+                  Cancel
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-menu>
         </v-sheet>
       </v-col>
     </v-row>
@@ -119,8 +139,28 @@ export default {
     test: false,
     dateMonday: moment().subtract(0, 'weeks').startOf('isoWeek').format('DD'),
     dateSunday: moment().subtract(0, 'weeks').endOf('isoWeek').format('DD'),
+    selectedEvent: {},
+    selectedElement: null,
+    selectedOpen: false,
   }),
   methods: {
+    showEvent({nativeEvent, event}) {
+      const open = () => {
+        this.selectedEvent = event
+        this.selectedElement = nativeEvent.target
+        requestAnimationFrame(() => requestAnimationFrame(() => this.selectedOpen = true))
+      }
+
+      if (this.selectedOpen) {
+        this.selectedOpen = false
+        requestAnimationFrame(() => requestAnimationFrame(() => open()))
+      } else {
+        open()
+      }
+
+      nativeEvent.stopPropagation()
+    },
+
     async getLessons() {
       const lessons = new EventsRequest()
       let kal
