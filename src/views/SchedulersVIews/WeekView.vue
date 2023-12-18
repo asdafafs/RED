@@ -46,6 +46,7 @@
               @mousedown:event="startDrag"
               @mousemove:event="mouseMove"
               @mouseup:event="endDrag"
+
           >
             <template v-slot:event="{event}">
               <v-container class="pa-0 mx-0 d-flex " fill>
@@ -61,8 +62,7 @@
                     </div>
                   </v-col>
                   <v-col class="black--text pa-0 align-self-center d-none d-lg-block">
-                    <div class="font-weight-bold">{{ event.title }}</div>
-
+                    <div class="font-weight-bold text-format-week">{{ event.title }}</div>
                   </v-col>
                 </v-row>
               </v-container>
@@ -83,6 +83,11 @@ import EventsRequest from "@/services/EventsRequest";
 export default {
   // eslint-disable-next-line vue/no-unused-components
   components: {CarLogo, LectureLogo, Draggable},
+  watch: {
+    events(value) {
+      console.log(value);
+    }
+  },
   mounted() {
     const buttonStyleReplace = [
       'v-btn',
@@ -118,38 +123,41 @@ export default {
   methods: {
     async getLessons() {
       const lessons = new EventsRequest()
+      let kal
       await lessons.getLecture().catch(x => console.log(x)).then(x => {
-        this.events = x.data.lecture.map(event => ({
+        kal = x.data.lecture.map(event => ({
           ...event,
           start: event.startTime,
           end: event.endTime
         }));
       })
-      return this.events
+      return kal
     },
 
     async getPractices() {
       const practices = new EventsRequest()
+      let kal
       await practices.getPractice().catch(x => console.log(x)).then(x => {
-        this.events = x.data.practice.map(event => ({
+        kal = x.data.practice.map(event => ({
           ...event,
           start: event.startTime,
           end: event.endTime
         }));
       })
-      return this.events
+      return kal
     },
 
     async getAllEvents() {
       const lessons = await this.getLessons();
       const practices = await this.getPractices();
-
-      console.log('Lessons:', lessons);
-      console.log('Practices:', practices);
-
       this.events = [...lessons, ...practices];
-
-      console.log('Combined Events:', this.events);
+      this.events = this.events.map(item => {
+        return {
+          ...item,
+          start: moment(item.start).format("YYYY-MM-DD HH:mm"),
+          end: moment(item.end).format("YYYY-MM-DD HH:mm"),
+        }
+      })
     },
 
     formatTime(startTime) {
@@ -224,7 +232,8 @@ export default {
   color: #4E7AEC;
 }
 
-.v-event-timed {
+.v-calendar .v-event-timed {
+  white-space: pre-wrap;
   width: 100%;
   background-color: rgb(157, 185, 255);
   border-color: rgb(157, 185, 255);
@@ -278,5 +287,13 @@ export default {
   height: min-content;
   width: min-content;
   font-size: 0.8em;
+}
+
+.text-format-week {
+  white-space: pre-wrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-height: inherit;
+  max-width: 10em;
 }
 </style>

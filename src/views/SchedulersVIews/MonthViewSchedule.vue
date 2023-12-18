@@ -11,14 +11,14 @@
       <v-col lg="2" md="2" sm="3">
         <v-btn text class="black--text btn pa-0" width="100%"
                :class="{'custom-bg': isButtonPressed[1]}"
-               @click="changeButtonState(1); getLessons();">
+               @click="changeButtonState(1); testLessons();">
           <span :class="{ 'custom_text':isButtonPressed[1]}">Теория</span>
         </v-btn>
       </v-col>
       <v-col lg="2" md="2" sm="3">
         <v-btn text class="black--text btn pa-0" width="100%"
                :class="{'custom-bg': isButtonPressed[2]}"
-               @click="changeButtonState(2); getPractices();">
+               @click="changeButtonState(2); testPractices();">
           <span :class="{ 'custom_text':isButtonPressed[2]}">Практика</span>
         </v-btn>
       </v-col>
@@ -64,7 +64,7 @@
                     </div>
                   </v-col>
                   <v-col class="black--text pa-0 align-self-center d-none d-lg-block">
-                    <div class="font-weight-bold" style="width: inherit">{{ event.title }}
+                    <div class="font-weight-bold text-format" style="width: inherit">{{ event.title }}
                     </div>
                   </v-col>
                 </v-row>
@@ -80,6 +80,7 @@
 import CarLogo from "@/components/logos/CarLogo.vue";
 import LectureLogo from "@/components/logos/LectureLogo.vue";
 import EventsRequest from "@/services/EventsRequest";
+import moment from "moment/moment";
 
 export default {
   components: {LectureLogo, CarLogo},
@@ -128,33 +129,49 @@ export default {
   methods: {
     async getLessons() {
       const lessons = new EventsRequest()
+      let cal
       await lessons.getLecture().catch(x => console.log(x)).then(x => {
-        this.events = x.data.lecture.map(event => ({
+        cal = x.data.lecture.map(event => ({
           ...event,
           start: new Date(event.startTime),
           end: new Date(event.endTime)
         }));
       })
-      return this.events
+      return cal
     },
 
     async getPractices() {
       const practices = new EventsRequest()
+      let cal
       await practices.getPractice().catch(x => console.log(x)).then(x => {
-        this.events = x.data.practice.map(event => ({
+        cal = x.data.practice.map(event => ({
           ...event,
           start: new Date(event.startTime),
           end: new Date(event.endTime)
         }));
       })
-      return this.events
+      return cal
     },
 
     async getAllEvents() {
       const lessons = await this.getLessons();
       const practices = await this.getPractices();
       this.events = [...lessons, ...practices];
+      this.events = this.events.map(item => {
+        return {
+          ...item,
+          start: moment(item.start).format("YYYY-MM-DD HH:mm"),
+          end: moment(item.end).format("YYYY-MM-DD HH:mm"),
+        }
+      })
+    },
 
+    async testLessons() {
+      this.events = await this.getLessons();
+    },
+
+    async testPractices() {
+      this.events = await this.getPractices();
     },
 
     formatTime(startTime) {
@@ -192,7 +209,7 @@ export default {
       if (window.innerWidth < 1260) {
         this.num = 30;
       } else {
-        this.num = 120;
+        this.num = 70;
       }
     },
   },
@@ -230,10 +247,6 @@ export default {
   margin: 0 0 0 1.1%;
 }
 
-.v-calendar .v-event {
-  white-space: normal;
-}
-
 .v-event.v-event-start.v-event-end.white--text {
   min-width: 98%;
   max-width: 98%;
@@ -260,5 +273,13 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.text-format {
+  white-space: pre-wrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-height: 6em;
+  max-width: 10em;
 }
 </style>
