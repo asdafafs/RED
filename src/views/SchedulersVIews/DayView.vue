@@ -23,6 +23,7 @@
               event-color="white"
               mode="stack"
               class="day-calendar"
+              @click:event="showEvent"
           >
             <template v-slot:event="data">
               <div class="day-event">
@@ -55,7 +56,7 @@
               </v-card-text>
               <v-card-actions>
                 <v-btn textcolor="secondary" @click="selectedOpen = false">
-                  Cancel
+                  Закрыть
                 </v-btn>
               </v-card-actions>
             </v-card>

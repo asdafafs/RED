@@ -43,10 +43,11 @@
               :event-height="50"
               :weekdays="weekday"
               @change="updateRange"
+              @click:event="showEvent"
               @mousedown:event="startDrag"
-              @mousemove:event="mouseMove"
-              @mouseup:event="endDrag"
-
+              @mousemove:time="mouseMove"
+              @mousedown:time="startTime"
+              @mouseup:time="endDrag"
           >
             <template v-slot:event="{event}">
               <v-container class="pa-0 mx-0 d-flex " fill>
@@ -83,7 +84,7 @@
               </v-card-text>
               <v-card-actions>
                 <v-btn textcolor="secondary" @click="selectedOpen = false">
-                  Cancel
+                  Закрыть
                 </v-btn>
               </v-card-actions>
             </v-card>
@@ -104,8 +105,8 @@ export default {
   // eslint-disable-next-line vue/no-unused-components
   components: {CarLogo, LectureLogo, Draggable},
   watch: {
-    events(value) {
-      console.log(value);
+    events() {
+
     }
   },
   mounted() {
@@ -142,6 +143,11 @@ export default {
     selectedEvent: {},
     selectedElement: null,
     selectedOpen: false,
+    dragEvent: null,
+    dragStart: null,
+    createEvent: null,
+    createStart: null,
+    extendOriginal: null,
   }),
   methods: {
     showEvent({nativeEvent, event}) {
@@ -196,6 +202,7 @@ export default {
           ...item,
           start: moment(item.start).format("YYYY-MM-DD HH:mm"),
           end: moment(item.end).format("YYYY-MM-DD HH:mm"),
+
         }
       })
     },
@@ -241,22 +248,83 @@ export default {
       this.dateMonday = this.currentDate.clone().startOf('isoWeek').format('DD');
       this.dateSunday = this.currentDate.clone().endOf('isoWeek').format('DD');
     },
+
     updateRange() {
-      console.log('Обновляем')
     }
     ,
-    startDrag() {
-      console.log('начинаем')
-    },
-
-    mouseMove() {
-      console.log('двигаем')
+    startDrag({event, timed}) {
+      if (event && timed) {
+        this.dragEvent = event
+        this.dragTime = null
+        this.extendOriginal = null
+      }
     },
 
     endDrag() {
-      console.log('заканчиваем')
+      this.dragTime = null
+      this.dragEvent = null
+      this.createEvent = null
+      this.createStart = null
+      this.extendOriginal = null
     },
 
+    startTime(tms) {
+      const mouse = this.toTime(tms)
+
+      if (this.dragEvent && this.dragTime === null) {
+        const start = this.dragEvent.start
+
+        this.dragTime = mouse - start
+      } else {
+        this.createStart = this.roundTime(mouse)
+        this.createEvent = {
+          activeUserId: 1,
+          title: `Новый урок`,
+          start: this.createStart,
+          end: this.createStart,
+          student: null,
+          timed: true,
+        }
+        this.events.push(this.createEvent)
+      }
+    },
+
+    roundTime(time, down = true) {
+      const roundTo = 15
+      const roundDownTime = roundTo * 60 * 1000
+
+      return down
+          ? time - time % roundDownTime
+          : time + (roundDownTime - (time % roundDownTime))
+    },
+
+    toTime(tms) {
+      return new Date(tms.year, tms.month - 1, tms.day, tms.hour, tms.minute).getTime()
+    },
+
+    mouseMove(tms) {
+      const mouse = this.toTime(tms)
+      if (this.dragEvent && this.dragTime !== null) {
+        console.log(this.dragEvent)
+        const start =  moment(this.dragEvent.startTime).format("YYYY-MM-DD HH:mm")
+        const end = moment(this.dragEvent.endTime).format("YYYY-MM-DD HH:mm")
+        const duration = end - start
+        const newStartTime = mouse - this.dragTime
+        const newStart = this.roundTime(newStartTime)
+        const newEnd = newStart + duration
+
+        this.dragEvent.start = newStart
+        this.dragEvent.end = newEnd
+      }
+      else if (this.createEvent && this.createStart !== null) {
+        const mouseRounded = this.roundTime(mouse, false)
+        const min = Math.min(mouseRounded, this.createStart)
+        const max = Math.max(mouseRounded, this.createStart)
+
+        this.createEvent.start = min
+        this.createEvent.end = max
+      }
+    },
   },
 
 }

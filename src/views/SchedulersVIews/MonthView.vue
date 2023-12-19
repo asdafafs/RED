@@ -63,7 +63,7 @@
               </v-card-text>
               <v-card-actions>
                 <v-btn textcolor="secondary" @click="selectedOpen = false">
-                  Cancel
+                  Закрыть
                 </v-btn>
               </v-card-actions>
             </v-card>
@@ -184,7 +184,6 @@ export default {
           end: moment(item.end).format("YYYY-MM-DD HH:mm"),
         }
       })
-      console.log(this.events)
     },
 
     formatTime(startTime) {
