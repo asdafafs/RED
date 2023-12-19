@@ -89,6 +89,7 @@ export default {
 
         this.createEvent.start = min
         this.createEvent.end = max
+        console.log('двигаем')
       }
     },
     endDrag() {
@@ -97,6 +98,7 @@ export default {
       this.createEvent = null
       this.createStart = null
       this.extendOriginal = null
+      console.log('заканчиваем')
     },
 
     roundTime(time, down = true) {
