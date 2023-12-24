@@ -6,17 +6,17 @@
         <span class="mdi mdi-plus rotate" @click.stop="$emit('update:drawer', false);"></span>
       </v-list-item>
       <v-list-item
-          @click.stop="$router.push('/schedule/testMonth').catch(err => {}); $emit('update:drawer', false)"
+          @click.stop="$router.push('/schedule/lessons').catch(err => {}); $emit('update:drawer', false)"
           class="white--text align-start align-center list-item">
         Расписание
       </v-list-item>
       <v-list-item
-          @click.stop="$router.push('/').catch(err => {}); $emit('update:drawer', false)"
+          @click.stop="$router.push('/schedule/lessons').catch(err => {}); $emit('update:drawer', false)"
           class="white--text align-start align-center list-item">
         Запись на экзамен
       </v-list-item>
       <v-list-item
-          @click.stop="$router.push('/').catch(err => {}); $emit('update:drawer', false)"
+          @click.stop="$router.push('/schedule/lessons').catch(err => {}); $emit('update:drawer', false)"
           class="white--text align-start align-center list-item">
         Лекции
       </v-list-item>

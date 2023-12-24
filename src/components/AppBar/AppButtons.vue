@@ -11,9 +11,9 @@
       </v-col>
       <v-col cols>
         <v-btn :class="{ 'custom-bg': isButtonPressed [1]}"
-               @click="changeButtonState(1)"
+               @click="changeButtonState(1); $router.push('/singUpClasses/lessons').catch(err => {})"
                text min-height="3em" class="pa-0 btn" width="100%" color="white">
-          Запись на экзамен
+          Запись на занятие
         </v-btn>
       </v-col>
       <v-col cols=2>

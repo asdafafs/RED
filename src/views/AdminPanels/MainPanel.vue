@@ -15,6 +15,13 @@
         </v-btn>
         <div v-show="isButtonMenuPressed[1]" class="button-line"></div>
       </v-col>
+      <v-col cols="">
+        <v-btn text class="grey--text btn pa-0" width="100%"
+               @click="changeButtonMenuState(2); $router.push('/admin/groups').catch(err => {})">
+          <span :class="{'uno': isButtonMenuPressed[2],}">Группы</span>
+        </v-btn>
+        <div v-show="isButtonMenuPressed[2]" class="button-line"></div>
+      </v-col>
     </v-row>
     <v-row>
       <v-col>
@@ -29,7 +36,7 @@
 export default {
   components: {},
   data: () => ({
-    isButtonMenuPressed: [false, false,],
+    isButtonMenuPressed: [false, false, false],
   }),
   methods: {
     changeButtonMenuState(index) {
