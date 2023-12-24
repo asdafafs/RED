@@ -6,7 +6,7 @@ import DayView from "@/views/SchedulersVIews/DayView.vue";
 import MonthView from "@/views/SchedulersVIews/MonthView.vue";
 import StudentPlanView from "@/views/SchedulersVIews/StudentPlanView.vue";
 import WeeklyView from "@/views/SchedulersVIews/WeekView.vue";
-import scheduleView from "@/views/SchedulersVIews/scheduleView.vue";
+import scheduleView from "@/views/SchedulersVIews/ScheduleView.vue";
 import MainCalendar from "@/views/SchedulersVIews/MainCalendar.vue";
 import ProgressBar from "@/views/ProgressBar.vue";
 import RecoveryPassword from "@/views/AuthorizationViews/RecoveryPassword.vue";
@@ -22,6 +22,9 @@ import TeachersPanel from "@/views/AdminPanels/TeachersPanel.vue";
 import MainPanel from "@/views/AdminPanels/MainPanel.vue";
 import TestTest from "@/views/SchedulersVIews/TestTest.vue";
 import MonthViewSchedule from "@/views/SchedulersVIews/MonthViewSchedule.vue";
+import GroupPanel from "@/views/AdminPanels/GroupPanel.vue";
+import ScheduleClasses from "@/views/SignUpClasses/ScheduleClasses.vue";
+import ClassesView from "@/views/SignUpClasses/ClassesView.vue";
 
 
 Vue.use(VueRouter)
@@ -52,7 +55,6 @@ const routes = [
         path: '/recoveryPassWord',
         name: 'recPass',
         component: RecoveryPassword,
-        children: []
     },
     {
         path: '/post-login',
@@ -63,9 +65,6 @@ const routes = [
         path: '/confirm-email',
         name: 'ConfirmEmail',
         component: ConfirmEmail,
-        // meta: {
-        //     layout: 'System'
-        // }
     },
     {
         path: '/forget-password',
@@ -87,6 +86,11 @@ const routes = [
                 name: 'teachers',
                 component: TeachersPanel
             },
+            {
+                path: 'groups',
+                name: 'groups',
+                component: GroupPanel
+            }
         ]
     },
     {
@@ -94,7 +98,6 @@ const routes = [
         name: 'notFound',
         component: NotFoundView,
     },
-
     {
         path: "/testPlan",
         name: 'plan',
@@ -142,13 +145,25 @@ const routes = [
         ]
     },
     {
+        path: "/singUpClasses",
+        name: 'schedule',
+        component: ScheduleClasses,
+        children: [
+            {
+                path: "lessons",
+                name: 'month',
+                component: ClassesView,
+            },
+        ]
+    },
+    {
         path: "/courses",
         name: 'courses',
         component: CoursesList,
     },
     {
         path: "/test",
-        name:"test",
+        name: "test",
         component: TestTest
     }
 

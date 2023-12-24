@@ -5,9 +5,8 @@
     </div>
     <hr>
     <div class="text-h6 px-4">
-      Выберите день, чтобы записаться на занятие
+      Ваши текущие занятия
     </div>
-
     <v-row>
       <v-col>
         <router-view></router-view>

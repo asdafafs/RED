@@ -99,7 +99,7 @@ export default {
       await this.login(body)
 
       if (this.wrongAuth) ;
-      else await this.$router.push('/post-login').catch(err => {
+      else await this.$router.push('/schedule/lessons').catch(err => {
         console.log(err)
       })
     }

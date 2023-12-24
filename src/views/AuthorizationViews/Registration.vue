@@ -109,7 +109,7 @@ export default {
       }
       console.log(body)
       await this.registration(body)
-      this.$router.push('/post-login').catch(err => {
+      this.$router.push('/schedule/lessons').catch(err => {
         console.log(err)
       })
     },

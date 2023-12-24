@@ -30,7 +30,8 @@
                     </v-text-field>
                     <v-text-field v-model="editedItem.lecture.endTime" label="Конец занятия" type="datetime-local">
                     </v-text-field>
-                    <v-text-field v-model="editedItem.lecture.lectureType" label="Тип занятия"></v-text-field>
+                    <v-select v-model="editedItem.lecture.lectureType" label="Тип занятия" :items="discriminator">
+                    </v-select>
                   </v-col>
                 </v-row>
               </v-container>
@@ -90,6 +91,7 @@ export default {
   data: () => ({
     sortBy: 'startTime',
     sortDesc: false,
+    discriminator: [1,2,3],
     globalStartTime: null,
     globalEndTime: null,
     coursesData: null,
