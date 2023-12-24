@@ -24,14 +24,14 @@
                   solo
                   color="black"
                   v-model="password"
-                  :append-icon="show1 ? 'mdi-eye ' : 'mdi-eye-off '"
+                  :append-icon="show ? 'mdi-eye ' : 'mdi-eye-off '"
                   :rules="[rulesPassword.required, rulesPassword.min]"
-                  :type="show1 ? 'text' : 'password'"
+                  :type="show ? 'text' : 'password'"
                   name="input-10-4"
                   label="Пароль"
                   hint="Минимум 8 символов"
                   counter
-                  @click:append="show1 = !show1"
+                  @click:append="show = !show"
               ></v-text-field>
               <v-btn color="#4E7AEC" @click="$router.push('/recoveryPassWord').catch(err => {})"
                      class="rounded-lg pa-0 ma-0" block text>
@@ -64,7 +64,7 @@ export default {
   data: () => ({
     overlay: true,
     form: true,
-    show1: false,
+    show: false,
     email: null,
     loading: false,
     test: false,
@@ -78,7 +78,6 @@ export default {
       min: v => v.length >= 8 || 'Минимум 8 символов',
     },
     wrongAuth: false
-
   }),
 
   methods: {
@@ -99,9 +98,7 @@ export default {
       }
 
       const body = {"email": this.email, "password": this.password}
-
       await this.login(body)
-
       if (this.wrongAuth) ;
       else await this.$router.push('/schedule/lessons').catch(err => {
         console.log(err)

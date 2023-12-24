@@ -65,7 +65,7 @@ export default {
     overlay: true,
     showPass: true,
     loading: false,
-    show1: false,
+    show: false,
     email: '',
     name: '',
     surname: '',

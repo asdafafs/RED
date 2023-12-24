@@ -71,19 +71,15 @@ export default {
   transform: scale(2.1);
 }
 
-/* hide the "scrim", it's pointless */
 .v-overlay--active .v-overlay__scrim {
     display: none;
 }
-/* style the overlay container as required */
+
 .v-overlay--active {
     backdrop-filter: blur(2px);
     background: rgb(0 0 0 / 0.8);
 }
-/* if you have an auto dark theme
-   for prefers-color-scheme: dark
-   I find the 0.8 too dark
-*/
+
 @media (prefers-color-scheme: dark) {
     .v-overlay--active {
         background: rgb(0 0 0 / 0.4);
