@@ -1,32 +1,130 @@
+<template>
+  <v-card>
+    <template v-slot:text>
+      <v-text-field
+          v-model="search"
+          label="Search"
+          prepend-inner-icon="mdi-magnify"
+          single-line
+          variant="outlined"
+          hide-details
+      ></v-text-field>
+    </template>
+    <v-data-table :headers="headers" :search="search" :items="groups" class="elevation-1"
+                  no-data-text="Нет данных для отображения"
+                  :footer-props="{
+      'items-per-page-text': 'Записей на странице:',
+      'items-per-page-all-text': 'Все',
+      'page-text': '{0}-{1} из {2}',
+      'prev-icon': 'mdi-chevron-left',
+      'next-icon': 'mdi-chevron-right',
+      'prev-page-text': 'Предыдущая страница',
+      'next-page-text': 'Следующая страница',
+      'no-data-text': 'Нет данных для отображения'}"
+    >
+      <template v-slot:top>
+        <v-toolbar flat>
+          <v-spacer></v-spacer>
+          <v-dialog v-model="dialog" max-width="500px">
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on">
+                Добавить группу
+              </v-btn>
+            </template>
+            <v-card>
+              <v-card-title>
+                <span class="text-h5">{{ formTitle }}</span>
+              </v-card-title>
+              <v-card-text>
+                <v-container>
+                  <v-row>
+                    <v-col cols="12" sm="12" md="12">
+                      <v-text-field v-model="editedItem.groupId" label="Id группы"></v-text-field>
+                      <v-text-field v-model="editedItem.title" label="Название группы"></v-text-field>
+                      <v-select
+                          v-model="selectedStudents"
+                          :items="students"
+                          label="Список учеников"
+                          multiple
+                          hint="Выберите студентов для группы"
+                          persistent-hint
+                      ></v-select>
+                      <v-select
+                          v-model="selectedStudents"
+                          :items="students"
+                          label="Добавить курс занятий"
+                          multiple
+                          hint="Выберите необходимые"
+                          persistent-hint
+                      ></v-select>
+                    </v-col>
+                  </v-row>
+                </v-container>
+              </v-card-text>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="blue darken-1" text @click="close">
+                  Отмена
+                </v-btn>
+                <v-btn color="blue darken-1" text @click="save">
+                  OK
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+          <v-dialog v-model="dialogDelete" max-width="500px">
+            <v-card>
+              <v-card-title class="text-h5">Сносим?</v-card-title>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="blue darken-1" text @click="closeDelete">Отмена</v-btn>
+                <v-btn color="blue darken-1" text @click="deleteItemConfirm">OK</v-btn>
+                <v-spacer></v-spacer>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+        </v-toolbar>
+      </template>
+      <template v-slot:item.actions="{ item }">
+        <v-icon small class="mr-2" @click="editItem(item)">
+          mdi-pencil
+        </v-icon>
+        <v-icon small @click="deleteItem(item)">
+          mdi-delete
+        </v-icon>
+      </template>
+    </v-data-table>
+  </v-card>
+</template>
 <script>
+import GroupsRequest from "@/services/GroupsRequest";
 import UsersRequest from "@/services/UsersRequest";
 
 export default {
   data: () => ({
-    userData: null,
+    students: null,
+    selectedStudents: [],
+    groupData: null,
     dialog: false,
     dialogDelete: false,
+    search: '',
     headers: [
-      {text: 'Имя', align: 'start', sortable: false, value: 'name'},
-      {text: 'Фамилия', align: 'start', sortable: false, value: 'surname',},
-      {text: 'Отчество', align: 'start', sortable: false, value: 'middleName',},
+      {text: 'ID', align: 'start', sortable: false, value: 'groupId'},
+      {text: 'Название', align: 'start', sortable: false, value: 'title',},
       {text: 'Действия', value: 'actions', sortable: false},
     ],
-    persons: {},
+    groups: [],
     editedIndex: -1,
     deletedIndex: -1,
     editedItem: {
-      name: '',
-      email: ''
-    },
-    defaultItem: {
-      name: '',
+      id: 1,
+      title: '',
     },
   }),
 
   computed: {
     formTitle() {
-      return this.editedIndex === -1 ? 'Новый элемент' : 'Редактировать элемент';
+      return this.editedIndex === -1 ? 'Новая группа' : 'Редактировать группу';
     },
   },
 
@@ -43,68 +141,69 @@ export default {
     this.initialize();
   },
 
-
   methods: {
-    async getUser() {
+    async getUsers() {
       const user = new UsersRequest();
-      await user.getActiveUser().catch(x => console.log(x)).then(x => {
-        this.userData = x.data
+      await user.getUser().catch(x => console.log(x)).then(x => {
+        this.students = x.data
       })
     },
 
-    async postUser(body) {
-      const user = new UsersRequest();
-      await user.postActiveUser(body).catch(x => console.log(x))
-
+    async getGroups() {
+      const groups = new GroupsRequest();
+      await groups.getGroups().catch(x => console.log(x)).then(x => {
+        this.groupData = x.data
+      })
     },
 
-    async putActiveUser(body) {
-      const user = new UsersRequest();
-      await user.putActiveUser(body).catch(x => console.log(x))
+    async postGroups(body) {
+      const groups = new GroupsRequest();
+      await groups.postGroup(body).catch(x => console.log(x))
     },
 
-    async deleteUser() {
-      const user = new UsersRequest();
+    async putGroups(body) {
+      const groups = new GroupsRequest();
+      await groups.putGroup(body).catch(x => console.log(x))
+    },
+
+    async deleteGroups() {
+      const groups = new GroupsRequest();
       const deletedItem = {"id": this.deletedIndex}
-      await user.deleteActiveUser(deletedItem.id).catch(x => console.log(x))
+      await groups.deleteGroup(deletedItem.id).catch(x => console.log(x))
     },
 
     async initialize() {
-      await this.getUser();
-      let cal = await this.userData;
-      this.persons = cal;
+      await this.getGroups();
+      this.groups = await this.groupData;
+      console.log(this.groups)
     },
 
     editItem(item) {
-      this.editedIndex = this.persons.activeUsers.indexOf(item);
+      this.editedIndex = this.groups.indexOf(item);
       this.editedItem = {
-        id: item.id,
-        email: item.email,
-        phoneNumber: item.phoneNumber,
-        name: item.name,
-        surname: item.surname,
-        middleName: item.middleName,
+        groupId: item.id,
+        title: item.title,
       };
       this.dialog = true;
     },
 
     deleteItem(item) {
-      this.editedIndex = this.persons.activeUsers.indexOf(item);
-      this.editedItem = {name: item.name};
+      this.editedIndex = this.groups.indexOf(item);
+      this.editedItem = {title: item.title};
       this.deletedIndex = item.id
       this.dialogDelete = true;
     },
 
     async deleteItemConfirm() {
-      this.persons.activeUsers.splice(this.editedIndex, 1);
-      await this.deleteUser()
+      this.groups.splice(this.editedIndex, 1);
+      await this.deleteGroups()
       this.closeDelete();
     },
 
     close() {
       this.dialog = false;
       this.$nextTick(() => {
-        this.editedItem = {name: ''};
+        this.editedItem = {title: ''};
         this.editedIndex = -1;
       });
     },
@@ -119,99 +218,22 @@ export default {
 
     async save() {
       if (this.editedIndex > -1) {
-        this.$set(this.persons.activeUsers, this.editedIndex, this.editedItem);
+        this.$set(this.groups, this.editedIndex, this.editedItem);
         const body = this.editedItem
-        await this.putActiveUser(body)
+        await this.putGroups(body)
         this.close();
-      }
-      else {
-        this.persons.students.push(this.editedItem);
+      } else {
+        this.groups.push(this.editedItem);
         const body = {
-          "email": this.editedItem.email,
-          "phoneNumber": this.editedItem.phoneNumber,
-          "name": this.editedItem.name,
-          "surname": this.editedItem.surname,
-          "middleName": this.editedItem.middleName,
+          "groupId": this.editedItem.groupId,
+          "title": this.editedItem.title,
         }
-        await this.postUser(body)
+        await this.postGroups(body)
         this.close();
       }
     },
   },
 };
-
 </script>
-<template>
-  <v-data-table :headers="headers" :items="persons.activeUsers" class="elevation-1" no-data-text="Нет данных для отображения"
-                :footer-props="{
-      'items-per-page-text': 'Записей на странице:',
-      'items-per-page-all-text': 'Все',
-      'page-text': '{0}-{1} из {2}',
-      'prev-icon': 'mdi-chevron-left',
-      'next-icon': 'mdi-chevron-right',
-      'prev-page-text': 'Предыдущая страница',
-      'next-page-text': 'Следующая страница',
-      'no-data-text': 'Нет данных для отображения'}"
-  >
-    <template v-slot:top>
-      <v-toolbar flat>
-        <v-spacer></v-spacer>
-        <v-dialog v-model="dialog" max-width="500px">
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on">
-              Новый преподаватель
-            </v-btn>
-          </template>
-          <v-card>
-            <v-card-title>
-              <span class="text-h5">{{ formTitle }}</span>
-            </v-card-title>
-            <v-card-text>
-              <v-container>
-                <v-row>
-                  <v-col cols="12" sm="6" md="4">
-                    <v-text-field v-model="editedItem.name" label="Имя" ></v-text-field>
-                    <v-text-field v-model="editedItem.surname" label="Фамилия" ></v-text-field>
-                    <v-text-field v-model="editedItem.middleName" label="Отчество" ></v-text-field>
-                    <v-text-field v-model="editedItem.email" label="email" ></v-text-field>
-                    <v-text-field v-model="editedItem.phoneNumber" label="phoneNumber" ></v-text-field>
-                  </v-col>
-                </v-row>
-              </v-container>
-            </v-card-text>
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn color="blue darken-1" text @click="close">
-                Отмена
-              </v-btn>
-              <v-btn color="blue darken-1" text @click="save">
-                OK
-              </v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
-        <v-dialog v-model="dialogDelete" max-width="500px">
-          <v-card>
-            <v-card-title class="text-h5">Сносим?</v-card-title>
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn color="blue darken-1" text @click="closeDelete">Отмена</v-btn>
-              <v-btn color="blue darken-1" text @click="deleteItemConfirm">OK</v-btn>
-              <v-spacer></v-spacer>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
-      </v-toolbar>
-    </template>
-    <template v-slot:item.actions="{ item }">
-      <v-icon small class="mr-2" @click="editItem(item)">
-        mdi-pencil
-      </v-icon>
-      <v-icon small @click="deleteItem(item)">
-        mdi-delete
-      </v-icon>
-    </template>
-  </v-data-table>
-</template>
 <style scoped>
 </style>
