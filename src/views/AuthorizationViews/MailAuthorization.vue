@@ -33,6 +33,10 @@
                   counter
                   @click:append="show1 = !show1"
               ></v-text-field>
+              <v-btn color="#4E7AEC" @click="$router.push('/recoveryPassWord').catch(err => {})"
+                     class="rounded-lg pa-0 ma-0" block text>
+                Забыли пароль?
+              </v-btn>
             </v-card-text>
             <v-card-actions>
               <v-col>
@@ -110,7 +114,7 @@ export default {
     },
   },
 };
-</script> 
+</script>
 <style>
 .width {
   width: 20em;
@@ -132,15 +136,17 @@ export default {
 }
 
 .custom-dialog .v-overlay--active .v-overlay__scrim {
-    display: none;
+  display: none;
 }
 
 .custom-dialog .v-overlay--active {
-    backdrop-filter: blur(2px);
-    background: rgb(0 0 0 / 0.8);
+  backdrop-filter: blur(2px);
+  background: rgb(0 0 0 / 0.8);
 }
 
-.custom-dialog @media (prefers-color-scheme: dark) {
-    background: rgb(0 0 0 / 0.4);
+.custom-dialog
+
+@media (prefers-color-scheme: dark) {
+  background: rgb(0 0 0 / 0.4);
 }
 </style>
