@@ -1,7 +1,4 @@
 <script>
-// eslint-disable-next-line no-unused-vars
-import TestService from "@/services/TestService";
-
 export default {
   name: "PostLogin",
   created() {

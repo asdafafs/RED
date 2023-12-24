@@ -73,7 +73,6 @@ export default {
   async mounted() {
     const userId = this.$route.query.userId
     const code = this.$route.query.code
-
     await this.confirmEmail(userId, code)
   },
   methods: {

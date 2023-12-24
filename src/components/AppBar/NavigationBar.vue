@@ -33,7 +33,7 @@
         Админпанель
       </v-list-item>
       <v-list-item
-          @click.stop="$router.push('/admin').catch(err => {}); $emit('update:drawer', false)"
+          @click.stop="$router.push('*').catch(err => {}); $emit('update:drawer', false)"
           class="white--text align-start align-center list-item">
         Привязать аккуант к вк
       </v-list-item>

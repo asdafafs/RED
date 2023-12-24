@@ -98,15 +98,12 @@
 import moment from 'moment';
 import CarLogo from "@/components/logos/CarLogo.vue";
 import LectureLogo from "@/components/logos/LectureLogo.vue";
-import Draggable from 'vuedraggable';
 import EventsRequest from "@/services/EventsRequest";
 
 export default {
-  // eslint-disable-next-line vue/no-unused-components
-  components: {CarLogo, LectureLogo, Draggable},
+  components: {CarLogo, LectureLogo},
   watch: {
     events() {
-
     }
   },
   mounted() {
