@@ -1,5 +1,5 @@
 <template>
-  <v-overlay :value="overlay" contained class="blur">
+  <v-overlay :value="overlay" contained class="">
     <v-row align="center" justify="center" class="width ">
       <v-col cols="4" class=" pa-0">
         <v-card class="d-flex justify-space-between flex-column height white rounded-lg ma-2">
@@ -54,10 +54,6 @@ export default {
 }
 </script>
 <style scoped>
-.blur {
-  backdrop-filter: blur(0px);
-}
-
 .width {
   width: 60em;
 }

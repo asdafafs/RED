@@ -159,4 +159,19 @@ export default {
   margin-top: 2em;
   margin-bottom: 2em;
 }
+
+.v-overlay--active .v-overlay__scrim {
+  display: none;
+}
+
+.v-overlay--active {
+  backdrop-filter: blur(2px);
+  background: rgb(0 0 0 / 0.8);
+}
+
+@media (prefers-color-scheme: dark) {
+  .v-overlay--active {
+    background: rgb(0 0 0 / 0.4);
+  }
+}
 </style>
