@@ -132,18 +132,18 @@ export default {
   overflow: hidden;
 }
 
-.custom-dialog .v-overlay--active .v-overlay__scrim {
+.v-overlay--active .v-overlay__scrim {
   display: none;
 }
 
-.custom-dialog .v-overlay--active {
+.v-overlay--active {
   backdrop-filter: blur(2px);
   background: rgb(0 0 0 / 0.8);
 }
 
-.custom-dialog
-
 @media (prefers-color-scheme: dark) {
-  background: rgb(0 0 0 / 0.4);
+  .v-overlay--active {
+    background: rgb(0 0 0 / 0.4);
+  }
 }
 </style>

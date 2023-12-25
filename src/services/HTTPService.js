@@ -2,9 +2,6 @@ import axios from "axios";
 
 export default class HttpService {
     basePath = 'api'
-    //backendUrl = 'https://localhost:7012'
-    //frontPageUrl = 'https://localhost:8080/'
-
     frontPageUrl = 'https://anton.mlsat.ru/'
     backendUrl = 'https://red.mlsat.ru'
 

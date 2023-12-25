@@ -74,13 +74,14 @@
         </v-dialog>
       </v-toolbar>
     </template>
-    <template v-slot:item.actions="{ item }">
-      <v-icon small class="mr-2" @click="editItem(item)">
-        mdi-pencil
-      </v-icon>
-      <v-icon small @click="deleteItem(item)">
-        mdi-delete
-      </v-icon>
+    <template v-slot:item="{ item }">
+      <tr>
+        <td>{{ item.title }}</td>
+        <td class="text-xs-right">
+          <v-icon small class="mr-2" @click="editItem(item)">mdi-pencil</v-icon>
+          <v-icon small @click="deleteItem(item)">mdi-delete</v-icon>
+        </td>
+      </tr>
     </template>
   </v-data-table>
 </template>
@@ -131,7 +132,7 @@ export default {
   },
 
   methods: {
-    async getUsers() {
+    async getFreeUsers() {
       const user = new UsersRequest();
       await user.getUser().catch(x => console.log(x)).then(x => {
         this.students = x.data
@@ -163,7 +164,7 @@ export default {
 
     async initialize() {
       await this.getGroups();
-      await this.getUsers()
+      await this.getFreeUsers()
       this.groups = await this.groupData;
       console.log(this.groups)
     },
