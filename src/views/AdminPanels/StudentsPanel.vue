@@ -2,7 +2,7 @@
   <v-card>
     <v-text-field
         v-model="search"
-        label="Search"
+        label="Поиск"
         prepend-inner-icon="mdi-magnify"
         single-line
         variant="outlined"
@@ -10,8 +10,8 @@
     ></v-text-field>
     <v-data-table
         :headers="headers"
-        :search="search"
         :items="persons.students"
+        :search="search"
         class="elevation-1"
         no-data-text="Нет данных для отображения"
         :footer-props="{
@@ -45,8 +45,8 @@
                       <v-text-field v-model="editedItem.surname" label="Фамилия"></v-text-field>
                       <v-text-field v-model="editedItem.middleName" label="Отчество"></v-text-field>
                       <v-text-field v-model="editedItem.email" label="email"></v-text-field>
-                      <v-text-field v-model="editedItem.phoneNumber" label="phoneNumber"></v-text-field>
-                      <v-text-field v-model="editedItem.groupId" label="phoneNumber"></v-text-field>
+                      <v-text-field v-model="editedItem.phoneNumber" label="Номер телефона"></v-text-field>
+                      <v-text-field v-model="editedItem.groupId" label="Id группы"></v-text-field>
                     </v-col>
                   </v-row>
                 </v-container>
@@ -78,6 +78,9 @@
       <template v-slot:item="{ item }">
         <tr>
           <td>{{ item.name }}</td>
+          <td>{{item.surname}}</td>
+          <td>{{item.middleName}}</td>
+          <td>{{item.groupId}}</td>
           <td class="text-xs-right">
             <v-icon small class="mr-2" @click="editItem(item)">mdi-pencil</v-icon>
             <v-icon small @click="deleteItem(item)">mdi-delete</v-icon>
@@ -218,6 +221,7 @@ export default {
         this.close();
       } else {
         this.persons.students.push(this.editedItem);
+        console.log(this.editedItem)
         const body = {
           "email": this.editedItem.email,
           "phoneNumber": this.editedItem.phoneNumber,
@@ -232,7 +236,6 @@ export default {
     },
   },
 };
-
 </script>
 <style scoped>
 </style>

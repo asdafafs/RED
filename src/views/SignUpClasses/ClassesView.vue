@@ -103,8 +103,11 @@
               <v-row>
                 <v-col cols="12" sm="12" md="12">
                   <v-select
-                      label="Select"
-                      :items="items"
+                      v-model="selectedTeacher"
+                      label="Выберите инструктора"
+                      :items="teachers"
+                      :item-text="item => `${item.name} ${item.surname} ${item.middleName} `"
+                      item-value="id"
                   ></v-select>
                 </v-col>
               </v-row>
@@ -115,7 +118,7 @@
             <v-btn color="blue darken-1" text @click="close">
               Отмена
             </v-btn>
-            <v-btn color="blue darken-1" text @click="getEventsTeacher()">
+            <v-btn color="blue darken-1" text @click="confirm">
               OK
             </v-btn>
           </v-card-actions>
@@ -129,6 +132,7 @@ import CarLogo from "@/components/logos/CarLogo.vue";
 import LectureLogo from "@/components/logos/LectureLogo.vue";
 import EventsRequest from "@/services/EventsRequest";
 import moment from "moment/moment";
+import UsersRequest from "@/services/UsersRequest";
 
 export default {
   components: {LectureLogo, CarLogo},
@@ -165,7 +169,7 @@ export default {
     num: 70,
     isMobile: false,
     isButtonPressed: [false, false, false,],
-    items: ['Тест1.Ф.А.', 'Тест2.Ф.Ф.'],
+    teachers: [],
     test: false,
     classesSelectorsToRemove: [],
     type: 'month',
@@ -178,9 +182,37 @@ export default {
     selectedEvent: {},
     selectedElement: null,
     selectedOpen: false,
+    selectedTeacher: null
   }),
+
+  created() {
+    this.initialize();
+  },
+
   methods: {
-    getEventsTeacher() {
+
+    async initialize() {
+      await this.getEventsTeacher();
+    },
+
+    async getEventsTeacher() {
+      const teachers = new UsersRequest();
+      await teachers.getActiveUser().catch(x => console.log(x)).then(x => {
+        this.teachers = x.data.activeUsers
+        console.log(this.teachers)
+      })
+    },
+
+    async confirm() {
+      if (this.selectedTeacher) {
+        await this.getEventsSelectedTeacher(this.selectedTeacher);
+      }
+      this.close();
+    },
+
+    async getEventsSelectedTeacher(teacherId) {
+
+      return console.log(teacherId)
     },
 
     close() {
@@ -286,6 +318,7 @@ export default {
       this.$set(this.isButtonPressed, index, true);
       this.lastPressedIndex = index;
     },
+
     handleResize() {
       if (window.innerWidth < 1260) {
         this.num = 30;
@@ -294,8 +327,6 @@ export default {
       }
     },
   },
-  created() {
-  }
 }
 </script>
 <style lang="scss">

@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container fluid>
     <v-row>
       <v-col cols="">
         <v-btn text class="grey--text btn pa-0" width="100%"
