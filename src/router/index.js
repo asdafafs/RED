@@ -89,7 +89,7 @@ const routes = [
             {
                 path: 'groups',
                 name: 'groups',
-                component: GroupPanel
+                component: GroupPanel,
             }
         ]
     },
@@ -153,6 +153,7 @@ const routes = [
                 path: "lessons",
                 name: 'month',
                 component: ClassesView,
+
             },
         ]
     },

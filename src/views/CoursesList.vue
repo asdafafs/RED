@@ -180,7 +180,7 @@ export default {
     editItem(item) {
       this.editedIndex = this.courses.indexOf(item);
       this.editedItem = {
-        "lecture": {
+        lecture: {
           id: item.id,
           title: item.title,
           startTime: this.formatDatetime(item.startTime),
