@@ -72,13 +72,13 @@
               </v-container>
             </template>
           </v-calendar>
-          <v-menu
+          <v-menu max-width="200px" min-width="200px"
               v-model="selectedOpen"
               :close-on-content-click="false"
               :activator="selectedElement"
               offset-x
           >
-            <v-card color="grey lighten-4" min-width="350px" flat >
+            <v-card color="grey lighten-4" flat >
               <v-toolbar>
                 <v-toolbar-title v-html="formatTime(selectedEvent.startTime)"></v-toolbar-title>
               </v-toolbar>
