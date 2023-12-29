@@ -44,6 +44,7 @@
               :type="type"
               :events="events"
               :event-color="getEventColor"
+              @click:event="showEvent"
               :event-ripple="false"
               :event-height="num"
               :hide-header=false
@@ -77,7 +78,7 @@
               :activator="selectedElement"
               offset-x
           >
-            <v-card color="grey lighten-4" min-width="350px" flat>
+            <v-card color="grey lighten-4" min-width="350px" flat >
               <v-toolbar>
                 <v-toolbar-title v-html="formatTime(selectedEvent.startTime)"></v-toolbar-title>
               </v-toolbar>
@@ -86,7 +87,7 @@
               </v-card-text>
               <v-card-actions>
                 <v-btn textcolor="secondary" @click="selectedOpen = false">
-                  Cancel
+                  Закрыть
                 </v-btn>
               </v-card-actions>
             </v-card>
@@ -220,7 +221,7 @@ export default {
 
     async getEventsSelectedTeacher(teacherId) {
       const practice = new EventsRequest()
-      return await practice.getPracticeId(teacherId)
+      return practice.getPracticeId(teacherId);
     },
 
     close() {

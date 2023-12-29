@@ -379,17 +379,14 @@ export default {
       return innerItem.id === this.editedItem.lecture.id;
     },
   },
-
-
 };
 </script>
-
 <style>
-//.blue-background {
-//  background-color: #9DB9FF;
-//}
-//
-//.gray-background {
-//  background-color: #E9E9E8;
-//}
+.blue-background {
+  background-color: #9DB9FF;
+}
+
+.gray-background {
+  background-color: #E9E9E8;
+}
 </style>
