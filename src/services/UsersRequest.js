@@ -9,6 +9,10 @@ export default class UsersRequest extends HTTPService {
         return this.get("student")
     }
 
+    getStudentId(id){
+        return this.get("student/" + id)
+    }
+
     postUser(code) {
         return this.post("student", code)
     }
