@@ -13,8 +13,4 @@ export default class CoursesRequest extends HTTPService {
         return this.post("", code)
     }
 
-    putCourse(code) {
-        return this.put("", code)
-    }
-
 }
