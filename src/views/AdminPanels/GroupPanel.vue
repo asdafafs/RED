@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container fluid>
     <v-data-table :headers="headersGroup" :search="search" :items="groups" class="elevation-1"
                   no-data-text="Нет данных для отображения"
                   :footer-props="{
@@ -42,7 +42,15 @@
                       <v-text-field v-model="globalStartTime" label="Введите время лекций курса"></v-text-field>
                       <v-data-table :headers="headersCourse" :items="lessons" class="elevation-1"
                                     no-data-text="Нет данных для отображения"
-                                    :sort-by.sync="sortBy" :sort-desc.sync="sortDesc"
+                                    :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" :footer-props="{
+                                    'items-per-page-text': 'Записей на странице:',
+                                    'items-per-page-all-text': 'Все',
+                                    'page-text': '{0}-{1} из {2}',
+                                    'prev-icon': 'mdi-chevron-left',
+                                    'next-icon': 'mdi-chevron-right',
+                                    'prev-page-text': 'Предыдущая страница',
+                                    'next-page-text': 'Следующая страница',
+                                    'no-data-text': 'Нет данных для отображения'}"
                       >
                         <template v-slot:item="{ item: innerItem  }">
                           <tr :class="getTableRowClass(innerItem )">
@@ -83,7 +91,7 @@
           </v-dialog>
           <v-dialog v-model="dialogDelete" max-width="500px">
             <v-card>
-              <v-card-title class="text-h5">Сносим?</v-card-title>
+              <v-card-title class="text-h5">Удалить группу?</v-card-title>
               <v-card-actions>
                 <v-spacer></v-spacer>
                 <v-btn color="blue darken-1" text @click="closeDelete">Отмена</v-btn>
@@ -178,7 +186,6 @@ export default {
       const user = new UsersRequest();
       await user.getUser().catch(x => console.log(x)).then(x => {
         this.studentList = x.data.students
-        //console.log(this.studentList)
       })
     },
 
@@ -213,6 +220,18 @@ export default {
       const groups = new GroupsRequest();
       const deletedItem = {"id": this.deletedIndex}
       await groups.deleteGroup(deletedItem.id).catch(x => console.log(x))
+    },
+
+    async putSelectedStudents() {
+      let freeUsers = this.studentList
+
+      for (const student of freeUsers) {
+        await this.putStudent(student)
+      }
+    },
+
+    async putStudent(student) {
+      console.log("меняем группу", student)
     },
 
     async initialize() {
@@ -276,7 +295,7 @@ export default {
     async deleteItemConfirm() {
       this.groups.splice(this.editedIndex, 1);
       await this.deleteGroups()
-      this.closeDelete();
+      this.closeDelete()
     },
 
     close() {
@@ -307,6 +326,13 @@ export default {
             groupId: null,
             title: "",
           },
+          lecture: {
+            id: null,
+            title: '',
+            startTime: null,
+            endTime: null,
+            lectureType: null,
+          },
         };
         this.editedIndex = -1;
       });
@@ -314,17 +340,20 @@ export default {
 
     async save() {
       if (this.editedIndex > -1) {
-        this.$set(this.groups, this.editedIndex, this.editedItem);
-        const body = this.editedItem
+        this.$set(this.groups, this.editedIndex, this.editedItem.groups);
+        const body = {
+          "id" : this.editedItem.groups.groupId,
+          "title": this.editedItem.groups.title,
+        }
         await this.putGroups(body)
         this.close();
       } else {
-        console.log(this.editedItem.groups)
         this.groups.push(this.editedItem.groups);
         const body = {
           "title": this.editedItem.groups.title,
         }
         await this.postGroups(body)
+        await this.putSelectedStudents()
         this.close();
       }
     },
@@ -356,11 +385,11 @@ export default {
 </script>
 
 <style>
-.blue-background {
-  background-color: #9DB9FF;
-}
-
-.gray-background {
-  background-color: #E9E9E8;
-}
+//.blue-background {
+//  background-color: #9DB9FF;
+//}
+//
+//.gray-background {
+//  background-color: #E9E9E8;
+//}
 </style>

@@ -199,17 +199,22 @@ export default {
       const teachers = new UsersRequest();
       await teachers.getActiveUser().catch(x => console.log(x)).then(x => {
         this.teachers = x.data.activeUsers
-        console.log(this.teachers)
       })
     },
 
     async confirm() {
+      let cal
       if (this.selectedTeacher) {
-        this.events = await this.getEventsSelectedTeacher(this.selectedTeacher).catch(x => console.log(x)).then(x => {
-          this.teachers = x.data.practice
-          console.log(this.teachers)
+        await this.getEventsSelectedTeacher(this.selectedTeacher).catch(x => console.log(x)).then(x => {
+          cal = x.data.practice.map(event => ({
+            ...event,
+            start: new Date(event.startTime),
+            end: new Date(event.endTime)
+          }));
         });
       }
+
+      this.events = cal
       this.close();
     },
 
