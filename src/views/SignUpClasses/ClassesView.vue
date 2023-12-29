@@ -165,23 +165,23 @@ export default {
 
   data: () => ({
     dialog: false,
-    events: [],
-    num: 70,
-    isMobile: false,
-    isButtonPressed: [false, false, false,],
-    teachers: [],
     test: false,
+    isMobile: false,
+    selectedOpen: false,
+    isButtonPressed: [false, false, false,],
+    num: 70,
+    events: [],
+    teachers: [],
     classesSelectorsToRemove: [],
+    weekday: [1, 2, 3, 4, 5, 6, 0],
+    selectedEvent: {},
     type: 'month',
     mode: 'stack',
     modes: [
       'column'
     ],
-    weekday: [1, 2, 3, 4, 5, 6, 0],
     value: '',
-    selectedEvent: {},
     selectedElement: null,
-    selectedOpen: false,
     selectedTeacher: null
   }),
 
@@ -205,14 +205,17 @@ export default {
 
     async confirm() {
       if (this.selectedTeacher) {
-        await this.getEventsSelectedTeacher(this.selectedTeacher);
+        this.events = await this.getEventsSelectedTeacher(this.selectedTeacher).catch(x => console.log(x)).then(x => {
+          this.teachers = x.data.practice
+          console.log(this.teachers)
+        });
       }
       this.close();
     },
 
     async getEventsSelectedTeacher(teacherId) {
-
-      return console.log(teacherId)
+      const practice = new EventsRequest()
+      return await practice.getPracticeId(teacherId)
     },
 
     close() {

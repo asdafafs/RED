@@ -25,6 +25,10 @@ export default class EventsRequest extends HTTPService {
         return this.get("practice")
     }
 
+    getPracticeId(id){
+        return this.get("practice/" + id)
+    }
+
     postPractice(code) {
         return this.post("practice", code)
     }

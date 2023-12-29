@@ -232,7 +232,6 @@ export default {
           groupId: item.groupId,
         };
       });
-      console.log(this.lessons)
     },
 
     editItem(item) {
@@ -251,7 +250,6 @@ export default {
           lectureType: null,
         },
       };
-      console.log(this.editedItem)
       this.dialog = true;
     },
 
@@ -326,7 +324,6 @@ export default {
         const body = {
           "title": this.editedItem.groups.title,
         }
-        console.log(body)
         await this.postGroups(body)
         this.close();
       }
