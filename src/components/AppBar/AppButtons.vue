@@ -33,7 +33,7 @@
       <v-spacer cols="1"></v-spacer>
       <v-col cols=2 v-if="!student">
         <v-btn :class="{ 'custom-bg': isButtonPressed [3]}"
-               @click="changeButtonState(3); $router.push('/admin').catch(err => {})"
+               @click="changeButtonState(3); $router.push('/admin/students').catch(err => {})"
                text min-height="3em" color="white" class="pa-0 btn2" width="100%" height="100%" thin>
           <span class="mdi mdi-vector-arrange-above"></span>
           <div class="d-flex flex-row ">
@@ -59,9 +59,6 @@ export default {
       }
       this.$set(this.isButtonPressed, index, true);
       this.lastPressedIndex = index;
-    },
-    checkWindowWidth() {
-      this.showDrawer = window.innerWidth >= 1260;
     },
   },
   data() {

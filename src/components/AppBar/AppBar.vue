@@ -52,9 +52,7 @@ export default {
     userName() {
       return this.user.name
     },
-    // eslint-disable-next-line vue/return-in-computed-property
     discriminatorUser() {
-      // eslint-disable-next-line vue/no-side-effects-in-computed-properties
       this.student = this.user.discriminator !== 'Учитель';
       return this.student
     }

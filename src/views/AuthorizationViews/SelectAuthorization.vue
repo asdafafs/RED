@@ -47,8 +47,11 @@ export default {
       const display = 'popup'
       const responseType = 'code'
       window.location.replace(`https://oauth.vk.com/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&display=${display}&response_type=${responseType}`)
-    }
-  }
+    },
+
+
+  },
+
 
 
 }

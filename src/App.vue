@@ -29,6 +29,8 @@ export default {
           await store.dispatch('GET_CURRENT_USER', x)
           this.isDataLoaded = true
         })
+    //добавить проверку старой авторизации
+
 
   }
 };
