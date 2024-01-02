@@ -32,14 +32,6 @@ export default {
     showDrawer: true,
   }),
   methods: {
-    changeButtonState(index) {
-      if (this.lastPressedIndex !== -1) {
-        this.$set(this.isButtonPressed, this.lastPressedIndex, false);
-      }
-      this.$set(this.isButtonPressed, index, true);
-      this.lastPressedIndex = index;
-    },
-
     checkWindowWidth() {
       this.showDrawer = window.innerWidth >= 1260;
     },

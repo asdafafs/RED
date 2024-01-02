@@ -84,6 +84,7 @@
               </v-toolbar>
               <v-card-text>
                 <span v-html="selectedEvent.title"></span>
+                <span v-html="selectedEvent.studentId === null ? 'Место свободно' : selectedEvent.title"></span>
               </v-card-text>
               <v-card-actions>
                 <v-btn textcolor="secondary" @click="selectedOpen = false">
@@ -249,53 +250,6 @@ export default {
       nativeEvent.stopPropagation()
     },
 
-    async getLessons() {
-      const lessons = new EventsRequest()
-      let cal
-      await lessons.getLecture().catch(x => console.log(x)).then(x => {
-        cal = x.data.lecture.map(event => ({
-          ...event,
-          start: new Date(event.startTime),
-          end: new Date(event.endTime)
-        }));
-      })
-      return cal
-    },
-
-    async getPractices() {
-      const practices = new EventsRequest()
-      let cal
-      await practices.getPractice().catch(x => console.log(x)).then(x => {
-        cal = x.data.practice.map(event => ({
-          ...event,
-          start: new Date(event.startTime),
-          end: new Date(event.endTime)
-        }));
-      })
-      return cal
-    },
-
-    async getAllEvents() {
-      const lessons = await this.getLessons();
-      const practices = await this.getPractices();
-      this.events = [...lessons, ...practices];
-      this.events = this.events.map(item => {
-        return {
-          ...item,
-          start: moment(item.start).format("YYYY-MM-DD HH:mm"),
-          end: moment(item.end).format("YYYY-MM-DD HH:mm"),
-        }
-      })
-    },
-
-    async testLessons() {
-      this.events = await this.getLessons();
-    },
-
-    async testPractices() {
-      this.events = await this.getPractices();
-    },
-
     formatTime(startTime) {
       const date = new Date(startTime);
       const hours = date.getHours().toString().padStart(2, '0');
@@ -305,11 +259,6 @@ export default {
 
     updateRange() {
     },
-
-    rnd(a, b) {
-      return Math.floor((b - a + 1) * Math.random()) + a
-    },
-
     getEventColor(event) {
       if (event.lectureType === 3) {
         return '#9DB9FF';

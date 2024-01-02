@@ -355,6 +355,8 @@ export default {
         await this.postGroups(body)
         await this.putSelectedStudents()
         this.close();
+
+        //сделать общий запрос
       }
     },
 

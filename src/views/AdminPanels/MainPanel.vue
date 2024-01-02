@@ -44,6 +44,8 @@ export default {
       this.$set(this.isButtonMenuPressed, index, true);
       this.lastPressedIndex = index;
     },
+
+    //добавить проверку active_user
   },
 }
 </script>
