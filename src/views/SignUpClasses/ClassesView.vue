@@ -84,7 +84,7 @@
               </v-toolbar>
               <v-card-text>
                 <span v-html="selectedEvent.title"></span>
-                <span v-html="selectedEvent.studentId === null ? 'Место свободно' : selectedEvent.title"></span>
+                <span v-html="selectedEvent.studentId === null && discriminatorUser() ? 'Место свободно' : selectedEvent.title"></span>
               </v-card-text>
               <v-card-actions>
                 <v-btn textcolor="secondary" @click="selectedOpen = false">
@@ -133,11 +133,20 @@
 import CarLogo from "@/components/logos/CarLogo.vue";
 import LectureLogo from "@/components/logos/LectureLogo.vue";
 import EventsRequest from "@/services/EventsRequest";
-import moment from "moment/moment";
 import UsersRequest from "@/services/UsersRequest";
+import {mapState} from "vuex";
 
 export default {
   components: {LectureLogo, CarLogo},
+
+  computed: {
+    ...mapState(['user']),
+
+    discriminatorUser() {
+      return this.user.discriminator !== 'Учитель'
+    }
+  },
+
   mounted() {
     const buttonStyleReplace = [
       'v-btn',
