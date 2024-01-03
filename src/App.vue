@@ -28,10 +28,8 @@ export default {
         .then(async (x) => {
           await store.dispatch('GET_CURRENT_USER', x)
           this.isDataLoaded = true
+          await this.$router.push('/schedule/lessons')
         })
-    //добавить проверку старой авторизации
-
-
   }
 };
 </script>

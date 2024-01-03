@@ -2,8 +2,8 @@ import axios from "axios";
 
 export default class HttpService {
     basePath = 'api'
-    frontPageUrl = 'https://anton.mlsat.ru/'
-    backendUrl = 'https://kamen.mlsat.ru'
+    frontPageUrl = process.env.FRONT_PAGE_URL
+    backendUrl = process.env.BACKEND_URL
 
     constructor(controller) {
         this.basePath = `${this.backendUrl}/${this.basePath}/${controller}`

@@ -1,6 +1,6 @@
 <template>
   <v-container fluid>
-    <v-data-table :headers="headersGroup" :search="search" :items="groups" class="elevation-1"
+    <v-data-table :headers="headersGroup" :search="search" :items="groups" class="elevation-1" v-if="discriminatorUser"
                   no-data-text="Нет данных для отображения"
                   :footer-props="{
       'items-per-page-text': 'Записей на странице:',
@@ -68,8 +68,8 @@
                               }}
                             </td>
                             <td class="text-xs-right">
-                              <v-icon small class="mr-2" @click="editItem(innerItem )">mdi-pencil</v-icon>
-                              <v-icon small @click="deleteItem(innerItem )">mdi-delete</v-icon>
+                              <v-icon small class="mr-2" @click="editLesson(innerItem )">mdi-pencil</v-icon>
+                              <v-icon small @click="deleteLesson(innerItem )">mdi-delete</v-icon>
                             </td>
                           </tr>
                         </template>
@@ -112,12 +112,16 @@
         </tr>
       </template>
     </v-data-table>
+    <div v-else>
+      <p>Вы не авторизованы для просмотра этой страницы</p>
+    </div>
   </v-container>
 </template>
 <script>
 import GroupsRequest from "@/services/GroupsRequest";
 import UsersRequest from "@/services/UsersRequest";
 import CoursesRequest from "@/services/CoursesRequest";
+import {mapState} from "vuex";
 
 export default {
   data: () => ({
@@ -166,6 +170,12 @@ export default {
     formTitle() {
       return this.editedIndex === -1 ? 'Новая группа' : 'Редактировать группу';
     },
+
+    ...mapState(['user']),
+
+    discriminatorUser() {
+      return this.user.discriminator !== 'Учитель'
+    }
   },
 
   watch: {
@@ -253,6 +263,26 @@ export default {
       });
     },
 
+    deleteItem(item) {
+      this.editedIndex = this.groups.indexOf(item);
+      this.editedItem = {
+        groups: {
+          groupId: item.groupId,
+          title: item.title,
+        },
+
+        lecture: {
+          id: null,
+          title: '',
+          startTime: null,
+          endTime: null,
+          lectureType: null,
+        },
+      };
+      this.deletedIndex = item.groupId
+      this.dialogDelete = true;
+    },
+
     editItem(item) {
       this.editedIndex = this.groups.indexOf(item);
       this.editedItem = {
@@ -272,8 +302,8 @@ export default {
       this.dialog = true;
     },
 
-    deleteItem(item) {
-      this.editedIndex = this.groups.indexOf(item);
+    editLesson(item) {
+      this.editedIndex = this.lecture.indexOf(item);
       this.editedItem = {
         groups: {
           groupId: item.groupId,
@@ -288,7 +318,26 @@ export default {
           lectureType: null,
         },
       };
-      this.deletedIndex = item.groupId
+      this.dialog = true;
+    },
+
+    deleteLesson(item) {
+      this.editedIndex = this.lecture.indexOf(item);
+      this.editedItem = {
+        groups: {
+          groupId: item.groupId,
+          title: item.title,
+        },
+
+        lecture: {
+          id: null,
+          title: '',
+          startTime: null,
+          endTime: null,
+          lectureType: null,
+        },
+      };
+      this.deletedIndex = item.id
       this.dialogDelete = true;
     },
 
