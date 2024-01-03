@@ -25,6 +25,10 @@ export default class UsersRequest extends HTTPService {
         return this.delete("student/" + id)
     }
 
+    putStudentGroup(code){
+        return this.put("studentGroup", code)
+    }
+
     postActiveUser(code) {
         return this.post('active-user', code)
     }

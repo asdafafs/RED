@@ -84,12 +84,17 @@
               </v-toolbar>
               <v-card-text>
                 <span v-html="selectedEvent.title"></span>
-                <span v-html="selectedEvent.studentId === null && discriminatorUser() ? 'Место свободно' : selectedEvent.title"></span>
+                <span v-html="selectedEvent.studentId === null && !discriminatorUser() ? 'Можно записаться' : selectedEvent.title"></span>
               </v-card-text>
               <v-card-actions>
-                <v-btn textcolor="secondary" @click="selectedOpen = false">
-                  Закрыть
-                </v-btn>
+                <v-card-actions>
+                  <v-btn text color="secondary" v-if="selectedEvent.studentId === null && !discriminatorUser() && userID !== selectedEvent.studentId" @click="addEventStudent">
+                    Подписаться
+                  </v-btn>
+                  <v-btn text color="secondary" v-else @click="selectedOpen = false">
+                    Закрыть
+                  </v-btn>
+                </v-card-actions>
               </v-card-actions>
             </v-card>
           </v-menu>
@@ -117,7 +122,7 @@
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="blue darken-1" text @click="close">
+              <v-btn color="blue darken-1" text @click="close">
               Отмена
             </v-btn>
             <v-btn color="blue darken-1" text @click="confirm">
@@ -144,7 +149,11 @@ export default {
 
     discriminatorUser() {
       return this.user.discriminator !== 'Учитель'
-    }
+    },
+
+    userID() {
+      return this.user.id
+    },
   },
 
   mounted() {
@@ -201,6 +210,10 @@ export default {
   },
 
   methods: {
+
+    async addEventStudent(){
+
+    },
 
     async initialize() {
       await this.getEventsTeacher();
