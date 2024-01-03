@@ -1,6 +1,6 @@
 <template>
   <v-container fluid>
-    <v-data-table :headers="headersGroup" :search="search" :items="groups" class="elevation-1" v-if="discriminatorUser"
+    <v-data-table :headers="headersGroup" :search="search" :items="groups" class="elevation-1" v-if="!discriminatorUser"
                   no-data-text="Нет данных для отображения"
                   :footer-props="{
       'items-per-page-text': 'Записей на странице:',
@@ -234,16 +234,9 @@ export default {
 
     async putSelectedStudents() {
       let freeUsers = this.studentList
+      console.log(freeUsers)
 
-      for (const student of freeUsers) {
-        await this.putStudent(student)
-      }
     },
-
-    async putStudent(student) {
-      console.log("меняем группу", student)
-    },
-
     async initialize() {
       await this.getGroups();
       await this.getFreeUsers()
