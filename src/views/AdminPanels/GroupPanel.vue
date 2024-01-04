@@ -89,7 +89,18 @@
               </v-card-actions>
             </v-card>
           </v-dialog>
-          <v-dialog v-model="dialogDelete" max-width="500px">
+          <v-dialog v-model="lessonDelete" max-width="500px">
+            <v-card>
+              <v-card-title class="text-h5">Удалить занятие?</v-card-title>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="blue darken-1" text @click="closeDelete">Отмена</v-btn>
+                <v-btn color="blue darken-1" text @click="deleteLessonConfirm">OK</v-btn>
+                <v-spacer></v-spacer>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+          <v-dialog v-model="groupDelete" max-width="500px">
             <v-card>
               <v-card-title class="text-h5">Удалить группу?</v-card-title>
               <v-card-actions>
@@ -122,6 +133,7 @@ import GroupsRequest from "@/services/GroupsRequest";
 import UsersRequest from "@/services/UsersRequest";
 import CoursesRequest from "@/services/CoursesRequest";
 import {mapState} from "vuex";
+import EventsRequest from "@/services/EventsRequest";
 
 export default {
   data: () => ({
@@ -133,7 +145,8 @@ export default {
     selectedStudents: [],
     groupData: null,
     dialog: false,
-    dialogDelete: false,
+    lessonDelete: false,
+    groupDelete: false,
     search: '',
     headersGroup: [
       {text: 'Название', align: 'start', sortable: false, value: 'title',},
@@ -145,6 +158,7 @@ export default {
       {text: 'Конец', align: 'start', sortable: false, value: 'endTime',},
       {text: 'Действия', value: 'actions', sortable: false},],
     groups: [],
+    lectures: [],
     editedIndex: -1,
     deletedIndex: -1,
     editedItem: {
@@ -182,7 +196,7 @@ export default {
     dialog(val) {
       val || this.close();
     },
-    dialogDelete(val) {
+    groupDelete(val) {
       val || this.closeDelete();
     },
   },
@@ -232,11 +246,17 @@ export default {
       await groups.deleteGroup(deletedItem.id).catch(x => console.log(x))
     },
 
+    async deleteSelectedLesson(){
+      const lesson = new EventsRequest()
+      const deletedItem = {"id": this.deletedIndex}
+      await lesson.deleteLecture(deletedItem.id).catch(x => console.log(x))
+    },
+
     async putSelectedStudents() {
       let freeUsers = this.studentList
       console.log(freeUsers)
-
     },
+
     async initialize() {
       await this.getGroups();
       await this.getFreeUsers()
@@ -273,7 +293,7 @@ export default {
         },
       };
       this.deletedIndex = item.groupId
-      this.dialogDelete = true;
+      this.groupDelete = true;
     },
 
     editItem(item) {
@@ -296,7 +316,7 @@ export default {
     },
 
     editLesson(item) {
-      this.editedIndex = this.lecture.indexOf(item);
+      this.editedIndex = this.lectures.indexOf(item);
       this.editedItem = {
         groups: {
           groupId: item.groupId,
@@ -315,7 +335,9 @@ export default {
     },
 
     deleteLesson(item) {
-      this.editedIndex = this.lecture.indexOf(item);
+      console.log(this.editedIndex)
+      this.editedIndex = this.lectures.indexOf(item);
+      console.log(this.editedIndex)
       this.editedItem = {
         groups: {
           groupId: item.groupId,
@@ -331,12 +353,18 @@ export default {
         },
       };
       this.deletedIndex = item.id
-      this.dialogDelete = true;
+      this.lessonDelete = true;
     },
 
     async deleteItemConfirm() {
       this.groups.splice(this.editedIndex, 1);
       await this.deleteGroups()
+      this.closeDelete()
+    },
+
+    async deleteLessonConfirm(){
+      this.lessons.splice(this.editedIndex, 1);
+      await this.deleteSelectedLesson()
       this.closeDelete()
     },
 
@@ -361,7 +389,9 @@ export default {
     },
 
     closeDelete() {
-      this.dialogDelete = false;
+      this.groupDelete = false;
+      this.lessonDelete = false;
+
       this.$nextTick(() => {
         this.editedItem = {
           groups: {
