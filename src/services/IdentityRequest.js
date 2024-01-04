@@ -9,8 +9,10 @@ export default class IdentityRequest extends HTTPService {
         return this.get("")
     }
 
-    postLoginVk() {
-        return this.post("login-vk")
+    postLoginVk(code) {
+        return this.post("login-vk", {
+            code
+        })
     }
 
     postRegister(code) {
@@ -30,7 +32,7 @@ export default class IdentityRequest extends HTTPService {
     }
 
     postNewPassword(code) {
-        return this.post('ConfirmNewPassword',code)
+        return this.post('ConfirmNewPassword', code)
     }
 
     postLogout(code) {

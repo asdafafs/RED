@@ -39,10 +39,10 @@
             </v-card-text>
             <v-card-actions>
               <v-col>
-                <v-btn color="#4E7AEC" @click="validateForm" class="rounded-lg pa-0 white--text" block>
+                <v-btn color="#4E7AEC" @click="validateForm" class="rounded-lg pa-0 ma-0 my-1 white--text" block>
                   Зарегистрироваться
                 </v-btn>
-                <v-btn color="##E9E9E8" @click="$router.push('/')" class="rounded-lg pa-0" block>
+                <v-btn color="##E9E9E8" @click="$router.push('/')" class="rounded-lg ma-0 my-1 pa-0" block>
                   Выйти
                 </v-btn>
               </v-col>
@@ -57,6 +57,7 @@
 import LogoRed from "@/components/logos/LogoRed.vue";
 import VueTextMask from "vue-text-mask";
 import IdentityRequest from "@/services/IdentityRequest";
+import {mapState} from "vuex";
 
 export default {
   name: 'AuthorizationForm',
@@ -96,18 +97,17 @@ export default {
 
     async validateForm() {
       const body = {
-        "email": this.email,
-        "name": this.name,
-        "surname": this.surname,
-        "middleName": this.middleName,
-        "phoneNumber": this.phoneNumber,
-        "password": this.password,
-        "userType": 1
+        email: this.email,
+        name: this.name,
+        surname: this.surname,
+        middleName: this.middleName,
+        phoneNumber: this.phoneNumber,
+        password: this.password,
+        vkUserId: this.$route.query.vkUserId
       }
       if (!this.isPhoneNumberValid || !this.isEmailValid || !this.isPasswordValid || !this.isNameValid) {
         return;
       }
-      console.log(body)
       await this.registration(body)
       this.$router.push('/').catch(err => {
         console.log(err)
@@ -115,14 +115,13 @@ export default {
     },
   },
   computed: {
+    ...mapState(['vkUserId']),
     isNameValid() {
       return this.rulesFullname.required(this.name) === true && this.rulesFullname.required(this.surname) === true && this.rulesFullname.required(this.middleName) === true
     },
-
     isEmailValid() {
       return this.rulesEmail.required(this.email) === true;
     },
-
     isPhoneNumberValid() {
       return this.phoneNumber.replace(/\D/g, '').length === 11;
     },
