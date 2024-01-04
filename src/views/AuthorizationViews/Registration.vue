@@ -87,6 +87,12 @@ export default {
     },
     smsCode: ''
   }),
+  created() {
+    const isConfirmRequired = this.$route.query.isConfirmRequired;
+    if (isConfirmRequired) {
+      this.message = "На указанный адрес электронной почты было отправлено письмо с подтверждением";
+    }
+  },
   methods: {
     async registration(body) {
       const register = new IdentityRequest()
@@ -111,7 +117,9 @@ export default {
       await this.registration(body)
       await this.$router.push({
         path: '/',
-        isConfirmRequired: true
+        query: {
+          isConfirmRequired: true
+        }
       })
     },
   },

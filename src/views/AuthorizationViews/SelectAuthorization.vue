@@ -8,17 +8,20 @@
             Для продолжения работы в RED: Расписание, пожалуйста, авторизуйтесь через Вконтакте.
           </v-card-subtitle>
           <LogoRed class="pos"></LogoRed>
+          <v-alert v-if="message" type="success">
+            {{ message }}
+          </v-alert>
           <v-card-actions class="flex-column">
             <v-btn color="#4E7AEC" @click="$router.push('/mail').catch(err => {})"
                    class="rounded-lg pa-0 ma-0 my-1" block>
               Войти
             </v-btn>
             <v-btn color="#4E7AEC" @click="$router.push('/registration').catch(err => {})"
-                class="rounded-lg pa-0 ma-0 my-1" block >
+                   class="rounded-lg pa-0 ma-0 my-1" block>
               Регистрация
             </v-btn>
             <v-btn color="#4E7AEC" @click="vkLogIn"
-                class="rounded-lg pa-0 ma-0 my-1" block >
+                   class="rounded-lg pa-0 ma-0 my-1" block>
               Войти через VK
             </v-btn>
           </v-card-actions>
@@ -29,10 +32,12 @@
 </template>
 <script>
 import LogoRed from "@/components/logos/LogoRed.vue"
+import ConfirmEmailMessageMixin from "@/mixins/ConfirmEmailMessageMixin";
 
 export default {
   name: 'AuthorizationForm',
   components: {LogoRed},
+  mixins: [ConfirmEmailMessageMixin],
   props: {
     overlay: {
       type: Boolean,
@@ -65,17 +70,17 @@ export default {
 }
 
 .v-overlay--active .v-overlay__scrim {
-    display: none;
+  display: none;
 }
 
 .v-overlay--active {
-    backdrop-filter: blur(2px);
-    background: rgb(0 0 0 / 0.8);
+  backdrop-filter: blur(2px);
+  background: rgb(0 0 0 / 0.8);
 }
 
 @media (prefers-color-scheme: dark) {
-    .v-overlay--active {
-        background: rgb(0 0 0 / 0.4);
-    }
+  .v-overlay--active {
+    background: rgb(0 0 0 / 0.4);
+  }
 }
 </style>

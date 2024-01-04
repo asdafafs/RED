@@ -8,7 +8,6 @@
             <v-card-subtitle class="black--text">
               Для продолжения работы в RED: Расписание, пожалуйста, авторизуйтесь через электронную почту.
             </v-card-subtitle>
-            <v-alert v-if="message" type="success"></v-alert>
             <LogoRed class="pos"></LogoRed>
             <v-card-text class="pb-0 ">
               <v-text-field
@@ -79,15 +78,7 @@ export default {
       min: v => v.length >= 8 || 'Минимум 8 символов',
     },
     wrongAuth: false,
-    message: null
   }),
-  created() {
-    console.log('MailAuthorization')
-    const isConfirmRequired = this.$route.query.isConfirmRequired;
-    if (isConfirmRequired) {
-      this.message = "На указанный адрес электронной почты было отправлено письмо с подтверждением";
-    }
-  },
   methods: {
     async login(body) {
       const login = new IdentityRequest()

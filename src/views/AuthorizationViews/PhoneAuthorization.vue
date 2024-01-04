@@ -8,6 +8,9 @@
             Для продолжения работы в RED: Расписание, пожалуйста, авторизуйтесь через номер телефона.
           </v-card-subtitle>
           <LogoRed class="pos"></LogoRed>
+          <v-alert v-if="message" type="success">
+            {{ message }}
+          </v-alert>
           <v-card-text class="pb-0 ">
             <vue-text-mask class="grey phone white--text" v-model="value" :mask="mask" placeholderChar="#">
             </vue-text-mask>
@@ -67,10 +70,12 @@
 <script>
 import VueTextMask from "vue-text-mask";
 import LogoRed from "@/components/logos/LogoRed.vue";
+import ConfirmEmailMessageMixin from "@/mixins/ConfirmEmailMessageMixin";
 
 export default {
   name: 'AuthorizationForm',
   components: {VueTextMask, LogoRed},
+  mixins: [ConfirmEmailMessageMixin],
   data: () => ({
     overlay: true,
     form: true,

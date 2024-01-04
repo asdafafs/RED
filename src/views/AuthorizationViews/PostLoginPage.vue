@@ -15,8 +15,6 @@ export default {
     const code = this.$route.query.code
     await this.identityService.postLoginVk(code)
         .then(response => {
-          console.log(response);
-          this.$store.commit('SET_VK_USER',)
           this.$router.push({
             path: '/registration',
             query: {
