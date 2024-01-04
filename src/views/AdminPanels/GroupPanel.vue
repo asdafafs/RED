@@ -40,40 +40,7 @@
                           persistent-hint
                       ></v-select>
                       <v-text-field v-model="globalStartTime" label="Введите время лекций курса"></v-text-field>
-                      <v-data-table :headers="headersCourse" :items="lessons" class="elevation-1"
-                                    no-data-text="Нет данных для отображения"
-                                    :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" :footer-props="{
-                                    'items-per-page-text': 'Записей на странице:',
-                                    'items-per-page-all-text': 'Все',
-                                    'page-text': '{0}-{1} из {2}',
-                                    'prev-icon': 'mdi-chevron-left',
-                                    'next-icon': 'mdi-chevron-right',
-                                    'prev-page-text': 'Предыдущая страница',
-                                    'next-page-text': 'Следующая страница',
-                                    'no-data-text': 'Нет данных для отображения'}"
-                      >
-                        <template v-slot:item="{ item: innerItem  }">
-                          <tr :class="getTableRowClass(innerItem )">
-                            <td>{{ innerItem.title }}</td>
-                            <td>
-                              {{
-                                isItemEdited(innerItem) ? formatDatetime(innerItem.startTime)
-                                    : (innerItem.startTime ? formatDatetime(innerItem.startTime) : globalStartTime + " - 00")
-                              }}
-                            </td>
-                            <td>
-                              {{
-                                isItemEdited(innerItem) ? formatDatetime(innerItem.endTime)
-                                    : (innerItem.endTime ? formatDatetime(innerItem.endTime) : globalEndTime + " - 00")
-                              }}
-                            </td>
-                            <td class="text-xs-right">
-                              <v-icon small class="mr-2" @click="editLesson(innerItem )">mdi-pencil</v-icon>
-                              <v-icon small @click="deleteLesson(innerItem )">mdi-delete</v-icon>
-                            </td>
-                          </tr>
-                        </template>
-                      </v-data-table>
+                      <CoursesList></CoursesList>
                     </v-col>
                   </v-row>
                 </v-container>
@@ -134,8 +101,10 @@ import UsersRequest from "@/services/UsersRequest";
 import CoursesRequest from "@/services/CoursesRequest";
 import {mapState} from "vuex";
 import EventsRequest from "@/services/EventsRequest";
+import CoursesList from "@/views/CoursesList.vue";
 
 export default {
+  components: {CoursesList},
   data: () => ({
     globalStartTime: null,
     globalEndTime: null,
@@ -158,7 +127,6 @@ export default {
       {text: 'Конец', align: 'start', sortable: false, value: 'endTime',},
       {text: 'Действия', value: 'actions', sortable: false},],
     groups: [],
-    lectures: [],
     editedIndex: -1,
     deletedIndex: -1,
     editedItem: {
@@ -208,7 +176,7 @@ export default {
   methods: {
     async getFreeUsers() {
       const user = new UsersRequest();
-      await user.getUser().catch(x => console.log(x)).then(x => {
+      await user.getStudentNullGroup().catch(x => console.log(x)).then(x => {
         this.studentList = x.data.students
       })
     },
@@ -246,7 +214,7 @@ export default {
       await groups.deleteGroup(deletedItem.id).catch(x => console.log(x))
     },
 
-    async deleteSelectedLesson(){
+    async deleteSelectedLesson() {
       const lesson = new EventsRequest()
       const deletedItem = {"id": this.deletedIndex}
       await lesson.deleteLecture(deletedItem.id).catch(x => console.log(x))
@@ -254,7 +222,16 @@ export default {
 
     async putSelectedStudents() {
       let freeUsers = this.studentList
-      console.log(freeUsers)
+      const body = {
+        student: freeUsers.map(user => ({
+          id: user.id,
+          groupId: user.groupId,
+        })),
+      };
+      console.log(body)
+
+      const student = new UsersRequest()
+      await student.putStudentGroup(body)
     },
 
     async initialize() {
@@ -314,55 +291,13 @@ export default {
       };
       this.dialog = true;
     },
-
-    editLesson(item) {
-      this.editedIndex = this.lectures.indexOf(item);
-      this.editedItem = {
-        groups: {
-          groupId: item.groupId,
-          title: item.title,
-        },
-
-        lecture: {
-          id: null,
-          title: '',
-          startTime: null,
-          endTime: null,
-          lectureType: null,
-        },
-      };
-      this.dialog = true;
-    },
-
-    deleteLesson(item) {
-      console.log(this.editedIndex)
-      this.editedIndex = this.lectures.indexOf(item);
-      console.log(this.editedIndex)
-      this.editedItem = {
-        groups: {
-          groupId: item.groupId,
-          title: item.title,
-        },
-
-        lecture: {
-          id: null,
-          title: '',
-          startTime: null,
-          endTime: null,
-          lectureType: null,
-        },
-      };
-      this.deletedIndex = item.id
-      this.lessonDelete = true;
-    },
-
     async deleteItemConfirm() {
       this.groups.splice(this.editedIndex, 1);
       await this.deleteGroups()
       this.closeDelete()
     },
 
-    async deleteLessonConfirm(){
+    async deleteLessonConfirm() {
       this.lessons.splice(this.editedIndex, 1);
       await this.deleteSelectedLesson()
       this.closeDelete()
@@ -414,7 +349,7 @@ export default {
       if (this.editedIndex > -1) {
         this.$set(this.groups, this.editedIndex, this.editedItem.groups);
         const body = {
-          "id" : this.editedItem.groups.groupId,
+          "id": this.editedItem.groups.groupId,
           "title": this.editedItem.groups.title,
         }
         await this.putGroups(body)
@@ -441,14 +376,6 @@ export default {
       const minutes = String(date.getMinutes()).padStart(2, '0');
       return `${month}-${day} ${hours}:${minutes}`;
     },
-
-    getTableRowClass(item) {
-      return {
-        'blue-background': item.lectureType === 3,
-        'gray-background': item.lectureType === 2,
-      };
-    },
-
     isItemEdited(innerItem) {
       return innerItem.id === this.editedItem.lecture.id;
     },

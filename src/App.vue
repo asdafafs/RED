@@ -28,7 +28,9 @@ export default {
         .then(async (x) => {
           await store.dispatch('GET_CURRENT_USER', x)
           this.isDataLoaded = true
-          await this.$router.push('/schedule/lessons')
+          if (this.$route.fullPath === '/'){
+            await this.$router.push('/schedule/lessons')
+          }
         })
   }
 };

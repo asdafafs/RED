@@ -13,6 +13,10 @@ export default class UsersRequest extends HTTPService {
         return this.get("student/" + id)
     }
 
+    getStudentNullGroup(){
+        return this.get("student/nullGroup")
+    }
+
     postUser(code) {
         return this.post("student", code)
     }
