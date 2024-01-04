@@ -29,7 +29,11 @@ export default {
 
     const isRetry = this.$route.query.retry
 
-    if (this.$route.path === '/post-login' || isRetry || this.$route.path === '/confirm-email') return
+    if (this.$route.path === '/post-login'
+        ||
+        isRetry
+        ||
+        this.$route.path === '/confirm-email') return
 
     identity.getIdentity()
         .then(async (x) => {

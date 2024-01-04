@@ -109,8 +109,9 @@ export default {
         return;
       }
       await this.registration(body)
-      this.$router.push('/').catch(err => {
-        console.log(err)
+      await this.$router.push({
+        path: '/',
+        isConfirmRequired: true
       })
     },
   },
