@@ -12,7 +12,7 @@ import LogoRed from "@/components/logos/LogoRed.vue"
 
 export default {
   name: 'DesktopLogo',
-  components: {LogoRed}
+  components: {LogoRed},
 }
 </script>
 <style>

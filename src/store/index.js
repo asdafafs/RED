@@ -1,13 +1,14 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import {AlertStore} from "@/store/Alert/AlertStore";
 
 Vue.use(Vuex)
 
 export default new Vuex.Store({
+    modules: {AlertStore},
     state: {
         user: {
             userId: 1,
-            VkUserId: 1,
             email: '',
             emailConfirmed: false,
             phoneNumber: '',
@@ -19,12 +20,9 @@ export default new Vuex.Store({
     },
     mutations: {
         SET_CURRENT_USER(state, user) {
-            // console.log(user)
             state.user.name = user.data['name']
             state.user.userId = user.data['id']
-            state.user.VkUserId = user.data['vkUserId']
             state.user.email = user.data['email']
-            // state.user.emailConfirmed = user.data['emailConfirmed']
             state.user.phoneNumber = user.data['phoneNumber']
             state.user.surname = user.data['surname']
             state.user.middleName = user.data['middleName']

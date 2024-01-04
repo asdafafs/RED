@@ -1,13 +1,29 @@
+<template>
+  <div>Пожалуйста, подождите</div>
+</template>
 <script>
+import IdentityRequest from "@/services/IdentityRequest";
+
 export default {
   name: "PostLogin",
-  created() {
-    console.log('here')
+  data() {
+    return {
+      identityService: new IdentityRequest()
+    }
   },
-  async mounted() {
+  async created() {
+    const code = this.$route.query.code
+    await this.identityService.postLoginVk(code)
+        .then(response => {
+          console.log(response);
+          this.$store.commit('SET_VK_USER',)
+          this.$router.push({
+            path: '/registration',
+            query: {
+              vkUserId: response.data.vkUserId
+            }
+          })
+        })
   }
 }
 </script>
-<template>
-  <div></div>
-</template>

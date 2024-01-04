@@ -3,6 +3,7 @@
     <AppBar :isDataLoaded="isDataLoaded">
     </AppBar>
     <v-main>
+      <Alert/>
       <router-view/>
     </v-main>
   </v-app>
@@ -13,10 +14,11 @@
 import AppBar from "@/components/AppBar/AppBar.vue";
 import IdentityRequest from "@/services/IdentityRequest";
 import store from "@/store";
+import Alert from "@/components/Alerts/Alert";
 
 export default {
   name: 'App',
-  components: {AppBar},
+  components: {Alert, AppBar},
 
   data: () => ({
     isDataLoaded: false
@@ -24,13 +26,18 @@ export default {
   }),
   async created() {
     const identity = new IdentityRequest()
+
+    const isRetry = this.$route.query.retry
+
+    if (this.$route.path === '/post-login' || isRetry || this.$route.path === '/confirm-email') return
+
     identity.getIdentity()
         .then(async (x) => {
           await store.dispatch('GET_CURRENT_USER', x)
           this.isDataLoaded = true
-          if (this.$route.fullPath === '/'){
+
+          if (this.$route.path === '/')
             await this.$router.push('/schedule/lessons')
-          }
         })
   }
 };

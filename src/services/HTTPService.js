@@ -1,4 +1,5 @@
 import axios from "axios";
+import store from "@/store";
 
 export default class HttpService {
     basePath = 'api'
@@ -35,14 +36,19 @@ export default class HttpService {
                 break
         }
 
-        request.catch(error => {
-            if (window.location.href !== this.frontPageUrl) {
-                if (error.response && error.response.status === 401 && window.location.href !== this.frontPageUrl) {
-                    alert("Не авторизован (Not authorized)");
-                    window.location.replace(this.frontPageUrl);
-                }
+        request.catch(async error => {
+            if (error.response.request.status === 401) {
+                window.location.replace(`${this.frontPageUrl}?retry=${true}`);
+            } else {
+                await store.dispatch('AlertStore/CALL_ALERT', {
+                    message: error.response.data.message,
+                    delay: 5000,
+                    alertType: 'error'
+                })
             }
         });
+
+
         return request
     }
 

@@ -40,10 +40,10 @@
             </v-card-text>
             <v-card-actions>
               <v-col>
-                <v-btn color="#4E7AEC" @click="validateForm" class="rounded-lg pa-0 white--text" block>
+                <v-btn color="#4E7AEC" @click="validateForm" class="rounded-lg pa-0 ma-0 my-1 white--text" block>
                   Войти
                 </v-btn>
-                <v-btn color="##E9E9E8" @click="$router.push('/')" class="rounded-lg pa-0" block>
+                <v-btn color="##E9E9E8" @click="$router.push('/')" class="rounded-lg pa-0 ma-0 my-1" block>
                   Выйти
                 </v-btn>
               </v-col>

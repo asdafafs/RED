@@ -41,7 +41,6 @@ export default {
   },
   methods: {
     async vkLogIn() {
-      console.log('here')
       const clientId = process.env.CLIENT_ID
       const redirectUri = process.env.REDIRECT_URI
       const display = process.env.DISPLAY
@@ -49,9 +48,6 @@ export default {
       window.location.replace(`https://oauth.vk.com/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&display=${display}&response_type=${responseType}`)
     },
   },
-
-
-
 }
 </script>
 <style scoped>
