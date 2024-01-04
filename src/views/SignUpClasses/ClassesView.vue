@@ -73,22 +73,28 @@
             </template>
           </v-calendar>
           <v-menu max-width="200px" min-width="200px"
-              v-model="selectedOpen"
-              :close-on-content-click="false"
-              :activator="selectedElement"
-              offset-x
+                  v-model="selectedOpen"
+                  :close-on-content-click="false"
+                  :activator="selectedElement"
+                  offset-x
           >
-            <v-card color="grey lighten-4" flat >
+            <v-card color="grey lighten-4" flat>
               <v-toolbar>
                 <v-toolbar-title v-html="formatTime(selectedEvent.startTime)"></v-toolbar-title>
               </v-toolbar>
               <v-card-text>
                 <span v-html="selectedEvent.title"></span>
-                <span v-html="selectedEvent.studentId === null && !discriminatorUser() ? 'Можно записаться' : selectedEvent.title"></span>
+                <span v-if="discriminatorUser">
+                  {{
+                    selectedEvent.studentId === null && userID !== selectedEvent.studentId ? 'Можно записаться' : 'Время занято'
+                  }}
+                </span>
               </v-card-text>
               <v-card-actions>
                 <v-card-actions>
-                  <v-btn text color="secondary" v-if="selectedEvent.studentId === null && !discriminatorUser() && userID !== selectedEvent.studentId" @click="addEventStudent">
+                  <v-btn text color="secondary"
+                         v-if="selectedEvent.studentId === null && discriminatorUser && userID !== selectedEvent.studentId"
+                         @click="addEventStudent">
                     Подписаться
                   </v-btn>
                   <v-btn text color="secondary" v-else @click="selectedOpen = false">
@@ -122,7 +128,7 @@
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-              <v-btn color="blue darken-1" text @click="close">
+            <v-btn color="blue darken-1" text @click="close">
               Отмена
             </v-btn>
             <v-btn color="blue darken-1" text @click="confirm">
@@ -211,7 +217,7 @@ export default {
 
   methods: {
 
-    async addEventStudent(){
+    async addEventStudent() {
 
     },
 
