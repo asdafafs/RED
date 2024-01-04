@@ -19,7 +19,7 @@ export default  {
       const identity = new IdentityRequest()
       await identity.postEmail({userId, code}).then(() => {
           identity.getIdentity();
-          this.$router.push('/')
+          this.$router.push('/schedule/lessons')
         })
 
     }
