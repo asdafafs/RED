@@ -19,14 +19,8 @@ export default {
     async confirmEmail(userId, code) {
       const identity = new IdentityRequest()
       await identity.postEmail({userId, code}).then(() => {
-        identity.getIdentity()
-            .then(async (x) => {
-              await store.dispatch('GET_CURRENT_USER', x)
-              this.isDataLoaded = true
-
-              if (this.$route.path === '/')
-                await this.$router.push('/schedule/lessons')
-            })
+        const frontPageUrl = process.env.FRONT_PAGE_URL;
+        window.location.replace(frontPageUrl);
       })
 
     }

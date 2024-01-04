@@ -28,18 +28,23 @@ export default {
     const identity = new IdentityRequest()
 
     const isRetry = this.$route.query.retry
+    const isConfirmRequired = this.$route.query.isConfirmRequired
 
     if (this.$route.path === '/post-login'
         ||
         isRetry
         ||
-        this.$route.path === '/confirm-email') return
+        isConfirmRequired
+        ||
+        this.$route.path === '/confirm-email'
+        ||
+        this.$route.path === '/registration') return
 
     identity.getIdentity()
         .then(async (x) => {
           await store.dispatch('GET_CURRENT_USER', x)
           this.isDataLoaded = true
-
+          console.log('kalkali4')
           if (this.$route.path === '/')
             await this.$router.push('/schedule/lessons')
         })
