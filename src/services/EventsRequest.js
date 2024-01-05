@@ -41,4 +41,7 @@ export default class EventsRequest extends HTTPService {
         return this.delete("practice/" + id)
     }
 
+    setStudent(code){
+        return this.put("practice/setstudent", code)
+    }
 }
