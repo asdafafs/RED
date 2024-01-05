@@ -376,6 +376,7 @@ export default {
       const minutes = String(date.getMinutes()).padStart(2, '0');
       return `${month}-${day} ${hours}:${minutes}`;
     },
+
     isItemEdited(innerItem) {
       return innerItem.id === this.editedItem.lecture.id;
     },

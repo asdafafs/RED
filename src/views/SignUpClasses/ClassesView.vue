@@ -78,17 +78,12 @@
                   :activator="selectedElement"
                   offset-x
           >
-            <v-card color="grey lighten-4" flat>
+            <v-card :style="{ border: (selectedEvent.studentId === null && userID !== selectedEvent.studentId) ? '2px solid #4E7AEC' : '2px solid grey' }" flat>
               <v-toolbar>
                 <v-toolbar-title v-html="formatTime(selectedEvent.startTime)"></v-toolbar-title>
               </v-toolbar>
               <v-card-text>
                 <span v-html="selectedEvent.title"></span>
-                <span v-if="discriminatorUser">
-                  {{
-                    selectedEvent.studentId === null && userID !== selectedEvent.studentId ? 'Можно записаться' : 'Время занято'
-                  }}
-                </span>
               </v-card-text>
               <v-card-actions>
                 <v-card-actions>
@@ -97,7 +92,12 @@
                          @click="addEventStudent">
                     Подписаться
                   </v-btn>
-                  <v-btn text color="secondary" v-else @click="selectedOpen = false">
+                  <v-btn text color="secondary"
+                         v-else-if= "discriminatorUser && userID === selectedEvent.studentId"
+                         @click="removeEventStudent">
+                    Отписаться
+                  </v-btn>
+                  <v-btn text color="secondary" v-else @click="selectedOpen = false;">
                     Закрыть
                   </v-btn>
                 </v-card-actions>
@@ -106,7 +106,7 @@
           </v-menu>
         </v-sheet>
       </v-col>
-      <v-dialog v-model="dialog" max-width="500px" persistent>
+      <v-dialog v-model="dialog" max-width="500px" persistent v-if="discriminatorUser">
         <v-card>
           <v-card-title>
             <span class="text-h5">Выберите преподавателя</span>
@@ -131,7 +131,7 @@
             <v-btn color="blue darken-1" text @click="close">
               Отмена
             </v-btn>
-            <v-btn color="blue darken-1" text @click="confirm">
+            <v-btn color="blue darken-1" text @click="confirm(discriminatorUser)">
               OK
             </v-btn>
           </v-card-actions>
@@ -158,7 +158,7 @@ export default {
     },
 
     userID() {
-      return this.user.id
+      return this.user.userId
     },
   },
 
@@ -216,13 +216,55 @@ export default {
   },
 
   methods: {
+    async singPractice(body) {
+      const practice = new EventsRequest()
+      await practice.setStudent(body).catch(x => console.log(x))
+    },
 
     async addEventStudent() {
+      let test = this.selectedEvent
 
+      const body = {
+        eventId: test.id,
+        studentId: this.userID,
+      }
+      await this.singPractice(body)
+      this.selectedOpen = false
+      let cal
+      await this.getEventsSelectedTeacher(this.selectedTeacher).catch(x => console.log(x)).then(x => {
+        cal = x.data.practice.map(event => ({
+          ...event,
+          start: new Date(event.startTime),
+          end: new Date(event.endTime)
+        }));
+      });
+    },
+
+    async removeEventStudent(){
+      let test = this.selectedEvent
+
+      const body = {
+        eventId: test.id,
+        studentId: null,
+      }
+      await this.singPractice(body)
+      this.selectedOpen = false
+
+      let cal
+      await this.getEventsSelectedTeacher(this.selectedTeacher).catch(x => console.log(x)).then(x => {
+        cal = x.data.practice.map(event => ({
+          ...event,
+          start: new Date(event.startTime),
+          end: new Date(event.endTime)
+        }));
+      });
     },
 
     async initialize() {
       await this.getEventsTeacher();
+      if (this.discriminatorUser === false) {
+        await this.confirm(this.discriminatorUser)
+      }
     },
 
     async getEventsTeacher() {
@@ -232,17 +274,26 @@ export default {
       })
     },
 
-    async confirm() {
+    async confirm(discriminator) {
       let cal
-      if (this.selectedTeacher) {
-        await this.getEventsSelectedTeacher(this.selectedTeacher).catch(x => console.log(x)).then(x => {
+      if (discriminator === true) {
+        if (this.selectedTeacher) {
+          await this.getEventsSelectedTeacher(this.selectedTeacher).catch(x => console.log(x)).then(x => {
+            cal = x.data.practice.map(event => ({
+              ...event,
+              start: new Date(event.startTime),
+              end: new Date(event.endTime)
+            }));
+          });
+        }
+      } else
+        await this.getEventsSelectedTeacher(this.userID).catch(x => console.log(x)).then(x => {
           cal = x.data.practice.map(event => ({
             ...event,
             start: new Date(event.startTime),
             end: new Date(event.endTime)
           }));
         });
-      }
 
       this.events = cal
       this.close();
@@ -287,10 +338,11 @@ export default {
 
     updateRange() {
     },
+
     getEventColor(event) {
-      if (event.lectureType === 3) {
+      if (this.discriminatorUser && event.studentId === null && this.userID !== event.studentId) {
         return '#9DB9FF';
-      } else if (event.lectureType === 2) {
+      } else if (this.discriminatorUser && this.userID === event.studentId) {
         return '#E9E9E8';
       } else {
         return '#E9E9E8'
