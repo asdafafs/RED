@@ -15,12 +15,20 @@ export default {
     const code = this.$route.query.code
     await this.identityService.postLoginVk(code)
         .then(response => {
-          this.$router.push({
-            path: '/registration',
-            query: {
-              vkUserId: response.data.vkUserId
-            }
-          })
+          console.log(response)
+
+          if (response.data.requireRegistration) {
+            this.$router.push({
+              path: '/registration',
+              query: {
+                vkUserId: response.data.vkUserId
+              }
+            })
+          } else {
+            this.$router.push({
+              path: '/schedule/lessons',
+            })
+          }
         })
   }
 }
