@@ -74,12 +74,12 @@
           </v-calendar>
           <v-menu max-width="200px" min-width="200px"
 
-              v-model="selectedOpen"
-              :close-on-content-click="false"
-              :activator="selectedElement"
-              offset-x
+                  v-model="selectedOpen"
+                  :close-on-content-click="false"
+                  :activator="selectedElement"
+                  offset-x
           >
-            <v-card color="grey lighten-4"  flat>
+            <v-card color="grey lighten-4" flat>
               <v-toolbar>
                 <v-toolbar-title v-html="formatTime(selectedEvent.startTime)"></v-toolbar-title>
               </v-toolbar>
@@ -241,11 +241,8 @@ export default {
     },
 
     changeButtonState(index) {
-      if (this.lastPressedIndex !== -1) {
-        this.$set(this.isButtonPressed, this.lastPressedIndex, false);
-      }
-      this.$set(this.isButtonPressed, index, true);
-      this.lastPressedIndex = index;
+      this.isButtonPressed = this.isButtonPressed.map(() => false)
+      this.isButtonPressed[index] = true;
     },
     handleResize() {
       if (window.innerWidth < 1260) {
