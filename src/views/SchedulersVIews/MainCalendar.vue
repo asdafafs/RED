@@ -45,7 +45,7 @@ export default {
   components: {},
   name: 'MainCalendar',
   data: () => ({
-    isButtonPressed: [false, false, false]
+    isButtonPressed: [true, false, false]
   }),
   methods: {
     changeButtonState(index) {

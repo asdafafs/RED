@@ -137,7 +137,7 @@ export default {
     events: [],
     num: 70,
     isMobile: false,
-    isButtonPressed: [false, false, false,],
+    isButtonPressed: [true, false, false,],
     test: false,
     classesSelectorsToRemove: [],
     type: 'month',
