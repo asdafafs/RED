@@ -2,11 +2,6 @@
   <div>
     <v-container class="px-4 pa-0 ma-0" fluid v-if="showDrawer">
       <v-row no-gutters align="center" class="spacer">
-        <v-col cols="1" class="d-flex align-center justify-space-around">
-          <v-avatar class="">
-            <v-img src="https://cdn.vuetifyjs.com/images/john.jpg" alt="John"></v-img>
-          </v-avatar>
-        </v-col>
         <v-col lg="">
           <div class="text-h4 font-weight-bold">Здравствуйте, {{ userName }}!</div>
         </v-col>
@@ -35,11 +30,6 @@
     </v-container>
     <v-container class="px-4 pa-0 ma-0" fluid v-if="!showDrawer">
       <v-row>
-        <v-col cols="2" class="d-flex align-center justify-space-around">
-          <v-avatar>
-            <v-img src="https://cdn.vuetifyjs.com/images/john.jpg" alt="John"></v-img>
-          </v-avatar>
-        </v-col>
         <v-col cols="">
           <div class="text-lg-h3 text-md-h4 text-sm-h5 text-xs-h5 font-weight-bold">
             Здравствуйте, {{ userName }}!
