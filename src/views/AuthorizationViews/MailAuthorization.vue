@@ -40,10 +40,10 @@
             </v-card-text>
             <v-card-actions>
               <v-col>
-                <v-btn color="#4E7AEC" @click="validateForm" class="rounded-lg pa-0 ma-0 my-1 white--text" block>
+                <v-btn color="#4E7AEC" @click="validateForm" class="rounded-lg pa-0 ma-0 my-1 white--text" block :disabled="loginButtonDisabled">
                   Войти
                 </v-btn>
-                <v-btn color="##E9E9E8" @click="$router.push('/')" class="rounded-lg pa-0 ma-0 my-1" block>
+                <v-btn color="##E9E9E8" @click="$router.push('/')" class="rounded-lg pa-0 ma-0 my-1" block :disabled="loginButtonDisabled">
                   Выйти
                 </v-btn>
               </v-col>
@@ -68,6 +68,7 @@ export default {
     email: null,
     loading: false,
     test: false,
+    loginButtonDisabled: false,
     value: '',
     password: '',
     rulesEmail: {
@@ -95,11 +96,14 @@ export default {
       if (!this.isPasswordValid) {
         return;
       }
-
+      this.loginButtonDisabled = true
       const body = {"email": this.email, "password": this.password}
+      console.log(this.loginButtonDisabled)
       await this.login(body)
+
       if (this.wrongAuth) ;
-      else await this.$router.push('/schedule/lessons').catch(err => {
+      else
+        await this.$router.push('/schedule/lessons').catch(err => {
         console.log(err)
       })
     }

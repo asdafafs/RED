@@ -41,12 +41,12 @@
                 <v-container>
                   <v-row>
                     <v-col cols="12" sm="12" md="12">
-                      <v-text-field v-model="editedItem.name" label="Имя"></v-text-field>
-                      <v-text-field v-model="editedItem.surname" label="Фамилия"></v-text-field>
-                      <v-text-field v-model="editedItem.middleName" label="Отчество"></v-text-field>
-                      <v-text-field v-model="editedItem.email" label="email"></v-text-field>
-                      <v-text-field v-model="editedItem.phoneNumber" label="Номер телефона"></v-text-field>
-                      <v-text-field v-model="editedItem.groupId" label="Id группы"></v-text-field>
+                      <v-text-field v-model="editedStudent.name" label="Имя"></v-text-field>
+                      <v-text-field v-model="editedStudent.surname" label="Фамилия"></v-text-field>
+                      <v-text-field v-model="editedStudent.middleName" label="Отчество"></v-text-field>
+                      <v-text-field v-model="editedStudent.email" label="email"></v-text-field>
+                      <v-text-field v-model="editedStudent.phoneNumber" label="Номер телефона"></v-text-field>
+                      <v-text-field v-model="editedStudent.groupId" label="Id группы"></v-text-field>
                     </v-col>
                   </v-row>
                 </v-container>
@@ -107,16 +107,15 @@ export default {
       {text: 'Группа', align: 'start', sortable: false, value: 'groupId'},
       {text: 'Действия', value: 'actions', sortable: false},
     ],
-    persons: {},
+    persons: [],
     editedIndex: -1,
     deletedIndex: -1,
-    editedItem: {
+    editedStudent: {
       name: '',
       surname: '',
       middleName: '',
       email: '',
       groupId: '',
-
     },
   }),
 
@@ -172,7 +171,7 @@ export default {
 
     editItem(item) {
       this.editedIndex = this.persons.students.indexOf(item);
-      this.editedItem = {
+      this.editedStudent = {
         id: item.id,
         email: item.email,
         phoneNumber: item.phoneNumber,
@@ -186,7 +185,7 @@ export default {
 
     deleteItem(item) {
       this.editedIndex = this.persons.students.indexOf(item);
-      this.editedItem = {name: item.name};
+      this.editedStudent = {name: item.name};
       this.deletedIndex = item.id
       this.dialogDelete = true;
     },
@@ -200,7 +199,14 @@ export default {
     close() {
       this.dialog = false;
       this.$nextTick(() => {
-        this.editedItem = {name: ''};
+        this.editedStudent = {
+          name: '',
+          surname: '',
+          middleName: '',
+          groupId: '',
+          email: '',
+          phoneNumber:''
+        };
         this.editedIndex = -1;
       });
     },
@@ -208,28 +214,39 @@ export default {
     closeDelete() {
       this.dialogDelete = false;
       this.$nextTick(() => {
-        this.editedItem = {name: ''};
+        this.editedStudent = {
+          name: '',
+          surname: '',
+          middleName: '',
+          groupId: '',
+          email: '',
+          phoneNumber:''
+        };
         this.editedIndex = -1;
       });
     },
 
     async save() {
       if (this.editedIndex > -1) {
-        this.$set(this.persons.students, this.editedIndex, this.editedItem);
-        const body = this.editedItem
+        this.$set(this.persons.students, this.editedIndex, this.editedStudent);
+        const body = this.editedStudent
         await this.putUser(body)
         this.close();
       } else {
-        this.persons.students.push(this.editedItem);
-        console.log(this.editedItem)
+        console.log(this.editedStudent)
+        console.log(0)
+        this.persons.students.push(this.editedStudent);
+        console.log(1)
         const body = {
-          "email": this.editedItem.email,
-          "phoneNumber": this.editedItem.phoneNumber,
-          "name": this.editedItem.name,
-          "surname": this.editedItem.surname,
-          "middleName": this.editedItem.middleName,
-          "groupId": this.editedItem.groupId,
+          "email": this.editedStudent.email,
+          "phoneNumber": this.editedStudent.phoneNumber,
+          "name": this.editedStudent.name,
+          "surname": this.editedStudent.surname,
+          "middleName": this.editedStudent.middleName,
+          "groupId": this.editedStudent.groupId,
         }
+
+        console.log("body : ", body)
         await this.postUser(body)
         this.close();
       }

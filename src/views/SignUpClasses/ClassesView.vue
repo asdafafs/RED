@@ -229,15 +229,10 @@ export default {
         studentId: this.userID,
       }
       await this.singPractice(body)
+
+      await this.loadUpdatedEvents();
+
       this.selectedOpen = false
-      let cal
-      await this.getEventsSelectedTeacher(this.selectedTeacher).catch(x => console.log(x)).then(x => {
-        cal = x.data.practice.map(event => ({
-          ...event,
-          start: new Date(event.startTime),
-          end: new Date(event.endTime)
-        }));
-      });
     },
 
     async removeEventStudent(){
@@ -248,16 +243,22 @@ export default {
         studentId: null,
       }
       await this.singPractice(body)
-      this.selectedOpen = false
 
-      let cal
-      await this.getEventsSelectedTeacher(this.selectedTeacher).catch(x => console.log(x)).then(x => {
-        cal = x.data.practice.map(event => ({
+      await this.loadUpdatedEvents();
+
+      this.selectedOpen = false
+    },
+
+    async loadUpdatedEvents() {
+      let cal;
+      await this.getEventsSelectedTeacher(this.selectedTeacher).catch((x) => console.log(x)).then((x) => {
+        cal = x.data.practice.map((event) => ({
           ...event,
           start: new Date(event.startTime),
-          end: new Date(event.endTime)
+          end: new Date(event.endTime),
         }));
       });
+      this.events = cal;
     },
 
     async initialize() {

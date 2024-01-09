@@ -41,11 +41,11 @@
                 <v-container>
                   <v-row>
                     <v-col cols="12" sm="12" md="12">
-                      <v-text-field v-model="editedItem.name" label="Имя"></v-text-field>
-                      <v-text-field v-model="editedItem.surname" label="Фамилия"></v-text-field>
-                      <v-text-field v-model="editedItem.middleName" label="Отчество"></v-text-field>
-                      <v-text-field v-model="editedItem.email" label="email"></v-text-field>
-                      <v-text-field v-model="editedItem.phoneNumber" label="phoneNumber"></v-text-field>
+                      <v-text-field v-model="editedTeacher.name" label="Имя"></v-text-field>
+                      <v-text-field v-model="editedTeacher.surname" label="Фамилия"></v-text-field>
+                      <v-text-field v-model="editedTeacher.middleName" label="Отчество"></v-text-field>
+                      <v-text-field v-model="editedTeacher.email" label="email"></v-text-field>
+                      <v-text-field v-model="editedTeacher.phoneNumber" label="phoneNumber"></v-text-field>
                     </v-col>
                   </v-row>
                 </v-container>
@@ -106,7 +106,7 @@ export default {
     persons: {},
     editedIndex: -1,
     deletedIndex: -1,
-    editedItem: {
+    editedTeacher: {
       name: '',
       email: ''
     },
@@ -140,7 +140,7 @@ export default {
       })
     },
 
-    async postUser(body) {
+    async postActiveUser(body) {
       const user = new UsersRequest();
       await user.postActiveUser(body).catch(x => console.log(x))
 
@@ -164,7 +164,7 @@ export default {
 
     editItem(item) {
       this.editedIndex = this.persons.activeUsers.indexOf(item);
-      this.editedItem = {
+      this.editedTeacher = {
         id: item.id,
         email: item.email,
         phoneNumber: item.phoneNumber,
@@ -177,7 +177,7 @@ export default {
 
     deleteItem(item) {
       this.editedIndex = this.persons.activeUsers.indexOf(item);
-      this.editedItem = {name: item.name};
+      this.editedTeacher = {name: item.name};
       this.deletedIndex = item.id
       this.dialogDelete = true;
     },
@@ -191,7 +191,7 @@ export default {
     close() {
       this.dialog = false;
       this.$nextTick(() => {
-        this.editedItem = {name: ''};
+        this.editedTeacher = {name: ''};
         this.editedIndex = -1;
       });
     },
@@ -199,27 +199,28 @@ export default {
     closeDelete() {
       this.dialogDelete = false;
       this.$nextTick(() => {
-        this.editedItem = {name: ''};
+        this.editedTeacher = {name: ''};
         this.editedIndex = -1;
       });
     },
 
     async save() {
       if (this.editedIndex > -1) {
-        this.$set(this.persons.activeUsers, this.editedIndex, this.editedItem);
-        const body = this.editedItem
+        this.$set(this.persons.activeUsers, this.editedIndex, this.editedTeacher);
+        const body = this.editedTeacher
         await this.putActiveUser(body)
         this.close();
       } else {
-        this.persons.students.push(this.editedItem);
+        console.log(1)
+        this.persons.students.push(this.editedTeacher);
         const body = {
-          "email": this.editedItem.email,
-          "phoneNumber": this.editedItem.phoneNumber,
-          "name": this.editedItem.name,
-          "surname": this.editedItem.surname,
-          "middleName": this.editedItem.middleName,
+          "email": this.editedTeacher.email,
+          "phoneNumber": this.editedTeacher.phoneNumber,
+          "name": this.editedTeacher.name,
+          "surname": this.editedTeacher.surname,
+          "middleName": this.editedTeacher.middleName,
         }
-        await this.postUser(body)
+        await this.postActiveUser(body)
         this.close();
       }
     },
