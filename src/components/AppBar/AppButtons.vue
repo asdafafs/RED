@@ -16,16 +16,16 @@
           Запись на занятие
         </v-btn>
       </v-col>
-      <v-col cols=2>
-        <v-btn :class="{ 'custom-bg': isButtonPressed [2]}"
-               @click="changeButtonState(2)"
-               text min-height="3em" color="white" class="pa-0 btn" width="100%">
-          Лекции
-        </v-btn>
-      </v-col>
+      <!--      <v-col cols=2>-->
+      <!--        <v-btn :class="{ 'custom-bg': isButtonPressed [2]}"-->
+      <!--               @click="changeButtonState(2)"-->
+      <!--               text min-height="3em" color="white" class="pa-0 btn" width="100%">-->
+      <!--          Лекции-->
+      <!--        </v-btn>-->
+      <!--      </v-col>-->
       <v-col cols=2 v-if="student">
-        <v-btn :class="{ 'custom-bg': isButtonPressed [3]}"
-               @click="changeButtonState(3); $router.push('/testPlan/mainCal/testMonth').catch(err => {})"
+        <v-btn :class="{ 'custom-bg': isButtonPressed [2]}"
+               @click="changeButtonState(3); $router.push('/testPlan/mainCal/testDay').catch(err => {})"
                text min-height="3em" color="white" class="pa-0 btn" width="100%">
           Мой план
         </v-btn>
@@ -61,9 +61,13 @@ export default {
       this.lastPressedIndex = index;
     },
   },
+  computed: {
+    isButtonPressed() {
+      return [this.$route.path === '/schedule/lessons', this.$route.path === '/singUpClasses/lessons', this.$route.path.includes('mainCal'), this.$route.path === '/admin/students']
+    }
+  },
   data() {
     return {
-      isButtonPressed: [false, false, false, false],
       lastPressedIndex: -1,
     }
   },
