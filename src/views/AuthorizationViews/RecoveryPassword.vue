@@ -22,7 +22,7 @@
             </v-card-text>
             <v-card-actions>
               <v-col>
-                <v-btn color="#4E7AEC" @click=" validateEmail" class="rounded-lg pa-0 white--text" block>
+                <v-btn color="#4E7AEC" @click=" validateEmail" class="rounded-lg pa-0 white--text" block :disabled = "loginButtonDisabled">
                   Ввести новый пароль
                 </v-btn>
                 <v-btn color="##E9E9E8" @click="$router.push('/')" class="rounded-lg pa-0" block>
@@ -43,6 +43,7 @@ export default {
   name: 'RecoveryPassword',
   components: {},
   data: () => ({
+    loginButtonDisabled: false,
     overlay: true,
     email: "",
     loading: false,
@@ -57,6 +58,7 @@ export default {
   },
   methods: {
     async checkEmail(body) {
+      this.loginButtonDisabled = true
       const email = new IdentityRequest()
       await email.postForgetPassword({"email": body})
     },
@@ -65,7 +67,7 @@ export default {
       if (!this.isEmailValid) {
         return;
       }
-      console.log(this.email)
+
       this.checkEmail(this.email);
       alert('проверьте почтовый ящик');
       this.$router.push('/').catch(err => {

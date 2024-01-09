@@ -11,12 +11,12 @@
         Расписание
       </v-list-item>
       <v-list-item
-          @click.stop="$router.push('/schedule/lessons').catch(err => {}); $emit('update:drawer', false)"
+          @click.stop="$router.push('/singUpClasses/lessons').catch(err => {}); $emit('update:drawer', false)"
           class="white--text align-start align-center list-item">
-        Запись на экзамен
+        Запись на занятие
       </v-list-item>
       <v-list-item
-          @click.stop="$router.push('/schedule/lessons').catch(err => {}); $emit('update:drawer', false)"
+          @click.stop="$router.push('*').catch(err => {}); $emit('update:drawer', false)"
           class="white--text align-start align-center list-item">
         Лекции
       </v-list-item>
@@ -28,7 +28,7 @@
       </v-list-item>
       <v-list-item
           v-if="!student"
-          @click.stop="$router.push('/admin').catch(err => {}); $emit('update:drawer', false)"
+          @click.stop="$router.push('/admin/students').catch(err => {}); $emit('update:drawer', false)"
           class="white--text align-start align-center list-item">
         Админпанель
       </v-list-item>

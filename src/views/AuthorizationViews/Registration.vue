@@ -39,7 +39,7 @@
             </v-card-text>
             <v-card-actions>
               <v-col>
-                <v-btn color="#4E7AEC" @click="validateForm" class="rounded-lg pa-0 ma-0 my-1 white--text" block>
+                <v-btn color="#4E7AEC" @click="validateForm" class="rounded-lg pa-0 ma-0 my-1 white--text" block :disabled="loginButtonDisabled">
                   Зарегистрироваться
                 </v-btn>
                 <v-btn color="##E9E9E8" @click="$router.push('/')" class="rounded-lg ma-0 my-1 pa-0" block>
@@ -65,6 +65,7 @@ export default {
   data: () => ({
     overlay: true,
     showPass: true,
+    loginButtonDisabled: false,
     loading: false,
     show: false,
     email: '',
@@ -95,6 +96,7 @@ export default {
   },
   methods: {
     async registration(body) {
+      this.loginButtonDisabled = true
       const register = new IdentityRequest()
       await register.postRegister(body)
           .then(result => console.log(result))

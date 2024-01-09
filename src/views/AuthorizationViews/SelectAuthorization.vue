@@ -21,7 +21,7 @@
               Регистрация
             </v-btn>
             <v-btn color="#4E7AEC" @click="vkLogIn"
-                   class="rounded-lg pa-0 ma-0 my-1" block>
+                   class="rounded-lg pa-0 ma-0 my-1" block :disabled="loginButtonDisabled">
               Войти через VK
             </v-btn>
           </v-card-actions>
@@ -44,8 +44,12 @@ export default {
       required: true
     }
   },
+  data:() =>({
+    loginButtonDisabled: false
+  }),
   methods: {
     async vkLogIn() {
+      this.loginButtonDisabled = true
       const clientId = process.env.CLIENT_ID
       const redirectUri = process.env.REDIRECT_URI
       const display = process.env.DISPLAY

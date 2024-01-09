@@ -33,7 +33,7 @@
               <v-alert v-if="!passwordsMatch" type="error">Пароли не совпадают</v-alert>
             </v-card-text>
             <v-card-actions v-if="passwordsMatch">
-              <v-btn color="#4E7AEC" @click="validatePassword" class="rounded-lg pa-0 white--text" block>
+              <v-btn color="#4E7AEC" @click="validatePassword" class="rounded-lg pa-0 white--text" block :disabled="loginButtonDisabled">
                 Обновить пароль
               </v-btn>
             </v-card-actions>
@@ -51,6 +51,7 @@ export default {
   components: {},
   data: () => ({
     overlay: true,
+    loginButtonDisabled: false,
     show: false,
     loading: false,
     value: '',
@@ -94,6 +95,7 @@ export default {
       if (!(this.rulesPassword.required(this.password) === true && this.rulesPassword.min(this.password) === true)) {
         return;
       }
+      this.loginButtonDisabled = true
       const body = {
         "userId": 0,
         "newPassword": this.password,

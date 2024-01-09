@@ -47,10 +47,10 @@
               </v-card-text>
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="blue darken-1" text @click="close">
+                <v-btn color="blue darken-1" text @click="close" :disabled="groupDisabled">
                   Отмена
                 </v-btn>
-                <v-btn color="blue darken-1" text @click="save">
+                <v-btn color="blue darken-1" text @click="save" :disabled="groupDisabled">
                   OK
                 </v-btn>
               </v-card-actions>
@@ -61,8 +61,8 @@
               <v-card-title class="text-h5">Удалить занятие?</v-card-title>
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="blue darken-1" text @click="closeDelete">Отмена</v-btn>
-                <v-btn color="blue darken-1" text @click="deleteLessonConfirm">OK</v-btn>
+                <v-btn color="blue darken-1" text @click="closeDelete" :disabled="lessonDisabled">Отмена</v-btn>
+                <v-btn color="blue darken-1" text @click="deleteLessonConfirm" :disabled="lessonDisabled">OK</v-btn>
                 <v-spacer></v-spacer>
               </v-card-actions>
             </v-card>
@@ -113,6 +113,8 @@ export default {
     lessons: [],
     selectedStudents: [],
     groupData: null,
+    groupDisabled: false,
+    lessonDisabled: false,
     dialog: false,
     lessonDelete: false,
     groupDelete: false,
@@ -298,12 +300,14 @@ export default {
     },
 
     async deleteLessonConfirm() {
+      this.lessonDelete = true
       this.lessons.splice(this.editedIndex, 1);
       await this.deleteSelectedLesson()
       this.closeDelete()
     },
 
     close() {
+      this.groupDisabled = true
       this.dialog = false;
       this.$nextTick(() => {
         this.editedItem = {
@@ -324,6 +328,7 @@ export default {
     },
 
     closeDelete() {
+      this.lessonDelete = true
       this.groupDelete = false;
       this.lessonDelete = false;
 
@@ -346,6 +351,7 @@ export default {
     },
 
     async save() {
+      this.groupDisabled = true
       if (this.editedIndex > -1) {
         this.$set(this.groups, this.editedIndex, this.editedItem.groups);
         const body = {
