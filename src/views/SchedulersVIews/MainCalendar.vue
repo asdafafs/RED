@@ -45,8 +45,13 @@ export default {
   components: {},
   name: 'MainCalendar',
   data: () => ({
-    isButtonPressed: [false, false, false]
+    
   }),
+  computed: {
+    isButtonPressed() {
+      return [this.$route.path.includes('testDay'), this.$route.path.includes('testWeek'), this.$route.path.includes('testMonth')]
+    }
+  },
   methods: {
     changeButtonState(index) {
       if (this.lastPressedIndex !== -1) {

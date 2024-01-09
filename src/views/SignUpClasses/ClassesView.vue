@@ -194,7 +194,7 @@ export default {
     test: false,
     isMobile: false,
     selectedOpen: false,
-    isButtonPressed: [false, false, false,],
+    isButtonPressed: [true, false, false,],
     num: 70,
     events: [],
     teachers: [],
