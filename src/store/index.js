@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import {AlertStore} from "@/store/Alert/AlertStore";
+import IdentityRequest from "@/services/IdentityRequest";
 
 Vue.use(Vuex)
 
@@ -8,7 +9,7 @@ export default new Vuex.Store({
     modules: {AlertStore},
     state: {
         user: {
-            userId: 1,
+            userId: null,
             email: '',
             emailConfirmed: false,
             phoneNumber: '',
@@ -27,6 +28,18 @@ export default new Vuex.Store({
             state.user.surname = user.data['surname']
             state.user.middleName = user.data['middleName']
             state.user.discriminator = user.data['discriminator']
+        },
+        RESET_CURRENT_USER(state) {
+            state.user = {
+                userId: null,
+                email: '',
+                emailConfirmed: false,
+                phoneNumber: '',
+                name: '1',
+                surname: '',
+                middleName: '',
+                discriminator: ''
+            }
         }
     },
     actions: {
@@ -36,6 +49,11 @@ export default new Vuex.Store({
             } catch (error) {
                 console.error("Error fetching user data:", error);
             }
+        },
+        async LOGOUT({commit}, payload) {
+            const user = new IdentityRequest()
+            await user.postLogout({})
+            commit('RESET_CURRENT_USER')
         }
     },
     getters: {
