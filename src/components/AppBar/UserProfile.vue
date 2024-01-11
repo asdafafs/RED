@@ -23,7 +23,7 @@
               Привязать аккуант к вк
             </v-list-item>
             <v-list-item
-                @click.stop="exit(); $router.push('/').catch(err => {})">
+                @click.stop="logoutAndExit">
               Выйти из приложения
             </v-list-item>
             <v-list-item v-if="!student"
@@ -46,14 +46,10 @@ export default {
     student: {},
     user: {}
   },
-  methods:{
-    async logout(){
-      const user = new IdentityRequest()
-      await user.postLogout({})
-    },
-
-    exit(){
-      this.logout()
+  methods: {
+    async logoutAndExit() {
+      await this.$store.dispatch('LOGOUT')
+      await this.$router.push('/');
     }
   }
 }
