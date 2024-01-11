@@ -45,7 +45,7 @@
                       <v-text-field v-model="editedStudent.surname" label="Фамилия"></v-text-field>
                       <v-text-field v-model="editedStudent.middleName" label="Отчество"></v-text-field>
                       <v-text-field v-model="editedStudent.email" label="email"></v-text-field>
-                      <v-text-field v-model="editedStudent.phoneNumber" label="Номер телефона"></v-text-field>
+                      <vue-text-mask class="phone-field" v-model="editedStudent.phoneNumber" :mask="mask" placeholderChar="#"></vue-text-mask>
                       <v-text-field v-model="editedStudent.groupId" label="Id группы"></v-text-field>
                     </v-col>
                   </v-row>
@@ -93,13 +93,16 @@
 </template>
 <script>
 import UsersRequest from "@/services/UsersRequest";
+import VueTextMask from "vue-text-mask";
 
 export default {
+  components: {VueTextMask},
   data: () => ({
     search: '',
     userData: null,
     dialog: false,
     dialogDelete: false,
+    mask: ['+', /\d/, '(', /[1-9]/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, '-', /\d/, /\d/],
     headers: [
       {text: 'Имя', align: 'start', sortable: false, value: 'name'},
       {text: 'Фамилия', align: 'start', sortable: false, value: 'surname',},
@@ -116,6 +119,7 @@ export default {
       middleName: '',
       email: '',
       groupId: '',
+      phoneNumber: '7',
     },
   }),
 
@@ -205,7 +209,7 @@ export default {
           middleName: '',
           groupId: '',
           email: '',
-          phoneNumber:''
+          phoneNumber:'7'
         };
         this.editedIndex = -1;
       });
@@ -220,7 +224,7 @@ export default {
           middleName: '',
           groupId: '',
           email: '',
-          phoneNumber:''
+          phoneNumber:'7'
         };
         this.editedIndex = -1;
       });
@@ -254,5 +258,25 @@ export default {
   },
 };
 </script>
-<style scoped>
+<style>
+.phone-field {
+  width: 100%;
+  padding: 11px 14px;
+  margin-bottom: 0;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: #383c42;
+  background-color: #fff;
+  background-clip: padding-box;
+  border: none; /* Remove the default border */
+  border-bottom: 1px solid rgba(0, 0, 0, 0.53); /* Add bottom border */
+  border-radius: 0; /* Remove border-radius if needed */
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.phone-field:focus {
+  border-color: #80bdff;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+  /* Change the bottom border color on focus */
+}
 </style>
