@@ -91,7 +91,7 @@ export default {
   data: () => ({
     sortBy: 'startTime',
     sortDesc: false,
-    discriminator: [1,2,3],
+    discriminator: ["Основы вождения", "Основы ПДД", "Медицина"],
     globalStartTime: null,
     globalEndTime: null,
     coursesData: null,
@@ -109,7 +109,7 @@ export default {
     editedItem: {
       lecture: {
         id: null,
-        title: '',
+        title: 'Группа №',
         startTime: null,
         endTime: null,
         lectureType: null,
@@ -243,6 +243,7 @@ export default {
         };
         this.editedIndex = -1;
       });
+
     },
 
     async save() {
@@ -257,7 +258,7 @@ export default {
           "title": this.editedItem.lecture.title,
           "startTime": this.editedItem.lecture.startTime,
           "endTime": this.editedItem.lecture.endTime,
-          "lectureType": parseInt(this.editedItem.lecture.lectureType),
+          "lectureType": this.discriminator.indexOf(this.editedItem.lecture.lectureType) + 1,
           "groupId": 1,
         }
         await this.postLecture(body)

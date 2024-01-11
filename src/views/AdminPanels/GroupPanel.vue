@@ -40,7 +40,14 @@
                           persistent-hint
                           no-data-text="Нет данных для отображения"
                       ></v-select>
-                      <v-text-field v-model="globalStartTime" label="Введите время лекций курса"></v-text-field>
+                      <v-col cols="4">
+                        <v-text-field
+                            label="Выберите время начала занятий"
+                            value="20:00:00"
+                            type="time"
+                            suffix="PST"
+                        ></v-text-field>
+                      </v-col>
                       <CoursesList></CoursesList>
                     </v-col>
                   </v-row>
@@ -135,7 +142,7 @@ export default {
     editedItem: {
       groups: {
         groupId: null,
-        title: "",
+        title: ``,
       },
 
       lecture: {
@@ -148,7 +155,7 @@ export default {
     },
     sortBy: 'startTime',
     sortDesc: false,
-    discriminator: [1, 2, 3],
+
   }),
 
   computed: {
@@ -254,6 +261,8 @@ export default {
           groupId: item.groupId,
         };
       });
+      const nextGroupNumber = this.groups.length + 1;
+      this.editedItem.groups.title = `Группа №${nextGroupNumber}`;
     },
 
     deleteItem(item) {
@@ -308,13 +317,13 @@ export default {
     },
 
     close() {
-      this.groupDisabled = true
       this.dialog = false;
+      const nextGroupNumber = this.groups.length + 1;
       this.$nextTick(() => {
         this.editedItem = {
           groups: {
             groupId: null,
-            title: "",
+            title: `Группа №${nextGroupNumber}`,
           },
           lecture: {
             id: null,
@@ -332,12 +341,12 @@ export default {
       this.lessonDelete = true
       this.groupDelete = false;
       this.lessonDelete = false;
-
+      const nextGroupNumber = this.groups.length + 1;
       this.$nextTick(() => {
         this.editedItem = {
           groups: {
             groupId: null,
-            title: "",
+            title: `Группа №${nextGroupNumber}`,
           },
           lecture: {
             id: null,
@@ -367,7 +376,7 @@ export default {
           "title": this.editedItem.groups.title,
         }
         await this.postGroups(body)
-        await this.putSelectedStudents()
+        await this.putSelectedStudents().finally(() => {this.groupDisabled = false})
         this.close();
 
         //сделать общий запрос

@@ -27,7 +27,7 @@
       <template v-slot:top>
         <v-toolbar flat>
           <v-spacer></v-spacer>
-          <v-dialog v-model="dialog" max-width="500px">
+          <v-dialog v-model="dialog" max-width="500px" persistent>
             <template v-slot:activator="{ on, attrs }">
               <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on">
                 Новый ученик
@@ -46,7 +46,14 @@
                       <v-text-field v-model="editedStudent.middleName" label="Отчество"></v-text-field>
                       <v-text-field v-model="editedStudent.email" label="email"></v-text-field>
                       <vue-text-mask class="phone-field" v-model="editedStudent.phoneNumber" :mask="mask" placeholderChar="#"></vue-text-mask>
-                      <v-text-field v-model="editedStudent.groupId" label="Id группы"></v-text-field>
+                      <v-select
+                          v-model="editedStudent.groupId"
+                          :items="groups"
+                          :item-value="item => item.groupId"
+                          :item-text="item => `${item.title}`"
+                          label="Группа"
+                          no-data-text="Нет данных для отображения"
+                      ></v-select>
                     </v-col>
                   </v-row>
                 </v-container>
@@ -80,7 +87,7 @@
           <td>{{ item.name }}</td>
           <td>{{item.surname}}</td>
           <td>{{item.middleName}}</td>
-          <td>{{item.groupId}}</td>
+          <td>{{ getGroupName(item.groupId) }}</td>
           <td class="text-xs-right">
             <v-icon small class="mr-2" @click="editItem(item)">mdi-pencil</v-icon>
             <v-icon small @click="deleteItem(item)">mdi-delete</v-icon>
@@ -94,6 +101,7 @@
 <script>
 import UsersRequest from "@/services/UsersRequest";
 import VueTextMask from "vue-text-mask";
+import GroupsRequest from "@/services/GroupsRequest";
 
 export default {
   components: {VueTextMask},
@@ -110,6 +118,7 @@ export default {
       {text: 'Группа', align: 'start', sortable: false, value: 'groupId'},
       {text: 'Действия', value: 'actions', sortable: false},
     ],
+    groups: [],
     persons: [],
     editedIndex: -1,
     deletedIndex: -1,
@@ -144,6 +153,15 @@ export default {
 
 
   methods: {
+    async getGroups() {
+      const groups = new GroupsRequest();
+      let test
+      await groups.getGroups().catch(x => console.log(x)).then(x => {
+        test = x.data
+      })
+      return test
+    },
+
     async getUser() {
       const user = new UsersRequest();
       await user.getUser().catch(x => console.log(x)).then(x => {
@@ -171,6 +189,8 @@ export default {
     async initialize() {
       await this.getUser();
       this.persons = await this.userData;
+      this.groups = await this.getGroups()
+      console.log(this.groups )
     },
 
     editItem(item) {
@@ -184,6 +204,7 @@ export default {
         middleName: item.middleName,
         groupId: item.groupId,
       };
+      console.log(this.editedStudent, 1)
       this.dialog = true;
     },
 
@@ -251,9 +272,18 @@ export default {
         }
 
         console.log("body : ", body)
+        console.log(this.editedStudent)
         await this.postUser(body)
         this.close();
       }
+    },
+
+    getGroupName(groupId) {
+      if (groupId === null) {
+        return "нет информации";
+      }
+      const group = this.groups.find(group => group.groupId === groupId);
+      return group ? group.title : '';
     },
   },
 };
