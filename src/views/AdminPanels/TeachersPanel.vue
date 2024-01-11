@@ -45,7 +45,8 @@
                       <v-text-field v-model="editedTeacher.surname" label="Фамилия"></v-text-field>
                       <v-text-field v-model="editedTeacher.middleName" label="Отчество"></v-text-field>
                       <v-text-field v-model="editedTeacher.email" label="email"></v-text-field>
-                      <v-text-field v-model="editedTeacher.phoneNumber" label="phoneNumber"></v-text-field>
+                      <vue-text-mask class="phone-field" v-model="editedTeacher.phoneNumber" :mask="mask"
+                                     placeholderChar="#"></vue-text-mask>
                     </v-col>
                   </v-row>
                 </v-container>
@@ -77,8 +78,8 @@
       <template v-slot:item="{ item }">
         <tr>
           <td>{{ item.name }}</td>
-          <td>{{item.surname}}</td>
-          <td>{{item.middleName}}</td>
+          <td>{{ item.surname }}</td>
+          <td>{{ item.middleName }}</td>
           <td class="text-xs-right">
             <v-icon small class="mr-2" @click="editItem(item)">mdi-pencil</v-icon>
             <v-icon small @click="deleteItem(item)">mdi-delete</v-icon>
@@ -90,13 +91,16 @@
 </template>
 <script>
 import UsersRequest from "@/services/UsersRequest";
+import VueTextMask from "vue-text-mask";
 
 export default {
+  components: {VueTextMask},
   data: () => ({
     search: '',
     userData: null,
     dialog: false,
     dialogDelete: false,
+    mask: ['+', /\d/, '(', /[1-9]/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, '-', /\d/, /\d/],
     headers: [
       {text: 'Имя', align: 'start', sortable: false, value: 'name'},
       {text: 'Фамилия', align: 'start', sortable: false, value: 'surname',},
@@ -108,7 +112,10 @@ export default {
     deletedIndex: -1,
     editedTeacher: {
       name: '',
-      email: ''
+      surname: '',
+      middleName: '',
+      email: '',
+      phoneNumber: '7'
     },
   }),
 
@@ -191,7 +198,13 @@ export default {
     close() {
       this.dialog = false;
       this.$nextTick(() => {
-        this.editedTeacher = {name: ''};
+        this.editedTeacher = {
+          name: '',
+          surname: '',
+          middleName: '',
+          email: '',
+          phoneNumber: '7'
+        };
         this.editedIndex = -1;
       });
     },
@@ -199,7 +212,13 @@ export default {
     closeDelete() {
       this.dialogDelete = false;
       this.$nextTick(() => {
-        this.editedTeacher = {name: ''};
+        this.editedTeacher = {
+          name: '',
+          surname: '',
+          middleName: '',
+          email: '',
+          phoneNumber: '7'
+        };
         this.editedIndex = -1;
       });
     },

@@ -10,9 +10,9 @@
             </v-card-subtitle>
             <LogoRed class="pos"></LogoRed>
             <v-card-text class="pb-0 ">
-              <v-text-field v-model="name" solo label="Фамилия" :rules="[rulesFullname.required]"></v-text-field>
-              <v-text-field v-model="surname" solo label="Имя" :rules="[rulesFullname.required]"></v-text-field>
-              <v-text-field v-model="middleName" solo label="Отчество" :rules="[rulesFullname.required]"></v-text-field>
+              <v-text-field v-model="name" solo label="Фамилия" :rules="[rulesFullName.required]"></v-text-field>
+              <v-text-field v-model="surname" solo label="Имя" :rules="[rulesFullName.required]"></v-text-field>
+              <v-text-field v-model="middleName" solo label="Отчество" :rules="[rulesFullName.required]"></v-text-field>
               <v-text-field
                   solo
                   color="black"
@@ -76,7 +76,7 @@ export default {
     requiredMessage: 'Номер телефона обязателен',
     password: '',
     mask: ['+', /\d/, '(', /[1-9]/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, '-', /\d/, /\d/],
-    rulesFullname: {
+    rulesFullName: {
       required: v => !!v || 'Введите ФИО'
     },
     rulesEmail: {
@@ -128,7 +128,7 @@ export default {
   computed: {
     ...mapState(['vkUserId']),
     isNameValid() {
-      return this.rulesFullname.required(this.name) === true && this.rulesFullname.required(this.surname) === true && this.rulesFullname.required(this.middleName) === true
+      return this.rulesFullName.required(this.name) === true && this.rulesFullName.required(this.surname) === true && this.rulesFullName.required(this.middleName) === true
     },
     isEmailValid() {
       return this.rulesEmail.required(this.email) === true;

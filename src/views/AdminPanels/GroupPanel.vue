@@ -38,6 +38,7 @@
                           multiple
                           hint="Выберите студентов для группы"
                           persistent-hint
+                          no-data-text="Нет данных для отображения"
                       ></v-select>
                       <v-text-field v-model="globalStartTime" label="Введите время лекций курса"></v-text-field>
                       <CoursesList></CoursesList>

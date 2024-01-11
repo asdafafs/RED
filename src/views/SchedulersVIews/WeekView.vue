@@ -44,10 +44,7 @@
               :weekdays="weekday"
               @change="updateRange"
               @click:event="showEvent"
-              @mousedown:event="startDrag"
-              @mousemove:time="mouseMove"
-              @mousedown:time="startTime"
-              @mouseup:time="endDrag"
+
           >
             <template v-slot:event="{event}">
               <v-container class="pa-0 mx-0 d-flex " fill>
@@ -70,12 +67,13 @@
             </template>
           </v-calendar>
           <v-menu
+              max-width="200px" min-width="200px"
               v-model="selectedOpen"
               :close-on-content-click="false"
               :activator="selectedElement"
               offset-x
           >
-            <v-card color="grey lighten-4" min-width="350px" flat>
+            <v-card color="grey lighten-4" flat>
               <v-toolbar>
                 <v-toolbar-title v-html="formatTime(selectedEvent.startTime)"></v-toolbar-title>
               </v-toolbar>
@@ -398,7 +396,7 @@ export default {
   white-space: pre-wrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-height: inherit;
+  max-height: 7em;
   max-width: 10em;
 }
 </style>

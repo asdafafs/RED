@@ -10,6 +10,9 @@
             </v-card-subtitle>
             <LogoRed class="pos"></LogoRed>
             <v-card-text class="pb-0 ">
+              <v-alert v-if="message" type="error">
+                {{ message }}
+              </v-alert>
               <v-text-field
                   solo
                   color="black"
@@ -62,6 +65,7 @@ export default {
   name: 'MailAuthorization',
   components: {LogoRed},
   data: () => ({
+    message: null,
     overlay: true,
     form: true,
     show: false,
@@ -84,7 +88,7 @@ export default {
     async login(body) {
       const login = new IdentityRequest()
       await login.postLogin(body).catch(() => {
-            alert("Ошибка авторизации: неверный логин или пароль");
+            this.message = "Неверный пользователь или пароль";
             this.password = ''
             this.test = true;
             this.wrongAuth = true;
@@ -99,13 +103,13 @@ export default {
       this.loginButtonDisabled = true
       const body = {"email": this.email, "password": this.password}
       console.log(this.loginButtonDisabled)
-      await this.login(body)
+      await this.login(body).finally( () => {this.loginButtonDisabled = false})
 
       if (this.wrongAuth) ;
       else
         await this.$router.push('/schedule/lessons').catch(err => {
         console.log(err)
-      })
+      }).finally( () => {this.loginButtonDisabled = false})
     }
   },
   computed: {
