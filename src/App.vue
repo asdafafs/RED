@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <AppBar :isDataLoaded="isDataLoaded">
+    <AppBar :isDataLoaded="user.userId !== null">
     </AppBar>
     <v-main>
       <Alert/>
@@ -15,15 +15,11 @@ import AppBar from "@/components/AppBar/AppBar.vue";
 import IdentityRequest from "@/services/IdentityRequest";
 import store from "@/store";
 import Alert from "@/components/Alerts/Alert";
+import {mapState} from "vuex";
 
 export default {
   name: 'App',
   components: {Alert, AppBar},
-
-  data: () => ({
-    isDataLoaded: false
-
-  }),
   async created() {
     const identity = new IdentityRequest()
 
@@ -43,11 +39,12 @@ export default {
     identity.getIdentity()
         .then(async (x) => {
           await store.dispatch('GET_CURRENT_USER', x)
-          this.isDataLoaded = true
-          console.log('kalkali4')
           if (this.$route.path === '/')
             await this.$router.push('/schedule/lessons')
         })
-  }
+  },
+  computed: {
+    ...mapState(['user'])
+  },
 };
 </script>
