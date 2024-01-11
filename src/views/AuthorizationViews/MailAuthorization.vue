@@ -113,7 +113,8 @@ export default {
       else
         await this.$router.push('/schedule/lessons').catch(err => {
         console.log(err)
-      }).finally( () => {this.loginButtonDisabled = false})
+      }).finally( () => {this.loginButtonDisabled = false
+      console.log(this.loginButtonDisabled)})
     }
   },
   computed: {
