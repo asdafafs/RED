@@ -30,8 +30,28 @@
                     </v-text-field>
                     <v-text-field v-model="editedItem.lecture.endTime" label="Конец занятия" type="datetime-local">
                     </v-text-field>
-                    <v-select v-model="editedItem.lecture.lectureType" label="Тип занятия" :items="discriminator">
+                    <v-select
+                        v-model="editedItem.lecture.lectureType"
+                        label="Тип занятия"
+                        :items="discriminator"
+                    >
+                      <template v-slot:item="{ item }">
+                        <v-list-item :class="getListItemClass(item)" @click="selectItem(item)">
+                          <v-list-item-content>
+                            <v-list-item-title>
+                              {{ item }}
+                            </v-list-item-title>
+                          </v-list-item-content>
+                        </v-list-item>
+                      </template>
                     </v-select>
+                    <v-select
+                        v-model="selectedTeacher"
+                        label="Выберите инструктора"
+                        :items="teachers"
+                        :item-text="item => `${item.name} ${item.surname} ${item.middleName} `"
+                        item-value="id"
+                    ></v-select>
                   </v-col>
                 </v-row>
               </v-container>
@@ -86,23 +106,31 @@
 <script>
 import EventsRequest from "@/services/EventsRequest";
 import CoursesRequest from "@/services/CoursesRequest";
+import UsersRequest from "@/services/UsersRequest";
 
 export default {
   data: () => ({
     sortBy: 'startTime',
     sortDesc: false,
-    discriminator: ["Основы вождения", "Основы ПДД", "Медицина"],
+    discriminator: ["Основы вождения", "Основы ПДД", "Медицина", "Другое"],
+    selectedTeacher: null,
     globalStartTime: null,
     globalEndTime: null,
     coursesData: null,
     dialog: false,
     dialogDelete: false,
+    discriminatorItems: [
+      { name: 'Основы вождения', value: 'Основы вождения' },
+      { name: 'Основы ПДД', value: 'Основы ПДД' },
+      { name: 'Медицина', value: 'Медицина' },
+    ],
     headers: [
       {text: 'Название', align: 'start', sortable: false, value: 'title'},
       {text: 'Начало', align: 'start', sortable: false, value: 'startTime',},
       {text: 'Конец', align: 'start', sortable: false, value: 'endTime',},
       {text: 'Действия', value: 'actions', sortable: false},
     ],
+    teachers: [],
     courses: [],
     editedIndex: -1,
     deletedIndex: -1,
@@ -137,6 +165,13 @@ export default {
   },
 
   methods: {
+    async getEventsTeacher() {
+      const teachers = new UsersRequest();
+      await teachers.getActiveUser().catch(x => console.log(x)).then(x => {
+        this.teachers = x.data.activeUsers
+      })
+    },
+
     async getCourse(id) {
       const course = new CoursesRequest()
       const getItem = {"id": id}
@@ -165,6 +200,7 @@ export default {
 
     async initialize() {
       await this.getCourse(1);
+      await this.getEventsTeacher()
       this.courses = this.coursesData.map(item => {
         return {
           id: item.id,
@@ -273,10 +309,14 @@ export default {
     },
 
     getTableRowClass(item) {
-      return {
-        'blue-background': item.lectureType === 3,
-        'gray-background': item.lectureType === 2,
+      const classMap = {
+        1:' green-background',
+        2: 'yellow-background',
+        3: 'red-background',
+        4: 'gray-background'
       };
+
+      return classMap[item.lectureType] || '';
     },
 
     formatDatetime(timestamp) {
@@ -289,15 +329,25 @@ export default {
       return `${month}-${day} ${hours}:${minutes}`;
     },
 
+    getListItemClass(item) {
+      const classMap = {
+        'Основы вождения': 'green-background',
+        'Основы ПДД': 'yellow-background',
+        'Медицина': 'red-background',
+      };
+      const isSelected = this.editedItem.lecture.lectureType === item;
+
+      return !isSelected ? classMap[item] || 'gray-background' : '';
+    },
+
+    selectItem(item) {
+      this.editedItem.lecture.lectureType = item;
+    },
   },
 };
 </script>
-<style>
+<style src="@/assets/styles/eventTypes.css">
 .blue-background {
   background-color: #9DB9FF;
-}
-
-.gray-background {
-  background-color: #E9E9E8;
 }
 </style>

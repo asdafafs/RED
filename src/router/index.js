@@ -12,7 +12,6 @@ import ProgressBar from "@/views/ProgressBar.vue";
 import RecoveryPassword from "@/views/AuthorizationViews/RecoveryPassword.vue";
 import MailAuthorization from "@/views/AuthorizationViews/MailAuthorization.vue";
 import VkAuthorization from "@/views/AuthorizationViews/SelectAuthorization.vue";
-import Registration from "@/views/AuthorizationViews/Registration.vue";
 import PostLoginPage from "@/views/AuthorizationViews/PostLoginPage.vue";
 import CoursesList from "@/views/CoursesList.vue";
 import ConfirmEmail from "@/views/AuthorizationViews/ConfirmEmail.vue";
@@ -45,11 +44,6 @@ const routes = [
         path: '/vkAuthorization',
         name: 'vk',
         component: VkAuthorization,
-    },
-    {
-        path: '/registration',
-        name: 'registration',
-        component: Registration,
     },
     {
         path: '/recoveryPassWord',
