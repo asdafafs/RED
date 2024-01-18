@@ -48,6 +48,29 @@
                             suffix="PST"
                         ></v-text-field>
                       </v-col>
+                      <v-col>
+                        <template>
+                          <v-combobox
+                              v-model="chips"
+                              :items="items"
+                              chips
+                              clearable
+                              multiple
+                          >
+                            <template v-slot:selection="{ attrs, item, select, selected }">
+                              <v-chip
+                                  v-bind="attrs"
+                                  :input-value="selected"
+                                  close
+                                  @click="select"
+                                  @click:close="remove(item)"
+                              >
+                                <strong>{{ item }}</strong>&nbsp;
+                              </v-chip>
+                            </template>
+                          </v-combobox>
+                        </template>
+                      </v-col>
                       <CoursesList></CoursesList>
                     </v-col>
                   </v-row>
@@ -127,6 +150,8 @@ export default {
     lessonDelete: false,
     groupDelete: false,
     search: '',
+    chips: ['Пн', 'Вт', 'Ср', 'Чт', 'Пт',],
+    items: ['Пн', 'Вт', 'Ср', 'Чт', 'Пт',],
     headersGroup: [
       {text: 'Название', align: 'start', sortable: false, value: 'title',},
       {text: 'Действия', value: 'actions', sortable: false},
@@ -247,7 +272,6 @@ export default {
     async initialize() {
       await this.getGroups();
       await this.getFreeUsers()
-
       this.groups = await this.groupData;
 
       await this.getCourse(1);
@@ -376,7 +400,9 @@ export default {
           "title": this.editedItem.groups.title,
         }
         await this.postGroups(body)
-        await this.putSelectedStudents().finally(() => {this.groupDisabled = false})
+        await this.putSelectedStudents().finally(() => {
+          this.groupDisabled = false
+        })
         this.close();
 
         //сделать общий запрос
@@ -395,6 +421,10 @@ export default {
 
     isItemEdited(innerItem) {
       return innerItem.id === this.editedItem.lecture.id;
+    },
+
+    remove(item) {
+      this.chips.splice(this.chips.indexOf(item), 1)
     },
   },
 };

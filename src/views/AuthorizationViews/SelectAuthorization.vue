@@ -16,10 +16,6 @@
                    class="rounded-lg pa-0 ma-0 my-1" block>
               Войти
             </v-btn>
-            <v-btn color="#4E7AEC" @click="$router.push('/registration').catch(err => {})"
-                   class="rounded-lg pa-0 ma-0 my-1" block>
-              Регистрация
-            </v-btn>
             <v-btn color="#4E7AEC" @click="vkLogIn"
                    class="rounded-lg pa-0 ma-0 my-1" block :disabled="loginButtonDisabled">
               Войти через VK
