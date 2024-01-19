@@ -244,6 +244,7 @@ export default {
       this.isButtonPressed = this.isButtonPressed.map(() => false)
       this.isButtonPressed[index] = true;
     },
+
     handleResize() {
       if (window.innerWidth < 1260) {
         this.num = 30;
