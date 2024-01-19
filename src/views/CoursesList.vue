@@ -47,7 +47,7 @@
                     </v-select>
                     <v-select
                         v-model="selectedTeacher"
-                        label="Выберите инструктора"
+                        label="Выберите преподавателя"
                         :items="teachers"
                         :item-text="item => `${item.name} ${item.surname} ${item.middleName} `"
                         item-value="id"

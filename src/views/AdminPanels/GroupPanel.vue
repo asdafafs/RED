@@ -30,6 +30,7 @@
                   <v-row>
                     <v-col cols="12" sm="12" md="12">
                       <v-text-field v-model="editedItem.groups.title" label="Название группы"></v-text-field>
+                      <v-text-field v-model="test" label="Дата начала курса" type="date"></v-text-field>
                       <v-select
                           v-model="selectedStudents"
                           :items="studentList"
@@ -50,25 +51,16 @@
                       </v-col>
                       <v-col>
                         <template>
-                          <v-combobox
-                              v-model="chips"
-                              :items="items"
-                              chips
-                              clearable
-                              multiple
-                          >
-                            <template v-slot:selection="{ attrs, item, select, selected }">
-                              <v-chip
-                                  v-bind="attrs"
-                                  :input-value="selected"
-                                  close
-                                  @click="select"
-                                  @click:close="remove(item)"
-                              >
-                                <strong>{{ item }}</strong>&nbsp;
-                              </v-chip>
-                            </template>
-                          </v-combobox>
+                          <div>
+                            <v-chip
+                                v-for="(chip, index) in chips"
+                                :key="index"
+                                :color="selectedChips.includes(chip) ? 'blue' : null"
+                                @click="toggleSelectedChip(chip)"
+                            >
+                              <strong>{{ chip }}</strong>&nbsp;
+                            </v-chip>
+                          </div>
                         </template>
                       </v-col>
                       <CoursesList></CoursesList>
@@ -137,11 +129,13 @@ import CoursesList from "@/views/CoursesList.vue";
 export default {
   components: {CoursesList},
   data: () => ({
+    test: null,
     globalStartTime: null,
     globalEndTime: null,
     coursesData: null,
     studentList: null,
     lessons: [],
+    selectedChips: [],
     selectedStudents: [],
     groupData: null,
     groupDisabled: false,
@@ -150,8 +144,8 @@ export default {
     lessonDelete: false,
     groupDelete: false,
     search: '',
-    chips: ['Пн', 'Вт', 'Ср', 'Чт', 'Пт',],
-    items: ['Пн', 'Вт', 'Ср', 'Чт', 'Пт',],
+    chips: ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'],
+    items: ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'],
     headersGroup: [
       {text: 'Название', align: 'start', sortable: false, value: 'title',},
       {text: 'Действия', value: 'actions', sortable: false},
@@ -423,8 +417,13 @@ export default {
       return innerItem.id === this.editedItem.lecture.id;
     },
 
-    remove(item) {
-      this.chips.splice(this.chips.indexOf(item), 1)
+    toggleSelectedChip(chip) {
+      const index = this.selectedChips.indexOf(chip);
+      if (index !== -1) {
+        this.selectedChips.splice(index, 1);
+      } else {
+        this.selectedChips.push(chip);
+      }
     },
   },
 };
