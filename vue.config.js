@@ -1,6 +1,21 @@
-const { defineConfig } = require('@vue/cli-service')
-module.exports = defineConfig({
-  transpileDependencies: [
-    'vuetify'
-  ]
-})
+const {defineConfig} = require('@vue/cli-service')
+module.exports =
+    defineConfig({
+        transpileDependencies: [
+            'vuetify'
+        ],
+        lintOnSave: false,
+        devServer: {
+            allowedHosts: ['red.mlsat.ru', 'anton.mlsat.ru']
+        }
+    })
+
+const Dotenv = require('dotenv-webpack');
+
+module.exports = {
+    configureWebpack: {
+        plugins: [
+            new Dotenv(),
+        ],
+    },
+};
