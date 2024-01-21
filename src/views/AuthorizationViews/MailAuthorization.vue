@@ -102,13 +102,13 @@ export default {
       }
       this.loginButtonDisabled = true
       const body = {"email": this.email, "password": this.password}
-      console.log(this.loginButtonDisabled)
       await this.login(body)
       const identity = new IdentityRequest()
       await identity.getIdentity()
           .then((x) => {
             this.$store.dispatch('GET_CURRENT_USER', x)
-          })
+          }).finally( () => {this.loginButtonDisabled = false
+            console.log(this.loginButtonDisabled)})
       if (this.wrongAuth) ;
       else
         await this.$router.push('/schedule/lessons').catch(err => {

@@ -13,7 +13,7 @@ import RecoveryPassword from "@/views/AuthorizationViews/RecoveryPassword.vue";
 import MailAuthorization from "@/views/AuthorizationViews/MailAuthorization.vue";
 import VkAuthorization from "@/views/AuthorizationViews/SelectAuthorization.vue";
 import PostLoginPage from "@/views/AuthorizationViews/PostLoginPage.vue";
-import CoursesList from "@/views/CoursesList.vue";
+import CoursesList from "@/views/AdminPanels/CoursesList.vue";
 import ConfirmEmail from "@/views/AuthorizationViews/ConfirmEmail.vue";
 import ForgetPassword from "@/views/AuthorizationViews/ForgetPassword.vue";
 import StudentsPanel from "@/views/AdminPanels/StudentsPanel.vue";

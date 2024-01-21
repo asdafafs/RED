@@ -124,7 +124,7 @@ import UsersRequest from "@/services/UsersRequest";
 import CoursesRequest from "@/services/CoursesRequest";
 import {mapState} from "vuex";
 import EventsRequest from "@/services/EventsRequest";
-import CoursesList from "@/views/CoursesList.vue";
+import CoursesList from "@/views/AdminPanels/CoursesList.vue";
 
 export default {
   components: {CoursesList},
