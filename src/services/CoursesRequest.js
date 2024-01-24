@@ -5,7 +5,7 @@ export default class CoursesRequest extends HTTPService {
         super("Course");
     }
 
-    getCourses(id) {
+    getCourse(id) {
         return this.get("" + id)
     }
 

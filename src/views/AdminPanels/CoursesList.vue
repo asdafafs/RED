@@ -31,7 +31,7 @@
                     <v-text-field v-model="editedItem.lecture.endTime" label="Конец занятия" type="datetime-local">
                     </v-text-field>
                     <v-select
-                        v-model="editedItem.lecture.lectureType"
+                        v-model="discriminator[editedItem.lecture.lectureType - 1]"
                         label="Тип занятия"
                         :items="discriminator"
                     >
@@ -46,10 +46,10 @@
                       </template>
                     </v-select>
                     <v-select
-                        v-model="selectedTeacher"
+                        v-model="editedItem.lecture.activeUser"
                         label="Выберите преподавателя"
-                        :items="teachers"
-                        :item-text="item => `${item.name} ${item.surname} ${item.middleName} `"
+                        :items="[...teachers, { id: null, name: 'Преподаватель не назначен' }]"
+                        :item-text="item => item ? `${item.name || ''} ${item.surname || ''} ${item.middleName || ''}` : 'Преподаватель не назначен'"
                         item-value="id"
                     ></v-select>
                   </v-col>
@@ -113,17 +113,11 @@ export default {
     sortBy: 'startTime',
     sortDesc: false,
     discriminator: ["Основы вождения", "Основы ПДД", "Медицина", "Другое"],
-    selectedTeacher: null,
     globalStartTime: null,
     globalEndTime: null,
     coursesData: null,
     dialog: false,
     dialogDelete: false,
-    discriminatorItems: [
-      { name: 'Основы вождения', value: 'Основы вождения' },
-      { name: 'Основы ПДД', value: 'Основы ПДД' },
-      { name: 'Медицина', value: 'Медицина' },
-    ],
     headers: [
       {text: 'Название', align: 'start', sortable: false, value: 'title'},
       {text: 'Начало', align: 'start', sortable: false, value: 'startTime',},
@@ -141,6 +135,7 @@ export default {
         startTime: null,
         endTime: null,
         lectureType: null,
+        activeUser: null,
       },
     },
   }),
@@ -169,13 +164,14 @@ export default {
       const teachers = new UsersRequest();
       await teachers.getActiveUser().catch(x => console.log(x)).then(x => {
         this.teachers = x.data.activeUsers
+        console.log(this.teachers)
       })
     },
 
     async getCourse(id) {
       const course = new CoursesRequest()
       const getItem = {"id": id}
-      await course.getCourses(getItem.id).catch(x => console.log(x)).then(x => {
+      await course.getCourse(getItem.id).catch(x => console.log(x)).then(x => {
         this.coursesData = x.data.lecture
         this.globalStartTime = x.data.startTime
         this.globalEndTime = x.data.endTime
@@ -205,10 +201,10 @@ export default {
         return {
           id: item.id,
           title: item.title,
-          startTime: this.formatDatetime(item.startTime),
-          endTime: this.formatDatetime(item.endTime),
+          startTime: (item.startTime),
+          endTime: (item.endTime),
           lectureType: item.lectureType,
-          groupId: item.groupId,
+          activeUser: item.activeUser,
         };
       });
     },
@@ -219,11 +215,13 @@ export default {
         lecture: {
           id: item.id,
           title: item.title,
-          startTime: this.formatDatetime(item.startTime),
-          endTime: this.formatDatetime(item.endTime),
+          startTime: (item.startTime),
+          endTime: (item.endTime),
+          activeUser: item.activeUser,
           lectureType: parseInt(item.lectureType),
         }
       };
+      console.log(this.editedItem)
       this.dialog = true;
     },
 
@@ -233,8 +231,9 @@ export default {
         lecture: {
           id: item.id,
           title: item.title,
-          startTime: this.formatDatetime(item.startTime),
-          endTime: this.formatDatetime(item.endTime),
+          startTime: (item.startTime),
+          endTime: (item.endTime),
+          activeUser: item.activeUser,
           lectureType: parseInt(item.lectureType),
         },
       };
@@ -251,6 +250,7 @@ export default {
 
     close() {
       this.dialog = false;
+      console.log(this.editedItem.lecture)
       this.$nextTick(() => {
         this.editedItem = {
           lecture: {
@@ -259,10 +259,12 @@ export default {
             startTime: null,
             endTime: null,
             lectureType: null,
+            activeUser: null,
           },
         };
         this.editedIndex = -1;
       });
+
     },
 
     closeDelete() {
@@ -275,6 +277,7 @@ export default {
             startTime: null,
             endTime: null,
             lectureType: null,
+            activeUser: null,
           },
         };
         this.editedIndex = -1;
@@ -294,8 +297,7 @@ export default {
           "title": this.editedItem.lecture.title,
           "startTime": this.editedItem.lecture.startTime,
           "endTime": this.editedItem.lecture.endTime,
-          "lectureType": this.discriminator.indexOf(this.editedItem.lecture.lectureType) + 1,
-          "groupId": 1,
+          "lectureType": this.discriminator.indexOf(this.editedItem.lecture.lectureType) - 1,
         }
         await this.postLecture(body)
         this.courses.push(this.editedItem);
@@ -343,6 +345,7 @@ export default {
     selectItem(item) {
       this.editedItem.lecture.lectureType = item;
     },
+
   },
 };
 </script>
