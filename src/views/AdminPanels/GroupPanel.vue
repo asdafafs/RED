@@ -30,9 +30,10 @@
                   <v-row>
                     <v-col cols="12" sm="12" md="12">
                       <v-text-field v-model="editedItem.groups.title" label="Название группы"></v-text-field>
-                      <v-text-field v-model="test" label="Дата начала курса" type="date"></v-text-field>
+                      <v-text-field v-model="editedItem.groups.startDate" label="Дата начала курса" type="date"></v-text-field>
                       <v-select
                           v-model="selectedStudents"
+                          :value="editedItem.lecture.activeUser"
                           :items="studentList"
                           :item-text="item => `${item.name} ${item.surname} ${item.middleName}`"
                           label="Список учеников"
@@ -44,9 +45,10 @@
                       <v-col cols="4">
                         <v-text-field
                             label="Выберите время начала занятий"
-                            value="20:00:00"
+                            :value="globalStartTime"
                             type="time"
                             suffix="PST"
+                            @input="updateGlobalStartTime"
                         ></v-text-field>
                       </v-col>
                       <v-col>
@@ -134,6 +136,7 @@ export default {
     globalEndTime: null,
     coursesData: null,
     studentList: null,
+    globalStartDate: null,
     lessons: [],
     selectedChips: [],
     selectedStudents: [],
@@ -162,6 +165,7 @@ export default {
       groups: {
         groupId: null,
         title: ``,
+        startDate: null,
       },
 
       lecture: {
@@ -169,6 +173,7 @@ export default {
         title: '',
         startTime: null,
         endTime: null,
+        activeUser: null,
         lectureType: null,
       },
     },
@@ -213,10 +218,14 @@ export default {
     async getCourse(id) {
       const course = new CoursesRequest()
       const getItem = {"id": id}
-      await course.getCourses(getItem.id).catch(x => console.log(x)).then(x => {
+      await course.getCourse(getItem.id).catch(x => console.log(x)).then(x => {
         this.coursesData = x.data.lecture
-        this.globalStartTime = x.data.startTime
+        this.globalStartTime = x.data.startTime + ':00'
         this.globalEndTime = x.data.endTime
+        this.globalStartDate = this.formatDatetime(x.data.startDate)
+
+        this.studentList = this.studentList.concat(x.data.students);
+        this.selectedStudents = x.data.students
       })
     },
 
@@ -257,7 +266,6 @@ export default {
           groupId: user.groupId,
         })),
       };
-      console.log(body)
 
       const student = new UsersRequest()
       await student.putStudentGroup(body)
@@ -273,9 +281,10 @@ export default {
         return {
           id: item.id,
           title: item.title,
-          startTime: this.formatDatetime(item.startTime),
-          endTime: this.formatDatetime(item.endTime),
+          startTime: (item.startTime),
+          endTime: (item.endTime),
           lectureType: item.lectureType,
+          activeUser: item.activeUser,
           groupId: item.groupId,
         };
       });
@@ -289,6 +298,7 @@ export default {
         groups: {
           groupId: item.groupId,
           title: item.title,
+          startDate: this.globalStartDate,
         },
 
         lecture: {
@@ -309,6 +319,7 @@ export default {
         groups: {
           groupId: item.groupId,
           title: item.title,
+          startDate: this.globalStartDate,
         },
 
         lecture: {
@@ -316,11 +327,13 @@ export default {
           title: '',
           startTime: null,
           endTime: null,
+          activeUser: null,
           lectureType: null,
         },
       };
       this.dialog = true;
     },
+
     async deleteItemConfirm() {
       this.groups.splice(this.editedIndex, 1);
       await this.deleteGroups()
@@ -342,12 +355,14 @@ export default {
           groups: {
             groupId: null,
             title: `Группа №${nextGroupNumber}`,
+            startDate: null,
           },
           lecture: {
             id: null,
             title: '',
             startTime: null,
             endTime: null,
+            activeUser: null,
             lectureType: null,
           },
         };
@@ -365,12 +380,14 @@ export default {
           groups: {
             groupId: null,
             title: `Группа №${nextGroupNumber}`,
+            startDate: null,
           },
           lecture: {
             id: null,
             title: '',
             startTime: null,
             endTime: null,
+            activeUser: null,
             lectureType: null,
           },
         };
@@ -406,11 +423,10 @@ export default {
     formatDatetime(timestamp) {
       if (!timestamp) return null;
       const date = new Date(timestamp);
+      const year = String(date.getFullYear());
       const month = String(date.getMonth() + 1).padStart(2, '0');
       const day = String(date.getDate()).padStart(2, '0');
-      const hours = String(date.getHours()).padStart(2, '0');
-      const minutes = String(date.getMinutes()).padStart(2, '0');
-      return `${month}-${day} ${hours}:${minutes}`;
+      return `${year}-${month}-${day}`;
     },
 
     isItemEdited(innerItem) {
@@ -424,6 +440,10 @@ export default {
       } else {
         this.selectedChips.push(chip);
       }
+    },
+
+    updateGlobalStartTime(value) {
+      this.globalStartTime = value;
     },
   },
 };
