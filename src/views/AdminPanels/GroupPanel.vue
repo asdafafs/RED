@@ -236,6 +236,11 @@ export default {
       })
     },
 
+    async postCourse(body){
+      const course = new CoursesRequest();
+      await course.postCourse(body).catch(x => console.log(x))
+    },
+
     async postGroups(body) {
       const groups = new GroupsRequest();
       await groups.postGroup(body).catch(x => console.log(x))
@@ -320,6 +325,7 @@ export default {
           groupId: item.groupId,
           title: item.title,
           startDate: this.globalStartDate,
+          studentId: item.student
         },
 
         lecture: {
@@ -408,15 +414,17 @@ export default {
       } else {
         this.groups.push(this.editedItem.groups);
         const body = {
-          "title": this.editedItem.groups.title,
+          "courseStartDate": this.editedItem.groups.startDate,
+          "groupName": this.editedItem.groups.title,
+          "startTime": this.editedItem.lecture.startTime,
+          "groupId": this.editedItem.groups.groupId,
+          "studentId": this.selectedStudents,
+          "lecture": this.lessons
         }
-        await this.postGroups(body)
-        await this.putSelectedStudents().finally(() => {
-          this.groupDisabled = false
-        })
-        this.close();
 
-        //сделать общий запрос
+        await this.postCourse(body)
+        console.log(1)
+        this.close();
       }
     },
 
@@ -429,9 +437,6 @@ export default {
       return `${year}-${month}-${day}`;
     },
 
-    isItemEdited(innerItem) {
-      return innerItem.id === this.editedItem.lecture.id;
-    },
 
     toggleSelectedChip(chip) {
       const index = this.selectedChips.indexOf(chip);

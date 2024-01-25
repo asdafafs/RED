@@ -31,7 +31,7 @@
                     <v-text-field v-model="editedItem.lecture.endTime" label="Конец занятия" type="datetime-local">
                     </v-text-field>
                     <v-select
-                        v-model="discriminator[editedItem.lecture.lectureType - 1]"
+                        v-model="discriminator[editedItem.lecture.lectureType]"
                         label="Тип занятия"
                         :items="discriminator"
                     >
@@ -112,7 +112,7 @@ export default {
   data: () => ({
     sortBy: 'startTime',
     sortDesc: false,
-    discriminator: ["Основы вождения", "Основы ПДД", "Медицина", "Другое"],
+    discriminator: [null, "Основы вождения", "Основы ПДД", "Медицина", "Другое"],
     globalStartTime: null,
     globalEndTime: null,
     coursesData: null,
@@ -298,6 +298,8 @@ export default {
           "startTime": this.editedItem.lecture.startTime,
           "endTime": this.editedItem.lecture.endTime,
           "lectureType": this.discriminator.indexOf(this.editedItem.lecture.lectureType) - 1,
+          "activeUserId": this.editedItem.lecture.activeUser,
+
         }
         await this.postLecture(body)
         this.courses.push(this.editedItem);
@@ -336,21 +338,23 @@ export default {
         'Основы вождения': 'green-background',
         'Основы ПДД': 'yellow-background',
         'Медицина': 'red-background',
+        'Другое': 'gray-background'
       };
       const isSelected = this.editedItem.lecture.lectureType === item;
-
       return !isSelected ? classMap[item] || 'gray-background' : '';
     },
 
     selectItem(item) {
-      this.editedItem.lecture.lectureType = item;
+      const index = this.discriminator.indexOf(item);
+
+      if (index !== -1) {
+        this.editedItem.lecture.lectureType = index;
+        console.log(this.editedItem.lecture.lectureType);
+      }
     },
 
   },
 };
 </script>
 <style src="@/assets/styles/eventTypes.css">
-.blue-background {
-  background-color: #9DB9FF;
-}
 </style>
