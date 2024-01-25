@@ -41,6 +41,8 @@
                           hint="Выберите студентов для группы"
                           persistent-hint
                           no-data-text="Нет данных для отображения"
+                          item-value="id"
+                          @change="updateSelectedStudentsIds"
                       ></v-select>
                       <v-col cols="4">
                         <v-text-field
@@ -127,10 +129,12 @@ import CoursesRequest from "@/services/CoursesRequest";
 import {mapState} from "vuex";
 import EventsRequest from "@/services/EventsRequest";
 import CoursesList from "@/views/AdminPanels/CoursesList.vue";
+import moment from 'moment';
 
 export default {
   components: {CoursesList},
   data: () => ({
+    selectedStudentIds: null,
     test: null,
     globalStartTime: null,
     globalEndTime: null,
@@ -140,6 +144,7 @@ export default {
     lessons: [],
     selectedChips: [],
     selectedStudents: [],
+    selectedStudentsIds: [],
     groupData: null,
     groupDisabled: false,
     lessonDisabled: false,
@@ -166,6 +171,7 @@ export default {
         groupId: null,
         title: ``,
         startDate: null,
+        startTime: null,
       },
 
       lecture: {
@@ -241,11 +247,6 @@ export default {
       await course.postCourse(body).catch(x => console.log(x))
     },
 
-    async postGroups(body) {
-      const groups = new GroupsRequest();
-      await groups.postGroup(body).catch(x => console.log(x))
-    },
-
     async putGroups(body) {
       const groups = new GroupsRequest();
       await groups.putGroup(body).catch(x => console.log(x))
@@ -304,6 +305,7 @@ export default {
           groupId: item.groupId,
           title: item.title,
           startDate: this.globalStartDate,
+          startTime: null,
         },
 
         lecture: {
@@ -401,7 +403,7 @@ export default {
       });
     },
 
-    async save() {
+    save: async function () {
       this.groupDisabled = true
       if (this.editedIndex > -1) {
         this.$set(this.groups, this.editedIndex, this.editedItem.groups);
@@ -412,18 +414,21 @@ export default {
         await this.putGroups(body)
         this.close();
       } else {
-        this.groups.push(this.editedItem.groups);
+
+        console.log(this.editedItem)
         const body = {
           "courseStartDate": this.editedItem.groups.startDate,
           "groupName": this.editedItem.groups.title,
-          "startTime": this.editedItem.lecture.startTime,
+          "startTime": parseInt(this.globalStartTime.split(':')[0], 10),
           "groupId": this.editedItem.groups.groupId,
-          "studentId": this.selectedStudents,
+          "studentId": this.selectedStudentsIds,
           "lecture": this.lessons
         }
 
-        await this.postCourse(body)
-        console.log(1)
+        await this.postCourse(body).finally(() => {
+          this.groupDisabled = false;
+          this.groups.push(this.editedItem.groups);
+        })
         this.close();
       }
     },
@@ -439,26 +444,59 @@ export default {
 
 
     toggleSelectedChip(chip) {
+      const dayOfWeekMapping = {
+        'Пн': 1,
+        'Вт': 2,
+        'Ср': 3,
+        'Чт': 4,
+        'Пт': 5,
+        'Сб': 6,
+        'Вс': 7,
+      };
+
       const index = this.selectedChips.indexOf(chip);
       if (index !== -1) {
         this.selectedChips.splice(index, 1);
+        console.log(`Убран чип ${chip}, соответствующий дню недели ${dayOfWeekMapping[chip]}`);
       } else {
         this.selectedChips.push(chip);
+        console.log(`Добавлен чип ${chip}, соответствующий дню недели ${dayOfWeekMapping[chip]}`);
       }
+
+      const today = moment();
+      const nextSixMonths = today.clone().add(6, 'months');
+
+      // Выводим даты только для выбранных дней недели
+      this.selectedChips.forEach(selectedChip => {
+        let currentDay = today.clone().isoWeekday(dayOfWeekMapping[selectedChip]);
+
+        while (currentDay.isBefore(nextSixMonths)) {
+          console.log(`${selectedChip} недели:`, currentDay.format('YYYY-MM-DD'));
+          currentDay.add(7, 'days');
+        }
+      });
     },
 
     updateGlobalStartTime(value) {
       this.globalStartTime = value;
     },
+
+    updateSelectedStudentsIds()
+    {
+      // Обновляет массив selectedStudentsIds
+      this.selectedStudentsIds = this.selectedStudents.map(selectedStudent => {
+        this.studentList.find(student => {
+          const fullName = `${student.name} ${student.surname} ${student.middleName}`;
+          return fullName === selectedStudent;
+        });
+        return selectedStudent;
+      });
+
+      console.log('selectedStudentsIds:', this.selectedStudentsIds);
+    }
+,
   },
 };
 </script>
 <style>
-.blue-background {
-  background-color: #9DB9FF;
-}
-
-.gray-background {
-  background-color: #E9E9E8;
-}
 </style>

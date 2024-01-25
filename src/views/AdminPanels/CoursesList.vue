@@ -7,6 +7,8 @@
       'prev-icon': 'mdi-chevron-left',
       'next-icon': 'mdi-chevron-right',
       'no-data-text': 'Нет данных для отображения'}"
+                :hide-default-footer="true"
+                disable-pagination
   >
     <template v-slot:top>
       <v-toolbar flat>
