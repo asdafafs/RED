@@ -12,14 +12,14 @@
         </v-col>
         <v-col cols="1">
           <v-btn text class="grey--text btn pa-0" width="100%"
-                 @click="changeButtonMenuState(0); $router.push('/testPlan/mainCal').catch(err => {})">
+                 @click="changeButtonMenuState(0); $router.push({name: 'plan-main'}).catch(err => {})">
             <span :class="{'uno': isButtonMenuPressed[0],}">Календарь</span>
           </v-btn>
           <div v-show="isButtonMenuPressed[0]" class="button-line"></div>
         </v-col>
         <v-col cols="1">
           <v-btn text class="grey--text btn pa-0" width="100%"
-                 @click="changeButtonMenuState(1); $router.push('/testPlan/progress').catch(err => {})">
+                 @click="changeButtonMenuState(1); $router.push({name: 'progress'}).catch(err => {})">
             <span :class="{'uno': isButtonMenuPressed[1],}">Прогресс</span>
           </v-btn>
           <div v-show="isButtonMenuPressed[1]" class="button-line"></div>
@@ -40,14 +40,14 @@
       <v-row>
         <v-col cols="">
           <v-btn text class="grey--text btn pa-0" width="100%"
-                 @click="changeButtonMenuState(0); $router.push('/testPlan/mainCal').catch(err => {})">
+                 @click="changeButtonMenuState(0); $router.push({name: 'plan-main'}).catch(err => {})">
             <span :class="{'uno': isButtonMenuPressed[0],}">Календарь</span>
           </v-btn>
           <div v-show="isButtonMenuPressed[0]" class="button-line"></div>
         </v-col>
         <v-col cols="">
           <v-btn text class="grey--text btn pa-0" width="100%"
-                 @click="changeButtonMenuState(1); $router.push('/testPlan/progress').catch(err => {})">
+                 @click="changeButtonMenuState(1); $router.push({name: 'progress'}).catch(err => {})">
             <span :class="{'uno': isButtonMenuPressed[1],}">Прогресс</span>
           </v-btn>
           <div v-show="isButtonMenuPressed[1]" class="button-line"></div>

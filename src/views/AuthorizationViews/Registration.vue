@@ -42,7 +42,7 @@
                 <v-btn color="#4E7AEC" @click="validateForm" class="rounded-lg pa-0 ma-0 my-1 white--text" block :disabled="loginButtonDisabled">
                   Зарегистрироваться
                 </v-btn>
-                <v-btn color="##E9E9E8" @click="$router.push('/')" class="rounded-lg ma-0 my-1 pa-0" block>
+                <v-btn color="##E9E9E8" @click="$router.push({name: 'main'})" class="rounded-lg ma-0 my-1 pa-0" block>
                   Выйти
                 </v-btn>
               </v-col>

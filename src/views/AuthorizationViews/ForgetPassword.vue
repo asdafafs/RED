@@ -82,7 +82,7 @@ export default {
       await identity.postNewPassword({userId, code}).then(() => {
         console.log("test")
         identity.getIdentity();
-        this.$router.push('/')
+        this.$router.push({name: 'main'})
       })
     },
 
@@ -103,7 +103,7 @@ export default {
       }
       this.newPassword(body)
       alert('пароль сменен')
-      this.$router.push('/').catch(err => {
+      this.$router.push({name: 'main'}).catch(err => {
         console.log(err)
       })
       this.overlay = false;

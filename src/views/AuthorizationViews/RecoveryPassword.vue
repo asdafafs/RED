@@ -25,7 +25,7 @@
                 <v-btn color="#4E7AEC" @click=" validateEmail" class="rounded-lg pa-0 white--text" block :disabled = "loginButtonDisabled">
                   Ввести новый пароль
                 </v-btn>
-                <v-btn color="##E9E9E8" @click="$router.push('/')" class="rounded-lg pa-0" block>
+                <v-btn color="##E9E9E8" @click="$router.push({name: 'main'})" class="rounded-lg pa-0" block>
                   Выйти
                 </v-btn>
               </v-col>
@@ -70,7 +70,7 @@ export default {
 
       this.checkEmail(this.email);
       alert('проверьте почтовый ящик');
-      this.$router.push('/').catch(err => {
+      this.$router.push({name: 'main'}).catch(err => {
         console.log(err)
       })
     },

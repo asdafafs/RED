@@ -12,7 +12,7 @@
             {{ message }}
           </v-alert>
           <v-card-actions class="flex-column">
-            <v-btn color="#4E7AEC" @click="$router.push('/mail').catch(err => {})"
+            <v-btn color="#4E7AEC" @click="$router.push({name: 'mail'}).catch(err => {})"
                    class="rounded-lg pa-0 ma-0 my-1" block>
               Войти
             </v-btn>

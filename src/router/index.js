@@ -57,12 +57,12 @@ const routes = [
     },
     {
         path: '/confirm-email',
-        name: 'ConfirmEmail',
+        name: 'confirm-email',
         component: ConfirmEmail,
     },
     {
         path: '/forget-password',
-        name: 'ForgetPassword',
+        name: 'forget-password',
         component: ForgetPassword,
     },
     {
@@ -72,17 +72,17 @@ const routes = [
         children: [
             {
                 path: 'students',
-                name: 'students',
+                name: 'admin-students',
                 component: StudentsPanel
             },
             {
                 path: 'teachers',
-                name: 'teachers',
+                name: 'admin-teachers',
                 component: TeachersPanel
             },
             {
                 path: 'groups',
-                name: 'groups',
+                name: 'admin-groups',
                 component: GroupPanel,
             }
         ]
@@ -99,22 +99,22 @@ const routes = [
         children: [
             {
                 path: "mainCal",
-                name: 'main',
+                name: 'plan-main',
                 component: MainCalendar,
                 children: [
                     {
                         path: "testDay",
-                        name: 'day',
+                        name: 'plan-main-day',
                         component: DayView,
                     },
                     {
                         path: "testWeek",
-                        name: 'week',
+                        name: 'plan-main-week',
                         component: WeeklyView,
                     },
                     {
                         path: "testMonth",
-                        name: 'month',
+                        name: 'plan-main-month',
                         component: MonthView,
                     },
                 ]
@@ -133,19 +133,19 @@ const routes = [
         children: [
             {
                 path: "lessons",
-                name: 'month',
+                name: 'schedule-lessons',
                 component: MonthViewSchedule,
             },
         ]
     },
     {
         path: "/singUpClasses",
-        name: 'schedule',
+        name: 'singUpClasses',
         component: ScheduleClasses,
         children: [
             {
-                path: "lessons",
-                name: 'month',
+                path: "schedule-lessons",
+                name: 'singUpClasses-month',
                 component: ClassesView,
 
             },
