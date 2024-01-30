@@ -36,17 +36,19 @@
                   counter
                   @click:append="show = !show"
               ></v-text-field>
-              <v-btn color="#4E7AEC" @click="$router.push('/recoveryPassWord').catch(err => {})"
+              <v-btn color="#4E7AEC" @click="$router.push({name: 'recPass'}).catch(err => {})"
                      class="rounded-lg pa-0 ma-0" block text>
                 Забыли пароль?
               </v-btn>
             </v-card-text>
             <v-card-actions>
               <v-col>
-                <v-btn color="#4E7AEC" @click="validateForm" class="rounded-lg pa-0 ma-0 my-1 white--text" block :disabled="loginButtonDisabled">
+                <v-btn color="#4E7AEC" @click="validateForm" class="rounded-lg pa-0 ma-0 my-1 white--text" block
+                       :disabled="loginButtonDisabled">
                   Войти
                 </v-btn>
-                <v-btn color="##E9E9E8" @click="$router.push('/')" class="rounded-lg pa-0 ma-0 my-1" block :disabled="loginButtonDisabled">
+                <v-btn color="##E9E9E8" @click="$router.push({name: 'main'})" class="rounded-lg pa-0 ma-0 my-1" block
+                       :disabled="loginButtonDisabled">
                   Выйти
                 </v-btn>
               </v-col>
@@ -107,14 +109,18 @@ export default {
       await identity.getIdentity()
           .then((x) => {
             this.$store.dispatch('GET_CURRENT_USER', x)
-          }).finally( () => {this.loginButtonDisabled = false
-            console.log(this.loginButtonDisabled)})
+          }).finally(() => {
+            this.loginButtonDisabled = false
+            console.log(this.loginButtonDisabled)
+          })
       if (this.wrongAuth) ;
       else
-        await this.$router.push('/schedule/lessons').catch(err => {
-        console.log(err)
-      }).finally( () => {this.loginButtonDisabled = false
-      console.log(this.loginButtonDisabled)})
+        await this.$router.push({name: 'schedule-lessons'}).catch(err => {
+          console.log(err)
+        }).finally(() => {
+          this.loginButtonDisabled = false
+          console.log(this.loginButtonDisabled)
+        })
     }
   },
   computed: {

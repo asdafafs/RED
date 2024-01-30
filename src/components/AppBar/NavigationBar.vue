@@ -6,12 +6,12 @@
         <span class="mdi mdi-plus rotate" @click.stop="$emit('update:drawer', false);"></span>
       </v-list-item>
       <v-list-item
-          @click.stop="$router.push('/schedule/lessons').catch(err => {}); $emit('update:drawer', false)"
+          @click.stop="$router.push({name: 'schedule-lessons'}).catch(err => {}); $emit('update:drawer', false)"
           class="white--text align-start align-center list-item">
         Расписание
       </v-list-item>
       <v-list-item
-          @click.stop="$router.push('/singUpClasses/lessons').catch(err => {}); $emit('update:drawer', false)"
+          @click.stop="$router.push({name: 'singUpClasses-month'}).catch(err => {}); $emit('update:drawer', false)"
           class="white--text align-start align-center list-item">
         Запись на занятие
       </v-list-item>
@@ -22,13 +22,13 @@
       </v-list-item>
       <v-list-item
           v-if="student"
-          @click.stop="$router.push('/testPlan/mainCal/testMonth').catch(err => {}); $emit('update:drawer', false)"
+          @click.stop="$router.push({name: 'plan-main-month'}).catch(err => {}); $emit('update:drawer', false)"
           class="white--text align-start align-center list-item">
         Мой план
       </v-list-item>
       <v-list-item
           v-if="!student"
-          @click.stop="$router.push('/admin/students').catch(err => {}); $emit('update:drawer', false)"
+          @click.stop="$router.push({name: 'admin-students'}).catch(err => {}); $emit('update:drawer', false)"
           class="white--text align-start align-center list-item">
         Админпанель
       </v-list-item>
@@ -38,7 +38,7 @@
         Привязать аккуант к вк
       </v-list-item>
       <v-list-item
-          @click.stop="exit(); $router.push('/').catch(err => {}); $emit('update:drawer', false)"
+          @click.stop="exit(); $router.push({name: 'main'}).catch(err => {}); $emit('update:drawer', false)"
           class="white--text align-end mt-auto align-center"
           style="max-height: 4em;">
         <div class="d-flex flex-column">
