@@ -31,8 +31,10 @@
                 <v-container>
                   <v-row>
                     <v-col cols="12" sm="12" md="12">
-                      <v-text-field v-model="editedItem.groups.title" label="Название группы"></v-text-field>
-                      <v-text-field v-model="editedItem.groups.startDate" label="Дата начала курса" type="date"></v-text-field>
+                      <v-text-field v-model="editedItem.groups.title" label="Название группы"
+                                    :rules="titleRules"></v-text-field>
+                      <v-text-field v-model="editedItem.groups.startDate" label="Дата начала курса"
+                                    type="date" :rules="startDateRules"></v-text-field>
                       <v-select
                           v-model="selectedStudents"
                           :value="editedItem.lecture.activeUser"
@@ -53,6 +55,7 @@
                             type="time"
                             suffix="PST"
                             @input="updateGlobalStartTime"
+                            :rules="startTimeRules"
                         ></v-text-field>
                       </v-col>
                       <v-col>
@@ -69,7 +72,8 @@
                           </div>
                         </template>
                       </v-col>
-                      <CoursesList :start-time="globalStartTime"></CoursesList>
+                      <CoursesList :start-time="globalStartTime" :coursesData="lessons"
+                                   :end-time="globalEndTime" @courses-updated="handleCoursesUpdated"></CoursesList>
                     </v-col>
                   </v-row>
                 </v-container>
@@ -79,7 +83,7 @@
                 <v-btn color="blue darken-1" text @click="close" :disabled="groupDisabled">
                   Отмена
                 </v-btn>
-                <v-btn color="blue darken-1" text @click="save" :disabled="groupDisabled">
+                <v-btn color="blue darken-1" text @click="save" :disabled="isSaveButtonDisabled">
                   OK
                 </v-btn>
               </v-card-actions>
@@ -187,7 +191,15 @@ export default {
     },
     sortBy: 'startTime',
     sortDesc: false,
-
+    titleRules: {
+      required: value => !!value || 'Введите название группы'
+    },
+    startDateRules: {
+      required: value => !!value || 'Выберите дату начала курса'
+    },
+    startTimeRules: {
+      required: value => !!value || 'Выберите время начала занятий'
+    }
   }),
 
   computed: {
@@ -199,7 +211,14 @@ export default {
 
     discriminatorUser() {
       return this.user.discriminator !== 'Учитель'
-    }
+    },
+
+    isSaveButtonDisabled() {
+      console.log(this.editedItem.groups.startDate)
+      console.log(this.titleRules.required(this.editedItem.groups.title) === true && this.startDateRules.required(this.editedItem.groups.startDate) && this.startTimeRules.required(this.globalStartTime))
+
+      return !(this.titleRules.required(this.editedItem.groups.title) === true && this.startDateRules.required(this.editedItem.groups.startDate) && this.startTimeRules.required(this.globalStartTime));
+    },
   },
 
   watch: {
@@ -216,6 +235,10 @@ export default {
   },
 
   methods: {
+    handleCoursesUpdated(courses) {
+      this.lessons = courses
+    },
+
     async getFreeUsers() {
       const user = new UsersRequest();
       await user.getStudentNullGroup().catch(x => console.log(x)).then(x => {
@@ -244,7 +267,7 @@ export default {
       })
     },
 
-    async postCourse(body){
+    async postCourse(body) {
       const course = new CoursesRequest();
       await course.postCourse(body).catch(x => console.log(x))
     },
@@ -403,7 +426,6 @@ export default {
         this.close();
       } else {
 
-        console.log(this.editedItem)
         const body = {
           "courseStartDate": this.editedItem.groups.startDate,
           "groupName": this.editedItem.groups.title,
@@ -412,7 +434,7 @@ export default {
           "studentId": this.selectedStudentsIds,
           "lecture": this.lessons
         }
-        console.log("Что отправляем",body)
+        console.log("Что отправляем", body)
         await this.postCourse(body).finally(() => {
           this.groupDisabled = false;
           this.groups.push(this.editedItem.groups);
@@ -468,8 +490,7 @@ export default {
       this.globalStartTime = value;
     },
 
-    updateSelectedStudentsIds()
-    {
+    updateSelectedStudentsIds() {
       this.selectedStudentsIds = this.selectedStudents.map(selectedStudent => {
         this.studentList.find(student => {
           const fullName = `${student.name} ${student.surname} ${student.middleName}`;
@@ -477,10 +498,8 @@ export default {
         });
         return selectedStudent;
       });
-
-      console.log('selectedStudentsIds:', this.selectedStudentsIds);
     }
-,
+    ,
   },
 };
 </script>

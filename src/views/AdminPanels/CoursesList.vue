@@ -27,13 +27,13 @@
               <v-container>
                 <v-row>
                   <v-col cols="12" sm="12" md="12">
-                    <v-text-field v-model="editedItem.lecture.title" label="Название"></v-text-field>
-                    <v-text-field v-model="editedItem.lecture.startTime" label="Начало занятия" type="datetime-local">
+                    <v-text-field v-model="editedItem.title" label="Название"></v-text-field>
+                    <v-text-field v-model="editedItem.startTime" label="Начало занятия" type="datetime-local">
                     </v-text-field>
-                    <v-text-field v-model="editedItem.lecture.endTime" label="Конец занятия" type="datetime-local">
+                    <v-text-field v-model="editedItem.endTime" label="Конец занятия" type="datetime-local">
                     </v-text-field>
                     <v-select
-                        v-model="discriminator[editedItem.lecture.lectureType]"
+                        v-model="discriminator[editedItem.lectureType]"
                         label="Тип занятия"
                         :items="discriminator"
                     >
@@ -48,7 +48,7 @@
                       </template>
                     </v-select>
                     <v-select
-                        v-model="editedItem.lecture.activeUser"
+                        v-model="editedItem.activeUser"
                         label="Выберите преподавателя"
                         :items="[...teachers, { id: null, name: 'Преподаватель не назначен' }]"
                         :item-text="item => item ? `${item.name || ''} ${item.surname || ''} ${item.middleName || ''}` : 'Преподаватель не назначен'"
@@ -106,8 +106,6 @@
   </v-data-table>
 </template>
 <script>
-import EventsRequest from "@/services/EventsRequest";
-import CoursesRequest from "@/services/CoursesRequest";
 import UsersRequest from "@/services/UsersRequest";
 
 export default {
@@ -116,6 +114,16 @@ export default {
       type: String,
       default: null,
     },
+
+    endTime: {
+      type: String,
+      default: null,
+    },
+
+    coursesData: {
+      type: Array,
+      default: () => [],
+    },
   },
   data: () => ({
     sortBy: 'startTime',
@@ -123,7 +131,7 @@ export default {
     discriminator: [null, "Основы вождения", "Основы ПДД", "Медицина", "Другое"],
     globalStartTime: null,
     globalEndTime: null,
-    coursesData: null,
+    courseData: null,
     dialog: false,
     dialogDelete: false,
     headers: [
@@ -137,14 +145,12 @@ export default {
     editedIndex: -1,
     deletedIndex: -1,
     editedItem: {
-      lecture: {
-        id: null,
-        title: 'Группа №',
-        startTime: null,
-        endTime: null,
-        lectureType: null,
-        activeUser: null,
-      },
+      id: null,
+      title: null,
+      startTime: null,
+      endTime: null,
+      lectureType: null,
+      activeUser: null,
     },
   }),
 
@@ -176,36 +182,10 @@ export default {
       })
     },
 
-    async getCourse(id) {
-      const course = new CoursesRequest()
-      const getItem = {"id": id}
-      await course.getCourse(getItem.id).catch(x => console.log(x)).then(x => {
-        this.coursesData = x.data.lecture
-        this.globalEndTime = x.data.endTime
-      })
-      this.globalStartTime = this.startTime
-      console.log(this.globalStartTime)
-    },
-
-    async postLecture(body) {
-      const event = new EventsRequest();
-      await event.postLecture(body).catch(x => console.log(x))
-    },
-
-    async putLecture(body) {
-      const event = new EventsRequest();
-      await event.putLecture(body).catch(x => console.log(x))
-    },
-
-    async deleteLecture() {
-      const event = new EventsRequest();
-      const deletedItem = {"id": this.deletedIndex}
-      await event.deleteLecture(deletedItem.id).catch(x => console.log(x))
-    },
-
     async initialize() {
-      await this.getCourse(1);
       await this.getEventsTeacher()
+      this.globalStartTime = this.startTime
+      this.globalEndTime = this.endTime
       this.courses = this.coursesData.map(item => {
         return {
           id: item.id,
@@ -216,20 +196,17 @@ export default {
           activeUser: item.activeUser,
         };
       });
-      console.log("Что получаем ", this.courses)
     },
 
     editItem(item) {
       this.editedIndex = this.courses.indexOf(item);
       this.editedItem = {
-        lecture: {
-          id: item.id,
-          title: item.title,
-          startTime: item.startTime,
-          endTime: item.endTime,
-          activeUser: item.activeUser,
-          lectureType: parseInt(item.lectureType),
-        }
+        id: item.id,
+        title: item.title,
+        startTime: item.startTime,
+        endTime: item.endTime,
+        activeUser: item.activeUser,
+        lectureType: parseInt(item.lectureType),
       };
       this.dialog = true;
     },
@@ -237,39 +214,32 @@ export default {
     deleteItem(item) {
       this.editedIndex = this.courses.indexOf(item);
       this.editedItem = {
-        lecture: {
-          id: item.id,
-          title: item.title,
-          startTime: (item.startTime),
-          endTime: (item.endTime),
-          activeUser: item.activeUser,
-          lectureType: parseInt(item.lectureType),
-        },
+        id: item.id,
+        title: item.title,
+        startTime: (item.startTime),
+        endTime: (item.endTime),
+        activeUser: item.activeUser,
+        lectureType: parseInt(item.lectureType),
       };
       this.deletedIndex = item.id
       this.dialogDelete = true;
     },
-
     async deleteItemConfirm() {
       this.courses.splice(this.editedIndex, 1);
-      await this.deleteLecture()
       await this.initialize()
       this.closeDelete();
     },
 
     close() {
       this.dialog = false;
-      console.log(this.editedItem.lecture)
       this.$nextTick(() => {
         this.editedItem = {
-          lecture: {
-            id: null,
-            title: '',
-            startTime: null,
-            endTime: null,
-            lectureType: null,
-            activeUser: null,
-          },
+          id: null,
+          title: '',
+          startTime: null,
+          endTime: null,
+          lectureType: null,
+          activeUser: null,
         };
         this.editedIndex = -1;
       });
@@ -279,14 +249,12 @@ export default {
       this.dialogDelete = false;
       this.$nextTick(() => {
         this.editedItem = this.editedItem = {
-          lecture: {
-            id: null,
-            title: '',
-            startTime: null,
-            endTime: null,
-            lectureType: null,
-            activeUser: null,
-          },
+          id: null,
+          title: '',
+          startTime: null,
+          endTime: null,
+          lectureType: null,
+          activeUser: null,
         };
         this.editedIndex = -1;
       });
@@ -295,32 +263,21 @@ export default {
     async save() {
       if (this.editedIndex > -1) {
         this.$set(this.courses, this.editedIndex, this.editedItem);
-        const body = this.editedItem
-        await this.putLecture(body)
-        await this.initialize()
         this.close();
       } else {
-        const body = {
-          "title": this.editedItem.lecture.title,
-          "startTime": this.editedItem.lecture.startTime,
-          "endTime": this.editedItem.lecture.endTime,
-          "lectureType": this.editedItem.lecture.lectureType,
-          "activeUserId": this.editedItem.lecture.activeUser,
-        }
-        await this.postLecture(body)
         this.courses.push(this.editedItem);
-        await this.initialize()
         this.close();
       }
+      this.$emit('courses-updated', this.courses);
     },
 
     isItemEdited(item) {
-      return item.id === this.editedItem.lecture.id;
+      return item.id === this.editedItem.id;
     },
 
     getTableRowClass(item) {
       const classMap = {
-        1:' green-background',
+        1: ' green-background',
         2: 'yellow-background',
         3: 'red-background',
         4: 'gray-background'
@@ -346,7 +303,7 @@ export default {
         'Медицина': 'red-background',
         'Другое': 'gray-background'
       };
-      const isSelected = this.editedItem.lecture.lectureType === item;
+      const isSelected = this.editedItem.lectureType === item;
       return !isSelected ? classMap[item] || 'gray-background' : '';
     },
 
@@ -354,8 +311,8 @@ export default {
       const index = this.discriminator.indexOf(item);
 
       if (index !== -1) {
-        this.editedItem.lecture.lectureType = index;
-        console.log(this.editedItem.lecture.lectureType)
+        this.editedItem.lectureType = index;
+        console.log(this.editedItem.lectureType)
       }
     },
 
