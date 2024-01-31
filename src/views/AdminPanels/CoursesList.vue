@@ -111,6 +111,12 @@ import CoursesRequest from "@/services/CoursesRequest";
 import UsersRequest from "@/services/UsersRequest";
 
 export default {
+  props: {
+    startTime: {
+      type: String,
+      default: null,
+    },
+  },
   data: () => ({
     sortBy: 'startTime',
     sortDesc: false,
@@ -175,9 +181,10 @@ export default {
       const getItem = {"id": id}
       await course.getCourse(getItem.id).catch(x => console.log(x)).then(x => {
         this.coursesData = x.data.lecture
-        this.globalStartTime = x.data.startTime
         this.globalEndTime = x.data.endTime
       })
+      this.globalStartTime = this.startTime
+      console.log(this.globalStartTime)
     },
 
     async postLecture(body) {
@@ -209,6 +216,7 @@ export default {
           activeUser: item.activeUser,
         };
       });
+      console.log("Что получаем ", this.courses)
     },
 
     editItem(item) {
@@ -217,13 +225,12 @@ export default {
         lecture: {
           id: item.id,
           title: item.title,
-          startTime: (item.startTime),
-          endTime: (item.endTime),
+          startTime: item.startTime,
+          endTime: item.endTime,
           activeUser: item.activeUser,
           lectureType: parseInt(item.lectureType),
         }
       };
-      console.log(this.editedItem)
       this.dialog = true;
     },
 
@@ -266,7 +273,6 @@ export default {
         };
         this.editedIndex = -1;
       });
-
     },
 
     closeDelete() {
@@ -284,7 +290,6 @@ export default {
         };
         this.editedIndex = -1;
       });
-
     },
 
     async save() {
@@ -299,9 +304,8 @@ export default {
           "title": this.editedItem.lecture.title,
           "startTime": this.editedItem.lecture.startTime,
           "endTime": this.editedItem.lecture.endTime,
-          "lectureType": this.discriminator.indexOf(this.editedItem.lecture.lectureType) - 1,
+          "lectureType": this.editedItem.lecture.lectureType,
           "activeUserId": this.editedItem.lecture.activeUser,
-
         }
         await this.postLecture(body)
         this.courses.push(this.editedItem);
@@ -330,8 +334,8 @@ export default {
       const date = new Date(timestamp);
       const month = String(date.getMonth() + 1).padStart(2, '0');
       const day = String(date.getDate()).padStart(2, '0');
-      const hours = String(date.getHours()).padStart(2, '0');
-      const minutes = String(date.getMinutes()).padStart(2, '0');
+      const hours = String(this.globalStartTime.split(':')[0]).padStart(2, '0');
+      const minutes = String(this.globalStartTime.split(':')[1]).padStart(2, '0');
       return `${month}-${day} ${hours}:${minutes}`;
     },
 
@@ -351,7 +355,7 @@ export default {
 
       if (index !== -1) {
         this.editedItem.lecture.lectureType = index;
-        console.log(this.editedItem.lecture.lectureType);
+        console.log(this.editedItem.lecture.lectureType)
       }
     },
 
