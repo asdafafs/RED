@@ -11,6 +11,8 @@
       'prev-page-text': 'Предыдущая страница',
       'next-page-text': 'Следующая страница',
       'no-data-text': 'Нет данных для отображения'}"
+                  :hide-default-footer="true"
+                  disable-pagination
     >
       <template v-slot:top>
         <v-toolbar flat>
@@ -67,7 +69,7 @@
                           </div>
                         </template>
                       </v-col>
-                      <CoursesList></CoursesList>
+                      <CoursesList :start-time="globalStartTime"></CoursesList>
                     </v-col>
                   </v-row>
                 </v-container>
@@ -263,20 +265,6 @@ export default {
       const deletedItem = {"id": this.deletedIndex}
       await lesson.deleteLecture(deletedItem.id).catch(x => console.log(x))
     },
-
-    async putSelectedStudents() {
-      let freeUsers = this.studentList
-      const body = {
-        student: freeUsers.map(user => ({
-          id: user.id,
-          groupId: user.groupId,
-        })),
-      };
-
-      const student = new UsersRequest()
-      await student.putStudentGroup(body)
-    },
-
     async initialize() {
       await this.getGroups();
       await this.getFreeUsers()
@@ -424,7 +412,7 @@ export default {
           "studentId": this.selectedStudentsIds,
           "lecture": this.lessons
         }
-
+        console.log("Что отправляем",body)
         await this.postCourse(body).finally(() => {
           this.groupDisabled = false;
           this.groups.push(this.editedItem.groups);
@@ -466,7 +454,6 @@ export default {
       const today = moment();
       const nextSixMonths = today.clone().add(6, 'months');
 
-      // Выводим даты только для выбранных дней недели
       this.selectedChips.forEach(selectedChip => {
         let currentDay = today.clone().isoWeekday(dayOfWeekMapping[selectedChip]);
 
@@ -483,7 +470,6 @@ export default {
 
     updateSelectedStudentsIds()
     {
-      // Обновляет массив selectedStudentsIds
       this.selectedStudentsIds = this.selectedStudents.map(selectedStudent => {
         this.studentList.find(student => {
           const fullName = `${student.name} ${student.surname} ${student.middleName}`;
