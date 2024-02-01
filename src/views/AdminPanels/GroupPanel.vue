@@ -32,9 +32,9 @@
                   <v-row>
                     <v-col cols="12" sm="12" md="12">
                       <v-text-field v-model="editedItem.groups.title" label="Название группы"
-                                    :rules="titleRules"></v-text-field>
+                                    :rules="[titleRules.required]"></v-text-field>
                       <v-text-field v-model="editedItem.groups.startDate" label="Дата начала курса"
-                                    type="date" :rules="startDateRules"></v-text-field>
+                                    type="date" :rules="[startDateRules.required]"></v-text-field>
                       <v-select
                           v-model="selectedStudents"
                           :value="editedItem.lecture.activeUser"
@@ -55,7 +55,7 @@
                             type="time"
                             suffix="PST"
                             @input="updateGlobalStartTime"
-                            :rules="startTimeRules"
+                            :rules="[startTimeRules.required]"
                         ></v-text-field>
                       </v-col>
                       <v-col>
@@ -73,7 +73,8 @@
                         </template>
                       </v-col>
                       <CoursesList :start-time="globalStartTime" :coursesData="lessons"
-                                   :end-time="globalEndTime" @courses-updated="handleCoursesUpdated"></CoursesList>
+                                   :end-time="globalEndTime" :selected-dates="selectedDates"
+                                   @courses-updated="handleCoursesUpdated"></CoursesList>
                     </v-col>
                   </v-row>
                 </v-container>
@@ -151,6 +152,7 @@ export default {
     selectedChips: [],
     selectedStudents: [],
     selectedStudentsIds: [],
+    selectedDates: [],
     groupData: null,
     groupDisabled: false,
     lessonDisabled: false,
@@ -192,13 +194,13 @@ export default {
     sortBy: 'startTime',
     sortDesc: false,
     titleRules: {
-      required: value => !!value || 'Введите название группы'
+      required: value => !!value
     },
     startDateRules: {
-      required: value => !!value || 'Выберите дату начала курса'
+      required: value => !!value
     },
     startTimeRules: {
-      required: value => !!value || 'Выберите время начала занятий'
+      required: value => !!value
     }
   }),
 
@@ -214,10 +216,9 @@ export default {
     },
 
     isSaveButtonDisabled() {
-      console.log(this.editedItem.groups.startDate)
-      console.log(this.titleRules.required(this.editedItem.groups.title) === true && this.startDateRules.required(this.editedItem.groups.startDate) && this.startTimeRules.required(this.globalStartTime))
-
-      return !(this.titleRules.required(this.editedItem.groups.title) === true && this.startDateRules.required(this.editedItem.groups.startDate) && this.startTimeRules.required(this.globalStartTime));
+      return !(this.titleRules.required(this.editedItem.groups.title) === true
+          && this.startDateRules.required(this.editedItem.groups.startDate)
+          && this.startTimeRules.required(this.globalStartTime));
     },
   },
 
@@ -476,14 +477,19 @@ export default {
       const today = moment();
       const nextSixMonths = today.clone().add(6, 'months');
 
+      const selectedDates = [];
       this.selectedChips.forEach(selectedChip => {
         let currentDay = today.clone().isoWeekday(dayOfWeekMapping[selectedChip]);
 
         while (currentDay.isBefore(nextSixMonths)) {
-          console.log(`${selectedChip} недели:`, currentDay.format('YYYY-MM-DD'));
+          selectedDates.push(currentDay.format('YYYY-MM-DD'));
           currentDay.add(7, 'days');
         }
       });
+
+      selectedDates.sort((a, b) => moment(a).valueOf() - moment(b).valueOf());
+
+      console.log(this.selectedDates = selectedDates);
     },
 
     updateGlobalStartTime(value) {

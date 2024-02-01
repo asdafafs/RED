@@ -82,19 +82,19 @@
         </v-dialog>
       </v-toolbar>
     </template>
-    <template v-slot:item="{ item }">
+    <template v-slot:item="{ item , index }">
       <tr :class="getTableRowClass(item)">
         <td>{{ item.title }}</td>
         <td>
           {{
-            isItemEdited(item) ? formatDatetime(item.startTime)
-                : (item.startTime ? formatDatetime(item.startTime) : globalStartTime + " - 00")
+            isItemEdited(item) ? formatDatetime(item.selectedDates[index])
+                : (selectedDates[index] ? formatDatetime(selectedDates[index]) : globalStartTime + " - 00")
           }}
         </td>
         <td>
           {{
-            isItemEdited(item) ? formatDatetime(item.endTime)
-                : (item.endTime ? formatDatetime(item.endTime) : globalEndTime + " - 00")
+            isItemEdited(item) ? formatDatetime(selectedDates[index])
+                : (selectedDates[index] ? formatDatetime(selectedDates[index]) : globalEndTime + " - 00")
           }}
         </td>
         <td class="text-xs-right">
@@ -124,6 +124,11 @@ export default {
       type: Array,
       default: () => [],
     },
+
+    selectedDates: {
+      type: Array,
+      default: () => []
+    }
   },
   data: () => ({
     sortBy: 'startTime',
@@ -178,7 +183,6 @@ export default {
       const teachers = new UsersRequest();
       await teachers.getActiveUser().catch(x => console.log(x)).then(x => {
         this.teachers = x.data.activeUsers
-        console.log(this.teachers)
       })
     },
 
@@ -312,7 +316,6 @@ export default {
 
       if (index !== -1) {
         this.editedItem.lectureType = index;
-        console.log(this.editedItem.lectureType)
       }
     },
 
