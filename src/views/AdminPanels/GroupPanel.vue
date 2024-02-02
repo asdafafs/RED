@@ -2,15 +2,6 @@
   <v-container fluid>
     <v-data-table :headers="headersGroup" :search="search" :items="groups" class="elevation-1" v-if="!discriminatorUser"
                   no-data-text="Нет данных для отображения"
-                  :footer-props="{
-      'items-per-page-text': 'Записей на странице:',
-      'items-per-page-all-text': 'Все',
-      'page-text': '{0}-{1} из {2}',
-      'prev-icon': 'mdi-chevron-left',
-      'next-icon': 'mdi-chevron-right',
-      'prev-page-text': 'Предыдущая страница',
-      'next-page-text': 'Следующая страница',
-      'no-data-text': 'Нет данных для отображения'}"
                   :hide-default-footer="true"
                   disable-pagination
     >
@@ -25,7 +16,7 @@
             </template>
             <v-card>
               <v-card-title>
-                <span class="text-h5">{{ formTitle }}</span>
+                <span class="text-h5">{{ formTitle() }}</span>
               </v-card-title>
               <v-card-text>
                 <v-container>
@@ -72,9 +63,8 @@
                           </div>
                         </template>
                       </v-col>
-                      <CoursesList :start-time="globalStartTime" :coursesData="lessons"
-                                   :end-time="globalEndTime" :selected-dates="selectedDates"
-                                   @courses-updated="handleCoursesUpdated"></CoursesList>
+                      <CoursesList :start-time="globalStartTime" :coursesData="lessons" :lectors="teachers"
+                                   :end-time="globalEndTime" @courses-updated="handleCoursesUpdated"></CoursesList>
                     </v-col>
                   </v-row>
                 </v-container>
@@ -141,8 +131,6 @@ import moment from 'moment';
 export default {
   components: {CoursesList},
   data: () => ({
-    selectedStudentIds: null,
-    test: null,
     globalStartTime: null,
     globalEndTime: null,
     coursesData: null,
@@ -153,6 +141,7 @@ export default {
     selectedStudents: [],
     selectedStudentsIds: [],
     selectedDates: [],
+    teachers: [],
     groupData: null,
     groupDisabled: false,
     lessonDisabled: false,
@@ -191,8 +180,6 @@ export default {
         lectureType: null,
       },
     },
-    sortBy: 'startTime',
-    sortDesc: false,
     titleRules: {
       required: value => !!value
     },
@@ -205,10 +192,6 @@ export default {
   }),
 
   computed: {
-    formTitle() {
-      return this.editedIndex === -1 ? 'Новая группа' : 'Редактировать группу';
-    },
-
     ...mapState(['user']),
 
     discriminatorUser() {
@@ -222,29 +205,35 @@ export default {
     },
   },
 
-  watch: {
-    dialog(val) {
-      val || this.close();
-    },
-    groupDelete(val) {
-      val || this.closeDelete();
-    },
-  },
-
   created() {
     this.initialize();
   },
 
   methods: {
+    formTitle() {
+      return this.editedIndex === -1 ? 'Новая группа' : 'Редактировать группу';
+    },
+
+    async getEventsTeacher() {
+      const teachers = new UsersRequest();
+      let activeUsers
+      await teachers.getActiveUser().catch(x => console.log(x)).then(x => {
+        activeUsers = x.data.activeUsers
+      })
+      return activeUsers
+    },
+
     handleCoursesUpdated(courses) {
       this.lessons = courses
     },
 
     async getFreeUsers() {
       const user = new UsersRequest();
+      let studentList
       await user.getStudentNullGroup().catch(x => console.log(x)).then(x => {
-        this.studentList = x.data.students
+        studentList = x.data.students
       })
+      return studentList
     },
 
     async getCourse(id) {
@@ -263,9 +252,11 @@ export default {
 
     async getGroups() {
       const groups = new GroupsRequest();
+      let groupData
       await groups.getGroups().catch(x => console.log(x)).then(x => {
-        this.groupData = x.data
+        groupData = x.data
       })
+      return groupData
     },
 
     async postCourse(body) {
@@ -290,10 +281,9 @@ export default {
       await lesson.deleteLecture(deletedItem.id).catch(x => console.log(x))
     },
     async initialize() {
-      await this.getGroups();
-      await this.getFreeUsers()
-      this.groups = await this.groupData;
-
+      this.groups = await this.getGroups();
+      this.studentList = await this.getFreeUsers()
+      this.teachers = await this.getEventsTeacher()
       await this.getCourse(1);
       this.lessons = this.coursesData.map(item => {
         return {
@@ -424,7 +414,6 @@ export default {
           "title": this.editedItem.groups.title,
         }
         await this.putGroups(body)
-        this.close();
       } else {
 
         const body = {
@@ -440,8 +429,8 @@ export default {
           this.groupDisabled = false;
           this.groups.push(this.editedItem.groups);
         })
-        this.close();
       }
+      this.close();
     },
 
     formatDatetime(timestamp) {
@@ -468,10 +457,8 @@ export default {
       const index = this.selectedChips.indexOf(chip);
       if (index !== -1) {
         this.selectedChips.splice(index, 1);
-        console.log(`Убран чип ${chip}, соответствующий дню недели ${dayOfWeekMapping[chip]}`);
       } else {
         this.selectedChips.push(chip);
-        console.log(`Добавлен чип ${chip}, соответствующий дню недели ${dayOfWeekMapping[chip]}`);
       }
 
       const today = moment();

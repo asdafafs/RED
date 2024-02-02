@@ -21,7 +21,7 @@
           </template>
           <v-card>
             <v-card-title>
-              <span class="text-h5">{{ formTitle }}</span>
+              <span class="text-h5">{{ formTitle() }}</span>
             </v-card-title>
             <v-card-text>
               <v-container>
@@ -82,19 +82,19 @@
         </v-dialog>
       </v-toolbar>
     </template>
-    <template v-slot:item="{ item , index }">
+    <template v-slot:item="{ item  }">
       <tr :class="getTableRowClass(item)">
         <td>{{ item.title }}</td>
         <td>
           {{
-            isItemEdited(item) ? formatDatetime(item.selectedDates[index])
-                : (selectedDates[index] ? formatDatetime(selectedDates[index]) : globalStartTime + " - 00")
+            isItemEdited(item) ? formatDatetime(item.startTime)
+                : (item.startTime ? formatDatetime(item.startTime) : globalStartTime + " - 00")
           }}
         </td>
         <td>
           {{
-            isItemEdited(item) ? formatDatetime(selectedDates[index])
-                : (selectedDates[index] ? formatDatetime(selectedDates[index]) : globalEndTime + " - 00")
+            isItemEdited(item) ? formatDatetime(item.startTime)
+                : (item.startTime ? formatDatetime(item.startTime) : globalEndTime + " - 00")
           }}
         </td>
         <td class="text-xs-right">
@@ -106,8 +106,6 @@
   </v-data-table>
 </template>
 <script>
-import UsersRequest from "@/services/UsersRequest";
-
 export default {
   props: {
     startTime: {
@@ -125,7 +123,7 @@ export default {
       default: () => [],
     },
 
-    selectedDates: {
+    lectors: {
       type: Array,
       default: () => []
     }
@@ -136,7 +134,6 @@ export default {
     discriminator: [null, "Основы вождения", "Основы ПДД", "Медицина", "Другое"],
     globalStartTime: null,
     globalEndTime: null,
-    courseData: null,
     dialog: false,
     dialogDelete: false,
     headers: [
@@ -159,12 +156,6 @@ export default {
     },
   }),
 
-  computed: {
-    formTitle() {
-      return this.editedIndex === -1 ? 'Новое занятие' : 'Редактировать занятие';
-    },
-  },
-
   watch: {
     dialog(val) {
       val || this.close();
@@ -179,15 +170,8 @@ export default {
   },
 
   methods: {
-    async getEventsTeacher() {
-      const teachers = new UsersRequest();
-      await teachers.getActiveUser().catch(x => console.log(x)).then(x => {
-        this.teachers = x.data.activeUsers
-      })
-    },
-
-    async initialize() {
-      await this.getEventsTeacher()
+    initialize() {
+      this.teachers = this.lectors
       this.globalStartTime = this.startTime
       this.globalEndTime = this.endTime
       this.courses = this.coursesData.map(item => {
@@ -228,9 +212,10 @@ export default {
       this.deletedIndex = item.id
       this.dialogDelete = true;
     },
-    async deleteItemConfirm() {
+
+    deleteItemConfirm() {
       this.courses.splice(this.editedIndex, 1);
-      await this.initialize()
+      this.$emit('courses-updated', this.courses);
       this.closeDelete();
     },
 
@@ -264,7 +249,7 @@ export default {
       });
     },
 
-    async save() {
+    save() {
       if (this.editedIndex > -1) {
         this.$set(this.courses, this.editedIndex, this.editedItem);
         this.close();
@@ -272,6 +257,7 @@ export default {
         this.courses.push(this.editedItem);
         this.close();
       }
+
       this.$emit('courses-updated', this.courses);
     },
 
@@ -319,6 +305,9 @@ export default {
       }
     },
 
+    formTitle() {
+      return this.editedIndex === -1 ? 'Новое занятие' : 'Редактировать занятие';
+    },
   },
 };
 </script>
