@@ -24,6 +24,7 @@ import MonthViewSchedule from "@/views/SchedulersVIews/MonthViewSchedule.vue";
 import GroupPanel from "@/views/AdminPanels/GroupPanel.vue";
 import ScheduleClasses from "@/views/SignUpClasses/ScheduleClasses.vue";
 import ClassesView from "@/views/SignUpClasses/ClassesView.vue";
+import Test from "@/views/Test";
 
 
 Vue.use(VueRouter)
@@ -160,6 +161,11 @@ const routes = [
         path: "/test",
         name: "test",
         component: TestTest
+    },
+    {
+        path: '/test-kal',
+        name: 'test-kal',
+        component: Test
     }
 
 ]
