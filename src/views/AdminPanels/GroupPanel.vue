@@ -127,6 +127,7 @@ import {mapState} from "vuex";
 import EventsRequest from "@/services/EventsRequest";
 import CoursesList from "@/views/AdminPanels/CoursesList.vue";
 import moment from 'moment';
+import Vue from "vue";
 
 export default {
   components: {CoursesList},
@@ -140,7 +141,6 @@ export default {
     selectedChips: [],
     selectedStudents: [],
     selectedStudentsIds: [],
-    selectedDates: [],
     teachers: [],
     groupData: null,
     groupDisabled: false,
@@ -150,7 +150,6 @@ export default {
     groupDelete: false,
     search: '',
     chips: ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'],
-    items: ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'],
     headersGroup: [
       {text: 'Название', align: 'start', sortable: false, value: 'title',},
       {text: 'Действия', value: 'actions', sortable: false},
@@ -188,7 +187,10 @@ export default {
     },
     startTimeRules: {
       required: value => !!value
-    }
+    },
+    dateOfWeek: [false, false, false, false, true, false, false],
+    cursorDateOfWeek: 0,
+    cursorDate: moment(new Date())
   }),
 
   computed: {
@@ -203,6 +205,12 @@ export default {
           && this.startDateRules.required(this.editedItem.groups.startDate)
           && this.startTimeRules.required(this.globalStartTime));
     },
+
+    areDatesOfWeekNotEmpty() {
+      return this.dateOfWeek.some(item => item === true);
+    },
+
+
   },
 
   created() {
@@ -442,43 +450,6 @@ export default {
       return `${year}-${month}-${day}`;
     },
 
-
-    toggleSelectedChip(chip) {
-      const dayOfWeekMapping = {
-        'Пн': 1,
-        'Вт': 2,
-        'Ср': 3,
-        'Чт': 4,
-        'Пт': 5,
-        'Сб': 6,
-        'Вс': 7,
-      };
-
-      const index = this.selectedChips.indexOf(chip);
-      if (index !== -1) {
-        this.selectedChips.splice(index, 1);
-      } else {
-        this.selectedChips.push(chip);
-      }
-
-      const today = moment();
-      const nextSixMonths = today.clone().add(6, 'months');
-
-      const selectedDates = [];
-      this.selectedChips.forEach(selectedChip => {
-        let currentDay = today.clone().isoWeekday(dayOfWeekMapping[selectedChip]);
-
-        while (currentDay.isBefore(nextSixMonths)) {
-          selectedDates.push(currentDay.format('YYYY-MM-DD'));
-          currentDay.add(7, 'days');
-        }
-      });
-
-      selectedDates.sort((a, b) => moment(a).valueOf() - moment(b).valueOf());
-
-      console.log(this.selectedDates = selectedDates);
-    },
-
     updateGlobalStartTime(value) {
       this.globalStartTime = value;
     },
@@ -491,9 +462,89 @@ export default {
         });
         return selectedStudent;
       });
-    }
-    ,
+    },
+
+    toggleSelectedChip(chip) {
+      const dayOfWeekMapping = {
+        'Пн': 0,
+        'Вт': 1,
+        'Ср': 2,
+        'Чт': 3,
+        'Пт': 4,
+        'Сб': 5,
+        'Вс': 6,
+      };
+
+      const index = this.selectedChips.indexOf(chip);
+      if (index !== -1) {
+        this.selectedChips.splice(index, 1);
+      } else {
+        this.selectedChips.push(chip);
+      }
+      const sortedSelectedDays = this.selectedChips.map(day => dayOfWeekMapping[day]);
+      this.dateOfWeek = this.dateOfWeek.map((value, idx) => sortedSelectedDays.includes(idx));
+
+      let lectureStartHour = 20
+      this.lessons.forEach(item => {
+        //set day
+        item.startTime = this.getNextDay().set({
+          hour: lectureStartHour
+        })
+        const endTime = moment(item.startTime);
+        const lectureLengthTimeInHours = 2
+
+        endTime.add('hour', lectureLengthTimeInHours)
+
+        Vue.set(item, 'endTime', endTime);
+
+        Vue.set(item, 'startTime', item.startTime.format('YYYY-MM-DDTHH:mm:ss'));
+        Vue.set(item, 'endTime', item.endTime.format('YYYY-MM-DDTHH:mm:ss'));
+      })
+
+      this.cursorDate = moment(new Date())
+    },
+
+    getNextDay() {
+      const nextWeekendIndex = this.getNextWeekendDayIndex()
+      return this.getNextDayByWeekendDayIndex(nextWeekendIndex);
+    },
+
+    getNextWeekendDayIndex() {
+      if (!this.areDatesOfWeekNotEmpty) return;
+      while (true) {
+        if (this.dateOfWeek[this.cursorDateOfWeek]) {
+          this.cursorDateOfWeek++;
+          return this.cursorDateOfWeek - 1;
+        }
+
+        this.cursorDateOfWeek++;
+
+        if (this.cursorDateOfWeek > this.dateOfWeek.length - 1) {
+          this.cursorDateOfWeek = 0;
+        }
+
+      }
+    },
+
+    getNextDayByWeekendDayIndex(dayOfWeek) {
+
+      let day = dayOfWeek + 1;
+
+      const date = moment(this.cursorDate).isoWeekday(day)
+
+      if (date < this.cursorDate) {
+        this.cursorDate = moment(this.cursorDate).add(1, 'weeks').isoWeekday(day)
+      } else {
+        this.cursorDate = date
+      }
+
+      return this.cursorDate;
+    },
   },
+
+  mounted() {
+
+  }
 };
 </script>
 <style>

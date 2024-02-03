@@ -1,5 +1,5 @@
 <template>
-  <v-data-table :headers="headers" :items="courses" class="elevation-1" no-data-text="Нет данных для отображения"
+  <v-data-table :headers="headers" :items="lessons" class="elevation-1" no-data-text="Нет данных для отображения"
                 :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" :footer-props="{
       'items-per-page-text': 'Записей на странице:',
       'items-per-page-all-text': 'Все',
@@ -27,15 +27,19 @@
               <v-container>
                 <v-row>
                   <v-col cols="12" sm="12" md="12">
-                    <v-text-field v-model="editedItem.title" label="Название"></v-text-field>
-                    <v-text-field v-model="editedItem.startTime" label="Начало занятия" type="datetime-local">
+                    <v-text-field v-model="editedItem.title" label="Название"
+                                  :rules="[titleRules.required]"></v-text-field>
+                    <v-text-field v-model="editedItem.startTime" label="Начало занятия" type="datetime-local"
+                                  :rules="[startDateTimeRules.required]">
                     </v-text-field>
-                    <v-text-field v-model="editedItem.endTime" label="Конец занятия" type="datetime-local">
+                    <v-text-field v-model="editedItem.endTime" label="Конец занятия" type="datetime-local"
+                                  :rules="[endDateTimeRules.required]">
                     </v-text-field>
                     <v-select
                         v-model="discriminator[editedItem.lectureType]"
                         label="Тип занятия"
                         :items="discriminator"
+                        :rules="[typeEventRules.required]"
                     >
                       <template v-slot:item="{ item }">
                         <v-list-item :class="getListItemClass(item)" @click="selectItem(item)">
@@ -63,7 +67,7 @@
               <v-btn color="blue darken-1" text @click="close">
                 Отмена
               </v-btn>
-              <v-btn color="blue darken-1" text @click="save">
+              <v-btn color="blue darken-1" text @click="save" :disabled="isSaveButtonDisabled">
                 OK
               </v-btn>
             </v-card-actions>
@@ -154,6 +158,19 @@ export default {
       lectureType: null,
       activeUser: null,
     },
+
+    titleRules: {
+      required: value => !!value
+    },
+    startDateTimeRules: {
+      required: value => !!value
+    },
+    endDateTimeRules: {
+      required: value => !!value
+    },
+    typeEventRules: {
+      required: value => !!value
+    },
   }),
 
   watch: {
@@ -163,6 +180,23 @@ export default {
     dialogDelete(val) {
       val || this.closeDelete();
     },
+
+    coursesData: function(newCoursesData) {
+      console.log('Courses data changed:', newCoursesData);
+    }
+  },
+
+  computed: {
+    isSaveButtonDisabled() {
+      return !(this.titleRules.required(this.editedItem.title)
+          && this.startDateTimeRules.required(this.editedItem.startTime)
+          && this.endDateTimeRules.required(this.editedItem.endTime)
+          && this.typeEventRules.required(this.editedItem.endTime))
+    },
+
+    lessons() {
+      return this.coursesData;
+    }
   },
 
   created() {
