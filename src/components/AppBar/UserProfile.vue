@@ -26,10 +26,6 @@
                 @click.stop="logoutAndExit">
               Выйти из приложения
             </v-list-item>
-            <v-list-item v-if="!student"
-                         @click.stop="$router.push({name: 'courses'}).catch(err => {})">
-              Добавить курс
-            </v-list-item>
           </v-list>
         </v-menu>
       </v-col>
@@ -37,7 +33,6 @@
   </v-container>
 </template>
 <script>
-import IdentityRequest from "@/services/IdentityRequest";
 
 export default {
   name: 'UserProfile',
