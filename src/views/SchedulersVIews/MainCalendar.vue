@@ -10,7 +10,7 @@
         <v-btn text class="black--text btn pa-0" width="100%"
                :class="{'custom-bg': isButtonPressed[0],}"
                @click="changeButtonState(0);
-                 $router.push('/testPlan/mainCal/testDay').catch(err => {})"
+                 $router.push({name: 'plan-main-day'}).catch(err => {})"
         >
           <span :class="{ 'custom_text':isButtonPressed[0]}">День</span>
         </v-btn>
@@ -19,7 +19,7 @@
         <v-btn text class="black--text btn pa-0" width="100%"
                :class="{'custom-bg': isButtonPressed[1]}"
                @click="changeButtonState(1);
-                 $router.push('/testPlan/mainCal/testWeek').catch(err => {})">
+                 $router.push({name: 'plan-main-week'}).catch(err => {})">
           <span :class="{ 'custom_text':isButtonPressed[1]}">Неделя</span>
         </v-btn>
       </v-col>
@@ -27,7 +27,7 @@
         <v-btn text class="black--text btn pa-0" width="100%"
                :class="{'custom-bg': isButtonPressed[2]}"
                @click="changeButtonState(2);
-                 $router.push('/testPlan/mainCal/testMonth').catch(err => {})">
+                 $router.push({name: 'plan-main-month'}).catch(err => {})">
           <span :class="{ 'custom_text':isButtonPressed[2]}">Месяц</span>
         </v-btn>
       </v-col>

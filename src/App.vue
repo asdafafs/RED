@@ -40,7 +40,9 @@ export default {
         .then(async (x) => {
           await store.dispatch('GET_CURRENT_USER', x)
           if (this.$route.path === '/')
-            await this.$router.push('/schedule/lessons')
+            await this.$router.push({
+              name: 'schedule-lessons'
+            })
         })
   },
   computed: {

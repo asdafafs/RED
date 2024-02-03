@@ -27,7 +27,7 @@
               Выйти из приложения
             </v-list-item>
             <v-list-item v-if="!student"
-                         @click.stop="$router.push('/courses').catch(err => {})">
+                         @click.stop="$router.push({name: 'courses'}).catch(err => {})">
               Добавить курс
             </v-list-item>
           </v-list>
@@ -49,7 +49,7 @@ export default {
   methods: {
     async logoutAndExit() {
       await this.$store.dispatch('LOGOUT')
-      await this.$router.push('/');
+      await this.$router.push({name: 'main'});
     }
   }
 }
