@@ -26,7 +26,7 @@
 export default {
   methods: {
     goToMainPage() {
-      if (this.$route.path !== '/') this.$router.push('/')
+      if (this.$route.name !== 'main') this.$router.push({name: 'main'})
     }
   }
 }
