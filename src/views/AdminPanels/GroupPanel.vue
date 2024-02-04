@@ -485,6 +485,9 @@ export default {
       } else {
         this.selectedChips.push(chip);
       }
+
+      if (this.selectedChips.length === 0) return
+
       const sortedSelectedDays = this.selectedChips.map(day => dayOfWeekMapping[day]);
       this.dateOfWeek = this.dateOfWeek.map((value, idx) => sortedSelectedDays.includes(idx));
 
