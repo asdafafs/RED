@@ -168,10 +168,6 @@ export default {
     dialogDelete(val) {
       val || this.closeDelete();
     },
-
-    coursesData: function (newCoursesData) {
-      console.log('Courses data changed:', newCoursesData);
-    }
   },
 
   computed: {

@@ -32,7 +32,7 @@
                           :value="editedItem.lecture.activeUser"
                           :items="studentList"
                           :item-text="item => `${item.name} ${item.surname} ${item.middleName}`"
-                          label="Список учеников"
+                          label="Список свободных учеников"
                           multiple
                           hint="Выберите студентов для группы"
                           persistent-hint
@@ -490,8 +490,6 @@ export default {
 
       let [lectureStartHour, lectureStartMinutes] = this.globalStartTime.split(':').map(Number);
 
-      console.log('?', lectureStartHour)
-
       this.lessons.forEach(item => {
         //set day
         item.startTime = this.getNextDay().set({
@@ -540,7 +538,7 @@ export default {
 
       const date = moment(this.cursorDate).isoWeekday(day)
       //еще надо условие а то жижа
-      if (date < this.cursorDate) {
+      if (date <= this.cursorDate) {
         this.cursorDate = moment(this.cursorDate).add(1, 'weeks').isoWeekday(day)
       } else {
         this.cursorDate = date

@@ -160,6 +160,11 @@ export default {
     userID() {
       return this.user.userId
     },
+
+    isButtonPressed(){
+      return [this.$route.path === '/schedule/lessons', this.$route.path === '/schedule/lessons', this.$route.path === '/schedule/lessons']
+    }
+
   },
 
   mounted() {
@@ -194,7 +199,6 @@ export default {
     test: false,
     isMobile: false,
     selectedOpen: false,
-    isButtonPressed: [true, false, false,],
     num: 70,
     events: [],
     teachers: [],
