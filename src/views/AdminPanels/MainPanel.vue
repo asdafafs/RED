@@ -34,19 +34,22 @@
 export default {
   components: {},
   data: () => ({
-    isButtonPressed: [true, false, false,],
   }),
   methods: {
-
-    //добавить проверку active_user
-
     changeButtonState(index) {
-      this.isButtonPressed = this.isButtonPressed.map(() => false)
-      this.isButtonPressed[index] = true;
+      if (this.lastPressedIndex !== -1) {
+        this.$set(this.isButtonPressed, this.lastPressedIndex, false);
+      }
+      this.$set(this.isButtonPressed, index, true);
+      this.lastPressedIndex = index;
     },
-
-
   },
+
+  computed:{
+    isButtonPressed(){
+      return [this.$route.path === '/admin/students', this.$route.path === '/admin/teachers', this.$route.path === '/admin/groups']
+    }
+  }
 }
 </script>
 <style>
