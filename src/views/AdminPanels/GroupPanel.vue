@@ -25,7 +25,8 @@
                       <v-text-field v-model="editedItem.groups.title" label="Название группы"
                                     :rules="[titleRules.required]"></v-text-field>
                       <v-text-field v-model="editedItem.groups.startDate" label="Дата начала курса"
-                                    type="date" :rules="[startDateRules.required]"></v-text-field>
+                                    type="date" :rules="[startDateRules.required]"
+                                    @input="updateGlobalStartDate"></v-text-field>
                       <v-select
                           v-model="selectedStudents"
                           :value="editedItem.lecture.activeUser"
@@ -63,8 +64,8 @@
                           </div>
                         </template>
                       </v-col>
-                      <CoursesList :start-time="globalStartTime" :coursesData="lessons" :lectors="teachers"
-                                   :end-time="globalEndTime" @courses-updated="handleCoursesUpdated"></CoursesList>
+                      <CoursesList :coursesData="lessons" :lectors="teachers"
+                                   @courses-updated="handleCoursesUpdated"></CoursesList>
                     </v-col>
                   </v-row>
                 </v-container>
@@ -209,8 +210,6 @@ export default {
     areDatesOfWeekNotEmpty() {
       return this.dateOfWeek.some(item => item === true);
     },
-
-
   },
 
   created() {
@@ -454,6 +453,10 @@ export default {
       this.globalStartTime = value;
     },
 
+    updateGlobalStartDate(value) {
+      return this.globalStartDate = value
+    },
+
     updateSelectedStudentsIds() {
       this.selectedStudentsIds = this.selectedStudents.map(selectedStudent => {
         this.studentList.find(student => {
@@ -474,6 +477,7 @@ export default {
         'Сб': 5,
         'Вс': 6,
       };
+      this.cursorDate = this.globalStartDate
 
       const index = this.selectedChips.indexOf(chip);
       if (index !== -1) {
@@ -484,11 +488,15 @@ export default {
       const sortedSelectedDays = this.selectedChips.map(day => dayOfWeekMapping[day]);
       this.dateOfWeek = this.dateOfWeek.map((value, idx) => sortedSelectedDays.includes(idx));
 
-      let lectureStartHour = 20
+      let [lectureStartHour, lectureStartMinutes] = this.globalStartTime.split(':').map(Number);
+
+      console.log('?', lectureStartHour)
+
       this.lessons.forEach(item => {
         //set day
         item.startTime = this.getNextDay().set({
-          hour: lectureStartHour
+          hour: lectureStartHour,
+          minute: lectureStartMinutes,
         })
         const endTime = moment(item.startTime);
         const lectureLengthTimeInHours = 2
@@ -497,10 +505,10 @@ export default {
 
         Vue.set(item, 'endTime', endTime);
 
-        Vue.set(item, 'startTime', item.startTime.format('YYYY-MM-DDTHH:mm:ss'));
-        Vue.set(item, 'endTime', item.endTime.format('YYYY-MM-DDTHH:mm:ss'));
+        Vue.set(item, 'startTime', item.startTime.format('YYYY-MM-DDTHH:mm'));
+        Vue.set(item, 'endTime', item.endTime.format('YYYY-MM-DDTHH:mm'));
       })
-
+      this.cursorDateOfWeek = 0
       this.cursorDate = moment(new Date())
     },
 
@@ -531,7 +539,7 @@ export default {
       let day = dayOfWeek + 1;
 
       const date = moment(this.cursorDate).isoWeekday(day)
-
+      //еще надо условие а то жижа
       if (date < this.cursorDate) {
         this.cursorDate = moment(this.cursorDate).add(1, 'weeks').isoWeekday(day)
       } else {
@@ -542,9 +550,6 @@ export default {
     },
   },
 
-  mounted() {
-
-  }
 };
 </script>
 <style>

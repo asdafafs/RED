@@ -91,14 +91,12 @@
         <td>{{ item.title }}</td>
         <td>
           {{
-            isItemEdited(item) ? formatDatetime(item.startTime)
-                : (item.startTime ? formatDatetime(item.startTime) : globalStartTime + " - 00")
+            formatDatetime(item.startTime)
           }}
         </td>
         <td>
           {{
-            isItemEdited(item) ? formatDatetime(item.startTime)
-                : (item.startTime ? formatDatetime(item.startTime) : globalEndTime + " - 00")
+            formatDatetime(item.endTime)
           }}
         </td>
         <td class="text-xs-right">
@@ -112,16 +110,6 @@
 <script>
 export default {
   props: {
-    startTime: {
-      type: String,
-      default: null,
-    },
-
-    endTime: {
-      type: String,
-      default: null,
-    },
-
     coursesData: {
       type: Array,
       default: () => [],
@@ -181,7 +169,7 @@ export default {
       val || this.closeDelete();
     },
 
-    coursesData: function(newCoursesData) {
+    coursesData: function (newCoursesData) {
       console.log('Courses data changed:', newCoursesData);
     }
   },
@@ -206,8 +194,6 @@ export default {
   methods: {
     initialize() {
       this.teachers = this.lectors
-      this.globalStartTime = this.startTime
-      this.globalEndTime = this.endTime
       this.courses = this.coursesData.map(item => {
         return {
           id: item.id,
@@ -295,10 +281,6 @@ export default {
       this.$emit('courses-updated', this.courses);
     },
 
-    isItemEdited(item) {
-      return item.id === this.editedItem.id;
-    },
-
     getTableRowClass(item) {
       const classMap = {
         1: ' green-background',
@@ -315,8 +297,8 @@ export default {
       const date = new Date(timestamp);
       const month = String(date.getMonth() + 1).padStart(2, '0');
       const day = String(date.getDate()).padStart(2, '0');
-      const hours = String(this.globalStartTime.split(':')[0]).padStart(2, '0');
-      const minutes = String(this.globalStartTime.split(':')[1]).padStart(2, '0');
+      const hours = String(date.getHours()).padStart(2, '0');
+      const minutes = String(date.getMinutes()).padStart(2, '0');
       return `${month}-${day} ${hours}:${minutes}`;
     },
 
