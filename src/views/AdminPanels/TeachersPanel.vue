@@ -34,12 +34,12 @@
                 <v-container>
                   <v-row>
                     <v-col cols="12" sm="12" md="12">
-                      <v-text-field v-model="editedTeacher.name" label="Имя"></v-text-field>
-                      <v-text-field v-model="editedTeacher.surname" label="Фамилия"></v-text-field>
-                      <v-text-field v-model="editedTeacher.middleName" label="Отчество"></v-text-field>
-                      <v-text-field v-model="editedTeacher.email" label="email"></v-text-field>
+                      <v-text-field v-model="editedTeacher.name" label="Имя" :rules="[nameRule.required()]"></v-text-field>
+                      <v-text-field v-model="editedTeacher.surname" label="Фамилия" :rules="[surnameRule.required()]"></v-text-field>
+                      <v-text-field v-model="editedTeacher.middleName" label="Отчество" :rules="[middleNameRule.required()]"></v-text-field>
+                      <v-text-field v-model="editedTeacher.email" label="email" :rules="[emailRule.required()]"></v-text-field>
                       <vue-text-mask class="phone-field" v-model="editedTeacher.phoneNumber" :mask="mask"
-                                     placeholderChar="#"></vue-text-mask>
+                                     placeholderChar="#" :rules="[phoneRule.required()]"></vue-text-mask>
                     </v-col>
                   </v-row>
                 </v-container>
@@ -49,7 +49,7 @@
                 <v-btn color="blue darken-1" text @click="close">
                   Отмена
                 </v-btn>
-                <v-btn color="blue darken-1" text @click="save">
+                <v-btn color="blue darken-1" text @click="save" :disabled="isSaveButtonDisabled">
                   OK
                 </v-btn>
               </v-card-actions>
@@ -90,7 +90,6 @@ export default {
   components: {VueTextMask},
   data: () => ({
     search: '',
-    userData: null,
     dialog: false,
     dialogDelete: false,
     mask: ['+', /\d/, '(', /[1-9]/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, '-', /\d/, /\d/],
@@ -100,7 +99,9 @@ export default {
       {text: 'Отчество', align: 'start', sortable: false, value: 'middleName',},
       {text: 'Действия', value: 'actions', sortable: false},
     ],
-    persons: {},
+    persons: {
+      activeUsers:[]
+    },
     editedIndex: -1,
     deletedIndex: -1,
     editedTeacher: {
@@ -110,12 +111,25 @@ export default {
       email: '',
       phoneNumber: '7'
     },
+    nameRule: {required: value => !!value},
+    surnameRule: {required: value => !!value},
+    middleNameRule: {required: value => !!value},
+    emailRule: {required: value => !!value},
+    phoneRule: {required: value => !!value},
   }),
 
   computed: {
     formTitle() {
       return this.editedIndex === -1 ? 'Новый элемент' : 'Редактировать элемент';
     },
+
+    isSaveButtonDisabled(){
+      return !(this.nameRule.required(this.editedTeacher.name)
+          && this.surnameRule.required(this.editedTeacher.surname)
+          && this.middleNameRule.required(this.editedTeacher.middleName)
+          && this.emailRule.required(this.editedTeacher.email)
+          && this.phoneRule.required(this.editedTeacher.phoneNumber))
+    }
   },
 
   watch: {
@@ -131,19 +145,19 @@ export default {
     this.initialize();
   },
 
-
   methods: {
-    async getUser() {
+    async getActiveUsers() {
       const user = new UsersRequest();
+      let teachersData
       await user.getActiveUser().catch(x => console.log(x)).then(x => {
-        this.userData = x.data
+        teachersData = x.data
       })
+      return teachersData
     },
 
     async postActiveUser(body) {
       const user = new UsersRequest();
       await user.postActiveUser(body).catch(x => console.log(x))
-
     },
 
     async putActiveUser(body) {
@@ -158,8 +172,7 @@ export default {
     },
 
     async initialize() {
-      await this.getUser();
-      this.persons = await this.userData;
+      this.persons = await this.getActiveUsers()
     },
 
     editItem(item) {
@@ -238,7 +251,6 @@ export default {
     },
   },
 };
-
 </script>
 <style scoped>
 </style>

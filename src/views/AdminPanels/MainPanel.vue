@@ -61,7 +61,4 @@ export default {
   background-color: #1e1f22;
 }
 
-.custom_text {
-  color: white;
-}
 </style>

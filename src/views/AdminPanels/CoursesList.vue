@@ -124,8 +124,6 @@ export default {
     sortBy: 'startTime',
     sortDesc: false,
     discriminator: [null, "Основы вождения", "Основы ПДД", "Медицина", "Другое"],
-    globalStartTime: null,
-    globalEndTime: null,
     dialog: false,
     dialogDelete: false,
     headers: [

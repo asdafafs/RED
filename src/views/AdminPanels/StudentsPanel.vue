@@ -34,11 +34,13 @@
                 <v-container>
                   <v-row>
                     <v-col cols="12" sm="12" md="12">
-                      <v-text-field v-model="editedStudent.name" label="Имя"></v-text-field>
-                      <v-text-field v-model="editedStudent.surname" label="Фамилия"></v-text-field>
-                      <v-text-field v-model="editedStudent.middleName" label="Отчество"></v-text-field>
-                      <v-text-field v-model="editedStudent.email" label="email"></v-text-field>
-                      <vue-text-mask class="phone-field" v-model="editedStudent.phoneNumber" :mask="mask" placeholderChar="#"></vue-text-mask>
+                      <v-text-field v-model="editedStudent.name" label="Имя" :rules="[nameRule.required()]"></v-text-field>
+                      <v-text-field v-model="editedStudent.surname" label="Фамилия" :rules="[surnameRule.required()]"></v-text-field>
+                      <v-text-field v-model="editedStudent.middleName" label="Отчество"
+                                    :rules="[middleNameRule.required()]"></v-text-field>
+                      <v-text-field v-model="editedStudent.email" label="email" :rules="[emailRule.required()]"></v-text-field>
+                      <vue-text-mask class="phone-field" v-model="editedStudent.phoneNumber" :mask="mask"
+                                     placeholderChar="#" :rules="[phoneRule.required()]"></vue-text-mask>
                       <v-select
                           v-model="editedStudent.groupId"
                           :items="groups"
@@ -56,7 +58,7 @@
                 <v-btn color="blue darken-1" text @click="close">
                   Отмена
                 </v-btn>
-                <v-btn color="blue darken-1" text @click="save">
+                <v-btn color="blue darken-1" text @click="save" :disabled="isSaveButtonDisabled">
                   OK
                 </v-btn>
               </v-card-actions>
@@ -78,8 +80,8 @@
       <template v-slot:item="{ item }">
         <tr>
           <td>{{ item.name }}</td>
-          <td>{{item.surname}}</td>
-          <td>{{item.middleName}}</td>
+          <td>{{ item.surname }}</td>
+          <td>{{ item.middleName }}</td>
           <td>{{ getGroupName(item.groupId) }}</td>
           <td class="text-xs-right">
             <v-icon small class="mr-2" @click="editItem(item)">mdi-pencil</v-icon>
@@ -100,7 +102,6 @@ export default {
   components: {VueTextMask},
   data: () => ({
     search: '',
-    userData: null,
     dialog: false,
     dialogDelete: false,
     mask: ['+', /\d/, '(', /[1-9]/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, '-', /\d/, /\d/],
@@ -112,7 +113,9 @@ export default {
       {text: 'Действия', value: 'actions', sortable: false},
     ],
     groups: [],
-    persons: [],
+    persons: {
+      students: []
+    },
     editedIndex: -1,
     deletedIndex: -1,
     editedStudent: {
@@ -123,12 +126,27 @@ export default {
       groupId: '',
       phoneNumber: '7',
     },
+
+    nameRule: {required: value => !!value},
+    surnameRule: {required: value => !!value},
+    middleNameRule: {required: value => !!value},
+    emailRule: {required: value => !!value},
+    phoneRule: {required: value => !!value},
   }),
 
   computed: {
     formTitle() {
       return this.editedIndex === -1 ? 'Новый элемент' : 'Редактировать элемент';
     },
+
+    isSaveButtonDisabled(){
+      return !(this.nameRule.required(this.editedStudent.name)
+          && this.surnameRule.required(this.editedStudent.surname)
+          && this.middleNameRule.required(this.editedStudent.middleName)
+          && this.emailRule.required(this.editedStudent.email)
+          && this.phoneRule.required(this.editedStudent.phoneNumber))
+
+    }
   },
 
   watch: {
@@ -148,24 +166,25 @@ export default {
   methods: {
     async getGroups() {
       const groups = new GroupsRequest();
-      let test
+      let groupsData
       await groups.getGroups().catch(x => console.log(x)).then(x => {
-        test = x.data
+        groupsData = x.data
       })
-      return test
+      return groupsData
     },
 
-    async getUser() {
+    async getStudents() {
       const user = new UsersRequest();
+      let studentsData
       await user.getUser().catch(x => console.log(x)).then(x => {
-        this.userData = x.data
+        studentsData = x.data
       })
+      return studentsData
     },
 
     async postUser(body) {
       const user = new UsersRequest();
       await user.postUser(body).catch(x => console.log(x))
-
     },
 
     async putUser(body) {
@@ -180,10 +199,8 @@ export default {
     },
 
     async initialize() {
-      await this.getUser();
-      this.persons = await this.userData;
+      this.persons = await this.getStudents()
       this.groups = await this.getGroups()
-      console.log(this.groups )
     },
 
     editItem(item) {
@@ -197,7 +214,6 @@ export default {
         middleName: item.middleName,
         groupId: item.groupId,
       };
-      console.log(this.editedStudent, 1)
       this.dialog = true;
     },
 
@@ -223,7 +239,7 @@ export default {
           middleName: '',
           groupId: '',
           email: '',
-          phoneNumber:'7'
+          phoneNumber: '7'
         };
         this.editedIndex = -1;
       });
@@ -238,7 +254,7 @@ export default {
           middleName: '',
           groupId: '',
           email: '',
-          phoneNumber:'7'
+          phoneNumber: '7'
         };
         this.editedIndex = -1;
       });
@@ -251,10 +267,7 @@ export default {
         await this.putUser(body)
         this.close();
       } else {
-        console.log(this.editedStudent)
-        console.log(0)
         this.persons.students.push(this.editedStudent);
-        console.log(1)
         const body = {
           "email": this.editedStudent.email,
           "phoneNumber": this.editedStudent.phoneNumber,
@@ -300,6 +313,5 @@ export default {
 .phone-field:focus {
   border-color: #80bdff;
   box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
-  /* Change the bottom border color on focus */
 }
 </style>
