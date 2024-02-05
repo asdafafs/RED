@@ -14,15 +14,8 @@
         :search="search"
         class="elevation-1"
         no-data-text="Нет данных для отображения"
-        :footer-props="{
-      'items-per-page-text': 'Записей на странице:',
-      'items-per-page-all-text': 'Все',
-      'page-text': '{0}-{1} из {2}',
-      'prev-icon': 'mdi-chevron-left',
-      'next-icon': 'mdi-chevron-right',
-      'prev-page-text': 'Предыдущая страница',
-      'next-page-text': 'Следующая страница',
-      'no-data-text': 'Нет данных для отображения'}"
+        :hide-default-footer="true"
+        disable-pagination
     >
       <template v-slot:top>
         <v-toolbar flat>

@@ -21,14 +21,7 @@ export default {
     this.test = true
   },
   data: () => ({
-    isButtonPressed: [false, false, false,],
     test: false,
-    classesSelectorsToRemove: [],
-    type: 'month',
-    mode: 'stack',
-    modes: ['column'],
-    weekday: [1, 2, 3, 4, 5, 6, 0],
-    value: '',
     showDrawer: true,
   }),
   methods: {
