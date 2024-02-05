@@ -21,25 +21,10 @@ export default {
     this.test = true
   },
   data: () => ({
-    isButtonPressed: [false, false, false,],
     test: false,
-    classesSelectorsToRemove: [],
-    type: 'month',
-    mode: 'stack',
-    modes: ['column'],
-    weekday: [1, 2, 3, 4, 5, 6, 0],
-    value: '',
     showDrawer: true,
   }),
   methods: {
-    changeButtonState(index) {
-      if (this.lastPressedIndex !== -1) {
-        this.$set(this.isButtonPressed, this.lastPressedIndex, false);
-      }
-      this.$set(this.isButtonPressed, index, true);
-      this.lastPressedIndex = index;
-    },
-
     checkWindowWidth() {
       this.showDrawer = window.innerWidth >= 1260;
     },

@@ -137,7 +137,6 @@ export default {
     events: [],
     num: 70,
     isMobile: false,
-    isButtonPressed: [true, false, false,],
     test: false,
     classesSelectorsToRemove: [],
     type: 'month',
@@ -150,6 +149,7 @@ export default {
     selectedEvent: {},
     selectedElement: null,
     selectedOpen: false,
+    isButtonPressed: [false, false, false]
   }),
   methods: {
     showEvent({nativeEvent, event}) {
@@ -226,10 +226,6 @@ export default {
     updateRange() {
     },
 
-    rnd(a, b) {
-      return Math.floor((b - a + 1) * Math.random()) + a
-    },
-
     getEventColor(event) {
       if (event.lectureType === 3) {
         return '#9DB9FF';
@@ -241,8 +237,11 @@ export default {
     },
 
     changeButtonState(index) {
-      this.isButtonPressed = this.isButtonPressed.map(() => false)
-      this.isButtonPressed[index] = true;
+      if (this.lastPressedIndex !== -1) {
+        this.$set(this.isButtonPressed, this.lastPressedIndex, false);
+      }
+      this.$set(this.isButtonPressed, index, true);
+      this.lastPressedIndex = index;
     },
 
     handleResize() {
@@ -252,8 +251,17 @@ export default {
         this.num = 70;
       }
     },
+
+    initialize(){
+      this.changeButtonState(0)
+      this.getAllEvents()
+    }
   },
   created() {
+    this.initialize()
+  },
+
+  computed:{
   }
 }
 </script>

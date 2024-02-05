@@ -78,7 +78,9 @@
                   :activator="selectedElement"
                   offset-x
           >
-            <v-card :style="{ border: (selectedEvent.studentId === null && userID !== selectedEvent.studentId) ? '2px solid #4E7AEC' : '2px solid grey' }" flat>
+            <v-card
+                :style="{ border: (selectedEvent.studentId === null && userID !== selectedEvent.studentId) ? '2px solid #4E7AEC' : '2px solid grey' }"
+                flat>
               <v-toolbar>
                 <v-toolbar-title v-html="formatTime(selectedEvent.startTime)"></v-toolbar-title>
               </v-toolbar>
@@ -93,7 +95,7 @@
                     Подписаться
                   </v-btn>
                   <v-btn text color="secondary"
-                         v-else-if= "discriminatorUser && userID === selectedEvent.studentId"
+                         v-else-if="discriminatorUser && userID === selectedEvent.studentId"
                          @click="removeEventStudent">
                     Отписаться
                   </v-btn>
@@ -160,11 +162,6 @@ export default {
     userID() {
       return this.user.userId
     },
-
-    isButtonPressed(){
-      return [this.$route.path === '/schedule/lessons', this.$route.path === '/schedule/lessons', this.$route.path === '/schedule/lessons']
-    }
-
   },
 
   mounted() {
@@ -202,25 +199,23 @@ export default {
     num: 70,
     events: [],
     teachers: [],
-    classesSelectorsToRemove: [],
     weekday: [1, 2, 3, 4, 5, 6, 0],
     selectedEvent: {},
     type: 'month',
     mode: 'stack',
-    modes: [
-      'column'
-    ],
     value: '',
     selectedElement: null,
-    selectedTeacher: null
+    selectedTeacher: null,
+    isButtonPressed: [false, false, false]
   }),
 
   created() {
     this.initialize();
+
   },
 
   methods: {
-    async singPractice(body) {
+    async signPractice(body) {
       const practice = new EventsRequest()
       await practice.setStudent(body).catch(x => console.log(x))
     },
@@ -232,21 +227,21 @@ export default {
         eventId: test.id,
         studentId: this.userID,
       }
-      await this.singPractice(body)
+      await this.signPractice(body)
 
       await this.loadUpdatedEvents();
 
       this.selectedOpen = false
     },
 
-    async removeEventStudent(){
+    async removeEventStudent() {
       let test = this.selectedEvent
 
       const body = {
         eventId: test.id,
         studentId: null,
       }
-      await this.singPractice(body)
+      await this.signPractice(body)
 
       await this.loadUpdatedEvents();
 
@@ -266,6 +261,7 @@ export default {
     },
 
     async initialize() {
+      this.changeButtonState(0)
       await this.getEventsTeacher();
       if (this.discriminatorUser === false) {
         await this.confirm(this.discriminatorUser)
@@ -355,9 +351,7 @@ export default {
     },
 
     changeButtonState(index) {
-      if (this.lastPressedIndex !== -1) {
-        this.$set(this.isButtonPressed, this.lastPressedIndex, false);
-      }
+      this.$set(this.isButtonPressed, this.lastPressedIndex, false);
       this.$set(this.isButtonPressed, index, true);
       this.lastPressedIndex = index;
     },

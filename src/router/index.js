@@ -153,11 +153,6 @@ const routes = [
         ]
     },
     {
-        path: "/courses",
-        name: 'courses',
-        component: CoursesList,
-    },
-    {
         path: "/test",
         name: "test",
         component: TestTest

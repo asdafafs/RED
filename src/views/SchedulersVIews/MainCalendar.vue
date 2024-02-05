@@ -28,7 +28,7 @@
                :class="{'custom-bg': isButtonPressed[2]}"
                @click="changeButtonState(2);
                  $router.push({name: 'plan-main-month'}).catch(err => {})">
-          <span :class="{ 'custom_text':isButtonPressed[2]}">Месяц</span>
+          <span :class="{ 'custom_text': isButtonPressed[2]}">Месяц</span>
         </v-btn>
       </v-col>
     </v-row>
@@ -41,11 +41,11 @@
 </template>
 
 <script>
+
 export default {
   components: {},
   name: 'MainCalendar',
   data: () => ({
-    
   }),
   computed: {
     isButtonPressed() {
