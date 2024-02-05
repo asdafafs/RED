@@ -134,7 +134,6 @@ export default {
   components: {CoursesList},
   data: () => ({
     globalStartTime: null,
-    globalEndTime: null,
     coursesData: null,
     studentList: null,
     globalStartDate: null,
@@ -249,7 +248,6 @@ export default {
       await course.getCourse(getItem.id).catch(x => console.log(x)).then(x => {
         this.coursesData = x.data.lecture
         this.globalStartTime = x.data.startTime + ':00'
-        this.globalEndTime = x.data.endTime
         this.globalStartDate = this.formatDatetime(x.data.startDate)
 
         this.studentList = this.studentList.concat(x.data.students);
@@ -271,11 +269,6 @@ export default {
       await course.postCourse(body).catch(x => console.log(x))
     },
 
-    async putGroups(body) {
-      const groups = new GroupsRequest();
-      await groups.putGroup(body).catch(x => console.log(x))
-    },
-
     async deleteGroups() {
       const groups = new GroupsRequest();
       const deletedItem = {"id": this.deletedIndex}
@@ -287,6 +280,7 @@ export default {
       const deletedItem = {"id": this.deletedIndex}
       await lesson.deleteLecture(deletedItem.id).catch(x => console.log(x))
     },
+
     async initialize() {
       this.groups = await this.getGroups();
       this.studentList = await this.getFreeUsers()
@@ -417,10 +411,17 @@ export default {
       if (this.editedIndex > -1) {
         this.$set(this.groups, this.editedIndex, this.editedItem.groups);
         const body = {
-          "id": this.editedItem.groups.groupId,
-          "title": this.editedItem.groups.title,
+          "courseStartDate": this.editedItem.groups.startDate,
+          "groupName": this.editedItem.groups.title,
+          "startTime": parseInt(this.globalStartTime.split(':')[0], 10),
+          "groupId": this.editedItem.groups.groupId,
+          "studentId": this.selectedStudentsIds,
+          "lecture": this.lessons
         }
-        await this.putGroups(body)
+        console.log("Что отправляем", body)
+        await this.postCourse(body).finally(() => {
+          this.groupDisabled = false;
+        })
       } else {
 
         const body = {
@@ -494,7 +495,7 @@ export default {
       let [lectureStartHour, lectureStartMinutes] = this.globalStartTime.split(':').map(Number);
 
       this.lessons.forEach(item => {
-        //set day
+
         item.startTime = this.getNextDay().set({
           hour: lectureStartHour,
           minute: lectureStartMinutes,
@@ -540,7 +541,7 @@ export default {
       let day = dayOfWeek + 1;
 
       const date = moment(this.cursorDate).isoWeekday(day)
-      //еще надо условие а то жижа
+
       if (date <= this.cursorDate) {
         this.cursorDate = moment(this.cursorDate).add(1, 'weeks').isoWeekday(day)
       } else {
