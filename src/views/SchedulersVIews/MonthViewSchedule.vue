@@ -266,6 +266,7 @@ export default {
 }
 </script>
 <style lang="scss">
+@import "@/assets/styles/buttons.css";
 .v-calendar-weekly__week {
   min-height: 20em;
 }
@@ -307,14 +308,6 @@ export default {
 .btn {
   text-transform: unset !important;
   font-size: 1.5em;
-}
-
-.custom-bg {
-  background-color: #1e1f22;
-}
-
-.custom_text {
-  color: white;
 }
 
 .event {

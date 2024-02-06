@@ -1,5 +1,8 @@
 <template>
-  <v-card>
+  <v-container fluid>
+    <div class="text-h4 font-weight-medium px-4">
+      Инструкторы и планы
+    </div>
     <v-text-field
         v-model="search"
         label="Поиск"
@@ -80,7 +83,7 @@
         </tr>
       </template>
     </v-data-table>
-  </v-card>
+  </v-container>
 </template>
 <script>
 import UsersRequest from "@/services/UsersRequest";

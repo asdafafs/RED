@@ -1,5 +1,8 @@
 <template>
   <v-container fluid>
+    <div class="text-h4 font-weight-medium px-4">
+      Группы и планы обучения
+    </div>
     <v-data-table :headers="headersGroup" :search="search" :items="groups" class="elevation-1" v-if="!discriminatorUser"
                   no-data-text="Нет данных для отображения"
                   :hide-default-footer="true"

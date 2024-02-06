@@ -206,18 +206,6 @@ export default {
     updateRange() {
     },
 
-    rnd(a, b) {
-      return Math.floor((b - a + 1) * Math.random()) + a
-    },
-
-
-    changeButtonState(index) {
-      if (this.lastPressedIndex !== -1) {
-        this.$set(this.isButtonPressed, this.lastPressedIndex, false);
-      }
-      this.$set(this.isButtonPressed, index, true);
-      this.lastPressedIndex = index;
-    },
     handleResize() {
       if (window.innerWidth < 1260) {
         this.num = 30;
@@ -229,6 +217,8 @@ export default {
 }
 </script>
 <style lang="scss">
+@import "@/assets/styles/buttons.css";
+
 .v-calendar-weekly__week {
   min-height: 20em;
 }
@@ -269,14 +259,6 @@ export default {
 .btn {
   text-transform: unset !important;
   font-size: 1.5em;
-}
-
-.custom-bg {
-  background-color: #1e1f22;
-}
-
-.custom_text {
-  color: white;
 }
 
 .text-format {

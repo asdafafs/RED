@@ -63,16 +63,9 @@ export default {
   }
 }
 </script>
-<style scoped>
+<style lang="scss">
+@import "@/assets/styles/buttons.css";
 .btn {
   font-size: 1.125rem;
-}
-
-.custom-bg {
-  background-color: #1e1f22;
-}
-
-.custom_text {
-  color: white;
 }
 </style>
