@@ -218,15 +218,6 @@ export default {
         return '#E9E9E8'
       }
     },
-
-    changeButtonState(index) {
-      if (this.lastPressedIndex !== -1) {
-        this.$set(this.isButtonPressed, this.lastPressedIndex, false);
-      }
-      this.$set(this.isButtonPressed, index, true);
-      this.lastPressedIndex = index;
-    },
-
     prev() {
       this.$refs.calendar.prev(1);
       this.currentDate = this.currentDate.clone().subtract(1, 'week');
@@ -325,6 +316,7 @@ export default {
 }
 </script>
 <style lang="scss">
+@import "@/assets/styles/buttons.css";
 .v-event-timed.white--text {
   //display: flex;
   //justify-content: center;
@@ -350,14 +342,6 @@ export default {
 .btn {
   text-transform: unset !important;
   font-size: 1.5em;
-}
-
-.custom-bg {
-  background-color: #1e1f22;
-}
-
-.custom_text {
-  color: white;
 }
 
 .v-calendar-daily__interval-text {

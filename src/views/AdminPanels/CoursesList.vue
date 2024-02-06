@@ -321,5 +321,6 @@ export default {
   },
 };
 </script>
-<style src="@/assets/styles/eventTypes.css">
+<style lang="scss">
+@import "@/assets/styles/eventTypes.css";
 </style>

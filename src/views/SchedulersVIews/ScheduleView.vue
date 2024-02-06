@@ -41,7 +41,8 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" >
+@import "@/assets/styles/buttons.css";
 .theme--light.v-btn {
   color: #4E7AEC;
 }
@@ -58,13 +59,5 @@ hr {
 .btn {
   text-transform: unset !important;
   font-size: 1.5em;
-}
-
-.custom-bg {
-  background-color: #1e1f22;
-}
-
-.custom_text {
-  color: white;
 }
 </style>

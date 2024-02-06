@@ -1,8 +1,8 @@
 <template>
   <v-container fluid>
-    <v-row>
-      <v-col>
-        <v-btn text class="black--text btn pa-0" width="100%"
+    <v-row class="flex-nowrap">
+      <v-col cols="" class="">
+        <v-btn cols="" text class="black--text btn pa-0 align-center " width="100%"
                :class="{'custom-bg': isButtonPressed[0]}"
                @click="changeButtonState(0); $router.push({name: 'admin-students'}).catch(err => {})">
           <span :class="{ 'custom_text':isButtonPressed[0]}">Студенты</span>
@@ -16,11 +16,14 @@
         </v-btn>
       </v-col>
       <v-col cols="">
-        <v-btn text class="black--text btn pa-0" width="100%"
+        <v-btn cols="" text class="black--text btn pa-0" width="100%"
                :class="{'custom-bg': isButtonPressed[2]}"
                @click="changeButtonState(2); $router.push({name: 'admin-groups'}).catch(err => {})">
           <span :class="{ 'custom_text':isButtonPressed[2]}">Практика</span>
         </v-btn>
+      </v-col>
+      <v-col cols="9">
+        <v-spacer ></v-spacer>
       </v-col>
     </v-row>
     <v-row>
@@ -33,8 +36,7 @@
 <script>
 export default {
   components: {},
-  data: () => ({
-  }),
+  data: () => ({}),
   methods: {
     changeButtonState(index) {
       if (this.lastPressedIndex !== -1) {
@@ -45,20 +47,13 @@ export default {
     },
   },
 
-  computed:{
-    isButtonPressed(){
+  computed: {
+    isButtonPressed() {
       return [this.$route.path === '/admin/students', this.$route.path === '/admin/teachers', this.$route.path === '/admin/groups']
     }
   }
 }
 </script>
-<style>
-.btn {
-  font-size: 1.125rem;
-}
-
-.custom-bg {
-  background-color: #1e1f22;
-}
-
+<style lang="scss">
+@import "@/assets/styles/buttons.css";
 </style>
