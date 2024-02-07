@@ -3,18 +3,20 @@
     <div class="text-h4 font-weight-medium px-4">
       Группы и планы обучения
     </div>
-    <v-data-table :headers="headersGroup" :search="search" :items="groups" class="elevation-1" v-if="!discriminatorUser"
-                  no-data-text="Нет данных для отображения"
-                  :hide-default-footer="true"
-                  disable-pagination
-    >
+    <v-data-table :headers="headersGroup" :search="search" :items="groups" class="elevation-1 custom-table-header"
+                  v-if="!discriminatorUser" no-data-text="Нет данных для отображения"
+                  :hide-default-footer="true" disable-pagination :header-props="{ class: 'blue--text text--darken-2' }">
       <template v-slot:top>
         <v-toolbar flat>
-          <v-spacer></v-spacer>
           <v-dialog v-model="dialog" max-width="60em" persistent>
             <template v-slot:activator="{ on, attrs }">
-              <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on">
-                Добавить группу
+              <v-btn color="#4E7AEC" dark class="mb-2 rounded-lg" v-bind="attrs" v-on="on">
+                <v-col cols="1" class="px-0">
+                  <i class="mdi mdi-plus-circle-outline" style="transform: scale(1.5)"></i>
+                </v-col>
+                <v-col cols="">
+                  Добавить группу
+                </v-col>
               </v-btn>
             </template>
             <v-card>
@@ -112,8 +114,8 @@
         <tr>
           <td>{{ item.title }}</td>
           <td class="text-xs-right">
-            <v-icon small class="mr-2" @click="editItem(item)">mdi-pencil</v-icon>
-            <v-icon small @click="deleteItem(item)">mdi-delete</v-icon>
+            <v-icon small class="mr-2 blue--text" @click="editItem(item)">mdi-pencil</v-icon>
+            <v-icon class="red--text" small @click="deleteItem(item)">mdi-delete</v-icon>
           </td>
         </tr>
       </template>
@@ -157,11 +159,6 @@ export default {
       {text: 'Название', align: 'start', sortable: false, value: 'title',},
       {text: 'Действия', value: 'actions', sortable: false},
     ],
-    headersCourse: [
-      {text: 'Название', align: 'start', sortable: false, value: 'title'},
-      {text: 'Начало', align: 'start', sortable: false, value: 'startTime',},
-      {text: 'Конец', align: 'start', sortable: false, value: 'endTime',},
-      {text: 'Действия', value: 'actions', sortable: false},],
     groups: [],
     editedIndex: -1,
     deletedIndex: -1,
@@ -191,7 +188,7 @@ export default {
     startTimeRules: {
       required: value => !!value
     },
-    dateOfWeek: [false, false, false, false, true, false, false],
+    dateOfWeek: [false, false, false, false, false, false, false],
     cursorDateOfWeek: 0,
     cursorDate: moment(new Date())
   }),
@@ -204,7 +201,7 @@ export default {
     },
 
     isSaveButtonDisabled() {
-      return !(this.titleRules.required(this.editedItem.groups.title) === true
+      return !(this.titleRules.required(this.editedItem.groups.title)
           && this.startDateRules.required(this.editedItem.groups.startDate)
           && this.startTimeRules.required(this.globalStartTime));
     },
@@ -558,4 +555,7 @@ export default {
 };
 </script>
 <style>
+.custom-table-header th {
+  color: #4E7AEC !important;
+}
 </style>

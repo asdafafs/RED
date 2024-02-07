@@ -13,7 +13,6 @@ import RecoveryPassword from "@/views/AuthorizationViews/RecoveryPassword.vue";
 import MailAuthorization from "@/views/AuthorizationViews/MailAuthorization.vue";
 import VkAuthorization from "@/views/AuthorizationViews/SelectAuthorization.vue";
 import PostLoginPage from "@/views/AuthorizationViews/PostLoginPage.vue";
-import CoursesList from "@/views/AdminPanels/CoursesList.vue";
 import ConfirmEmail from "@/views/AuthorizationViews/ConfirmEmail.vue";
 import ForgetPassword from "@/views/AuthorizationViews/ForgetPassword.vue";
 import StudentsPanel from "@/views/AdminPanels/StudentsPanel.vue";
@@ -25,6 +24,7 @@ import GroupPanel from "@/views/AdminPanels/GroupPanel.vue";
 import ScheduleClasses from "@/views/SignUpClasses/ScheduleClasses.vue";
 import ClassesView from "@/views/SignUpClasses/ClassesView.vue";
 import Test from "@/views/Test";
+import InstructorsPlanTemplate from "@/views/AdminPanels/InstructorsPlanTemplate.vue";
 
 
 Vue.use(VueRouter)
@@ -161,6 +161,11 @@ const routes = [
         path: '/test-kal',
         name: 'test-kal',
         component: Test
+    },
+    {
+        path: '/template',
+        name: 'plan-template',
+        component: InstructorsPlanTemplate
     }
 
 ]
