@@ -15,18 +15,23 @@
         :headers="headers"
         :items="persons.activeUsers"
         :search="search"
-        class="elevation-1"
+        class="elevation-1 custom-table-header"
         no-data-text="Нет данных для отображения"
         :hide-default-footer="true"
         disable-pagination
+        :header-props="{ class: 'blue--text text--darken-2' }"
     >
       <template v-slot:top>
         <v-toolbar flat>
-          <v-spacer></v-spacer>
           <v-dialog v-model="dialog" max-width="500px">
             <template v-slot:activator="{ on, attrs }">
-              <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on">
-                Новый преподаватель
+              <v-btn color="#4E7AEC " dark class="mb-2 rounded-lg" v-bind="attrs" v-on="on">
+                <v-col cols="1" class="px-0">
+                  <i class="mdi mdi-plus-circle-outline" style="transform: scale(1.5)"></i>
+                </v-col>
+                <v-col cols="">
+                  Добавить инструктора
+                </v-col>
               </v-btn>
             </template>
             <v-card>
@@ -73,12 +78,16 @@
       </template>
       <template v-slot:item="{ item }">
         <tr>
-          <td>{{ item.name }}</td>
-          <td>{{ item.surname }}</td>
-          <td>{{ item.middleName }}</td>
+          <td>{{ item.name + " " + item.surname + " " +  item.middleName}}</td>
+          <td>{{ item.email }}</td>
+          <td>
+            <v-btn cols="" class="btn pa-0 rounded-lg" color="#4E7AEC">
+              <span class="white--text">Редактировать</span>
+            </v-btn>
+          </td>
           <td class="text-xs-right">
-            <v-icon small class="mr-2" @click="editItem(item)">mdi-pencil</v-icon>
-            <v-icon small @click="deleteItem(item)">mdi-delete</v-icon>
+            <v-icon small class="mr-2 blue--text" @click="editItem(item)">mdi-pencil</v-icon>
+            <v-icon small class="red--text" @click="deleteItem(item)">mdi-delete</v-icon>
           </td>
         </tr>
       </template>
@@ -97,9 +106,9 @@ export default {
     dialogDelete: false,
     mask: ['+', /\d/, '(', /[1-9]/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, '-', /\d/, /\d/],
     headers: [
-      {text: 'Имя', align: 'start', sortable: false, value: 'name'},
-      {text: 'Фамилия', align: 'start', sortable: false, value: 'surname',},
-      {text: 'Отчество', align: 'start', sortable: false, value: 'middleName',},
+      {text: 'ФИО', align: 'start', sortable: false, },
+      {text: 'Email', align: 'start', sortable: false, },
+      {text: 'Практики', align: 'start', sortable: false, },
       {text: 'Действия', value: 'actions', sortable: false},
     ],
     persons: {
@@ -255,5 +264,8 @@ export default {
   },
 };
 </script>
-<style scoped>
+<style>
+.custom-table-header th {
+  color: #4E7AEC !important;
+}
 </style>

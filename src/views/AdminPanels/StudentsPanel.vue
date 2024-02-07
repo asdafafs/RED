@@ -15,18 +15,23 @@
         :headers="headers"
         :items="persons.students"
         :search="search"
-        class="elevation-1"
+        class="elevation-1 custom-table-header"
         no-data-text="Нет данных для отображения"
         :hide-default-footer="true"
         disable-pagination
+        :header-props="{ class: 'blue--text text--darken-2' }"
     >
       <template v-slot:top>
         <v-toolbar flat>
-          <v-spacer></v-spacer>
           <v-dialog v-model="dialog" max-width="500px" persistent>
             <template v-slot:activator="{ on, attrs }">
-              <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on">
-                Новый ученик
+              <v-btn color="#4E7AEC " dark class="mb-2 rounded-lg" v-bind="attrs" v-on="on">
+                <v-col cols="1" class="px-0">
+                  <i class="mdi mdi-plus-circle-outline" style="transform: scale(1.5)"></i>
+                </v-col>
+                <v-col cols="">
+                  Добавить студента
+                </v-col>
               </v-btn>
             </template>
             <v-card>
@@ -82,13 +87,15 @@
       </template>
       <template v-slot:item="{ item }">
         <tr>
-          <td>{{ item.name }}</td>
-          <td>{{ item.surname }}</td>
-          <td>{{ item.middleName }}</td>
-          <td>{{ getGroupName(item.groupId) }}</td>
+          <td>{{ item.name + " " + item.surname + " " +  item.middleName}}</td>
+          <td>{{ item.email }}</td>
+          <td>{{  }}</td>
+          <td>{{  }}</td>
+          <td>{{  }}</td>
+          <td>{{  }}</td>
           <td class="text-xs-right">
-            <v-icon small class="mr-2" @click="editItem(item)">mdi-pencil</v-icon>
-            <v-icon small @click="deleteItem(item)">mdi-delete</v-icon>
+            <v-icon small class="mr-2 blue--text" @click="editItem(item)">mdi-pen</v-icon>
+            <v-icon small class="red--text" @click="deleteItem(item)">mdi-delete</v-icon>
           </td>
         </tr>
       </template>
@@ -108,11 +115,13 @@ export default {
     dialogDelete: false,
     mask: ['+', /\d/, '(', /[1-9]/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, '-', /\d/, /\d/],
     headers: [
-      {text: 'Имя', align: 'start', sortable: false, value: 'name'},
-      {text: 'Фамилия', align: 'start', sortable: false, value: 'surname',},
-      {text: 'Отчество', align: 'start', sortable: false, value: 'middleName',},
-      {text: 'Группа', align: 'start', sortable: false, value: 'groupId'},
-      {text: 'Действия', value: 'actions', sortable: false},
+      {text: 'ФИО', align: 'start', sortable: false,},
+      {text: 'E-mail', align: 'start', sortable: false, },
+      {text: 'Общие практики всего', align: 'start', sortable: false,},
+      {text: 'Общие практики остаток',  sortable: false},
+      {text: 'Доппрактики всего',  sortable: false},
+      {text: 'Доппрактики остаток',  sortable: false},
+      {text: 'Действия',  sortable: false},
     ],
     groups: [],
     persons: {
@@ -315,5 +324,9 @@ export default {
 .phone-field:focus {
   border-color: #80bdff;
   box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.custom-table-header th {
+  color: #4E7AEC !important;
 }
 </style>
