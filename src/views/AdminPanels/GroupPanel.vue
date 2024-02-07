@@ -242,14 +242,26 @@ export default {
       return studentList
     },
 
-    async getCourse(id) {
+    async getCourseId(id) {
       const course = new CoursesRequest()
       const getItem = {"id": id}
       await course.getCourse(getItem.id).catch(x => console.log(x)).then(x => {
         this.coursesData = x.data.lecture
         this.globalStartTime = x.data.startTime + ':00'
         this.globalStartDate = this.formatDatetime(x.data.startDate)
+        this.groupNumber = x.data.groupNumber
+        this.studentList = this.studentList.concat(x.data.students);
+        this.selectedStudents = x.data.students
+      })
+    },
 
+    async getCourseLast() {
+      const course = new CoursesRequest()
+      await course.getCourseNull().catch(x => console.log(x)).then(x => {
+        this.coursesData = x.data.lecture
+        this.globalStartTime = x.data.startTime + ':00'
+        this.globalStartDate = this.formatDatetime(x.data.startDate)
+        this.groupNumber = x.data.groupNumber
         this.studentList = this.studentList.concat(x.data.students);
         this.selectedStudents = x.data.students
       })
@@ -285,13 +297,13 @@ export default {
       this.groups = await this.getGroups();
       this.studentList = await this.getFreeUsers()
       this.teachers = await this.getEventsTeacher()
-      await this.getCourse(1);
+      await this.getCourseLast();
       this.lessons = this.coursesData.map(item => {
         return {
           id: item.id,
           title: item.title,
-          startTime: (item.startTime),
-          endTime: (item.endTime),
+          startTime: item.startTime,
+          endTime: item.endTime,
           lectureType: item.lectureType,
           activeUser: item.activeUser,
           groupId: item.groupId,
@@ -323,8 +335,23 @@ export default {
       this.groupDelete = true;
     },
 
-    editItem(item) {
+    async editItem(item) {
       this.editedIndex = this.groups.indexOf(item);
+      await this.getCourseId(item.groupId);
+      this.lessons = this.coursesData.map(item => {
+        return {
+          id: item.id,
+          title: item.title,
+          startTime: item.startTime,
+          endTime: item.endTime,
+          lectureType: item.lectureType,
+          activeUser: item.activeUser,
+          groupId: item.groupId,
+        };
+      });
+
+      console.log('lessons', this.lessons)
+
       this.editedItem = {
         groups: {
           groupId: item.groupId,
@@ -359,6 +386,7 @@ export default {
     },
 
     close() {
+      console.log("closeDelete")
       this.dialog = false;
       const nextGroupNumber = this.groups.length + 1;
       this.$nextTick(() => {
@@ -382,6 +410,7 @@ export default {
     },
 
     closeDelete() {
+      console.log("closeDelete")
       this.lessonDelete = true
       this.groupDelete = false;
       this.lessonDelete = false;
@@ -420,7 +449,8 @@ export default {
         }
         console.log("Что отправляем", body)
         await this.postCourse(body).finally(() => {
-          this.groupDisabled = false;
+          this.groupDisabled = false
+          this.lessons = []
         })
       } else {
 
@@ -434,8 +464,9 @@ export default {
         }
         console.log("Что отправляем", body)
         await this.postCourse(body).finally(() => {
-          this.groupDisabled = false;
-          this.groups.push(this.editedItem.groups);
+          this.groupDisabled = false
+          this.groups.push(this.editedItem.groups)
+          this.lessons = []
         })
       }
       this.close();
@@ -526,9 +557,7 @@ export default {
           this.cursorDateOfWeek++;
           return this.cursorDateOfWeek - 1;
         }
-
         this.cursorDateOfWeek++;
-
         if (this.cursorDateOfWeek > this.dateOfWeek.length - 1) {
           this.cursorDateOfWeek = 0;
         }
@@ -537,11 +566,8 @@ export default {
     },
 
     getNextDayByWeekendDayIndex(dayOfWeek) {
-
       let day = dayOfWeek + 1;
-
       const date = moment(this.cursorDate).isoWeekday(day)
-
       if (date <= this.cursorDate) {
         this.cursorDate = moment(this.cursorDate).add(1, 'weeks').isoWeekday(day)
       } else {
