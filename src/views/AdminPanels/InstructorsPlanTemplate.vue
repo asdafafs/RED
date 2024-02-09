@@ -19,10 +19,10 @@
         </v-radio-group>
       </v-col>
       <v-col cols="2">
-        <v-text-field  label="Дата начала" type="date"></v-text-field>
+        <v-text-field  label="Дата начала" type="date" :min="getTodayDate()"></v-text-field>
       </v-col>
       <v-col cols="2">
-        <v-text-field  label="Дата окончания" type="date"></v-text-field>
+        <v-text-field  label="Дата окончания" type="date" :min="getTodayDate()"></v-text-field>
       </v-col>
       <v-col cols="4"></v-col>
       <v-col cols="">
@@ -52,6 +52,21 @@ export default {
   methods: {
     prev() {
       this.$router.push({name: 'admin-teachers'})
+    },
+
+    getTodayDate() {
+      const today = new Date();
+      const year = today.getFullYear();
+      let month = today.getMonth() + 1;
+      let day = today.getDate();
+
+      if (month < 10) {
+        month = '0' + month;
+      }
+      if (day < 10) {
+        day = '0' + day;
+      }
+      return `${year}-${month}-${day}`;
     },
   }
 

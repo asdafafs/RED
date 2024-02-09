@@ -81,9 +81,10 @@
           <td>{{ item.name + " " + item.surname + " " +  item.middleName}}</td>
           <td>{{ item.email }}</td>
           <td>
-            <v-btn cols="" class="btn pa-0 rounded-lg" color="#4E7AEC">
+            <v-btn cols="" class="btn pa-0 rounded-lg" color="#4E7AEC" @click ="test()">
               <span class="white--text">Редактировать</span>
             </v-btn>
+
           </td>
           <td class="text-xs-right">
             <v-icon small class="mr-2 blue--text" @click="editItem(item)">mdi-pencil</v-icon>
@@ -92,6 +93,7 @@
         </tr>
       </template>
     </v-data-table>
+    <router-view></router-view>
   </v-container>
 </template>
 <script>
@@ -158,6 +160,10 @@ export default {
   },
 
   methods: {
+    test(){
+      this.$router.push({name: 'plan-template'}).catch(err => {})
+    },
+
     async getActiveUsers() {
       const user = new UsersRequest();
       let teachersData

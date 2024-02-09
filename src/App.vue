@@ -4,7 +4,7 @@
     </AppBar>
     <v-main>
       <Alert/>
-      <router-view/>
+      <router-view />
     </v-main>
   </v-app>
 </template>
@@ -20,6 +20,10 @@ import {mapState} from "vuex";
 export default {
   name: 'App',
   components: {Alert, AppBar},
+  data: () => ({
+    isUserLoaded: false
+  }),
+
   async created() {
     const identity = new IdentityRequest()
 
@@ -39,11 +43,14 @@ export default {
     identity.getIdentity()
         .then(async (x) => {
           await store.dispatch('GET_CURRENT_USER', x)
+
           if (this.$route.path === '/')
             await this.$router.push({
               name: 'schedule-lessons'
             })
-        })
+        }).finally(() => {
+
+    })
   },
   computed: {
     ...mapState(['user'])

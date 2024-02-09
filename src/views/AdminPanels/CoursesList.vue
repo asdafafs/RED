@@ -166,6 +166,13 @@ export default {
     dialogDelete(val) {
       val || this.closeDelete();
     },
+
+    coursesData: {
+      handler(newVal, oldVal) {
+        this.initialize();
+      },
+      deep: true
+    }
   },
 
   computed: {
@@ -192,16 +199,19 @@ export default {
         return {
           id: item.id,
           title: item.title,
-          startTime: (item.startTime),
-          endTime: (item.endTime),
+          startTime: item.startTime,
+          endTime: item.endTime,
           lectureType: item.lectureType,
           activeUser: item.activeUser,
         };
+
+
       });
+
     },
 
     editItem(item) {
-      this.editedIndex = this.courses.indexOf(item);
+      this.editedIndex = this.courses.findIndex(course => course.id === item.id);
       this.editedItem = {
         id: item.id,
         title: item.title,
@@ -214,22 +224,23 @@ export default {
     },
 
     deleteItem(item) {
-      this.editedIndex = this.courses.indexOf(item);
+      this.editedIndex = this.courses.findIndex(course => course.id === item.id);
       this.editedItem = {
         id: item.id,
         title: item.title,
-        startTime: (item.startTime),
-        endTime: (item.endTime),
+        startTime: item.startTime,
+        endTime: item.endTime,
         activeUser: item.activeUser,
         lectureType: parseInt(item.lectureType),
       };
-      this.deletedIndex = item.id
+      this.deletedIndex = this.editedIndex
       this.dialogDelete = true;
     },
 
     deleteItemConfirm() {
       this.courses.splice(this.editedIndex, 1);
       this.$emit('courses-updated', this.courses);
+      console.log("deleteItemConfirm", this.courses)
       this.closeDelete();
     },
 

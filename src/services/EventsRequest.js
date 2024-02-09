@@ -9,6 +9,10 @@ export default class EventsRequest extends HTTPService {
         return this.get("lecture")
     }
 
+    getLectureActiveUser(id) {
+        return this.get("lecture/" + id)
+    }
+
     postLecture(code) {
         return this.post("lecture", code)
     }
@@ -19,6 +23,10 @@ export default class EventsRequest extends HTTPService {
 
     deleteLecture(id) {
         return this.delete("lecture/" + id)
+    }
+
+    getPracticeActiveUser(id) {
+        return this.get("practice/" + id)
     }
 
     getPractice() {
