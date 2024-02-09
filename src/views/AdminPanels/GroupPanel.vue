@@ -10,7 +10,7 @@
         <v-toolbar flat>
           <v-dialog v-model="dialog" max-width="60em" persistent>
             <template v-slot:activator="{ on, attrs }">
-              <v-btn color="#4E7AEC" dark class="mb-2 rounded-lg" v-bind="attrs" v-on="on">
+              <v-btn color="#4E7AEC" dark class="mb-2 rounded-lg" v-bind="attrs" v-on="on" @click="newCourse">
                 <v-col cols="1" class="px-0">
                   <i class="mdi mdi-plus-circle-outline" style="transform: scale(1.5)"></i>
                 </v-col>
@@ -31,7 +31,7 @@
                                     :rules="[titleRules.required]"></v-text-field>
                       <v-text-field v-model="editedItem.groups.startDate" label="Дата начала курса"
                                     type="date" :rules="[startDateRules.required]"
-                                    @input="updateGlobalStartDate"></v-text-field>
+                                     @input="updateGlobalStartDate" :min="getTodayDate()"></v-text-field>
                       <v-select
                           v-model="selectedStudents"
                           :value="editedItem.lecture.activeUser"
@@ -69,7 +69,7 @@
                           </div>
                         </template>
                       </v-col>
-                      <CoursesList :coursesData="lessons" :lectors="teachers"
+                      <CoursesList :coursesData="lessons" :lectors="teachers" v-if="showCoursesList"
                                    @courses-updated="handleCoursesUpdated"></CoursesList>
                     </v-col>
                   </v-row>
@@ -153,6 +153,7 @@ export default {
     dialog: false,
     lessonDelete: false,
     groupDelete: false,
+    showCoursesList: false,
     search: '',
     chips: ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'],
     headersGroup: [
@@ -216,6 +217,21 @@ export default {
   },
 
   methods: {
+    getTodayDate() {
+      const today = new Date();
+      const year = today.getFullYear();
+      let month = today.getMonth() + 1;
+      let day = today.getDate();
+
+      if (month < 10) {
+        month = '0' + month;
+      }
+      if (day < 10) {
+        day = '0' + day;
+      }
+      return `${year}-${month}-${day}`;
+    },
+
     formTitle() {
       return this.editedIndex === -1 ? 'Новая группа' : 'Редактировать группу';
     },
@@ -306,7 +322,6 @@ export default {
           endTime: item.endTime,
           lectureType: item.lectureType,
           activeUser: item.activeUser,
-          groupId: item.groupId,
         };
       });
       const nextGroupNumber = this.groups.length + 1;
@@ -335,7 +350,25 @@ export default {
       this.groupDelete = true;
     },
 
+    async newCourse(){
+      this.dialog = true;
+      this.showCoursesList = true;
+      await this.getCourseLast()
+
+      this.lessons = this.coursesData.map(item => {
+        return {
+          id: item.id,
+          title: item.title,
+          startTime: item.startTime,
+          endTime: item.endTime,
+          lectureType: item.lectureType,
+          activeUser: item.activeUser,
+        };
+      });
+    },
+
     async editItem(item) {
+      this.showCoursesList = true;
       this.editedIndex = this.groups.indexOf(item);
       await this.getCourseId(item.groupId);
       this.lessons = this.coursesData.map(item => {
@@ -346,12 +379,9 @@ export default {
           endTime: item.endTime,
           lectureType: item.lectureType,
           activeUser: item.activeUser,
-          groupId: item.groupId,
+
         };
       });
-
-      console.log('lessons', this.lessons)
-
       this.editedItem = {
         groups: {
           groupId: item.groupId,
@@ -386,8 +416,8 @@ export default {
     },
 
     close() {
-      console.log("closeDelete")
       this.dialog = false;
+      this.showCoursesList = false;
       const nextGroupNumber = this.groups.length + 1;
       this.$nextTick(() => {
         this.editedItem = {
@@ -410,7 +440,6 @@ export default {
     },
 
     closeDelete() {
-      console.log("closeDelete")
       this.lessonDelete = true
       this.groupDelete = false;
       this.lessonDelete = false;
@@ -561,7 +590,6 @@ export default {
         if (this.cursorDateOfWeek > this.dateOfWeek.length - 1) {
           this.cursorDateOfWeek = 0;
         }
-
       }
     },
 
@@ -573,7 +601,6 @@ export default {
       } else {
         this.cursorDate = date
       }
-
       return this.cursorDate;
     },
   },

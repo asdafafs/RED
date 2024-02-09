@@ -103,6 +103,7 @@ import CarLogo from "@/components/logos/CarLogo.vue";
 import LectureLogo from "@/components/logos/LectureLogo.vue";
 import EventsRequest from "@/services/EventsRequest";
 import moment from "moment/moment";
+import {mapState} from "vuex";
 
 export default {
   components: {LectureLogo, CarLogo},
@@ -127,6 +128,8 @@ export default {
     this.test = true
     window.addEventListener('resize', this.handleResize);
     this.handleResize();
+
+
   },
 
   beforeDestroy() {
@@ -151,6 +154,20 @@ export default {
     selectedOpen: false,
     isButtonPressed: [false, false, false]
   }),
+
+  computed:{
+    ...mapState(['user']),
+
+    userID() {
+      if (this.user && this.user.userId !== null) {
+        return this.$store.state.user.userId
+      } else {
+        return console.log('а id нету');
+      }
+    },
+
+  },
+
   methods: {
     showEvent({nativeEvent, event}) {
       const open = () => {
@@ -171,21 +188,21 @@ export default {
 
     async getLessons() {
       const lessons = new EventsRequest()
-      let cal
-      await lessons.getLecture().catch(x => console.log(x)).then(x => {
-        cal = x.data.lecture.map(event => ({
+      let lessonsData
+      await lessons.getLectureActiveUser(this.userID).catch(x => console.log(x)).then(x => {
+        lessonsData = x.data.lecture.map(event => ({
           ...event,
           start: new Date(event.startTime),
           end: new Date(event.endTime)
         }));
       })
-      return cal
+      return lessonsData
     },
 
     async getPractices() {
       const practices = new EventsRequest()
       let cal
-      await practices.getPractice().catch(x => console.log(x)).then(x => {
+      await practices.getPracticeActiveUser(this.userID).catch(x => console.log(x)).then(x => {
         cal = x.data.practice.map(event => ({
           ...event,
           start: new Date(event.startTime),
@@ -252,17 +269,20 @@ export default {
       }
     },
 
-    initialize(){
+    async initialize(){
+      let index = this.userID
+      console.log(index)
       this.changeButtonState(0)
-      this.getAllEvents()
+      await this.getAllEvents()
     }
   },
   created() {
     this.initialize()
   },
 
-  computed:{
-  }
+
+
+
 }
 </script>
 <style lang="scss">

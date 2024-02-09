@@ -79,13 +79,20 @@ const routes = [
             {
                 path: 'teachers',
                 name: 'admin-teachers',
-                component: TeachersPanel
+                component: TeachersPanel,
+                children: []
             },
             {
                 path: 'groups',
                 name: 'admin-groups',
                 component: GroupPanel,
-            }
+            },
+            {
+                path: 'template',
+                name: 'plan-template',
+                component: InstructorsPlanTemplate
+            },
+
         ]
     },
     {
@@ -162,11 +169,7 @@ const routes = [
         name: 'test-kal',
         component: Test
     },
-    {
-        path: '/template',
-        name: 'plan-template',
-        component: InstructorsPlanTemplate
-    }
+
 
 ]
 
