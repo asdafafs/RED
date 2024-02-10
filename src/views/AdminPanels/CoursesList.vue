@@ -204,10 +204,7 @@ export default {
           lectureType: item.lectureType,
           activeUser: item.activeUser,
         };
-
-
       });
-
     },
 
     editItem(item) {
@@ -333,5 +330,5 @@ export default {
 };
 </script>
 <style lang="scss">
-@import "@/assets/styles/eventTypes.css";
+@import "@/assets/styles/eventTypesStyles.css";
 </style>

@@ -42,22 +42,6 @@ export default {
 </script>
 
 <style lang="scss">
-@import "@/assets/styles/buttons.css";
-.theme--light.v-btn {
-  color: #4E7AEC;
-}
-
-hr {
-  display: block;
-  height: 1px;
-  border: 0;
-  border-top: 1px solid #ccc;
-  margin: 1em 0;
-  padding: 0;
-}
-
-.btn {
-  text-transform: unset !important;
-  font-size: 1.5em;
-}
+@import "@/assets/styles/buttonStyles.css";
+@import "@/assets/styles/lineStyles.css";
 </style>

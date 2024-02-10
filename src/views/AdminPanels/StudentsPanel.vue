@@ -15,7 +15,7 @@
         :headers="headers"
         :items="persons.students"
         :search="search"
-        class="elevation-1 custom-table-header"
+        class="elevation-1 custom-header-table"
         no-data-text="Нет данных для отображения"
         :hide-default-footer="true"
         disable-pagination
@@ -42,11 +42,14 @@
                 <v-container>
                   <v-row>
                     <v-col cols="12" sm="12" md="12">
-                      <v-text-field v-model="editedStudent.name" label="Имя" :rules="[nameRule.required()]"></v-text-field>
-                      <v-text-field v-model="editedStudent.surname" label="Фамилия" :rules="[surnameRule.required()]"></v-text-field>
+                      <v-text-field v-model="editedStudent.name" label="Имя"
+                                    :rules="[nameRule.required()]"></v-text-field>
+                      <v-text-field v-model="editedStudent.surname" label="Фамилия"
+                                    :rules="[surnameRule.required()]"></v-text-field>
                       <v-text-field v-model="editedStudent.middleName" label="Отчество"
                                     :rules="[middleNameRule.required()]"></v-text-field>
-                      <v-text-field v-model="editedStudent.email" label="email" :rules="[emailRule.required()]"></v-text-field>
+                      <v-text-field v-model="editedStudent.email" label="email"
+                                    :rules="[emailRule.required()]"></v-text-field>
                       <vue-text-mask class="phone-field" v-model="editedStudent.phoneNumber" :mask="mask"
                                      placeholderChar="#" :rules="[phoneRule.required()]"></vue-text-mask>
                       <v-select
@@ -87,12 +90,12 @@
       </template>
       <template v-slot:item="{ item }">
         <tr>
-          <td>{{ item.name + " " + item.surname + " " +  item.middleName}}</td>
+          <td>{{ item.name + " " + item.surname + " " + item.middleName }}</td>
           <td>{{ item.email }}</td>
-          <td>{{  }}</td>
-          <td>{{  }}</td>
-          <td>{{  }}</td>
-          <td>{{  }}</td>
+          <td>{{ }}</td>
+          <td>{{ }}</td>
+          <td>{{ }}</td>
+          <td>{{ }}</td>
           <td class="text-xs-right">
             <v-icon small class="mr-2 blue--text" @click="editItem(item)">mdi-pen</v-icon>
             <v-icon small class="red--text" @click="deleteItem(item)">mdi-delete</v-icon>
@@ -100,7 +103,7 @@
         </tr>
       </template>
     </v-data-table>
-</v-container>
+  </v-container>
 </template>
 <script>
 import UsersRequest from "@/services/UsersRequest";
@@ -116,12 +119,12 @@ export default {
     mask: ['+', /\d/, '(', /[1-9]/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, '-', /\d/, /\d/],
     headers: [
       {text: 'ФИО', align: 'start', sortable: false,},
-      {text: 'E-mail', align: 'start', sortable: false, },
+      {text: 'E-mail', align: 'start', sortable: false,},
       {text: 'Общие практики всего', align: 'start', sortable: false,},
-      {text: 'Общие практики остаток',  sortable: false},
-      {text: 'Доппрактики всего',  sortable: false},
-      {text: 'Доппрактики остаток',  sortable: false},
-      {text: 'Действия',  sortable: false},
+      {text: 'Общие практики остаток', sortable: false},
+      {text: 'Доппрактики всего', sortable: false},
+      {text: 'Доппрактики остаток', sortable: false},
+      {text: 'Действия', sortable: false},
     ],
     groups: [],
     persons: {
@@ -150,7 +153,7 @@ export default {
       return this.editedIndex === -1 ? 'Новый элемент' : 'Редактировать элемент';
     },
 
-    isSaveButtonDisabled(){
+    isSaveButtonDisabled() {
       return !(this.nameRule.required(this.editedStudent.name)
           && this.surnameRule.required(this.editedStudent.surname)
           && this.middleNameRule.required(this.editedStudent.middleName)
@@ -172,7 +175,6 @@ export default {
   created() {
     this.initialize();
   },
-
 
   methods: {
     async getGroups() {
@@ -305,28 +307,7 @@ export default {
   },
 };
 </script>
-<style>
-.phone-field {
-  width: 100%;
-  padding: 11px 14px;
-  margin-bottom: 0;
-  font-size: 1rem;
-  line-height: 1.5;
-  color: #383c42;
-  background-color: #fff;
-  background-clip: padding-box;
-  border: none; /* Remove the default border */
-  border-bottom: 1px solid rgba(0, 0, 0, 0.53); /* Add bottom border */
-  border-radius: 0; /* Remove border-radius if needed */
-  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-}
-
-.phone-field:focus {
-  border-color: #80bdff;
-  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
-}
-
-.custom-table-header th {
-  color: #4E7AEC !important;
-}
+<style lang="scss">
+@import "@/assets/styles/phoneMaskStyles.css";
+@import "@/assets/styles/dataTableStyles.css";
 </style>

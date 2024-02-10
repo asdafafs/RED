@@ -2,24 +2,24 @@
   <v-container fluid>
     <v-row class="d-flex mt-0 ga-3 " no-gutters>
       <v-col lg="2" md="2" sm="3">
-        <v-btn text class="black--text btn pa-0" width="100%"
-               :class="{'custom-bg': isButtonPressed[0],}"
+        <v-btn text class="black--text tab-button pa-0" width="100%"
+               :class="{'tab-background': isButtonPressed[0],}"
                @click="changeButtonState(0);getAllEvents();">
-          <span :class="{ 'custom_text':isButtonPressed[0]}">Смотреть все</span>
+          <span :class="{ 'tab-button-text':isButtonPressed[0]}">Смотреть все</span>
         </v-btn>
       </v-col>
       <v-col lg="2" md="2" sm="3">
-        <v-btn text class="black--text btn pa-0" width="100%"
-               :class="{'custom-bg': isButtonPressed[1]}"
+        <v-btn text class="black--text tab-button pa-0" width="100%"
+               :class="{'tab-background': isButtonPressed[1]}"
                @click="changeButtonState(1); testLessons();">
-          <span :class="{ 'custom_text':isButtonPressed[1]}">Теория</span>
+          <span :class="{ 'tab-button-text':isButtonPressed[1]}">Теория</span>
         </v-btn>
       </v-col>
       <v-col lg="2" md="2" sm="3">
-        <v-btn text class="black--text btn pa-0" width="100%"
-               :class="{'custom-bg': isButtonPressed[2]}"
+        <v-btn text class="black--text tab-button pa-0" width="100%"
+               :class="{'tab-background': isButtonPressed[2]}"
                @click="changeButtonState(2); testPractices();">
-          <span :class="{ 'custom_text':isButtonPressed[2]}">Практика</span>
+          <span :class="{ 'tab-button-text':isButtonPressed[2]}">Практика</span>
         </v-btn>
       </v-col>
     </v-row>
@@ -139,9 +139,7 @@ export default {
   data: () => ({
     events: [],
     num: 70,
-    isMobile: false,
     test: false,
-    classesSelectorsToRemove: [],
     type: 'month',
     mode: 'stack',
     modes: [
@@ -279,68 +277,9 @@ export default {
   created() {
     this.initialize()
   },
-
-
-
-
 }
 </script>
 <style lang="scss">
-@import "@/assets/styles/buttons.css";
-.v-calendar-weekly__week {
-  min-height: 20em;
-}
-
-@media screen and (max-width: 1260px) {
-  .v-calendar-weekly__week {
-    min-height: 10em;
-  }
-}
-
-@media screen and (max-width: 600px) {
-  .v-calendar-weekly__week {
-    min-height: 5em;
-  }
-}
-
-.theme--light.v-btn {
-  color: #4E7AEC;
-}
-
-.v-event {
-  display: flex;
-  justify-content: center;
-  max-width: 98%;
-  background-color: rgb(157, 185, 255);
-  border: black 1px;
-  margin: 0 0 0 1.1%;
-}
-
-.v-event.v-event-start.v-event-end.white--text {
-  min-width: 98%;
-  max-width: 98%;
-}
-
-.v-event-more {
-  font-size: 1em !important;
-}
-
-.btn {
-  text-transform: unset !important;
-  font-size: 1.5em;
-}
-
-.event {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.text-format {
-  white-space: pre-wrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-height: 6em;
-  max-width: 10em;
-}
+@import "@/assets/styles/buttonStyles.css";
+@import "@/assets/styles/monthScheduleStyles.css";
 </style>

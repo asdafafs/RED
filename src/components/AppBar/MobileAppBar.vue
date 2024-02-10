@@ -31,8 +31,6 @@ export default {
   }
 }
 </script>
-<style>
-.height-container {
-  height: 100%;
-}
+<style lang="scss">
+@import "@/assets/styles/containerStyles.css";
 </style>

@@ -1,0 +1,33 @@
+.v-overlay--active .v-overlay__scrim {
+    display: none;
+}
+
+.v-overlay--active {
+    backdrop-filter: blur(2px);
+    background: rgb(0 0 0 / 0.8);
+}
+
+@media (prefers-color-scheme: dark) {
+    .v-overlay--active {
+        background: rgb(0 0 0 / 0.4);
+    }
+}
+
+.height {
+    min-height: 28rem;
+}
+
+.pos {
+    align-self: center;
+    transform: scale(2.1);
+    margin-top: 2em;
+    margin-bottom: 2em;
+}
+
+.width-main-authorization-form {
+    width: 60em ;
+}
+
+.width-mail-form {
+    width: 20em !important;
+}

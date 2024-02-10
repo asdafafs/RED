@@ -7,28 +7,28 @@
     </v-row>
     <v-row class="d-flex mt-0 ga-3" no-gutters>
       <v-col sm="3" md="3" lg="1">
-        <v-btn text class="black--text btn pa-0" width="100%"
-               :class="{'custom-bg': isButtonPressed[0],}"
+        <v-btn text class="black--text tab-button pa-0" width="100%"
+               :class="{'tab-background': isButtonPressed[0],}"
                @click="changeButtonState(0);
-                 $router.push({name: 'plan-main-day'}).catch(err => {})"
+                 $router.push({name: 'plan-main-day'}).catch(() => {})"
         >
-          <span :class="{ 'custom_text':isButtonPressed[0]}">День</span>
+          <span :class="{ 'tab-button-text':isButtonPressed[0]}">День</span>
         </v-btn>
       </v-col>
       <v-col sm="3" md="3" lg="1">
-        <v-btn text class="black--text btn pa-0" width="100%"
-               :class="{'custom-bg': isButtonPressed[1]}"
+        <v-btn text class="black--text tab-button pa-0" width="100%"
+               :class="{'tab-background': isButtonPressed[1]}"
                @click="changeButtonState(1);
-                 $router.push({name: 'plan-main-week'}).catch(err => {})">
-          <span :class="{ 'custom_text':isButtonPressed[1]}">Неделя</span>
+                 $router.push({name: 'plan-main-week'}).catch(() => {})">
+          <span :class="{ 'tab-button-text':isButtonPressed[1]}">Неделя</span>
         </v-btn>
       </v-col>
       <v-col sm="3" md="3" lg="1">
-        <v-btn text class="black--text btn pa-0" width="100%"
-               :class="{'custom-bg': isButtonPressed[2]}"
+        <v-btn text class="black--text tab-button pa-0" width="100%"
+               :class="{'tab-background': isButtonPressed[2]}"
                @click="changeButtonState(2);
-                 $router.push({name: 'plan-main-month'}).catch(err => {})">
-          <span :class="{ 'custom_text': isButtonPressed[2]}">Месяц</span>
+                 $router.push({name: 'plan-main-month'}).catch(() => {})">
+          <span :class="{ 'tab-button-text': isButtonPressed[2]}">Месяц</span>
         </v-btn>
       </v-col>
     </v-row>
@@ -64,8 +64,5 @@ export default {
 }
 </script>
 <style lang="scss">
-@import "@/assets/styles/buttons.css";
-.btn {
-  font-size: 1.125rem;
-}
+@import "@/assets/styles/buttonStyles.css";
 </style>

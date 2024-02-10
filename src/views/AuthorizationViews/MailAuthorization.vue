@@ -3,7 +3,7 @@
     <v-row align="center" justify="center" class="">
       <v-col cols="4" class=" pa-0 overflow-x-hidden">
         <v-dialog v-model="overlay" persistent width="auto" content-class="elevation-0" class="custom-dialog">
-          <v-card class="d-flex justify-space-between flex-column height width rounded-lg ma-2 " v-if="overlay">
+          <v-card class="d-flex justify-space-between flex-column height width-mail-form rounded-lg ma-2 " v-if="overlay">
             <v-card-title class="black--text"> Авторизация</v-card-title>
             <v-card-subtitle class="black--text">
               Для продолжения работы в RED: Расписание, пожалуйста, авторизуйтесь через электронную почту.
@@ -36,7 +36,7 @@
                   counter
                   @click:append="show = !show"
               ></v-text-field>
-              <v-btn color="#4E7AEC" @click="$router.push({name: 'recPass'}).catch(err => {})"
+              <v-btn color="#4E7AEC" @click="$router.push({name: 'recPass'}).catch(() => {})"
                      class="rounded-lg pa-0 ma-0" block text>
                 Забыли пароль?
               </v-btn>
@@ -73,7 +73,6 @@ export default {
     show: false,
     email: null,
     loading: false,
-    test: false,
     loginButtonDisabled: false,
     value: '',
     password: '',
@@ -92,7 +91,6 @@ export default {
       await login.postLogin(body).catch(() => {
             this.message = "Неверный пользователь или пароль";
             this.password = ''
-            this.test = true;
             this.wrongAuth = true;
           }
       )
@@ -130,38 +128,10 @@ export default {
   },
 };
 </script>
-<style>
-.width {
-  width: 20em;
-}
-
-.height {
-  min-height: 28rem;
-}
-
-.pos {
-  align-self: center;
-  transform: scale(2.1);
-  margin-top: 2em;
-  margin-bottom: 2em;
-}
+<style lang="scss">
+@import "@/assets/styles/autorizationFormStyles.css";
 
 .no-scroll {
   overflow: hidden;
-}
-
-.v-overlay--active .v-overlay__scrim {
-  display: none;
-}
-
-.v-overlay--active {
-  backdrop-filter: blur(2px);
-  background: rgb(0 0 0 / 0.8);
-}
-
-@media (prefers-color-scheme: dark) {
-  .v-overlay--active {
-    background: rgb(0 0 0 / 0.4);
-  }
 }
 </style>

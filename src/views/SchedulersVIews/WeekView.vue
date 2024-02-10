@@ -316,7 +316,7 @@ export default {
 }
 </script>
 <style lang="scss">
-@import "@/assets/styles/buttons.css";
+@import "@/assets/styles/buttonStyles.css";
 .v-event-timed.white--text {
   //display: flex;
   //justify-content: center;
@@ -339,7 +339,7 @@ export default {
   font-size: 1em !important;
 }
 
-.btn {
+.app-bar-button-style {
   text-transform: unset !important;
   font-size: 1.5em;
 }

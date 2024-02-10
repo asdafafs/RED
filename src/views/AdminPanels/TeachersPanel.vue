@@ -15,7 +15,7 @@
         :headers="headers"
         :items="persons.activeUsers"
         :search="search"
-        class="elevation-1 custom-table-header"
+        class="elevation-1 custom-header-table"
         no-data-text="Нет данных для отображения"
         :hide-default-footer="true"
         disable-pagination
@@ -81,7 +81,7 @@
           <td>{{ item.name + " " + item.surname + " " +  item.middleName}}</td>
           <td>{{ item.email }}</td>
           <td>
-            <v-btn cols="" class="btn pa-0 rounded-lg" color="#4E7AEC" @click ="test()">
+            <v-btn cols="" class="tab-button pa-0 rounded-lg" color="#4E7AEC" @click ="test()">
               <span class="white--text">Редактировать</span>
             </v-btn>
 
@@ -161,7 +161,7 @@ export default {
 
   methods: {
     test(){
-      this.$router.push({name: 'plan-template'}).catch(err => {})
+      this.$router.push({name: 'plan-template'}).catch(() => {})
     },
 
     async getActiveUsers() {
@@ -271,7 +271,6 @@ export default {
 };
 </script>
 <style>
-.custom-table-header th {
-  color: #4E7AEC !important;
-}
+@import "@/assets/styles/phoneMaskStyles.css";
+@import "@/assets/styles/dataTableStyles.css";
 </style>
