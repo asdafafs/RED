@@ -68,18 +68,8 @@ export default {
   },
 }
 </script>
-<style>
-/deep/ .v-toolbar__content {
-  padding: 0 !important;
-}
-
-.appbar {
-  z-index: auto;
-}
-
-.position_component {
-  z-index: 2;
-}
+<style lang="scss">
+@import "@/assets/styles/appBarStyles.css";
 </style>
 
 

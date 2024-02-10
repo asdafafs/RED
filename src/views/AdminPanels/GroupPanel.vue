@@ -3,7 +3,7 @@
     <div class="text-h4 font-weight-medium px-4">
       Группы и планы обучения
     </div>
-    <v-data-table :headers="headersGroup" :search="search" :items="groups" class="elevation-1 custom-table-header"
+    <v-data-table :headers="headersGroup" :search="search" :items="groups" class="elevation-1 custom-header-table"
                   v-if="!discriminatorUser" no-data-text="Нет данных для отображения"
                   :hide-default-footer="true" disable-pagination :header-props="{ class: 'blue--text text--darken-2' }">
       <template v-slot:top>
@@ -169,6 +169,8 @@ export default {
         title: ``,
         startDate: null,
         startTime: null,
+        fullGroupName: null,
+        groupNumber:null,
       },
 
       lecture: {
@@ -538,8 +540,8 @@ export default {
         'Сб': 5,
         'Вс': 6,
       };
-      this.cursorDate = this.globalStartDate
 
+      this.cursorDate = this.globalStartDate
       const index = this.selectedChips.indexOf(chip);
       if (index !== -1) {
         this.selectedChips.splice(index, 1);
@@ -608,7 +610,5 @@ export default {
 };
 </script>
 <style>
-.custom-table-header th {
-  color: #4E7AEC !important;
-}
+@import "@/assets/styles/dataTableStyles.css";
 </style>

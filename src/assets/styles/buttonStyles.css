@@ -1,0 +1,28 @@
+.tab-button {
+    text-transform: unset !important;
+    font-size: 1.5em;
+}
+
+.tab-background {
+    background-color: #1e1f22;
+}
+
+.tab-button-text {
+    color: white;
+}
+
+.adminPanelButton {
+    text-transform: unset !important;
+    font-size: 1.0rem !important;
+    font-weight: lighter;
+}
+
+.app-bar-button-color {
+    background-color: #4E7AEC;
+    color: #ffffff;
+}
+
+.app-bar-button-style {
+    text-transform: unset !important;
+    font-size: 1.125rem !important;
+}

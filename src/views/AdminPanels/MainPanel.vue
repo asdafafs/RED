@@ -2,24 +2,24 @@
   <v-container fluid>
     <v-row class="flex-nowrap">
       <v-col cols="" class="">
-        <v-btn cols="" text class="black--text btn pa-0 align-center " width="100%"
-               :class="{'custom-bg': isButtonPressed[0]}"
-               @click="changeButtonState(0); $router.push({name: 'admin-students'}).catch(err => {})">
-          <span :class="{ 'custom_text':isButtonPressed[0]}">Студенты</span>
+        <v-btn cols="" text class="black--text tab-button pa-0 align-center " width="100%"
+               :class="{'tab-background': isButtonPressed[0]}"
+               @click="changeButtonState(0); $router.push({name: 'admin-students'}).catch(() => {})">
+          <span :class="{ 'tab-button-text':isButtonPressed[0]}">Студенты</span>
         </v-btn>
       </v-col>
       <v-col cols="">
-        <v-btn text class="black--text btn pa-0" width="100%"
-               :class="{'custom-bg': isButtonPressed[1]}"
-               @click="changeButtonState(1); $router.push({name: 'admin-teachers'}).catch(err => {})">
-          <span :class="{ 'custom_text':isButtonPressed[1]}">Преподаватели</span>
+        <v-btn text class="black--text tab-button pa-0" width="100%"
+               :class="{'tab-background': isButtonPressed[1]}"
+               @click="changeButtonState(1); $router.push({name: 'admin-teachers'}).catch(() => {})">
+          <span :class="{ 'tab-button-text':isButtonPressed[1]}">Преподаватели</span>
         </v-btn>
       </v-col>
       <v-col cols="">
-        <v-btn cols="" text class="black--text btn pa-0" width="100%"
-               :class="{'custom-bg': isButtonPressed[2]}"
-               @click="changeButtonState(2); $router.push({name: 'admin-groups'}).catch(err => {})">
-          <span :class="{ 'custom_text':isButtonPressed[2]}">Практика</span>
+        <v-btn cols="" text class="black--text tab-button pa-0" width="100%"
+               :class="{'tab-background': isButtonPressed[2]}"
+               @click="changeButtonState(2); $router.push({name: 'admin-groups'}).catch(() => {})">
+          <span :class="{ 'tab-button-text':isButtonPressed[2]}">Практика</span>
         </v-btn>
       </v-col>
       <v-col cols="9">
@@ -55,5 +55,5 @@ export default {
 }
 </script>
 <style lang="scss">
-@import "@/assets/styles/buttons.css";
+@import "@/assets/styles/buttonStyles.css";
 </style>

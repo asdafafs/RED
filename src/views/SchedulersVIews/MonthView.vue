@@ -217,7 +217,7 @@ export default {
 }
 </script>
 <style lang="scss">
-@import "@/assets/styles/buttons.css";
+@import "@/assets/styles/buttonStyles.css";
 
 .v-calendar-weekly__week {
   min-height: 20em;

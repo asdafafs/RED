@@ -1,0 +1,23 @@
+.phone-field {
+    width: 100%;
+    padding: 11px 14px;
+    margin-bottom: 0;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: #383c42;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: none; /* Remove the default border */
+    border-bottom: 1px solid rgba(0, 0, 0, 0.53); /* Add bottom border */
+    border-radius: 0; /* Remove border-radius if needed */
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.phone-field:focus {
+    border-color: #80bdff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.custom-header-table th {
+    color: #4E7AEC !important;
+}

@@ -26,12 +26,12 @@
       </v-col>
       <v-col cols="4"></v-col>
       <v-col cols="">
-        <v-btn  class="btn pa-0 rounded-lg" color="#2B2A29" outlined>
+        <v-btn class="tab-button pa-0 rounded-lg" color="#2B2A29" outlined>
           <span class="black--text">Сохранить изменения</span>
         </v-btn>
       </v-col>
       <v-col cols="">
-        <v-btn class="btn pa-0 rounded-lg" color="#2B2A29" text>
+        <v-btn class="tab-button pa-0 rounded-lg" color="#2B2A29" text>
           <span class="black--text">Выйти без изменений</span>
         </v-btn>
       </v-col>
@@ -47,8 +47,14 @@ import TemplateSchedule from "@/views/AdminPanels/TemplateSchedule.vue";
 export default {
   name: 'PlanTemplate',
   components: {TemplateSchedule},
-  data: () => ({}),
-  computed: {},
+  data: () => ({
+
+  }),
+
+  computed: {
+
+  },
+
   methods: {
     prev() {
       this.$router.push({name: 'admin-teachers'})
@@ -73,5 +79,4 @@ export default {
 }
 </script>
 <style>
-
 </style>

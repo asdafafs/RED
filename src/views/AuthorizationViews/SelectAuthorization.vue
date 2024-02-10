@@ -1,6 +1,6 @@
 <template>
   <v-overlay :value="overlay" contained class="">
-    <v-row align="center" justify="center" class="width ">
+    <v-row align="center" justify="center" class="width-main-authorization-form ">
       <v-col cols="4" class=" pa-0">
         <v-card class="d-flex justify-space-between flex-column height white rounded-lg ma-2">
           <v-card-title class="black--text"> Добро пожаловать!</v-card-title>
@@ -12,7 +12,7 @@
             {{ message }}
           </v-alert>
           <v-card-actions class="flex-column">
-            <v-btn color="#4E7AEC" @click="$router.push({name: 'mail'}).catch(err => {})"
+            <v-btn color="#4E7AEC" @click="$router.push({name: 'mail'}).catch(() => {})"
                    class="rounded-lg pa-0 ma-0 my-1" block>
               Войти
             </v-btn>
@@ -55,32 +55,6 @@ export default {
   },
 }
 </script>
-<style scoped>
-.width {
-  width: 60em;
-}
-
-.height {
-  min-height: 28rem;
-}
-
-.pos {
-  align-self: center;
-  transform: scale(2.1);
-}
-
-.v-overlay--active .v-overlay__scrim {
-  display: none;
-}
-
-.v-overlay--active {
-  backdrop-filter: blur(2px);
-  background: rgb(0 0 0 / 0.8);
-}
-
-@media (prefers-color-scheme: dark) {
-  .v-overlay--active {
-    background: rgb(0 0 0 / 0.4);
-  }
-}
+<style lang="scss">
+@import "@/assets/styles/autorizationFormStyles.css";
 </style>

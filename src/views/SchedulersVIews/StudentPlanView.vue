@@ -11,18 +11,16 @@
         <v-col cols="">
         </v-col>
         <v-col cols="1">
-          <v-btn text class="grey--text btn pa-0" width="100%"
-                 @click="changeButtonMenuState(0); $router.push({name: 'plan-main'}).catch(err => {})">
-            <span :class="{'uno': isButtonMenuPressed[0],}">Календарь</span>
+          <v-btn text class="grey--text tab-button pa-0" width="100%"
+                 @click="changeButtonMenuState(0); $router.push({name: 'plan-main'}).catch(() => {})">
+            <span :class="{'tab-button-text': isButtonMenuPressed[0],}">Календарь</span>
           </v-btn>
-          <div v-show="isButtonMenuPressed[0]" class="button-line"></div>
         </v-col>
         <v-col cols="1">
-          <v-btn text class="grey--text btn pa-0" width="100%"
-                 @click="changeButtonMenuState(1); $router.push({name: 'progress'}).catch(err => {})">
-            <span :class="{'uno': isButtonMenuPressed[1],}">Прогресс</span>
+          <v-btn text class="grey--text tab-button pa-0" width="100%"
+                 @click="changeButtonMenuState(1); $router.push({name: 'progress'}).catch(() => {})">
+            <span :class="{'tab-button-text': isButtonMenuPressed[1],}">Прогресс</span>
           </v-btn>
-          <div v-show="isButtonMenuPressed[1]" class="button-line"></div>
         </v-col>
       </v-row>
       <hr>
@@ -39,18 +37,16 @@
       </v-row>
       <v-row>
         <v-col cols="">
-          <v-btn text class="grey--text btn pa-0" width="100%"
-                 @click="changeButtonMenuState(0); $router.push({name: 'plan-main'}).catch(err => {})">
-            <span :class="{'uno': isButtonMenuPressed[0],}">Календарь</span>
+          <v-btn text class="grey--text tab-button pa-0" width="100%"
+                 @click="changeButtonMenuState(0); $router.push({name: 'plan-main'}).catch(() => {})">
+            <span :class="{'tab-button-text': isButtonMenuPressed[0],}">Календарь</span>
           </v-btn>
-          <div v-show="isButtonMenuPressed[0]" class="button-line"></div>
         </v-col>
         <v-col cols="">
-          <v-btn text class="grey--text btn pa-0" width="100%"
-                 @click="changeButtonMenuState(1); $router.push({name: 'progress'}).catch(err => {})">
-            <span :class="{'uno': isButtonMenuPressed[1],}">Прогресс</span>
+          <v-btn text class="grey--text tab-button pa-0" width="100%"
+                 @click="changeButtonMenuState(1); $router.push({name: 'progress'}).catch(() => {})">
+            <span :class="{'tab-button-text': isButtonMenuPressed[1],}">Прогресс</span>
           </v-btn>
-          <div v-show="isButtonMenuPressed[1]" class="button-line"></div>
         </v-col>
       </v-row>
       <hr>
@@ -66,7 +62,6 @@ export default {
   components: {},
   data: () => ({
     showDrawer: true,
-    groupId: 1,
     isButtonMenuPressed: [false, false,],
   }),
   methods: {
@@ -87,6 +82,12 @@ export default {
       return this.user.name
     },
 
+    groupId() {
+      if (this.user.groupId != null)
+        return this.user.groupId
+      else
+        return 0
+    }
 
   },
   created() {
@@ -100,28 +101,7 @@ export default {
 }
 
 </script>
-<style scoped>
-hr {
-  display: block;
-  height: 1px;
-  border: 0;
-  border-top: 1px solid #ccc;
-  margin: 1em 0;
-  padding: 0;
-}
-
-.uno {
-  color: #4E7AEC;
-}
-
-.btn {
-  font-size: 1.125rem;
-}
-
-.button-line {
-  width: 100%;
-  height: 2px;
-  background-color: black;
-  margin-top: 5px;
-}
+<style lang="scss">
+@import "@/assets/styles/lineStyles.css";
+@import "@/assets/styles/buttonStyles.css";
 </style>

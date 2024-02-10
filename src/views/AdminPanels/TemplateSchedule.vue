@@ -13,7 +13,6 @@
               :event-height="50"
               :weekdays="weekday"
               @change="updateRange"
-              @click:event="showEvent"
 
           >
             <template v-slot:event="{event}">
@@ -63,7 +62,6 @@
   </v-container>
 </template>
 <script>
-import moment from 'moment';
 import CarLogo from "@/components/logos/CarLogo.vue";
 import LectureLogo from "@/components/logos/LectureLogo.vue";
 
@@ -96,41 +94,17 @@ export default {
 
   data: () => ({
     events: [],
-    currentDate: moment(),
     focus: '',
     weekday: [1, 2, 3, 4, 5, 6, 0],
-    today: new Date(),
-    test: false,
-    dateMonday: moment().subtract(0, 'weeks').startOf('isoWeek').format('DD'),
-    dateSunday: moment().subtract(0, 'weeks').endOf('isoWeek').format('DD'),
     selectedEvent: {},
     selectedElement: null,
     selectedOpen: false,
     dragEvent: null,
-    dragStart: null,
     createEvent: null,
     createStart: null,
-    extendOriginal: null,
   }),
+
   methods: {
-    showEvent({nativeEvent, event}) {
-      const open = () => {
-        this.selectedEvent = event
-        this.selectedElement = nativeEvent.target
-        requestAnimationFrame(() => requestAnimationFrame(() => this.selectedOpen = true))
-      }
-
-      if (this.selectedOpen) {
-        this.selectedOpen = false
-        requestAnimationFrame(() => requestAnimationFrame(() => open()))
-      } else {
-        open()
-      }
-
-      nativeEvent.stopPropagation()
-    },
-
-
     formatTime(startTime) {
       const date = new Date(startTime);
       const hours = date.getHours().toString().padStart(2, '0');
@@ -147,26 +121,10 @@ export default {
         return '#E9E9E8'
       }
     },
-    prev() {
-      this.$refs.calendar.prev(1);
-      this.currentDate = this.currentDate.clone().subtract(1, 'week');
-      this.updateDateRange()
-    },
-
-    next() {
-      this.$refs.calendar.next(1);
-      this.currentDate = this.currentDate.clone().add(1, 'week');
-      this.updateDateRange()
-    },
-
-    updateDateRange() {
-      this.dateMonday = this.currentDate.clone().startOf('isoWeek').format('DD');
-      this.dateSunday = this.currentDate.clone().endOf('isoWeek').format('DD');
-    },
 
     updateRange() {
-    }
-    ,
+    },
+
     startTime(tms) {
       const mouse = this.toTime(tms)
 
@@ -205,71 +163,6 @@ export default {
 }
 </script>
 <style lang="scss">
-@import "@/assets/styles/buttons.css";
-.v-event-timed.white--text {
-  //display: flex;
-  //justify-content: center;
-  //align-items: center;
-}
-
-.theme--light.v-btn {
-  color: #4E7AEC;
-}
-
-.v-calendar .v-event-timed {
-  white-space: pre-wrap;
-  width: 100%;
-  background-color: rgb(157, 185, 255);
-  border-color: rgb(157, 185, 255);
-  margin: 0 0 0 5px;
-}
-
-.v-event-more {
-  font-size: 1em !important;
-}
-
-.btn {
-  text-transform: unset !important;
-  font-size: 1.5em;
-}
-
-.v-calendar-daily__interval-text {
-  color: #424242;
-  font-size: 19px;
-  font-weight: bold;
-}
-
-@media screen and (max-width: 1260px) {
-  .v-calendar-daily__interval-text {
-    color: #424242;
-    font-size: 10px;
-    font-weight: bold;
-  }
-  .v-calendar-daily__intervals-body {
-    max-width: 30px;
-  }
-  .v-calendar-daily__intervals-head {
-    max-width: 30px;
-  }
-}
-
-.v-btn--fab.v-size--default {
-  height: min-content;
-  width: min-content;
-  font-size: 0.8em;
-}
-
-.v-btn--fab.v-size--small {
-  height: min-content;
-  width: min-content;
-  font-size: 0.8em;
-}
-
-.text-format-week {
-  white-space: pre-wrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-height: 7em;
-  max-width: 10em;
-}
+@import "@/assets/styles/buttonStyles.css";
+@import "@/assets/styles/monthScheduleStyles.css";
 </style>

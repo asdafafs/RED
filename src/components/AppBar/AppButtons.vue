@@ -3,38 +3,38 @@
     <v-row no-gutters class="my-0 ga-3" align-content="center" justify="center">
       <v-spacer cols="1"></v-spacer>
       <v-col cols=2>
-        <v-btn :class="{'custom-bg': isButtonPressed[0]}"
-               @click="changeButtonState(0); $router.push({name: 'schedule-lessons'}).catch(err => {})"
-               text min-height="3em" color="white" class="pa-0 btn" width="100%">
+        <v-btn :class="{'app-bar-button-color': isButtonPressed[0]}"
+               @click="changeButtonState(0); $router.push({name: 'schedule-lessons'}).catch(() => {})"
+               text min-height="3em" color="white" class="pa-0 app-bar-button-style" width="100%">
           Расписание
         </v-btn>
       </v-col>
       <v-col cols>
-        <v-btn :class="{ 'custom-bg': isButtonPressed [1]}"
-               @click="changeButtonState(1); $router.push({name: 'singUpClasses-month'}).catch(err => {})"
-               text min-height="3em" class="pa-0 btn" width="100%" color="white">
+        <v-btn :class="{ 'app-bar-button-color': isButtonPressed [1]}"
+               @click="changeButtonState(1); $router.push({name: 'singUpClasses-month'}).catch(() => {})"
+               text min-height="3em" class="pa-0 app-bar-button-style" width="100%" color="white">
           Запись на занятие
         </v-btn>
       </v-col>
       <!--      <v-col cols=2>-->
-      <!--        <v-btn :class="{ 'custom-bg': isButtonPressed [2]}"-->
+      <!--        <v-btn :class="{ 'app-bar-button-color': isButtonPressed [2]}"-->
       <!--               @click="changeButtonState(2)"-->
       <!--               text min-height="3em" color="white" class="pa-0 btn" width="100%">-->
       <!--          Лекции-->
       <!--        </v-btn>-->
       <!--      </v-col>-->
       <v-col cols=2 v-if="student">
-        <v-btn :class="{ 'custom-bg': isButtonPressed [2]}"
-               @click="changeButtonState(3); $router.push({name: 'plan-main-day'}).catch(err => {})"
-               text min-height="3em" color="white" class="pa-0 btn" width="100%">
+        <v-btn :class="{ 'app-bar-button-color': isButtonPressed [2]}"
+               @click="changeButtonState(3); $router.push({name: 'plan-main-day'}).catch(() => {})"
+               text min-height="3em" color="white" class="pa-0 app-bar-button-style" width="100%">
           Мой план
         </v-btn>
       </v-col>
       <v-spacer cols="1"></v-spacer>
       <v-col cols=2 v-if="!student">
-        <v-btn :class="{ 'custom-bg': isButtonPressed [3]}"
-               @click="changeButtonState(3); $router.push({name: 'admin-students'}).catch(err => {})"
-               text min-height="3em" color="white" class="pa-0 btn2" width="100%" height="100%" thin>
+        <v-btn :class="{ 'app-bar-button-color': isButtonPressed [3]}"
+               @click="changeButtonState(3); $router.push({name: 'admin-students'}).catch(() => {})"
+               text min-height="3em" color="white" class="pa-0 adminPanelButton" width="100%" height="100%" thin>
           <span class="mdi mdi-vector-arrange-above"></span>
           <div class="d-flex flex-row ">
             <div>
@@ -77,20 +77,6 @@ export default {
   },
 }
 </script>
-<style scoped>
-.custom-bg {
-  background-color: #4E7AEC;
-  color: #ffffff;
-}
-
-.btn {
-  text-transform: unset !important;
-  font-size: 1.125rem;
-}
-
-.btn2 {
-  text-transform: unset !important;
-  font-size: 1.0rem;
-  font-weight: lighter;
-}
+<style lang="scss">
+@import "@/assets/styles/buttonStyles.css";
 </style>

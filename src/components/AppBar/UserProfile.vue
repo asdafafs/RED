@@ -4,7 +4,7 @@
       <v-col cols="12">
         <v-menu offset-y>
           <template v-slot:activator="{ on }">
-            <v-btn text min-height="3em" color="white" class="pa-0 btn" block v-on="on">
+            <v-btn text min-height="3em" color="white" class="pa-0 app-bar-button-style" block v-on="on">
               <div class="d-flex flex-column">
                 <div>
                   <span class="mdi mdi-account-outline"></span>
@@ -19,7 +19,7 @@
           </template>
           <v-list>
             <v-list-item
-                @click.stop="$router.push('*').catch(err => {})">
+                @click.stop="$router.push('*').catch(() => {})">
               Привязать аккуант к вк
             </v-list-item>
             <v-list-item
@@ -49,9 +49,6 @@ export default {
   }
 }
 </script>
-<style scoped>
-.btn {
-  text-transform: unset !important;
-  font-size: 1.125rem;
-}
+<style lang="scss">
+@import "@/assets/styles/buttonStyles.css";
 </style>
