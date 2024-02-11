@@ -11,14 +11,16 @@
         <v-col cols="">
         </v-col>
         <v-col cols="1">
-          <v-btn text class="grey--text tab-button pa-0" width="100%"
-                 @click="changeButtonMenuState(0); $router.push({name: 'plan-main'}).catch(() => {})">
+          <v-btn text class="black--text tab-button pa-0" width="100%"
+                 @click="changeButtonMenuState(0); $router.push({name: 'plan-main'}).catch(() => {})"
+                 :class="{'tab-background': isButtonMenuPressed[0],}">
             <span :class="{'tab-button-text': isButtonMenuPressed[0],}">Календарь</span>
           </v-btn>
         </v-col>
         <v-col cols="1">
-          <v-btn text class="grey--text tab-button pa-0" width="100%"
-                 @click="changeButtonMenuState(1); $router.push({name: 'progress'}).catch(() => {})">
+          <v-btn text class="black--text tab-button pa-0" width="100%"
+                 @click="changeButtonMenuState(1); $router.push({name: 'progress'}).catch(() => {})"
+                 :class="{'tab-background': isButtonMenuPressed[1],}">
             <span :class="{'tab-button-text': isButtonMenuPressed[1],}">Прогресс</span>
           </v-btn>
         </v-col>
@@ -37,14 +39,16 @@
       </v-row>
       <v-row>
         <v-col cols="">
-          <v-btn text class="grey--text tab-button pa-0" width="100%"
-                 @click="changeButtonMenuState(0); $router.push({name: 'plan-main'}).catch(() => {})">
+          <v-btn text class="black--text tab-button pa-0" width="100%"
+                 @click="changeButtonMenuState(0); $router.push({name: 'plan-main'}).catch(() => {})"
+                 :class="{'tab-background': isButtonMenuPressed[0],}">
             <span :class="{'tab-button-text': isButtonMenuPressed[0],}">Календарь</span>
           </v-btn>
         </v-col>
         <v-col cols="">
-          <v-btn text class="grey--text tab-button pa-0" width="100%"
-                 @click="changeButtonMenuState(1); $router.push({name: 'progress'}).catch(() => {})">
+          <v-btn text class="black--text tab-button pa-0" width="100%"
+                 @click="changeButtonMenuState(1); $router.push({name: 'progress'}).catch(() => {})"
+                 :class="{'tab-background': isButtonMenuPressed[1],}">
             <span :class="{'tab-button-text': isButtonMenuPressed[1],}">Прогресс</span>
           </v-btn>
         </v-col>
