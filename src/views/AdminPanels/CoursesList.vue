@@ -21,7 +21,7 @@
           </template>
           <v-card>
             <v-card-title>
-              <span class="text-h5">{{ formTitle() }}</span>
+              <span class="text-h5">{{ formTitle}}</span>
             </v-card-title>
             <v-card-text>
               <v-container>
@@ -36,6 +36,7 @@
                                   :rules="[endDateTimeRules.required]">
                     </v-text-field>
                     <v-select
+                        ref="selectItem"
                         v-model="discriminator[editedItem.lectureType]"
                         label="Тип занятия"
                         :items="discriminator"
@@ -185,7 +186,11 @@ export default {
 
     lessons() {
       return this.coursesData;
-    }
+    },
+
+    formTitle() {
+      return this.editedIndex === -1 ? 'Новое занятие' : 'Редактировать занятие';
+    },
   },
 
   created() {
@@ -320,12 +325,11 @@ export default {
 
       if (index !== -1) {
         this.editedItem.lectureType = index;
+        this.$refs.selectItem.blur();
       }
     },
 
-    formTitle() {
-      return this.editedIndex === -1 ? 'Новое занятие' : 'Редактировать занятие';
-    },
+
   },
 };
 </script>

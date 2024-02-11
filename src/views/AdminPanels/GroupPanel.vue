@@ -21,7 +21,7 @@
             </template>
             <v-card>
               <v-card-title>
-                <span class="text-h5">{{ formTitle() }}</span>
+                <span class="text-h5">{{ formTitle }}</span>
               </v-card-title>
               <v-card-text>
                 <v-container>
@@ -212,6 +212,10 @@ export default {
     areDatesOfWeekNotEmpty() {
       return this.dateOfWeek.some(item => item === true);
     },
+
+    formTitle(){
+      return this.editedIndex === -1 ? 'Новая группа' : 'Редактировать группу';
+    },
   },
 
   created() {
@@ -234,9 +238,7 @@ export default {
       return `${year}-${month}-${day}`;
     },
 
-    formTitle() {
-      return this.editedIndex === -1 ? 'Новая группа' : 'Редактировать группу';
-    },
+
 
     async getEventsTeacher() {
       const teachers = new UsersRequest();
@@ -471,9 +473,10 @@ export default {
       if (this.editedIndex > -1) {
         this.$set(this.groups, this.editedIndex, this.editedItem.groups);
         const body = {
+          "title": this.editedItem.groups.title,
           "courseStartDate": this.editedItem.groups.startDate,
-          "groupName": this.editedItem.groups.title,
           "startTime": parseInt(this.globalStartTime.split(':')[0], 10),
+          'groupNumber' : 0,
           "groupId": this.editedItem.groups.groupId,
           "studentId": this.selectedStudentsIds,
           "lecture": this.lessons
@@ -486,9 +489,10 @@ export default {
       } else {
 
         const body = {
+          "title": this.editedItem.groups.title,
           "courseStartDate": this.editedItem.groups.startDate,
-          "groupName": this.editedItem.groups.title,
           "startTime": parseInt(this.globalStartTime.split(':')[0], 10),
+          'groupNumber' : 0,
           "groupId": this.editedItem.groups.groupId,
           "studentId": this.selectedStudentsIds,
           "lecture": this.lessons
@@ -514,10 +518,12 @@ export default {
 
     updateGlobalStartTime(value) {
       this.globalStartTime = value;
+      this.toggleSelectedChip(this.selectedChips);
     },
 
     updateGlobalStartDate(value) {
-      return this.globalStartDate = value
+      this.globalStartDate = value;
+      this.toggleSelectedChip(this.selectedChips);
     },
 
     updateSelectedStudentsIds() {

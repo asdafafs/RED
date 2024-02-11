@@ -2,7 +2,7 @@
   <div>
     <v-row class="px-12">
       <v-col cols="12" class="">
-        <div class="text-h6 font-weight-bold">Мое расписание</div>
+        <div class="text-h5 font-weight-bold">Мое расписание</div>
       </v-col>
     </v-row>
     <v-row class="d-flex mt-0 ga-3" no-gutters>
