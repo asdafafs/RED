@@ -81,7 +81,7 @@
           <td>{{ item.name + " " + item.surname + " " +  item.middleName}}</td>
           <td>{{ item.email }}</td>
           <td>
-            <v-btn cols="" class="tab-button pa-0 rounded-lg" color="#4E7AEC" @click ="test()">
+            <v-btn cols="" class="tab-button pa-0 rounded-lg" color="#4E7AEC" @click ="openPlanTemplate(item)">
               <span class="white--text">Редактировать</span>
             </v-btn>
 
@@ -160,8 +160,9 @@ export default {
   },
 
   methods: {
-    test(){
-      this.$router.push({name: 'plan-template'}).catch(() => {})
+    openPlanTemplate(item) {
+      const { name, surname, middleName } = item;
+      this.$router.push({ name: 'plan-template', params: { name, surname, middleName } }).catch(() => {});
     },
 
     async getActiveUsers() {

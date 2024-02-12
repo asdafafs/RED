@@ -6,7 +6,7 @@
           <v-btn icon class="ma-0  align-self-center" @click="prev">
             <v-icon>mdi-chevron-left</v-icon>
           </v-btn>
-          {{ "surname" + " " + "name" + " " + "middleName" }}
+          {{ nameSelectedActiveUser }}
         </div>
       </v-col>
     </v-row>
@@ -26,7 +26,7 @@
       </v-col>
       <v-col cols="4"></v-col>
       <v-col cols="">
-        <v-btn class="tab-button pa-0 rounded-lg" color="#2B2A29" outlined>
+        <v-btn class="tab-button pa-0 rounded-lg" color="#2B2A29" outlined @click="save">
           <span class="black--text">Сохранить изменения</span>
         </v-btn>
       </v-col>
@@ -37,7 +37,7 @@
       </v-col>
     </v-row>
     <v-row>
-      <TemplateSchedule></TemplateSchedule>
+      <TemplateSchedule @plan-updated="handleEvents"></TemplateSchedule>
     </v-row>
   </v-container>
 </template>
@@ -49,15 +49,28 @@ export default {
   components: {TemplateSchedule},
   data: () => ({
 
+    lessons: [],
   }),
 
   computed: {
-
+    nameSelectedActiveUser() {
+      const { name, surname, middleName } = this.$route.params;
+      return `${name} ${surname} ${middleName}`;
+    }
   },
 
   methods: {
+    handleEvents(events) {
+      this.lessons = events
+      console.log('handleEvents',this.lessons)
+    },
+
     prev() {
       this.$router.push({name: 'admin-teachers'})
+    },
+
+    save(){
+      console.log()
     },
 
     getTodayDate() {
@@ -74,6 +87,8 @@ export default {
       }
       return `${year}-${month}-${day}`;
     },
+
+
   }
 
 }
