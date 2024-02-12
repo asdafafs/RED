@@ -65,9 +65,7 @@ export default {
     isButtonPressed() {
       return [this.$route.path === '/schedule/lessons', this.$route.path === '/singUpClasses/schedule-lessons',
         this.$route.path.includes('mainCal'),
-        (this.$route.path === '/admin/students'
-            || this.$route.path === '/admin/teachers'
-            || this.$route.path === '/admin/groups')]
+        this.$route.path.startsWith('/admin')]
     }
   },
   data() {

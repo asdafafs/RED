@@ -23,7 +23,7 @@
         </v-btn>
       </v-col>
       <v-col cols="9">
-        <v-spacer ></v-spacer>
+        <v-spacer></v-spacer>
       </v-col>
     </v-row>
     <v-row>
@@ -49,7 +49,9 @@ export default {
 
   computed: {
     isButtonPressed() {
-      return [this.$route.path === '/admin/students', this.$route.path === '/admin/teachers', this.$route.path === '/admin/groups']
+      return [this.$route.path === '/admin/students',
+        (this.$route.path === '/admin/teachers' || this.$route.path.startsWith('/admin/template')),
+        this.$route.path === '/admin/groups']
     }
   }
 }
