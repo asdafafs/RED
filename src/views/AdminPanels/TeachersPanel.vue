@@ -161,8 +161,8 @@ export default {
 
   methods: {
     openPlanTemplate(item) {
-      const { name, surname, middleName } = item;
-      this.$router.push({ name: 'plan-template', params: { name, surname, middleName } }).catch(() => {});
+      const selectedUserID = item.id;
+      this.$router.push({ name: 'plan-template', params: { selectedUserID } }).catch(() => {});
     },
 
     async getActiveUsers() {

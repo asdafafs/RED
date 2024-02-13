@@ -88,7 +88,7 @@ const routes = [
                 component: GroupPanel,
             },
             {
-                path: 'template/:name/:surname/:middleName',
+                path: 'template/:selectedUserID',
                 name: 'plan-template',
                 component: InstructorsPlanTemplate,
                 props: true,
