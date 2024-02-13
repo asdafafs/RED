@@ -6,7 +6,7 @@
           <v-calendar
               ref="calendar"
               v-model="focus"
-              :events="events"
+              :events="eventsTemplate"
               color="primary"
               type="week"
               :event-color="getEventColor"
@@ -18,7 +18,6 @@
               @mousedown:time="startTime"
               @mousemove:time="mouseMove"
               @mouseup:time="endDrag"
-
           >
             <template v-slot:event="{event}">
               <v-container class="pa-0 mx-0 d-flex " fill>
@@ -77,7 +76,7 @@ import LectureLogo from "@/components/logos/LectureLogo.vue";
 export default {
   components: {CarLogo, LectureLogo},
   watch: {
-    events() {
+    eventsTemplate() {
     }
   },
   mounted() {
@@ -102,7 +101,7 @@ export default {
   },
 
   data: () => ({
-    events: [],
+    eventsTemplate: [],
     focus: '',
     weekday: [1, 2, 3, 4, 5, 6, 0],
     selectedEvent: {},
@@ -115,10 +114,10 @@ export default {
 
   methods: {
     deleteEvent(event){
-      const index = this.events.indexOf(event);
+      const index = this.eventsTemplate.indexOf(event);
       if (index !== -1) {
-        this.events.splice(index, 1);
-        this.$emit('plan-updated', this.events);
+        this.eventsTemplate.splice(index, 1);
+        this.$emit('plan-updated', this.eventsTemplate);
       }
     },
 
@@ -179,32 +178,8 @@ export default {
       this.extendOriginal = null
 
     },
-
-    rnd(a, b) {
-      return Math.floor((b - a + 1) * Math.random()) + a
-    },
     getEvents({start, end}) {
-      const events = []
 
-      const min = new Date(`${start.date}T00:00:00`).getTime()
-      const max = new Date(`${end.date}T23:59:59`).getTime()
-      const days = (max - min) / 86400000
-      const eventCount = this.rnd(days, days + 20)
-
-      for (let i = 0; i < eventCount; i++) {
-        const timed = this.rnd(0, 3) !== 0
-        const firstTimestamp = this.rnd(min, max)
-        const secondTimestamp = this.rnd(2, timed ? 8 : 288) * 900000
-        const start = firstTimestamp - (firstTimestamp % 900000)
-        const end = start + secondTimestamp
-
-        events.push({
-          name: 'урок',
-          start,
-          end,
-          timed,
-        })
-      }
     },
 
     startTime(tms) {
@@ -224,8 +199,8 @@ export default {
           student: null,
           timed: true,
         }
-        this.events.push(this.createEvent)
-        this.$emit('plan-updated', this.events);
+        this.eventsTemplate.push(this.createEvent)
+        this.$emit('plan-updated', this.eventsTemplate);
       }
     },
 
@@ -241,8 +216,9 @@ export default {
     toTime(tms) {
       return new Date(tms.year, tms.month - 1, tms.day, tms.hour, tms.minute).getTime()
     },
-  },
 
+
+  },
 }
 </script>
 <style lang="scss">

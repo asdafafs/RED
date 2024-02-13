@@ -6,7 +6,7 @@
           <v-btn icon class="ma-0  align-self-center" @click="prev">
             <v-icon>mdi-chevron-left</v-icon>
           </v-btn>
-          {{ nameSelectedActiveUser }}
+          <span v-if="test">{{ test }}</span>
         </div>
       </v-col>
     </v-row>
@@ -19,10 +19,10 @@
         </v-radio-group>
       </v-col>
       <v-col cols="2">
-        <v-text-field  label="Дата начала" type="date" :min="getTodayDate()"></v-text-field>
+        <v-text-field label="Дата начала" type="date" :min="getTodayDate()"></v-text-field>
       </v-col>
       <v-col cols="2">
-        <v-text-field  label="Дата окончания" type="date" :min="getTodayDate()"></v-text-field>
+        <v-text-field label="Дата окончания" type="date" :min="getTodayDate()"></v-text-field>
       </v-col>
       <v-col cols="4"></v-col>
       <v-col cols="">
@@ -43,35 +43,48 @@
 </template>
 <script>
 import TemplateSchedule from "@/views/AdminPanels/TemplateSchedule.vue";
+import UsersRequest from "@/services/UsersRequest";
 
 export default {
   name: 'PlanTemplate',
   components: {TemplateSchedule},
   data: () => ({
-
-    lessons: [],
+    test: '',
+    testsTemplate: [],
   }),
 
   computed: {
-    nameSelectedActiveUser() {
-      const { name, surname, middleName } = this.$route.params;
-      return `${name} ${surname} ${middleName}`;
-    }
+    getIdUser() {
+      const {selectedUserID} = this.$route.params;
+      return selectedUserID;
+    },
+
   },
 
   methods: {
     handleEvents(events) {
-      this.lessons = events
-      console.log('handleEvents',this.lessons)
+      this.testsTemplate = events
     },
 
     prev() {
       this.$router.push({name: 'admin-teachers'})
     },
 
-    save(){
+    save() {
       console.log()
     },
+
+
+    async getActiveUser() {
+      const user = new UsersRequest();
+      const id = this.getIdUser
+      let teachersData
+      await user.getActiveUserId(id).catch(x => console.log(x)).then(x => {
+        teachersData = x.data.activeUsers[0]
+      })
+      return teachersData
+    },
+
 
     getTodayDate() {
       const today = new Date();
@@ -86,11 +99,11 @@ export default {
         day = '0' + day;
       }
       return `${year}-${month}-${day}`;
-    },
-
-
+    }
+  },
+  created() {
+    this.getActiveUser().then( response => this.test = `${response.name} ${response.surname} ${response.middleName}`)
   }
-
 }
 </script>
 <style>

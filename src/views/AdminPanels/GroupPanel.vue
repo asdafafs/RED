@@ -31,7 +31,7 @@
                                     :rules="[titleRules.required]"></v-text-field>
                       <v-text-field v-model="editedItem.groups.startDate" label="Дата начала курса"
                                     type="date" :rules="[startDateRules.required]"
-                                     @input="updateGlobalStartDate" :min="getTodayDate()"></v-text-field>
+                                    @input="updateGlobalStartDate" :min="getTodayDate()"></v-text-field>
                       <v-select
                           v-model="selectedStudents"
                           :value="editedItem.lecture.activeUser"
@@ -170,7 +170,7 @@ export default {
         startDate: null,
         startTime: null,
         fullGroupName: null,
-        groupNumber:null,
+        groupNumber: null,
       },
 
       lecture: {
@@ -196,6 +196,9 @@ export default {
     cursorDate: moment(new Date())
   }),
 
+  mounted() {
+  },
+
   computed: {
     ...mapState(['user']),
 
@@ -210,10 +213,15 @@ export default {
     },
 
     areDatesOfWeekNotEmpty() {
-      return this.dateOfWeek.some(item => item === true);
+      if (this.dateOfWeek.some(item => item === true))
+        return this.dateOfWeek.some(item => item === true);
+      else {
+        this.dateOfWeek[0] = true
+        return this.dateOfWeek.some(item => item === true);
+      }
     },
 
-    formTitle(){
+    formTitle() {
       return this.editedIndex === -1 ? 'Новая группа' : 'Редактировать группу';
     },
   },
@@ -237,8 +245,6 @@ export default {
       }
       return `${year}-${month}-${day}`;
     },
-
-
 
     async getEventsTeacher() {
       const teachers = new UsersRequest();
@@ -354,7 +360,7 @@ export default {
       this.groupDelete = true;
     },
 
-    async newCourse(){
+    async newCourse() {
       this.dialog = true;
       this.showCoursesList = true;
       await this.getCourseLast()
@@ -441,6 +447,7 @@ export default {
         };
         this.editedIndex = -1;
       });
+      this.selectedChips=[]
     },
 
     closeDelete() {
@@ -476,7 +483,7 @@ export default {
           "title": this.editedItem.groups.title,
           "courseStartDate": this.editedItem.groups.startDate,
           "startTime": parseInt(this.globalStartTime.split(':')[0], 10),
-          'groupNumber' : 0,
+          'groupNumber': 0,
           "groupId": this.editedItem.groups.groupId,
           "studentId": this.selectedStudentsIds,
           "lecture": this.lessons
@@ -492,7 +499,7 @@ export default {
           "title": this.editedItem.groups.title,
           "courseStartDate": this.editedItem.groups.startDate,
           "startTime": parseInt(this.globalStartTime.split(':')[0], 10),
-          'groupNumber' : 0,
+          'groupNumber': 0,
           "groupId": this.editedItem.groups.groupId,
           "studentId": this.selectedStudentsIds,
           "lecture": this.lessons
@@ -518,12 +525,23 @@ export default {
 
     updateGlobalStartTime(value) {
       this.globalStartTime = value;
-      this.toggleSelectedChip(this.selectedChips);
+      if (this.selectedChips.some(chip => chip === true)) {
+        this.toggleSelectedChip(this.selectedChips);
+      }
+      else {
+        this.toggleSelectedChip(0);
+      }
+
     },
 
     updateGlobalStartDate(value) {
       this.globalStartDate = value;
-      this.toggleSelectedChip(this.selectedChips);
+      if (this.selectedChips.some(chip => chip === true)) {
+        this.toggleSelectedChip(this.selectedChips);
+      }
+      else {
+        this.toggleSelectedChip(0);
+      }
     },
 
     updateSelectedStudentsIds() {
@@ -535,6 +553,8 @@ export default {
         return selectedStudent;
       });
     },
+
+
 
     toggleSelectedChip(chip) {
       const dayOfWeekMapping = {
@@ -570,7 +590,6 @@ export default {
         })
         const endTime = moment(item.startTime);
         const lectureLengthTimeInHours = 2
-
         endTime.add('hour', lectureLengthTimeInHours)
 
         Vue.set(item, 'endTime', endTime);
@@ -599,6 +618,7 @@ export default {
           this.cursorDateOfWeek = 0;
         }
       }
+
     },
 
     getNextDayByWeekendDayIndex(dayOfWeek) {
