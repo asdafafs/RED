@@ -273,7 +273,7 @@ export default {
       const getItem = {"id": id}
       await course.getCourse(getItem.id).catch(x => console.log(x)).then(x => {
         this.coursesData = x.data.lecture
-        this.globalStartTime = x.data.startTime + ':00'
+        this.globalStartTime = x.data.startTime
         this.globalStartDate = this.formatDatetime(x.data.startDate)
         this.groupNumber = x.data.groupNumber
         this.studentList = this.studentList.concat(x.data.students);
@@ -285,11 +285,9 @@ export default {
       const course = new CoursesRequest()
       await course.getCourseNull().catch(x => console.log(x)).then(x => {
         this.coursesData = x.data.lecture
-        this.globalStartTime = x.data.startTime + ':00'
+        this.globalStartTime = x.data.startTime
         this.globalStartDate = this.formatDatetime(x.data.startDate)
         this.groupNumber = x.data.groupNumber
-        this.studentList = this.studentList.concat(x.data.students);
-        this.selectedStudents = x.data.students
       })
     },
 
@@ -320,6 +318,7 @@ export default {
     },
 
     async initialize() {
+      console.log('initialize')
       this.groups = await this.getGroups();
       this.studentList = await this.getFreeUsers()
       this.teachers = await this.getEventsTeacher()
@@ -448,6 +447,9 @@ export default {
         this.editedIndex = -1;
       });
       this.selectedChips=[]
+      this.lessons = []
+      this.studentList = []
+      this.initialize()
     },
 
     closeDelete() {
@@ -482,7 +484,7 @@ export default {
         const body = {
           "title": this.editedItem.groups.title,
           "courseStartDate": this.editedItem.groups.startDate,
-          "startTime": parseInt(this.globalStartTime.split(':')[0], 10),
+          "startTime": this.globalStartTime,
           'groupNumber': 0,
           "groupId": this.editedItem.groups.groupId,
           "studentId": this.selectedStudentsIds,
@@ -498,7 +500,7 @@ export default {
         const body = {
           "title": this.editedItem.groups.title,
           "courseStartDate": this.editedItem.groups.startDate,
-          "startTime": parseInt(this.globalStartTime.split(':')[0], 10),
+          "startTime": this.globalStartTime,
           'groupNumber': 0,
           "groupId": this.editedItem.groups.groupId,
           "studentId": this.selectedStudentsIds,
@@ -508,8 +510,8 @@ export default {
         await this.postCourse(body).finally(() => {
           this.groupDisabled = false
           this.groups.push(this.editedItem.groups)
-          this.lessons = []
         })
+
       }
       this.close();
     },

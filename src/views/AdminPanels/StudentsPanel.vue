@@ -92,10 +92,10 @@
         <tr>
           <td>{{ item.name + " " + item.surname + " " + item.middleName }}</td>
           <td>{{ item.email }}</td>
-          <td>{{ }}</td>
-          <td>{{ }}</td>
-          <td>{{ }}</td>
-          <td>{{ }}</td>
+          <td>{{ item.generalHours}}</td>
+          <td>{{ item.generalHours - item.generalHoursSpent}}</td>
+          <td>{{ item.additinalHours }}</td>
+          <td>{{item.additinalHours - item.additinalHoursSpent }}</td>
           <td class="text-xs-right">
             <v-icon small class="mr-2 blue--text" @click="editItem(item)">mdi-pen</v-icon>
             <v-icon small class="red--text" @click="deleteItem(item)">mdi-delete</v-icon>
@@ -139,6 +139,10 @@ export default {
       email: '',
       groupId: '',
       phoneNumber: '7',
+      generalHours: 0,
+      generalHoursSpent: 0,
+      additinalHours: 0,
+      additinalHoursSpent: 0,
     },
 
     nameRule: {required: value => !!value},
