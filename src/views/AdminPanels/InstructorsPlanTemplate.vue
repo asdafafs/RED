@@ -6,16 +6,16 @@
           <v-btn icon class="ma-0  align-self-center" @click="prev">
             <v-icon>mdi-chevron-left</v-icon>
           </v-btn>
-          <span v-if="test">{{ test }}</span>
+          <span v-if="fullName">{{ fullName }}</span>
         </div>
       </v-col>
     </v-row>
     <hr>
     <v-row>
       <v-col cols="1" class="flex-column">
-        <v-radio-group class="px-0 py-0">
-          <v-radio label="1 час" value="one"></v-radio>
-          <v-radio label="2 часа" value="two"></v-radio>
+        <v-radio-group class="px-0 py-0" v-model="selectedDuration">
+          <v-radio label="1 час" :value=1></v-radio>
+          <v-radio label="2 часа" :value=2></v-radio>
         </v-radio-group>
       </v-col>
       <v-col cols="2">
@@ -37,7 +37,8 @@
       </v-col>
     </v-row>
     <v-row>
-      <TemplateSchedule @plan-updated="handleEvents"></TemplateSchedule>
+      <TemplateSchedule @plan-updated="handleEvents" :selectedDuration="selectedDuration"
+                        :fullNameActiveUser="fullName"></TemplateSchedule>
     </v-row>
   </v-container>
 </template>
@@ -49,8 +50,9 @@ export default {
   name: 'PlanTemplate',
   components: {TemplateSchedule},
   data: () => ({
-    test: '',
+    fullName: '',
     testsTemplate: [],
+    selectedDuration: 1,
   }),
 
   computed: {
@@ -102,7 +104,7 @@ export default {
     }
   },
   created() {
-    this.getActiveUser().then( response => this.test = `${response.name} ${response.surname} ${response.middleName}`)
+    this.getActiveUser().then(response => this.fullName = `${response.name} ${response.surname} ${response.middleName}`)
   }
 }
 </script>

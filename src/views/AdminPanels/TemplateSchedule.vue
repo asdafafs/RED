@@ -20,24 +20,21 @@
               @mouseup:time="endDrag"
           >
             <template v-slot:event="{event}">
-              <v-container class="pa-0 mx-0 d-flex " fill>
+              <v-container class="pa-0 mx-0 d-flex" fill>
                 <v-row class="ma-0" fill>
-                  <v-col cols="4" class="black--text pa-0 align-self-center d-none d-lg-block">
-                    <div class="text-subtitle-2 d-flex justify-center">{{ formatTime(event.start) }}</div>
-                  </v-col>
-                  <v-col class="d-lg-none pa-0" fill>
-                    <div class="logo ">
-                      <car-logo v-if="event.lectureType === 3"/>
-                      <lecture-logo
-                          v-if="event.lectureType === 2 || event.lectureType === 1 || event.lectureType === null"/>
+                  <v-col cols="" class="black--text pa-0 align-self-center d-none d-lg-block">
+                    <div class="text-h6  d-flex justify-center">
+                      {{ formatTime(event.start) }}
                     </div>
                   </v-col>
-                  <v-col class="black--text pa-0 align-self-center d-none d-lg-block">
+                </v-row>
+                <v-row class="ma-0" fill>
+                  <v-col class="black--text pa-0 align-self-center d-none d-lg-block" cols="9">
                     <div class="font-weight-bold text-format-week">{{ event.title }}</div>
+                    <div class="text-subtitle-2 d-flex">{{ abbreviatedName }}</div>
                   </v-col>
-                  <v-col>
-                    <v-icon class="red--text" @click="deleteEvent(event)">mdi-window-close
-                    </v-icon>
+                  <v-col cols="2">
+                    <v-icon class="red--text" @click="deleteEvent(event)">mdi-window-close</v-icon>
                   </v-col>
                 </v-row>
               </v-container>
@@ -77,6 +74,10 @@ export default {
   components: {CarLogo, LectureLogo},
   watch: {
     eventsTemplate() {
+    },
+
+    selectedDuration(newVal, oldVal) {
+      this.createEventsWithNewDuration();
     }
   },
   mounted() {
@@ -112,8 +113,44 @@ export default {
     createStart: null,
   }),
 
+  props: {
+    selectedDuration: {
+      type: Number,
+      default: 1
+    },
+
+    fullNameActiveUser: {
+      type: String,
+      default: ''
+    }
+  },
+
+  computed: {
+    abbreviatedName() {
+      // Разбиваем fullNameActiveUser на слова
+      const words = this.fullNameActiveUser.split(' ');
+      // Если в fullNameActiveUser есть хотя бы три слова
+      if (words.length >= 3) {
+        // Возвращаем первое слово и первую букву второго и третьего слова
+        console.log(`${words[0]} ${words[1].charAt(0)}. ${words[2].charAt(0)}.`)
+        return `${words[0]} ${words[1].charAt(0)}. ${words[2].charAt(0)}.`;
+      } else {
+        // Иначе просто возвращаем fullNameActiveUser
+        return this.fullNameActiveUser;
+      }
+    }
+  },
+
   methods: {
-    deleteEvent(event){
+    createEventsWithNewDuration() {
+      this.eventsTemplate.forEach(event => {
+        const newEndTime = new Date(event.start);
+        newEndTime.setHours(newEndTime.getHours() + this.selectedDuration);
+        event.end = newEndTime.getTime();
+      });
+    },
+
+    deleteEvent(event) {
       const index = this.eventsTemplate.indexOf(event);
       if (index !== -1) {
         this.eventsTemplate.splice(index, 1);
@@ -147,28 +184,22 @@ export default {
     },
 
     mouseMove(tms) {
-      const mouse = this.toTime(tms)
+      const mouse = this.toTime(tms);
 
       if (this.dragEvent && this.dragTime !== null) {
-        const start = this.dragEvent.start
-        const end = this.dragEvent.end
-        const duration = end - start
-        const newStartTime = mouse - this.dragTime
-        const newStart = this.roundTime(newStartTime)
-        const newEnd = newStart + duration
+        const start = this.dragEvent.start;
+        const end = this.dragEvent.end;
+        const duration = end - start;
+        const newStartTime = mouse - this.dragTime;
+        const newStart = this.roundTime(newStartTime);
+        const newEnd = newStart + duration;
 
-        this.dragEvent.start = newStart
-        this.dragEvent.end = newEnd
+        this.dragEvent.start = newStart;
+        this.dragEvent.end = newEnd;
       } else if (this.createEvent && this.createStart !== null) {
-        const mouseRounded = this.roundTime(mouse, false)
-        const min = Math.min(mouseRounded, this.createStart)
-        const max = Math.max(mouseRounded, this.createStart)
-
-        this.createEvent.start = min
-        this.createEvent.end = max
-
       }
     },
+
 
     endDrag() {
       this.dragTime = null
@@ -191,15 +222,19 @@ export default {
         this.dragTime = mouse - start
       } else {
         this.createStart = this.roundTime(mouse)
+        console.log(this.selectedDuration)
+        let endHour = new Date(this.createStart).getHours() + this.selectedDuration;
+        const endTime = new Date(this.createStart).setHours(endHour);
         this.createEvent = {
           activeUserId: 1,
-          title: `Новый урок`,
+          title: `Вождение`,
           start: this.createStart,
-          end: this.createStart,
+          end: endTime,
           student: null,
           timed: true,
         }
         this.eventsTemplate.push(this.createEvent)
+        console.log(this.eventsTemplate)
         this.$emit('plan-updated', this.eventsTemplate);
       }
     },
