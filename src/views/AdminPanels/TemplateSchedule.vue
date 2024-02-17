@@ -30,7 +30,7 @@
                 </v-row>
                 <v-row class="ma-0" fill>
                   <v-col class="black--text pa-0 align-self-center d-none d-lg-block" cols="9">
-                    <div class="font-weight-bold text-format-week">{{ event.title }}</div>
+                    <div class="font-weight-bold text-format-week">{{ `Вождение` }}</div>
                     <div class="text-subtitle-2 d-flex">{{ abbreviatedName }}</div>
                   </v-col>
                   <v-col cols="2">
@@ -226,11 +226,8 @@ export default {
         let endHour = new Date(this.createStart).getHours() + this.selectedDuration;
         const endTime = new Date(this.createStart).setHours(endHour);
         this.createEvent = {
-          activeUserId: 1,
-          title: `Вождение`,
           start: this.createStart,
           end: endTime,
-          student: null,
           timed: true,
         }
         this.eventsTemplate.push(this.createEvent)

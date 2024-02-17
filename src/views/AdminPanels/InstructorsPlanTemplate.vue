@@ -19,19 +19,27 @@
         </v-radio-group>
       </v-col>
       <v-col cols="2">
-        <v-text-field label="Дата начала" type="date" :min="getTodayDate()"></v-text-field>
+        <v-text-field v-model="practiceCourseStart" label="Дата начала" type="date"
+                      :min="getTodayDate()"></v-text-field>
       </v-col>
       <v-col cols="2">
-        <v-text-field label="Дата окончания" type="date" :min="getTodayDate()"></v-text-field>
+        <v-text-field v-model="practiceCourseEnd" label="Дата окончания" type="date"
+                      :min="getTodayDate()"></v-text-field>
       </v-col>
-      <v-col cols="4"></v-col>
+      <v-col cols="2">
+        <v-select v-model="selectedTemplate" label="Выберите шаблон практик" :items="listTemplates"
+                  no-data-text="Нет данных для отображения"
+                  :item-text="item => `${item.practiceCourseStart} ${item.practiceCourseEnd}`"
+                  item-value="id"></v-select>
+      </v-col>
+      <v-col cols="2"></v-col>
       <v-col cols="">
         <v-btn class="tab-button pa-0 rounded-lg" color="#2B2A29" outlined @click="save">
           <span class="black--text">Сохранить изменения</span>
         </v-btn>
       </v-col>
       <v-col cols="">
-        <v-btn class="tab-button pa-0 rounded-lg" color="#2B2A29" text>
+        <v-btn class="tab-button pa-0 rounded-lg" color="#2B2A29" text @click="cancelChanges">
           <span class="black--text">Выйти без изменений</span>
         </v-btn>
       </v-col>
@@ -40,11 +48,23 @@
       <TemplateSchedule @plan-updated="handleEvents" :selectedDuration="selectedDuration"
                         :fullNameActiveUser="fullName"></TemplateSchedule>
     </v-row>
+    <v-dialog v-model="groupDelete" max-width="500px">
+      <v-card>
+        <v-card-title class="text-h5">Вы уверены? Все несохраненные изменения будут удалены</v-card-title>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="blue darken-1" text @click="closeDelete">Отмена</v-btn>
+          <v-btn color="blue darken-1" text @click="deleteItemConfirm">OK</v-btn>
+          <v-spacer></v-spacer>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 <script>
 import TemplateSchedule from "@/views/AdminPanels/TemplateSchedule.vue";
 import UsersRequest from "@/services/UsersRequest";
+import PracticeCourseRequest from "@/services/PracticeCourseRequest";
 
 export default {
   name: 'PlanTemplate',
@@ -53,6 +73,11 @@ export default {
     fullName: '',
     testsTemplate: [],
     selectedDuration: 1,
+    practiceCourseStart: null,
+    practiceCourseEnd: null,
+    listTemplates: [],
+    selectedTemplate: null,
+    groupDelete: false,
   }),
 
   computed: {
@@ -72,8 +97,18 @@ export default {
       this.$router.push({name: 'admin-teachers'})
     },
 
-    save() {
-      console.log()
+    async save() {
+      const body = {
+        "practiceCourseId": this.selectedTemplate,
+        "practiceCourseStart": this.practiceCourseStart,
+        "practiceCourseEnd": this.practiceCourseEnd,
+        "activeUserId": this.getIdUser,
+        "practices": [
+          this.testsTemplate
+        ]
+      }
+      console.log(body)
+      //await this.postPracticeCourseTemplate(body)
     },
 
 
@@ -87,6 +122,49 @@ export default {
       return teachersData
     },
 
+    async getListTemplates() {
+      const listTemplates = new PracticeCourseRequest()
+      const id = this.getIdUser
+      let templates
+      await listTemplates.getPracticeCourseActiveUser(id).catch(x => console.log(x)).then(x => {
+        templates = x.data.practiceCourseContents
+      })
+      console.log(templates)
+      return this.listTemplates = templates
+    },
+
+    async getPracticeCourseTemplate() {
+      const practiceCourseTemplate = new PracticeCourseRequest()
+      const id = 7
+      let courseTemplate
+      await practiceCourseTemplate.getPracticeCourseId(id).catch(x => console.log(x)).then(x => {
+        courseTemplate = x.data
+      })
+      return courseTemplate
+    },
+
+    async postPracticeCourseTemplate(body) {
+      const practiceCourse = new PracticeCourseRequest()
+      await practiceCourse.postPracticeCourse(body).catch(x => console.log(x))
+    },
+
+    closeDelete() {
+      this.groupDelete = false
+    },
+
+    deleteItemConfirm() {
+      this.$router.push({name: 'admin-teachers'}).finally(() => {
+        this.testsTemplate = []
+        this.selectedDuration = 1
+        this.practiceCourseStart = null
+        this.practiceCourseEnd = null
+        this.listTemplates = []
+      })
+    },
+
+    cancelChanges() {
+      this.groupDelete = true
+    },
 
     getTodayDate() {
       const today = new Date();
@@ -101,10 +179,15 @@ export default {
         day = '0' + day;
       }
       return `${year}-${month}-${day}`;
+    },
+
+    initialize() {
+      this.getListTemplates()
     }
   },
   created() {
     this.getActiveUser().then(response => this.fullName = `${response.name} ${response.surname} ${response.middleName}`)
+    this.initialize()
   }
 }
 </script>
