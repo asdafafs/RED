@@ -157,8 +157,8 @@ export default {
     search: '',
     chips: ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'],
     headersGroup: [
-      {text: 'Название', align: 'start', sortable: false, value: 'title',},
-      {text: 'Действия', value: 'actions', sortable: false},
+      {text: 'Название', align: 'start', sortable: false, value: 'title', width: '80%'},
+      {text: 'Действия', value: 'actions', sortable: false, width: '20%'},
     ],
     groups: [],
     editedIndex: -1,
@@ -412,8 +412,8 @@ export default {
     },
 
     async deleteItemConfirm() {
-      this.groups.splice(this.editedIndex, 1);
-      await this.deleteGroups()
+      await this.deleteGroups().finally(() => this.groups.splice(this.editedIndex, 1)
+    )
       this.closeDelete()
     },
 
@@ -446,7 +446,7 @@ export default {
         };
         this.editedIndex = -1;
       });
-      this.selectedChips=[]
+      this.selectedChips = []
       this.lessons = []
       this.studentList = []
       this.initialize()
@@ -529,8 +529,7 @@ export default {
       this.globalStartTime = value;
       if (this.selectedChips.some(chip => chip === true)) {
         this.toggleSelectedChip(this.selectedChips);
-      }
-      else {
+      } else {
         this.toggleSelectedChip(0);
       }
 
@@ -540,8 +539,7 @@ export default {
       this.globalStartDate = value;
       if (this.selectedChips.some(chip => chip === true)) {
         this.toggleSelectedChip(this.selectedChips);
-      }
-      else {
+      } else {
         this.toggleSelectedChip(0);
       }
     },
@@ -555,8 +553,6 @@ export default {
         return selectedStudent;
       });
     },
-
-
 
     toggleSelectedChip(chip) {
       const dayOfWeekMapping = {
