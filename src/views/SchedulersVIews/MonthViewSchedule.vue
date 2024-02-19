@@ -128,8 +128,6 @@ export default {
     this.test = true
     window.addEventListener('resize', this.handleResize);
     this.handleResize();
-
-
   },
 
   beforeDestroy() {

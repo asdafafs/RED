@@ -29,8 +29,11 @@
       <v-col cols="2">
         <v-select v-model="selectedTemplate" label="Выберите шаблон практик" :items="listTemplates"
                   no-data-text="Нет данных для отображения"
-                  :item-text="item => `${item.practiceCourseStart} ${item.practiceCourseEnd}`"
-                  item-value="id"></v-select>
+                  :item-text="item =>
+                  `${new Date(item.practiceCourseStart).toLocaleDateString().replace(/\./g, '-')} ${new Date(item.practiceCourseEnd)
+                  .toLocaleDateString().replace(/\./g, '-')}`"
+                  item-value="practiceCourseId"
+                  @change="getPracticeCourseTemplate()">></v-select>
       </v-col>
       <v-col cols="2"></v-col>
       <v-col cols="">
@@ -46,15 +49,15 @@
     </v-row>
     <v-row>
       <TemplateSchedule @plan-updated="handleEvents" :selectedDuration="selectedDuration"
-                        :fullNameActiveUser="fullName"></TemplateSchedule>
+                        :fullNameActiveUser="fullName" :events="eventsTemplate"></TemplateSchedule>
     </v-row>
     <v-dialog v-model="groupDelete" max-width="500px">
       <v-card>
         <v-card-title class="text-h5">Вы уверены? Все несохраненные изменения будут удалены</v-card-title>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="blue darken-1" text @click="closeDelete">Отмена</v-btn>
-          <v-btn color="blue darken-1" text @click="deleteItemConfirm">OK</v-btn>
+          <v-btn color="blue darken-1" text @click="closeCanselChanges">Отмена</v-btn>
+          <v-btn color="blue darken-1" text @click="confirmCancelChanges">OK</v-btn>
           <v-spacer></v-spacer>
         </v-card-actions>
       </v-card>
@@ -65,13 +68,14 @@
 import TemplateSchedule from "@/views/AdminPanels/TemplateSchedule.vue";
 import UsersRequest from "@/services/UsersRequest";
 import PracticeCourseRequest from "@/services/PracticeCourseRequest";
+import moment from "moment";
 
 export default {
   name: 'PlanTemplate',
   components: {TemplateSchedule},
   data: () => ({
     fullName: '',
-    testsTemplate: [],
+    eventsTemplate: [],
     selectedDuration: 1,
     practiceCourseStart: null,
     practiceCourseEnd: null,
@@ -90,7 +94,8 @@ export default {
 
   methods: {
     handleEvents(events) {
-      this.testsTemplate = events
+      this.eventsTemplate = events
+      console.log('handleEvents',this.eventsTemplate)
     },
 
     prev() {
@@ -104,7 +109,7 @@ export default {
         "practiceCourseEnd": this.practiceCourseEnd,
         "activeUserId": this.getIdUser,
         "practices": [
-          this.testsTemplate
+          this.eventsTemplate
         ]
       }
       console.log(body)
@@ -129,18 +134,20 @@ export default {
       await listTemplates.getPracticeCourseActiveUser(id).catch(x => console.log(x)).then(x => {
         templates = x.data.practiceCourseContents
       })
-      console.log(templates)
+
+      //console.log(templates)
       return this.listTemplates = templates
     },
 
     async getPracticeCourseTemplate() {
+      //console.log('getPracticeCourseTemplate',this.selectedTemplate)
       const practiceCourseTemplate = new PracticeCourseRequest()
-      const id = 7
-      let courseTemplate
-      await practiceCourseTemplate.getPracticeCourseId(id).catch(x => console.log(x)).then(x => {
-        courseTemplate = x.data
+      let events
+      await practiceCourseTemplate.getPracticeCourseId(this.selectedTemplate).catch(x => console.log(x)).then(x => {
+        events = x.data.practices
       })
-      return courseTemplate
+      //console.log(events)
+      return this.eventsTemplate= events
     },
 
     async postPracticeCourseTemplate(body) {
@@ -148,13 +155,13 @@ export default {
       await practiceCourse.postPracticeCourse(body).catch(x => console.log(x))
     },
 
-    closeDelete() {
+    closeCanselChanges() {
       this.groupDelete = false
     },
 
-    deleteItemConfirm() {
+    confirmCancelChanges() {
       this.$router.push({name: 'admin-teachers'}).finally(() => {
-        this.testsTemplate = []
+        this.eventsTemplate = []
         this.selectedDuration = 1
         this.practiceCourseStart = null
         this.practiceCourseEnd = null

@@ -6,14 +6,13 @@
           <v-calendar
               ref="calendar"
               v-model="focus"
-              :events="eventsTemplate"
+              :events="eventsItems"
               color="primary"
               type="week"
               :event-color="getEventColor"
               :event-height="50"
               :weekdays="weekday"
               :event-ripple="false"
-              @change="getEvents"
               @mousedown:event="startDrag"
               @mousedown:time="startTime"
               @mousemove:time="mouseMove"
@@ -69,6 +68,7 @@
 <script>
 import CarLogo from "@/components/logos/CarLogo.vue";
 import LectureLogo from "@/components/logos/LectureLogo.vue";
+import moment from "moment";
 
 export default {
   components: {CarLogo, LectureLogo},
@@ -76,8 +76,15 @@ export default {
     eventsTemplate() {
     },
 
-    selectedDuration(newVal, oldVal) {
+    selectedDuration() {
       this.createEventsWithNewDuration();
+    },
+
+    events: {
+      handler() {
+        this.initialize();
+      },
+      deep: true
     }
   },
   mounted() {
@@ -116,37 +123,53 @@ export default {
   props: {
     selectedDuration: {
       type: Number,
-      default: 1
+      default: 1,
     },
 
     fullNameActiveUser: {
       type: String,
-      default: ''
-    }
+      default: '',
+    },
+
+    events: {
+      type: Array,
+      default: [],
+    },
   },
 
   computed: {
     abbreviatedName() {
-      // Разбиваем fullNameActiveUser на слова
       const words = this.fullNameActiveUser.split(' ');
-      // Если в fullNameActiveUser есть хотя бы три слова
       if (words.length >= 3) {
-        // Возвращаем первое слово и первую букву второго и третьего слова
-        console.log(`${words[0]} ${words[1].charAt(0)}. ${words[2].charAt(0)}.`)
         return `${words[0]} ${words[1].charAt(0)}. ${words[2].charAt(0)}.`;
       } else {
-        // Иначе просто возвращаем fullNameActiveUser
         return this.fullNameActiveUser;
       }
-    }
+    },
+
+    eventsItems() {
+      console.log('Unformulated Events:', this.eventsTemplate);
+      debugger
+      this.eventsTemplate = this.events.map(item => {
+        let test = {
+          id: item.id,
+          start: moment(item.startTime).format("YYYY-MM-DDTHH:mm"),
+          end: moment(item.endTime).format("YYYY-MM-DDTHH:mm"),
+          timed: item.timed
+        };
+        console.log(test)
+        return test
+      });
+      console.log('Formatted Events:', this.eventsTemplate);
+      return this.eventsTemplate;
+    },
   },
 
   methods: {
     createEventsWithNewDuration() {
       this.eventsTemplate.forEach(event => {
-        const newEndTime = new Date(event.start);
-        newEndTime.setHours(newEndTime.getHours() + this.selectedDuration);
-        event.end = newEndTime.getTime();
+        const newEndTime = moment(event.start).add(this.selectedDuration, 'hours');
+        event.end = newEndTime.valueOf();
       });
     },
 
@@ -209,29 +232,31 @@ export default {
       this.extendOriginal = null
 
     },
-    getEvents({start, end}) {
-
-    },
 
     startTime(tms) {
+      //debugger
       const mouse = this.toTime(tms)
-
+      console.log('mouse',mouse)
       if (this.dragEvent && this.dragTime === null) {
         const start = this.dragEvent.start
 
         this.dragTime = mouse - start
       } else {
-        this.createStart = this.roundTime(mouse)
-        console.log(this.selectedDuration)
+        this.createStart = moment(this.roundTime(mouse)).format("YYYY-MM-DDTHH:mm");
+       //console.log(this.createStart)
         let endHour = new Date(this.createStart).getHours() + this.selectedDuration;
-        const endTime = new Date(this.createStart).setHours(endHour);
+
+        let endTime = new Date(this.createStart).setHours(endHour);
+        endTime = moment(endTime).format("YYYY-MM-DDTHH:mm")
         this.createEvent = {
+          id:1,
           start: this.createStart,
           end: endTime,
           timed: true,
         }
+        console.log(this.createEvent)
         this.eventsTemplate.push(this.createEvent)
-        console.log(this.eventsTemplate)
+        console.log('this.eventsTemplate',this.eventsTemplate)
         this.$emit('plan-updated', this.eventsTemplate);
       }
     },
@@ -249,8 +274,14 @@ export default {
       return new Date(tms.year, tms.month - 1, tms.day, tms.hour, tms.minute).getTime()
     },
 
+    initialize() {
+      //console.log('1', this.eventTest)
+    },
 
   },
+  created() {
+    this.initialize()
+  }
 }
 </script>
 <style lang="scss">

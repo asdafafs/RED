@@ -97,6 +97,7 @@ import moment from 'moment';
 import CarLogo from "@/components/logos/CarLogo.vue";
 import LectureLogo from "@/components/logos/LectureLogo.vue";
 import EventsRequest from "@/services/EventsRequest";
+import {mapState} from "vuex";
 
 export default {
   components: {CarLogo, LectureLogo},
@@ -123,7 +124,6 @@ export default {
           })
         });
     this.test = true
-    this.getAllEvents()
   },
 
   data: () => ({
@@ -144,6 +144,19 @@ export default {
     createStart: null,
     extendOriginal: null,
   }),
+
+  created() {
+    this.selectCurrentFreeStudent()
+  },
+
+  computed: {
+    ...mapState(['user']),
+
+    userId() {
+      return this.$store.state.user.userId;
+    }
+  },
+
   methods: {
     showEvent({nativeEvent, event}) {
       const open = () => {

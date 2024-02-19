@@ -1,12 +1,6 @@
 <template>
   <v-data-table :headers="headers" :items="lessons" class="elevation-1" no-data-text="Нет данных для отображения"
-                :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" :footer-props="{
-      'items-per-page-text': 'Записей на странице:',
-      'items-per-page-all-text': 'Все',
-      'page-text': '{0}-{1} из {2}',
-      'prev-icon': 'mdi-chevron-left',
-      'next-icon': 'mdi-chevron-right',
-      'no-data-text': 'Нет данных для отображения'}"
+                :sort-by.sync="sortBy" :sort-desc.sync="sortDesc"
                 :hide-default-footer="true"
                 disable-pagination
   >

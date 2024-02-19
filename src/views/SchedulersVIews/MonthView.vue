@@ -49,12 +49,12 @@
             </template>
           </v-calendar>
           <v-menu max-width="200px" min-width="200px"
-              v-model="selectedOpen"
-              :close-on-content-click="false"
-              :activator="selectedElement"
-              offset-x
+                  v-model="selectedOpen"
+                  :close-on-content-click="false"
+                  :activator="selectedElement"
+                  offset-x
           >
-            <v-card color="grey lighten-4" flat >
+            <v-card color="grey lighten-4" flat>
               <v-toolbar>
                 <v-toolbar-title v-html="formatTime(selectedEvent.startTime)"></v-toolbar-title>
               </v-toolbar>
@@ -78,6 +78,8 @@ import CarLogo from "@/components/logos/CarLogo.vue";
 import LectureLogo from "@/components/logos/LectureLogo.vue";
 import EventsRequest from "@/services/EventsRequest";
 import moment from "moment/moment";
+import {mapState} from "vuex";
+import UsersRequest from "@/services/UsersRequest";
 
 export default {
   components: {LectureLogo, CarLogo},
@@ -102,12 +104,12 @@ export default {
     this.test = true
     window.addEventListener('resize', this.handleResize);
     this.handleResize();
-    this.getAllEvents()
   },
 
   beforeDestroy() {
     window.removeEventListener('resize', this.handleResize);
   },
+
 
   data: () => ({
     events: [],
@@ -128,8 +130,42 @@ export default {
     selectedOpen: false,
   }),
 
+  created() {
+    this.selectCurrentFreeStudent()
+  },
+
+  computed: {
+    ...mapState(['user']),
+
+    userId() {
+      return this.$store.state.user.userId;
+    }
+  },
 
   methods: {
+    initialize() {
+    },
+
+    selectCurrentFreeStudent() {
+      const id = this.userId;
+      const student = new UsersRequest();
+      student.getStudentNullGroup()
+          .then(response => {
+            const students = response.data.students;
+            const foundStudent = students.find(student => student.id === id);
+            if (foundStudent) {
+              if (foundStudent.groupId != null){
+                this.getAllEvents()
+              }
+            } else {
+              console.log("Студент с id", id, "не найден.");
+            }
+          })
+          .catch(error => {
+            console.log("Ошибка при поиске студента:", error);
+          });
+    },
+
     showEvent({nativeEvent, event}) {
       const open = () => {
         this.selectedEvent = event
@@ -213,7 +249,7 @@ export default {
         this.num = 70;
       }
     },
-  },
+  }
 }
 </script>
 <style lang="scss">
