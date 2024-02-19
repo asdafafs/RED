@@ -73,6 +73,8 @@ import LectureLogo from "@/components/logos/LectureLogo.vue";
 import CarLogo from "@/components/logos/CarLogo.vue";
 import moment from "moment";
 import EventsRequest from "@/services/EventsRequest";
+import {mapState} from "vuex";
+import UsersRequest from "@/services/UsersRequest";
 
 export default {
   name: "ExampleDay.vue",
@@ -92,8 +94,6 @@ export default {
       '.v-calendar-daily__intervals-body',
       '.v-calendar-daily_head-day'
     ],
-    value: '2023-12-13',
-    mode: 'stack',
     selectedEvent: {},
     selectedElement: null,
     selectedOpen: false,
@@ -107,11 +107,41 @@ export default {
     })
     this.test = true
     this.$refs.cal.checkChange()
-    this.getAllEvents()
+  },
 
+  created() {
+    this.selectCurrentFreeStudent()
+  },
+
+  computed: {
+    ...mapState(['user']),
+
+    userId() {
+      return this.$store.state.user.userId;
+    }
   },
 
   methods: {
+    selectCurrentFreeStudent() {
+      const id = this.userId;
+      const student = new UsersRequest();
+      student.getStudentNullGroup()
+          .then(response => {
+            const students = response.data.students;
+            const foundStudent = students.find(student => student.id === id);
+            if (foundStudent) {
+              if (foundStudent.groupId != null){
+                this.getAllEvents()
+              }
+            } else {
+              console.log("Студент с id", id, "не найден.");
+            }
+          })
+          .catch(error => {
+            console.log("Ошибка при поиске студента:", error);
+          });
+    },
+
     showEvent({nativeEvent, event}) {
       const open = () => {
         this.selectedEvent = event

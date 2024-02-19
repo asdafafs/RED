@@ -8,7 +8,7 @@ import StudentPlanView from "@/views/SchedulersVIews/StudentPlanView.vue";
 import WeeklyView from "@/views/SchedulersVIews/WeekView.vue";
 import scheduleView from "@/views/SchedulersVIews/ScheduleView.vue";
 import MainCalendar from "@/views/SchedulersVIews/MainCalendar.vue";
-import ProgressBar from "@/views/ProgressBar.vue";
+import ProgressBar from "@/views/SchedulersVIews/ProgressBar.vue";
 import RecoveryPassword from "@/views/AuthorizationViews/RecoveryPassword.vue";
 import MailAuthorization from "@/views/AuthorizationViews/MailAuthorization.vue";
 import VkAuthorization from "@/views/AuthorizationViews/SelectAuthorization.vue";

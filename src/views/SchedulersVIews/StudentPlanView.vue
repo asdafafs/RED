@@ -6,13 +6,13 @@
           <div class="text-h4 font-weight-bold">Здравствуйте, {{ userName }}!</div>
         </v-col>
         <v-col lg="3" class="align-self-end text-start justify-start">
-          <div class="text-subtitle-1 uno">Вы зачислены в группу №{{ groupId }}</div>
+          <div class="text-subtitle-1 uno">{{ groupId }}</div>
         </v-col>
         <v-col cols="">
         </v-col>
         <v-col cols="1">
           <v-btn text class="black--text tab-button pa-0" width="100%"
-                 @click="changeButtonMenuState(0); $router.push({name: 'plan-main'}).catch(() => {})"
+                 @click="changeButtonMenuState(0); $router.push({name: 'plan-main-month'}).catch(() => {})"
                  :class="{'tab-background': isButtonMenuPressed[0],}">
             <span :class="{'tab-button-text': isButtonMenuPressed[0],}">Календарь</span>
           </v-btn>
@@ -40,7 +40,7 @@
       <v-row>
         <v-col cols="">
           <v-btn text class="black--text tab-button pa-0" width="100%"
-                 @click="changeButtonMenuState(0); $router.push({name: 'plan-main'}).catch(() => {})"
+                 @click="changeButtonMenuState(0); $router.push({name: 'plan-main-day'}).catch(() => {})"
                  :class="{'tab-background': isButtonMenuPressed[0],}">
             <span :class="{'tab-button-text': isButtonMenuPressed[0],}">Календарь</span>
           </v-btn>
@@ -66,7 +66,6 @@ export default {
   components: {},
   data: () => ({
     showDrawer: true,
-    isButtonMenuPressed: [false, false,],
   }),
   methods: {
     changeButtonMenuState(index) {
@@ -88,9 +87,13 @@ export default {
 
     groupId() {
       if (this.user.groupId != null)
-        return this.user.groupId
+        return `Вы зачислены в группу № ${this.user.groupId}`
       else
-        return 0
+        return 'Вы пока не зачислены в группу'
+    },
+
+    isButtonMenuPressed(){
+      return [this.$route.path.startsWith('/testPlan/mainCal'), this.$route.path.startsWith('/testPlan/progress')]
     }
 
   },

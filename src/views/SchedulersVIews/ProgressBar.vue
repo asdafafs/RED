@@ -136,6 +136,8 @@ export default {
   },
   beforeMount() {
     clearInterval(this.interval)
-  }
+  },
+
+
 }
 </script>
