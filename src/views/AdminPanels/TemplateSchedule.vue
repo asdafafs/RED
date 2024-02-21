@@ -21,14 +21,14 @@
             <template v-slot:event="{event}">
               <v-container class="pa-0 mx-0 d-flex" fill>
                 <v-row class="ma-0" fill>
-                  <v-col cols="" class="black--text pa-0 align-self-center d-none d-lg-block">
-                    <div class="text-h6  d-flex justify-center">
+                  <v-col cols="" class="black--text pa-0 align-self-center  d-lg-block">
+                    <div class="text-h6 text-md-subtitle-2 text-lg-h6  d-flex justify-center">
                       {{ formatTime(event.start) }}
                     </div>
                   </v-col>
                 </v-row>
                 <v-row class="ma-0" fill>
-                  <v-col class="black--text pa-0 align-self-center d-none d-lg-block" cols="9">
+                  <v-col class="black--text pa-0 align-self-center  d-lg-block" cols="9">
                     <div class="font-weight-bold text-format-week">{{ `Вождение` }}</div>
                     <div class="text-subtitle-2 d-flex">{{ abbreviatedName }}</div>
                   </v-col>
@@ -39,27 +39,6 @@
               </v-container>
             </template>
           </v-calendar>
-          <v-menu
-              max-width="200px" min-width="200px"
-              v-model="selectedOpen"
-              :close-on-content-click="false"
-              :activator="selectedElement"
-              offset-x
-          >
-            <v-card color="grey lighten-4" flat>
-              <v-toolbar>
-                <v-toolbar-title v-html="formatTime(selectedEvent.startTime)"></v-toolbar-title>
-              </v-toolbar>
-              <v-card-text>
-                <span v-html="selectedEvent.title"></span>
-              </v-card-text>
-              <v-card-actions>
-                <v-btn textcolor="secondary" @click="selectedOpen = false">
-                  Закрыть
-                </v-btn>
-              </v-card-actions>
-            </v-card>
-          </v-menu>
         </v-sheet>
       </v-col>
     </v-row>
@@ -116,7 +95,11 @@ export default {
     selectedElement: null,
     selectedOpen: false,
     dragEvent: null,
-    createEvent: null,
+    createEvent: {
+      start: '',
+      end: '',
+      timed: false,
+    },
     createStart: null,
   }),
 
@@ -149,19 +132,35 @@ export default {
 
     eventsItems() {
       console.log('Unformulated Events:', this.eventsTemplate);
-      debugger
+      //debugger
+      const currentDate = new Date();
+      const currentDay = currentDate.getDay();
+      const daysToAdd = currentDay === 0 ? 1 : -currentDay + 1;
+      const startOfWeek = new Date(currentDate.setDate(currentDate.getDate() + daysToAdd));
+
       this.eventsTemplate = this.events.map(item => {
-        let test = {
-          id: item.id,
-          start: moment(item.startTime).format("YYYY-MM-DDTHH:mm"),
-          end: moment(item.endTime).format("YYYY-MM-DDTHH:mm"),
+        const index1 = item.start.indexOf("T");
+        const index2 = item.end.indexOf("T");
+        let time1, time2
+        if (index1 !== -1 && index2 !== -1) {
+          time1 = item.start.slice(index1 + 1);
+          time2 = item.end.split("T")[1]
+        } else {
+          time1 = item.start
+          time2 = item.end
+        }
+
+        let start = new Date(`${startOfWeek.toISOString().slice(0, 10)}T${time1}`);
+        let end = new Date(`${startOfWeek.toISOString().slice(0, 10)}T${time2}`)
+        console.log(item)
+        return {
+          start: moment(start).format("YYYY-MM-DDTHH:mm"),
+          end: moment(end).format("YYYY-MM-DDTHH:mm"),
           timed: item.timed
-        };
-        console.log(test)
-        return test
+        }
       });
       console.log('Formatted Events:', this.eventsTemplate);
-      return this.eventsTemplate;
+      return this.eventsTemplate
     },
   },
 
@@ -236,27 +235,34 @@ export default {
     startTime(tms) {
       //debugger
       const mouse = this.toTime(tms)
-      console.log('mouse',mouse)
+      // console.log('mouse', mouse)
+      // console.log('this.dragTime', this.dragTime)
+      // console.log('this.dragEvent', this.dragEvent)
       if (this.dragEvent && this.dragTime === null) {
         const start = this.dragEvent.start
-
+        console.log('start', start)
         this.dragTime = mouse - start
+        console.log('this.dragTime', this.dragTime)
       } else {
-        this.createStart = moment(this.roundTime(mouse)).format("YYYY-MM-DDTHH:mm");
-       //console.log(this.createStart)
+        this.createStart = moment(this.roundTime(mouse)).format("YYYY-MM-DDTHH:mm:ss");
+        //console.log(this.createStart)
         let endHour = new Date(this.createStart).getHours() + this.selectedDuration;
 
-        let endTime = new Date(this.createStart).setHours(endHour);
-        endTime = moment(endTime).format("YYYY-MM-DDTHH:mm")
+        let end = new Date(this.createStart).setHours(endHour);
+        end = moment(end).format("YYYY-MM-DDTHH:mm:ss")
+        console.log('this.createStart', this.createStart)
+        let start = this.createStart
+        //debugger
+        console.log('start', start)
         this.createEvent = {
-          id:1,
-          start: this.createStart,
-          end: endTime,
+          start: start,
+          end: end,
           timed: true,
         }
-        console.log(this.createEvent)
+        console.log('this.createEvent', this.createEvent)
         this.eventsTemplate.push(this.createEvent)
-        console.log('this.eventsTemplate',this.eventsTemplate)
+        console.log('this.eventsTemplate', this.eventsTemplate)
+        //debugger
         this.$emit('plan-updated', this.eventsTemplate);
       }
     },
