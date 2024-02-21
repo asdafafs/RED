@@ -13,29 +13,14 @@ export default class EventsRequest extends HTTPService {
         return this.get("lecture/" + id)
     }
 
-    postLecture(code) {
-        return this.post("lecture", code)
-    }
-
-    putLecture(code) {
-        return this.put("lecture", code)
-    }
-
-    deleteLecture(id) {
-        return this.delete("lecture/" + id)
+    getLectureGroupId(groupId) {
+        return this.get("lecture/" + groupId)
     }
 
     getPracticeActiveUser(id) {
         return this.get("practice/" + id)
     }
 
-    getPractice() {
-        return this.get("practice")
-    }
-
-    getPracticeId(id){
-        return this.get("practice/" + id)
-    }
 
     postPractice(code) {
         return this.post("practice", code)
@@ -45,11 +30,16 @@ export default class EventsRequest extends HTTPService {
         return this.put("practice", code)
     }
 
-    deletePractice(id) {
-        return this.delete("practice/" + id)
+    getPracticeId(id) {
+        return this.get("practice/" + id)
     }
 
-    setStudent(code){
+
+    setStudent(code) {
         return this.put("practice/setstudent", code)
+    }
+
+    closePractice(code) {
+        return this.put("practice/close", code)
     }
 }

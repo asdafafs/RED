@@ -86,17 +86,6 @@
               </v-card-actions>
             </v-card>
           </v-dialog>
-          <v-dialog v-model="lessonDelete" max-width="500px">
-            <v-card>
-              <v-card-title class="text-h5">Удалить занятие?</v-card-title>
-              <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn color="blue darken-1" text @click="closeDelete" :disabled="lessonDisabled">Отмена</v-btn>
-                <v-btn color="blue darken-1" text @click="deleteLessonConfirm" :disabled="lessonDisabled">OK</v-btn>
-                <v-spacer></v-spacer>
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
           <v-dialog v-model="groupDelete" max-width="500px">
             <v-card>
               <v-card-title class="text-h5">Удалить группу?</v-card-title>
@@ -130,7 +119,6 @@ import GroupsRequest from "@/services/GroupsRequest";
 import UsersRequest from "@/services/UsersRequest";
 import CoursesRequest from "@/services/CoursesRequest";
 import {mapState} from "vuex";
-import EventsRequest from "@/services/EventsRequest";
 import CoursesList from "@/views/AdminPanels/CoursesList.vue";
 import moment from 'moment';
 import Vue from "vue";
@@ -311,12 +299,6 @@ export default {
       await groups.deleteGroup(deletedItem.id).catch(x => console.log(x))
     },
 
-    async deleteSelectedLesson() {
-      const lesson = new EventsRequest()
-      const deletedItem = {"id": this.deletedIndex}
-      await lesson.deleteLecture(deletedItem.id).catch(x => console.log(x))
-    },
-
     async initialize() {
       console.log('initialize')
       this.groups = await this.getGroups();
@@ -416,14 +398,6 @@ export default {
     )
       this.closeDelete()
     },
-
-    async deleteLessonConfirm() {
-      this.lessonDelete = true
-      this.lessons.splice(this.editedIndex, 1);
-      await this.deleteSelectedLesson()
-      this.closeDelete()
-    },
-
     close() {
       this.dialog = false;
       this.showCoursesList = false;
@@ -453,9 +427,7 @@ export default {
     },
 
     closeDelete() {
-      this.lessonDelete = true
       this.groupDelete = false;
-      this.lessonDelete = false;
       const nextGroupNumber = this.groups.length + 1;
       this.$nextTick(() => {
         this.editedItem = {

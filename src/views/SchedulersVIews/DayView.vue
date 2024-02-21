@@ -131,7 +131,8 @@ export default {
             const foundStudent = students.find(student => student.id === id);
             if (foundStudent) {
               if (foundStudent.groupId != null){
-                this.getAllEvents()
+                const groupId = foundStudent.groupId
+                this.getAllEvents(groupId)
               }
             } else {
               console.log("Студент с id", id, "не найден.");
@@ -159,10 +160,10 @@ export default {
       nativeEvent.stopPropagation()
     },
 
-    async getLessons() {
+    async getLessons(groupId) {
       const lessons = new EventsRequest()
       let cal
-      await lessons.getLecture().catch(x => console.log(x)).then(x => {
+      await lessons.getLectureGroupId(groupId).catch(x => console.log(x)).then(x => {
         cal = x.data.lecture.map(event => ({
           ...event,
           start: new Date(event.startTime),
@@ -172,10 +173,10 @@ export default {
       return cal
     },
 
-    async getPractices() {
+    async getPractices(groupId) {
       const practices = new EventsRequest()
       let cal
-      await practices.getPractice().catch(x => console.log(x)).then(x => {
+      await practices.getPracticeId().catch(x => console.log(x)).then(x => {
         cal = x.data.practice.map(event => ({
           ...event,
           start: new Date(event.startTime),
@@ -185,9 +186,9 @@ export default {
       return cal
     },
 
-    async getAllEvents() {
-      const lessons = await this.getLessons();
-      const practices = await this.getPractices();
+    async getAllEvents(groupId) {
+      const lessons = await this.getLessons(groupId);
+      const practices = await this.getPractices(groupId);
 
       this.events = [...lessons, ...practices];
       this.events = this.events.map(item => {
