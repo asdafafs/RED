@@ -52,9 +52,24 @@ import moment from "moment";
 export default {
   components: {CarLogo, LectureLogo},
   watch: {
-    eventsTemplate() {
+    eventsTemplate: {
+      handler(newVal) {
+        newVal.forEach(event => {
+          if (typeof event.start === 'number') {
+            // Это timestamp, преобразуем его в строку формата "YYYY-MM-DDTHH:mm:ss"
+            console.log('алярма')
+            event.start = moment(event.start).format("YYYY-MM-DDTHH:mm:ss");
+          }
+          if (typeof event.end === 'number') {
+            console.log('чипичипи')
+            // Это timestamp, преобразуем его в строку формата "YYYY-MM-DDTHH:mm:ss"
+            event.end = moment(event.end).format("YYYY-MM-DDTHH:mm:ss");
+          }
+        });
+      },
+      deep: true // Глубокое наблюдение за изменениями во вложенных объектах
     },
-
+    //че это
     selectedDuration() {
       this.createEventsWithNewDuration();
     },
@@ -131,19 +146,19 @@ export default {
     },
 
     eventsItems() {
-      console.log('Unformulated Events:', this.eventsTemplate);
-
+      //console.log('Unformulated Events:', this.eventsTemplate);
       this.eventsTemplate = this.events.map(item => {
-        console.log('item', item)
+        // console.log('startTime', item.start, 'moment', moment(item.start).format("YYYY-MM-DDTHH:mm" ))
+        // console.log('end', item.end, 'moment', moment(item.end).format("YYYY-MM-DDTHH:mm" ))
         let test = {
-          start: moment(item.startTime).format("YYYY-MM-DDTHH:mm"),
-          end: moment(item.endTime).format("YYYY-MM-DDTHH:mm"),
+          start: moment(item.start).format("YYYY-MM-DDTHH:mm"),
+          end: moment(item.end).format("YYYY-MM-DDTHH:mm"),
           timed: item.timed
         };
-        console.log(test)
+        //console.log(test)
         return test
       });
-      console.log('Formatted Events:', this.eventsTemplate);
+      //console.log('Formatted Events:', this.eventsTemplate);
       return this.eventsTemplate;
     },
   },
@@ -184,6 +199,8 @@ export default {
     startDrag({event, timed}) {
       if (event && timed) {
         this.dragEvent = event
+        // console.log('event',event)
+
         this.dragTime = null
         this.extendOriginal = null
       }
@@ -193,8 +210,9 @@ export default {
       const mouse = this.toTime(tms);
 
       if (this.dragEvent && this.dragTime !== null) {
-        const start = this.dragEvent.start;
-        const end = this.dragEvent.end;
+        const start = new Date(this.dragEvent.start).getTime();
+        const end = new Date(this.dragEvent.end).getTime();
+        // console.log('endCock', end)
         const duration = end - start;
         const newStartTime = mouse - this.dragTime;
         const newStart = this.roundTime(newStartTime);
@@ -219,26 +237,30 @@ export default {
     startTime(tms) {
       //debugger
       const mouse = this.toTime(tms)
-      console.log('mouse',mouse)
+      //console.log('mouse',mouse)
       if (this.dragEvent && this.dragTime === null) {
-        const start = this.dragEvent.start
+        const start = new Date(this.dragEvent.start).getTime();
 
         this.dragTime = mouse - start
+        // console.log('start', start)
+        // console.log('mouse', mouse)
+        // console.log('this.dragTime', this.dragTime)
       } else {
-        this.createStart = moment(this.roundTime(mouse)).format("YYYY-MM-DDTHH:mm");
-        //console.log(this.createStart)
-        let endHour = new Date(this.createStart).getHours() + this.selectedDuration;
 
-        let endTime = new Date(this.createStart).setHours(endHour);
-        endTime = moment(endTime).format("YYYY-MM-DDTHH:mm")
+        let start = moment(this.roundTime(mouse)).format("YYYY-MM-DDTHH:mm");
+        //console.log(this.createStart)
+        let endHour = new Date(start).getHours() + this.selectedDuration;
+
+        let end = new Date(start).setHours(endHour);
+        end = moment(end).format("YYYY-MM-DDTHH:mm")
         this.createEvent = {
-          start: this.createStart,
-          end: endTime,
+          start: start,
+          end: end,
           timed: true,
         }
-        console.log(this.createEvent)
+        //console.log('this.createEvent',this.createEvent)
         this.eventsTemplate.push(this.createEvent)
-        console.log('this.eventsTemplate',this.eventsTemplate)
+        //console.log('this.eventsTemplate',this.eventsTemplate)
         this.$emit('plan-updated', this.eventsTemplate);
       }
     },
