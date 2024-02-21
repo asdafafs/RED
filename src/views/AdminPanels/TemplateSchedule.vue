@@ -132,35 +132,19 @@ export default {
 
     eventsItems() {
       console.log('Unformulated Events:', this.eventsTemplate);
-      //debugger
-      const currentDate = new Date();
-      const currentDay = currentDate.getDay();
-      const daysToAdd = currentDay === 0 ? 1 : -currentDay + 1;
-      const startOfWeek = new Date(currentDate.setDate(currentDate.getDate() + daysToAdd));
 
       this.eventsTemplate = this.events.map(item => {
-        const index1 = item.start.indexOf("T");
-        const index2 = item.end.indexOf("T");
-        let time1, time2
-        if (index1 !== -1 && index2 !== -1) {
-          time1 = item.start.slice(index1 + 1);
-          time2 = item.end.split("T")[1]
-        } else {
-          time1 = item.start
-          time2 = item.end
-        }
-
-        let start = new Date(`${startOfWeek.toISOString().slice(0, 10)}T${time1}`);
-        let end = new Date(`${startOfWeek.toISOString().slice(0, 10)}T${time2}`)
-        console.log(item)
-        return {
-          start: moment(start).format("YYYY-MM-DDTHH:mm"),
-          end: moment(end).format("YYYY-MM-DDTHH:mm"),
+        console.log('item', item)
+        let test = {
+          start: moment(item.startTime).format("YYYY-MM-DDTHH:mm"),
+          end: moment(item.endTime).format("YYYY-MM-DDTHH:mm"),
           timed: item.timed
-        }
+        };
+        console.log(test)
+        return test
       });
       console.log('Formatted Events:', this.eventsTemplate);
-      return this.eventsTemplate
+      return this.eventsTemplate;
     },
   },
 
@@ -235,34 +219,26 @@ export default {
     startTime(tms) {
       //debugger
       const mouse = this.toTime(tms)
-      // console.log('mouse', mouse)
-      // console.log('this.dragTime', this.dragTime)
-      // console.log('this.dragEvent', this.dragEvent)
+      console.log('mouse',mouse)
       if (this.dragEvent && this.dragTime === null) {
         const start = this.dragEvent.start
-        console.log('start', start)
+
         this.dragTime = mouse - start
-        console.log('this.dragTime', this.dragTime)
       } else {
-        this.createStart = moment(this.roundTime(mouse)).format("YYYY-MM-DDTHH:mm:ss");
+        this.createStart = moment(this.roundTime(mouse)).format("YYYY-MM-DDTHH:mm");
         //console.log(this.createStart)
         let endHour = new Date(this.createStart).getHours() + this.selectedDuration;
 
-        let end = new Date(this.createStart).setHours(endHour);
-        end = moment(end).format("YYYY-MM-DDTHH:mm:ss")
-        console.log('this.createStart', this.createStart)
-        let start = this.createStart
-        //debugger
-        console.log('start', start)
+        let endTime = new Date(this.createStart).setHours(endHour);
+        endTime = moment(endTime).format("YYYY-MM-DDTHH:mm")
         this.createEvent = {
-          start: start,
-          end: end,
+          start: this.createStart,
+          end: endTime,
           timed: true,
         }
-        console.log('this.createEvent', this.createEvent)
+        console.log(this.createEvent)
         this.eventsTemplate.push(this.createEvent)
-        console.log('this.eventsTemplate', this.eventsTemplate)
-        //debugger
+        console.log('this.eventsTemplate',this.eventsTemplate)
         this.$emit('plan-updated', this.eventsTemplate);
       }
     },

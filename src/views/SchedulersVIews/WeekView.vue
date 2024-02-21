@@ -191,7 +191,7 @@ export default {
     async getPractices() {
       const practices = new EventsRequest()
       let kal
-      await practices.getPractice().catch(x => console.log(x)).then(x => {
+      await practices.getPracticeId().catch(x => console.log(x)).then(x => {
         kal = x.data.practice.map(event => ({
           ...event,
           start: event.startTime,
