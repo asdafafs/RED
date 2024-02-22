@@ -29,9 +29,9 @@
       <v-col cols="2">
         <v-select v-model="selectedTemplate" label="Выберите шаблон практик" :items="listTemplates"
                   no-data-text="Нет данных для отображения"
-                  :item-text="item =>
-                  `${new Date(item.practiceCourseStart).toLocaleDateString().replace(/\./g, '-')} ${new Date(item.practiceCourseEnd)
-                  .toLocaleDateString().replace(/\./g, '-')}`"
+                  :item-text="item => item.practiceCourseId ? `${new Date(item.practiceCourseStart).
+                  toLocaleDateString().replace(/\./g, '-')} ${new Date(item.practiceCourseEnd)
+                  .toLocaleDateString().replace(/\./g, '-')}` : 'Добавить новый шаблон'"
                   item-value="practiceCourseId"
                   @change="getPracticeCourseTemplate()">></v-select>
       </v-col>
@@ -79,11 +79,18 @@ export default {
     selectedDuration: 1,
     practiceCourseStart: null,
     practiceCourseEnd: null,
-    listTemplates: [],
+    listTemplates: [{
+      "practiceCourseId": null,
+      "practiceCourseStart": null,
+      "practiceCourseEnd": null,
+      "test": 'TEST'
+    }],
     selectedTemplate: null,
     groupDelete: false,
   }),
+  watch:{
 
+  },
   computed: {
     getIdUser() {
       const {selectedUserID} = this.$route.params;
@@ -108,12 +115,13 @@ export default {
         "practiceCourseStart": this.practiceCourseStart,
         "practiceCourseEnd": this.practiceCourseEnd,
         "activeUserId": this.getIdUser,
-        "practices": [
+        'duration' : this.selectedDuration,
+        "practices":
           this.eventsTemplate
-        ]
+
       }
       console.log(body)
-      //await this.postPracticeCourseTemplate(body)
+      await this.postPracticeCourseTemplate(body)
     },
 
 
@@ -135,8 +143,10 @@ export default {
         templates = x.data.practiceCourseContents
       })
 
-      //console.log(templates)
-      return this.listTemplates = templates
+      templates.forEach(template => {
+        this.listTemplates.push(template);
+      });
+      return console.log(this.listTemplates)
     },
 
     async getPracticeCourseTemplate() {
@@ -145,8 +155,11 @@ export default {
       let events
       await practiceCourseTemplate.getPracticeCourseId(this.selectedTemplate).catch(x => console.log(x)).then(x => {
         events = x.data.practices
+        this.selectedDuration = x.data.duration
+        this.practiceCourseStart = x.data.practiceCourseStart.slice(0, 10)
+        this.practiceCourseEnd = x.data.practiceCourseEnd.slice(0, 10)
       })
-      //console.log(events)
+      console.log(this.practiceCourseStart)
       return this.eventsTemplate= events
     },
 

@@ -56,20 +56,17 @@ export default {
       handler(newVal) {
         newVal.forEach(event => {
           if (typeof event.start === 'number') {
-            // Это timestamp, преобразуем его в строку формата "YYYY-MM-DDTHH:mm:ss"
-            console.log('алярма')
             event.start = moment(event.start).format("YYYY-MM-DDTHH:mm:ss");
           }
           if (typeof event.end === 'number') {
-            console.log('чипичипи')
-            // Это timestamp, преобразуем его в строку формата "YYYY-MM-DDTHH:mm:ss"
             event.end = moment(event.end).format("YYYY-MM-DDTHH:mm:ss");
           }
+          event.dayOfWeek = moment(event.start).day()
         });
       },
-      deep: true // Глубокое наблюдение за изменениями во вложенных объектах
+      deep: true
     },
-    //че это
+
     selectedDuration() {
       this.createEventsWithNewDuration();
     },
@@ -146,19 +143,16 @@ export default {
     },
 
     eventsItems() {
-      //console.log('Unformulated Events:', this.eventsTemplate);
+      console.log('Unformulated Events:', this.eventsTemplate);
       this.eventsTemplate = this.events.map(item => {
-        // console.log('startTime', item.start, 'moment', moment(item.start).format("YYYY-MM-DDTHH:mm" ))
-        // console.log('end', item.end, 'moment', moment(item.end).format("YYYY-MM-DDTHH:mm" ))
-        let test = {
-          start: moment(item.start).format("YYYY-MM-DDTHH:mm"),
-          end: moment(item.end).format("YYYY-MM-DDTHH:mm"),
+        return {
+          start: moment(item.start).format("YYYY-MM-DDTHH:mm:ss"),
+          end: moment(item.end).format("YYYY-MM-DDTHH:mm:ss"),
+          dayOfWeek: item.dayOfWeek,
           timed: item.timed
-        };
-        //console.log(test)
-        return test
+        }
       });
-      //console.log('Formatted Events:', this.eventsTemplate);
+      console.log('Formatted Events:', this.eventsTemplate);
       return this.eventsTemplate;
     },
   },
@@ -169,6 +163,8 @@ export default {
         const newEndTime = moment(event.start).add(this.selectedDuration, 'hours');
         event.end = newEndTime.valueOf();
       });
+      this.$emit('plan-updated', this.eventsTemplate);
+      console.log('createEventsWithNewDuration', this.eventsTemplate)
     },
 
     deleteEvent(event) {
@@ -199,8 +195,6 @@ export default {
     startDrag({event, timed}) {
       if (event && timed) {
         this.dragEvent = event
-        // console.log('event',event)
-
         this.dragTime = null
         this.extendOriginal = null
       }
@@ -212,7 +206,6 @@ export default {
       if (this.dragEvent && this.dragTime !== null) {
         const start = new Date(this.dragEvent.start).getTime();
         const end = new Date(this.dragEvent.end).getTime();
-        // console.log('endCock', end)
         const duration = end - start;
         const newStartTime = mouse - this.dragTime;
         const newStart = this.roundTime(newStartTime);
@@ -231,36 +224,34 @@ export default {
       this.createEvent = null
       this.createStart = null
       this.extendOriginal = null
+      this.$emit('plan-updated', this.eventsTemplate);
 
     },
 
     startTime(tms) {
       //debugger
       const mouse = this.toTime(tms)
-      //console.log('mouse',mouse)
       if (this.dragEvent && this.dragTime === null) {
         const start = new Date(this.dragEvent.start).getTime();
 
         this.dragTime = mouse - start
-        // console.log('start', start)
-        // console.log('mouse', mouse)
-        // console.log('this.dragTime', this.dragTime)
       } else {
 
-        let start = moment(this.roundTime(mouse)).format("YYYY-MM-DDTHH:mm");
-        //console.log(this.createStart)
+        let start = moment(this.roundTime(mouse)).format("YYYY-MM-DDTHH:mm:ss");
         let endHour = new Date(start).getHours() + this.selectedDuration;
 
         let end = new Date(start).setHours(endHour);
-        end = moment(end).format("YYYY-MM-DDTHH:mm")
+        end = moment(end).format("YYYY-MM-DDTHH:mm:ss")
+
+        let dayOfWeek = moment(start).day()
+
         this.createEvent = {
           start: start,
           end: end,
+          dayOfWeek: dayOfWeek,
           timed: true,
         }
-        //console.log('this.createEvent',this.createEvent)
         this.eventsTemplate.push(this.createEvent)
-        //console.log('this.eventsTemplate',this.eventsTemplate)
         this.$emit('plan-updated', this.eventsTemplate);
       }
     },
