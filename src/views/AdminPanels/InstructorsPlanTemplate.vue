@@ -20,11 +20,11 @@
       </v-col>
       <v-col cols="2">
         <v-text-field v-model="practiceCourseStart" label="Дата начала" type="date"
-                      :min="getTodayDate()"></v-text-field>
+                      :rules="[startDateRules.required]" :min="getTodayDate()"></v-text-field>
       </v-col>
       <v-col cols="2">
         <v-text-field v-model="practiceCourseEnd" label="Дата окончания" type="date"
-                      :min="getTodayDate()"></v-text-field>
+                       :rules="[endTimeRules.required]" :min="getTodayDate()"></v-text-field>
       </v-col>
       <v-col cols="2">
         <v-select v-model="selectedTemplate" label="Выберите шаблон практик" :items="listTemplates"
@@ -33,11 +33,12 @@
                   toLocaleDateString().replace(/\./g, '-')} ${new Date(item.practiceCourseEnd)
                   .toLocaleDateString().replace(/\./g, '-')}` : 'Добавить новый шаблон'"
                   item-value="practiceCourseId"
-                  @change="getPracticeCourseTemplate()">></v-select>
+                  @change="getPracticeCourseTemplate()">>
+        </v-select>
       </v-col>
       <v-col cols="2"></v-col>
       <v-col cols="">
-        <v-btn class="tab-button pa-0 rounded-lg" color="#2B2A29" outlined @click="save">
+        <v-btn class="tab-button pa-0 rounded-lg" color="#2B2A29" outlined @click="save" :disabled="savePlanDisabled">
           <span class="black--text">Сохранить изменения</span>
         </v-btn>
       </v-col>
@@ -51,7 +52,7 @@
       <TemplateSchedule @plan-updated="handleEvents" :selectedDuration="selectedDuration"
                         :fullNameActiveUser="fullName" :events="eventsTemplate"></TemplateSchedule>
     </v-row>
-    <v-dialog v-model="groupDelete" max-width="500px">
+    <v-dialog v-model="cancelSaveChanges" max-width="500px">
       <v-card>
         <v-card-title class="text-h5">Вы уверены? Все несохраненные изменения будут удалены</v-card-title>
         <v-card-actions>
@@ -86,15 +87,23 @@ export default {
       "test": 'TEST'
     }],
     selectedTemplate: null,
-    groupDelete: false,
-  }),
-  watch:{
+    cancelSaveChanges: false,
 
-  },
+    startDateRules: {
+      required: value => !!value
+    },
+    endTimeRules: {
+      required: value => !!value
+    },
+  }),
+  watch: {},
   computed: {
     getIdUser() {
       const {selectedUserID} = this.$route.params;
       return selectedUserID;
+    },
+    savePlanDisabled() {
+      return !(this.startDateRules.required(this.practiceCourseStart) && this.endTimeRules.required(this.practiceCourseEnd))
     },
 
   },
@@ -102,7 +111,7 @@ export default {
   methods: {
     handleEvents(events) {
       this.eventsTemplate = events
-      console.log('handleEvents',this.eventsTemplate)
+      console.log('handleEvents', this.eventsTemplate)
     },
 
     prev() {
@@ -115,9 +124,9 @@ export default {
         "practiceCourseStart": this.practiceCourseStart,
         "practiceCourseEnd": this.practiceCourseEnd,
         "activeUserId": this.getIdUser,
-        'duration' : this.selectedDuration,
+        'duration': this.selectedDuration,
         "practices":
-          this.eventsTemplate
+        this.eventsTemplate
 
       }
       console.log(body)
@@ -151,7 +160,7 @@ export default {
 
     async getPracticeCourseTemplate() {
       //console.log('getPracticeCourseTemplate',this.selectedTemplate)
-      if (this.selectedTemplate === null){
+      if (this.selectedTemplate === null) {
         return this.eventsTemplate = []
       }
       const practiceCourseTemplate = new PracticeCourseRequest()
@@ -169,7 +178,7 @@ export default {
             this.practiceCourseEnd = response.data.practiceCourseEnd.slice(0, 10);
           });
       console.log(this.practiceCourseStart)
-      return this.eventsTemplate= events
+      return this.eventsTemplate = events
     },
 
     async postPracticeCourseTemplate(body) {
@@ -178,7 +187,7 @@ export default {
     },
 
     closeCanselChanges() {
-      this.groupDelete = false
+      this.cancelSaveChanges = false
     },
 
     confirmCancelChanges() {
@@ -192,7 +201,7 @@ export default {
     },
 
     cancelChanges() {
-      this.groupDelete = true
+      this.cancelSaveChanges = true
     },
 
     getTodayDate() {

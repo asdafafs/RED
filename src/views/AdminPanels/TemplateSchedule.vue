@@ -173,9 +173,29 @@ export default {
         const newEndTime = moment(event.start).add(this.selectedDuration, 'hours');
         event.end = newEndTime.valueOf();
       });
+
+      this.eventsTemplate.sort((a, b) => new Date(a.start) - new Date(b.start));
+
+      for (let i = 0; i < this.eventsTemplate.length; i++) {
+        const currentEvent = this.eventsTemplate[i];
+        const nextEvent = this.eventsTemplate[i + 1];
+
+        if (nextEvent) {
+          const currentEnd = new Date(currentEvent.end).getTime();
+          const nextStart = new Date(nextEvent.start).getTime();
+
+          if (currentEnd > nextStart) {
+            // Пересечение событий, переносим более позднее событие
+            const overlap = currentEnd - nextStart;
+            nextEvent.start = new Date(nextEvent.start).getTime() + overlap;
+            nextEvent.end = new Date(nextEvent.end).getTime() + overlap;
+          }
+        }
+      }
+
       this.$emit('plan-updated', this.eventsTemplate);
-      //console.log('createEventsWithNewDuration', this.eventsTemplate)
-    },
+    }
+,
 
     deleteEvent(event) {
       const index = this.eventsTemplate.indexOf(event);
@@ -224,12 +244,10 @@ export default {
 
           return dragStartInsideExisting || dragEndInsideExisting || existingInsideDrag;
         });
-
-        const interval = Math.abs(newStart - start) >= (15 * 60 * 1000); // 15 минут в миллисекундах
+        const sec = 1000
+        const interval = Math.abs(newStart - start) >= sec ;
 
         if (isIntersect || !interval) {
-          console.log('Событие пересекается с другими событиями или интервал меньше 15 минут');
-          // Отменяем перемещение события
           return;
         }
 
@@ -246,14 +264,10 @@ export default {
           if (event === this.dragEvent) return false; // Пропускаем проверку для перетаскиваемого события
           const existingStart = moment(event.start);
           const existingEnd = moment(event.end);
-          console.log('start', existingStart, 'end', existingEnd)
-          console.log('проверка 1', (this.dragEvent.start) )
-          console.log('проверка 2', (this.dragEvent.end))
+
           return moment(this.dragEvent.start).isBetween(existingStart, existingEnd) || moment(this.dragEvent.end).isBetween(existingStart, existingEnd);
         });
-        console.log('endDrag', isIntersect)
         if (isIntersect) {
-          console.log('Пересеклось');
           // Возвращаем событие в изначальное положение
           this.dragEvent.start = this.testTime;
           this.dragEvent.end = this.testTime + (new Date(this.dragEvent.end).getTime() - new Date(this.dragEvent.start).getTime());
@@ -275,7 +289,6 @@ export default {
         this.createStart = null;
         this.extendOriginal = null;
 
-        // Обновляем массив событий
         this.$emit('plan-updated', this.eventsTemplate);
       }
     },
@@ -292,11 +305,10 @@ export default {
         const end = moment(new Date(start).setHours(endHour)).format("YYYY-MM-DDTHH:mm:ss");
         const dayOfWeek = moment(start).day();
 
-        // Проверяем, чтобы новое событие не пересекалось с существующими событиями и чтобы между событиями был интервал не менее 15 минут
         const isIntersect = this.eventsTemplate.some(event => {
           const existingStart = moment(event.start);
           const existingEnd = moment(event.end);
-          const fifteenMinutes = 15 * 60 * 1000; // 15 минут в миллисекундах
+          const sec = 1000;
           const proposedStart = moment(start);
           const proposedEnd = moment(end);
 
@@ -304,14 +316,12 @@ export default {
           const intersect = proposedStart.isBetween(existingStart, existingEnd) || proposedEnd.isBetween(existingStart, existingEnd);
 
           // Проверяем интервал между событиями
-          const interval = proposedStart.diff(existingEnd) >= fifteenMinutes || existingStart.diff(proposedEnd) >= fifteenMinutes;
+          const interval = proposedStart.diff(existingEnd) >= sec || existingStart.diff(proposedEnd) >= sec;
 
           return intersect || !interval;
         });
 
         if (isIntersect) {
-          console.log('Событие пересекается с уже существующими или интервал меньше 15 минут');
-          // Возвращаем false, чтобы отменить создание события
           return false;
         } else {
           // Добавляем новое событие
@@ -328,12 +338,18 @@ export default {
     },
 
     roundTime(time, down = true) {
-      const roundTo = 15
-      const roundDownTime = roundTo * 60 * 1000
+      const roundDownTime = 1000; // 1 секунда в миллисекундах
 
-      return down
+      const roundedTime = down
           ? time - time % roundDownTime
-          : time + (roundDownTime - (time % roundDownTime))
+          : time + (roundDownTime - (time % roundDownTime));
+
+      // Используем moment для форматирования времени без изменения секунд
+      const formattedTime = moment(roundedTime).format("YYYY-MM-DDTHH:mm:ss");
+
+      console.log(formattedTime); // Выводим отформатированное время в консоль
+
+      return roundedTime;
     },
 
     toTime(tms) {
