@@ -146,19 +146,28 @@ export default {
       templates.forEach(template => {
         this.listTemplates.push(template);
       });
-      return console.log(this.listTemplates)
+      return this.listTemplates
     },
 
     async getPracticeCourseTemplate() {
       //console.log('getPracticeCourseTemplate',this.selectedTemplate)
+      if (this.selectedTemplate === null){
+        return this.eventsTemplate = []
+      }
       const practiceCourseTemplate = new PracticeCourseRequest()
-      let events
-      await practiceCourseTemplate.getPracticeCourseId(this.selectedTemplate).catch(x => console.log(x)).then(x => {
-        events = x.data.practices
-        this.selectedDuration = x.data.duration
-        this.practiceCourseStart = x.data.practiceCourseStart.slice(0, 10)
-        this.practiceCourseEnd = x.data.practiceCourseEnd.slice(0, 10)
-      })
+      let events;
+      await practiceCourseTemplate.getPracticeCourseId(this.selectedTemplate)
+          .catch(error => console.log(error))
+          .then(response => {
+            events = response.data.practices.map(practice => ({
+              ...practice,
+              color: '#9DB9FF',
+              savedTime: practice.start
+            }));
+            this.selectedDuration = response.data.duration;
+            this.practiceCourseStart = response.data.practiceCourseStart.slice(0, 10);
+            this.practiceCourseEnd = response.data.practiceCourseEnd.slice(0, 10);
+          });
       console.log(this.practiceCourseStart)
       return this.eventsTemplate= events
     },
