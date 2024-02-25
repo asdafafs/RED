@@ -228,9 +228,10 @@ export default {
         const end = new Date(this.dragEvent.end).getTime();
         const duration = end - start;
         const newStartTime = mouse - this.dragTime;
-        const newStart = this.roundTime(newStartTime);
-        const newEnd = newStart + duration;
-
+        const newStart = this.roundTime(newStartTime) - 1000;
+        const newEnd = (newStart + duration - 1000);
+        // console.log('newStart', moment(newStart).format("YYYY-MM-DDTHH:mm:ss"))
+        // console.log('newEnd', newEnd)
         // Проверяем пересечение с уже существующими событиями
         const isIntersect = this.eventsTemplate.some(event => {
           if (event === this.dragEvent) return false; // Пропускаем проверку для перетаскиваемого события
@@ -343,11 +344,15 @@ export default {
       const roundedTime = down
           ? time - time % roundDownTime
           : time + (roundDownTime - (time % roundDownTime));
+      const roundedDate = new Date(down
+          ? time - (time % roundDownTime)
+          : time + (roundDownTime - (time % roundDownTime)));
+
 
       // Используем moment для форматирования времени без изменения секунд
       const formattedTime = moment(roundedTime).format("YYYY-MM-DDTHH:mm:ss");
 
-      console.log(formattedTime); // Выводим отформатированное время в консоль
+      // console.log(formattedTime); // Выводим отформатированное время в консоль
 
       return roundedTime;
     },
