@@ -1,9 +1,9 @@
 <template>
-  <v-container>
+  <v-container fluid>
     <NavigationBar :drawer.sync="drawer" :role="role" :show-drawer="showDrawer" :student="discriminatorUser" :user="userName"/>
     <v-app-bar app density="compact" color="#1e1f22" class="appbar position_component">
-      <v-container class="pa-0 my-0" v-if="showDrawer" fluid>
-        <v-row no-gutters>
+      <v-container class="pa-0 ma-0" v-if="showDrawer" fluid>
+        <v-row no-gutters class="pa-0 ma-0">
           <v-col cols=2>
             <DesktopLogo/>
           </v-col>
@@ -11,7 +11,7 @@
             <AppButtons :student="discriminatorUser" v-if="isDataLoaded"/>
           </v-col>
           <v-col cols="2">
-            <UserProfile :role="role" :student="discriminatorUser" :user="userName" v-if="isDataLoaded"/>
+              <UserProfile :role="role" :student="discriminatorUser" :user="userName" v-if="isDataLoaded"/>
           </v-col>
         </v-row>
       </v-container>

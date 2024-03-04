@@ -1,6 +1,6 @@
 <template>
-  <v-container class="pa-0 my-0" fluid>
-    <v-row no-gutters>
+  <v-container class="pa-0 ma-0" fluid>
+    <v-row>
       <v-col cols=12>
         <v-container class="pa-0 height-container" fluid>
           <v-row no-gutters align="center" class="height-container">

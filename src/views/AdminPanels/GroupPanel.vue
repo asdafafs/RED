@@ -5,7 +5,8 @@
     </div>
     <v-data-table :headers="headersGroup" :search="search" :items="groups" class="elevation-1 custom-header-table"
                   v-if="!discriminatorUser" no-data-text="Нет данных для отображения"
-                  :hide-default-footer="true" disable-pagination :header-props="{ class: 'blue--text text--darken-2' }">
+                  :hide-default-footer="true" disable-pagination :header-props="{ class: 'blue--text text--darken-2' }"
+                  mobile-breakpoint="0">
       <template v-slot:top>
         <v-toolbar flat>
           <v-dialog v-model="dialog" max-width="60em" persistent>
@@ -395,7 +396,7 @@ export default {
 
     async deleteItemConfirm() {
       await this.deleteGroups().finally(() => this.groups.splice(this.editedIndex, 1)
-    )
+      )
       this.closeDelete()
     },
     close() {

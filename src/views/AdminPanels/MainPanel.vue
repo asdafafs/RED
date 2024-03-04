@@ -1,33 +1,30 @@
 <template>
-  <v-container fluid>
-    <v-row class="flex-nowrap">
-      <v-col cols="" class="">
+  <v-container fluid class="ma-0 py-2 px-0 justify-center" style="max-width: 100%; overflow: hidden;">
+    <v-row class="flex-wrap  fill-height">
+      <v-col cols="lg-2 md-4" class="">
         <v-btn cols="" text class="black--text tab-button pa-0 align-center " width="100%"
                :class="{'tab-background': isButtonPressed[0]}"
                @click="changeButtonState(0); $router.push({name: 'admin-students'}).catch(() => {})">
           <span :class="{ 'tab-button-text':isButtonPressed[0]}">Студенты</span>
         </v-btn>
       </v-col>
-      <v-col cols="">
+      <v-col cols="lg-2 md-4">
         <v-btn text class="black--text tab-button pa-0" width="100%"
                :class="{'tab-background': isButtonPressed[1]}"
                @click="changeButtonState(1); $router.push({name: 'admin-teachers'}).catch(() => {})">
           <span :class="{ 'tab-button-text':isButtonPressed[1]}">Преподаватели</span>
         </v-btn>
       </v-col>
-      <v-col cols="">
+      <v-col cols="lg-2 md-4">
         <v-btn cols="" text class="black--text tab-button pa-0" width="100%"
                :class="{'tab-background': isButtonPressed[2]}"
                @click="changeButtonState(2); $router.push({name: 'admin-groups'}).catch(() => {})">
           <span :class="{ 'tab-button-text':isButtonPressed[2]}">Практика</span>
         </v-btn>
       </v-col>
-      <v-col cols="9">
-        <v-spacer></v-spacer>
-      </v-col>
     </v-row>
     <v-row>
-      <v-col>
+      <v-col cols="lg-12">
         <router-view></router-view>
       </v-col>
     </v-row>

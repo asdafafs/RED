@@ -1,5 +1,5 @@
 <template>
-  <v-app>
+  <v-app >
     <AppBar :isDataLoaded="user.userId !== null">
     </AppBar>
     <v-main>

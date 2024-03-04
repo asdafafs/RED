@@ -51,7 +51,6 @@
           </div>
         </div>
         <span class="mdi mdi-login" style="transform: scale(1.5)"></span>
-
       </v-list-item>
     </v-list>
   </v-navigation-drawer>
@@ -69,12 +68,12 @@ export default {
     user: {}
   },
   methods: {
-    async logout(){
+    async logout() {
       const user = new IdentityRequest()
       await user.postLogout({})
     },
 
-    exit(){
+    exit() {
       this.logout()
     }
   }
@@ -83,6 +82,10 @@ export default {
 <style scoped>
 .rotate {
   transform: rotate(45deg) scale(1.8);
+}
+
+.v-application .mt-auto {
+  margin-top: 12em !important;
 }
 
 .list-item {

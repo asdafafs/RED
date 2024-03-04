@@ -1,5 +1,5 @@
 <template>
-  <v-container class="px-4 pa-0 ma-0" fluid>
+  <v-container fluid>
     <v-row no-gutters align="center" class="spacer">
       <v-col lg="">
         <div class="text-h4 font-weight-bold">
@@ -11,7 +11,7 @@
       </v-col>
     </v-row>
     <hr>
-    <v-row>
+    <v-row >
       <v-col cols="1" class="flex-column">
         <v-radio-group class="px-0 py-0" v-model="selectedDuration">
           <v-radio label="1 час" :value=1></v-radio>

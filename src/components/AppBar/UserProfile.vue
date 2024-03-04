@@ -1,6 +1,6 @@
 <template>
   <v-container class="pa-0" fluid>
-    <v-row justify="center" no-gutters align-content="center" class="px-1 my-0">
+    <v-row justify="center" no-gutters align-content="center" class="px-0 my-0">
       <v-col cols="12">
         <v-menu offset-y>
           <template v-slot:activator="{ on }">
