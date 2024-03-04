@@ -1,3 +1,7 @@
 .custom-header-table th {
     color: #4E7AEC !important;
 }
+
+.v-data-table-header {
+    height: 2em;
+}

@@ -1,9 +1,10 @@
-/deep/ .v-toolbar__content {
+.v-toolbar__content {
     padding: 0 !important;
 }
 
 .appbar {
     z-index: auto;
+    max-width: 100vw;
 }
 
 .position_component {

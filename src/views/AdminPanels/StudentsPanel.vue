@@ -20,6 +20,7 @@
         :hide-default-footer="true"
         disable-pagination
         :header-props="{ class: 'blue--text text--darken-2' }"
+        mobile-breakpoint="0"
     >
       <template v-slot:top>
         <v-toolbar flat>
@@ -314,4 +315,6 @@ export default {
 <style lang="scss">
 @import "@/assets/styles/phoneMaskStyles.css";
 @import "@/assets/styles/dataTableStyles.css";
+
+
 </style>

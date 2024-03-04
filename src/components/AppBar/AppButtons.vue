@@ -1,5 +1,5 @@
 <template>
-  <v-container class="pa-0">
+  <v-container class="pa-0 ma-0 ga-0">
     <v-row no-gutters class="my-0 ga-3" align-content="center" justify="center">
       <v-spacer cols="1"></v-spacer>
       <v-col cols=2>
