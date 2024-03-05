@@ -11,7 +11,7 @@
         <v-toolbar flat>
           <v-dialog v-model="dialog" max-width="60em" persistent>
             <template v-slot:activator="{ on, attrs }">
-              <v-btn color="#4E7AEC" dark class="mb-2 rounded-lg" v-bind="attrs" v-on="on" @click="newCourse">
+              <v-btn color="#4E7AEC" dark class="ma-0 rounded-lg" v-bind="attrs" v-on="on" @click="newCourse">
                 <v-col cols="1" class="px-0">
                   <i class="mdi mdi-plus-circle-outline" style="transform: scale(1.5)"></i>
                 </v-col>

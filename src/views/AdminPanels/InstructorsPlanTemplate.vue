@@ -11,22 +11,22 @@
       </v-col>
     </v-row>
     <hr>
-    <v-row >
-      <v-col cols="1" class="flex-column">
-        <v-radio-group class="px-0 py-0" v-model="selectedDuration">
+    <v-row class="flex-wrap" >
+      <v-col cols="lg-1 md-1 py-0" class="flex-column">
+        <v-radio-group class="px-0 py-0" v-model="selectedDuration" hide-details="true">
           <v-radio label="1 час" :value=1></v-radio>
           <v-radio label="2 часа" :value=2></v-radio>
         </v-radio-group>
       </v-col>
-      <v-col cols="2">
+      <v-col cols="lg-2 md-2 py-0">
         <v-text-field v-model="practiceCourseStart" label="Дата начала" type="date"
                       :rules="[startDateRules.required]" :min="getTodayDate()"></v-text-field>
       </v-col>
-      <v-col cols="2">
+      <v-col cols="lg-2 md-2 py-0">
         <v-text-field v-model="practiceCourseEnd" label="Дата окончания" type="date"
                        :rules="[endTimeRules.required]" :min="getTodayDate()"></v-text-field>
       </v-col>
-      <v-col cols="2">
+      <v-col cols="lg-2 md-2 py-0">
         <v-select v-model="selectedTemplate" label="Выберите шаблон практик" :items="listTemplates"
                   no-data-text="Нет данных для отображения"
                   :item-text="item => item.practiceCourseId ? `${new Date(item.practiceCourseStart).
@@ -36,13 +36,13 @@
                   @change="getPracticeCourseTemplate()">>
         </v-select>
       </v-col>
-      <v-col cols="2"></v-col>
-      <v-col cols="">
+      <v-col cols="lg-2 md-0 sm-0 pa-0"></v-col>
+      <v-col cols=" px-0">
         <v-btn class="tab-button pa-0 rounded-lg" color="#2B2A29" outlined @click="save" :disabled="savePlanDisabled">
           <span class="black--text">Сохранить изменения</span>
         </v-btn>
       </v-col>
-      <v-col cols="">
+      <v-col cols=" px-0">
         <v-btn class="tab-button pa-0 rounded-lg" color="#2B2A29" text @click="cancelChanges">
           <span class="black--text">Выйти без изменений</span>
         </v-btn>
