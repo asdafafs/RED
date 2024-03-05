@@ -1,6 +1,6 @@
 <template>
   <v-container fluid class="ma-0 py-2 px-0 justify-center" style="max-width: 100%; overflow: hidden;">
-    <v-row class="flex-wrap  fill-height">
+    <v-row class="flex-wrap  px-3 fill-height">
       <v-col cols="lg-2 md-4" class="">
         <v-btn cols="" text class="black--text tab-button pa-0 align-center " width="100%"
                :class="{'tab-background': isButtonPressed[0]}"

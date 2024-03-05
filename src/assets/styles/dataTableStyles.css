@@ -5,3 +5,11 @@
 .v-data-table-header {
     height: 2em;
 }
+
+.v-toolbar__content {
+    height: auto !important;
+}
+
+.v-toolbar--flat{
+    height: auto !important;
+}
