@@ -25,6 +25,7 @@ import ScheduleClasses from "@/views/SignUpClasses/ScheduleClasses.vue";
 import ClassesView from "@/views/SignUpClasses/ClassesView.vue";
 import Test from "@/views/Test";
 import InstructorsPlanTemplate from "@/views/AdminPanels/InstructorsPlanTemplate.vue";
+import GroupItem from "@/views/AdminPanels/GroupItem.vue";
 
 
 Vue.use(VueRouter)
@@ -80,12 +81,19 @@ const routes = [
                 path: 'teachers',
                 name: 'admin-teachers',
                 component: TeachersPanel,
-                children: []
             },
             {
                 path: 'groups',
                 name: 'admin-groups',
                 component: GroupPanel,
+                children: [
+                    {
+                        path: 'groupItem/:selectedGroupID',
+                        name: 'groupItem',
+                        component: GroupItem,
+                        props: true,
+                    },
+                ],
             },
             {
                 path: 'template/:selectedUserID',
@@ -95,11 +103,6 @@ const routes = [
             },
 
         ]
-    },
-    {
-        path: '*',
-        name: 'notFound',
-        component: NotFoundView,
     },
     {
         path: "/testPlan",
@@ -129,9 +132,10 @@ const routes = [
                 ]
             },
             {
-                path: 'progress',
-                name: 'progress',
+                path: 'progressBar/:currentStudentID',
+                name: 'progressBar',
                 component: ProgressBar,
+                props: true, // Включаем передачу параметров маршрута в компонент
             }
         ]
     },
@@ -170,7 +174,11 @@ const routes = [
         name: 'test-kal',
         component: Test
     },
-
+    {
+        path: '*',
+        name: 'notFound',
+        component: NotFoundView,
+    },
 
 ]
 

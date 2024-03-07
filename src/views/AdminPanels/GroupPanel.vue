@@ -9,17 +9,18 @@
                   mobile-breakpoint="0">
       <template v-slot:top>
         <v-toolbar flat>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn color="#4E7AEC" dark class="ma-0 rounded-lg" v-bind="attrs"  @click="transitionNewCourse">
+              <v-col cols="1" class="px-0">
+                <i class="mdi mdi-plus-circle-outline" style="transform: scale(1.5)"></i>
+              </v-col>
+              <v-col cols="">
+                Добавить группу
+              </v-col>
+            </v-btn>
+          </template>
           <v-dialog v-model="dialog" max-width="60em" persistent>
-            <template v-slot:activator="{ on, attrs }">
-              <v-btn color="#4E7AEC" dark class="ma-0 rounded-lg" v-bind="attrs" v-on="on" @click="newCourse">
-                <v-col cols="1" class="px-0">
-                  <i class="mdi mdi-plus-circle-outline" style="transform: scale(1.5)"></i>
-                </v-col>
-                <v-col cols="">
-                  Добавить группу
-                </v-col>
-              </v-btn>
-            </template>
+
             <v-card>
               <v-card-title>
                 <span class="text-h5">{{ formTitle }}</span>
@@ -102,7 +103,18 @@
       </template>
       <template v-slot:item="{ item }">
         <tr>
+          <td>{{ item.courseData.groupNum }}</td>
           <td>{{ item.title }}</td>
+          <td>{{ item.courseData.globalStartDate }}</td>
+          <td>
+            <div style="display: flex; flex-direction: row; flex-wrap: wrap;">
+        <span v-if="item.courseData.selectedStudents" v-for="(student, index) in item.courseData.selectedStudents"
+              :key="index">
+          {{ student.name }} {{ student.surname }} {{ student.middleName }}, &nbsp;
+          <br>
+        </span>
+            </div>
+          </td>
           <td class="text-xs-right">
             <v-icon small class="mr-2 blue--text" @click="editItem(item)">mdi-pencil</v-icon>
             <v-icon class="red--text" small @click="deleteItem(item)">mdi-delete</v-icon>
@@ -146,8 +158,11 @@ export default {
     search: '',
     chips: ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'],
     headersGroup: [
-      {text: 'Название', align: 'start', sortable: false, value: 'title', width: '80%'},
-      {text: 'Действия', value: 'actions', sortable: false, width: '20%'},
+      {text: '№', align: 'start', sortable: false, value: 'id', width: '5%'},
+      {text: 'Название', align: 'start', sortable: false, value: 'title', width: '20%'},
+      {text: 'Даты обучения', align: 'start', sortable: false, value: 'id', width: '20%'},
+      {text: 'Ученики', align: 'start', sortable: false, value: 'id', width: '50%'},
+      {text: 'Действия', value: 'actions', sortable: false, width: '5%'},
     ],
     groups: [],
     editedIndex: -1,
@@ -270,6 +285,25 @@ export default {
       })
     },
 
+    async getGroupData(id) {
+      const course = new CoursesRequest()
+      const getItem = {"id": id}
+      let cal = {globalStartTime: '', globalStartDate: '', groupNum: 0, selectedStudents: null}
+      await course.getCourse(getItem.id).catch(x => console.log(x)).then(x => {
+        cal.globalStartTime = x.data.startTime
+        cal.globalStartDate = this.formatDatetime(x.data.startDate)
+        cal.groupNum = x.data.groupNumber
+        cal.selectedStudents = x.data.students.map(student => {
+          return {
+            name: student.name,
+            surname: student.surname,
+            middleName: student.middleName
+          };
+        });
+      })
+      return cal
+    },
+
     async getCourseLast() {
       const course = new CoursesRequest()
       await course.getCourseNull().catch(x => console.log(x)).then(x => {
@@ -300,9 +334,23 @@ export default {
       await groups.deleteGroup(deletedItem.id).catch(x => console.log(x))
     },
 
+    async getCourseIdForEachGroup() {
+      const coursesData = [];
+      for (const group of this.groups) {
+        const courseId = await this.getGroupData(group.groupId);
+        coursesData.push(courseId);
+      }
+      return coursesData;
+    },
+
     async initialize() {
-      console.log('initialize')
       this.groups = await this.getGroups();
+
+      const coursesData = await this.getCourseIdForEachGroup();
+      this.groups = this.groups.map((group, index) => {
+        return {...group, courseData: coursesData[index]};
+      });
+      console.log(this.groups)
       this.studentList = await this.getFreeUsers()
       this.teachers = await this.getEventsTeacher()
       await this.getCourseLast();
@@ -340,6 +388,13 @@ export default {
       };
       this.deletedIndex = item.groupId
       this.groupDelete = true;
+    },
+
+    transitionNewCourse() {
+      const selectedGroupID = 0;
+      this.$router.push({name: 'groupItem', params: {selectedGroupID}}).catch(() => {
+      });
+      console.log('1')
     },
 
     async newCourse() {
@@ -608,4 +663,8 @@ export default {
 </script>
 <style>
 @import "@/assets/styles/dataTableStyles.css";
+
+.theme--light.v-chip:not(.v-chip--active) {
+  background: rgba(255, 255, 255, 0.7);
+}
 </style>

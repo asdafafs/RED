@@ -10,3 +10,7 @@
 .position_component {
     z-index: 2;
 }
+
+.app-bar-height{
+    height: auto !important;
+}

@@ -194,7 +194,7 @@ export default {
     async getStudents() {
       const user = new UsersRequest();
       let studentsData
-      await user.getUser().catch(x => console.log(x)).then(x => {
+      await user.getUsers().catch(x => console.log(x)).then(x => {
         studentsData = x.data
       })
       return studentsData
