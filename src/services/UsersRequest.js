@@ -5,7 +5,7 @@ export default class UsersRequest extends HTTPService {
         super("User");
     }
 
-    getUser() {
+    getUsers() {
         return this.get("student")
     }
 

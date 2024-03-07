@@ -1,8 +1,8 @@
 <template>
   <v-container fluid>
     <NavigationBar :drawer.sync="drawer" :role="role" :show-drawer="showDrawer" :student="discriminatorUser" :user="userName"/>
-    <v-app-bar app density="compact" color="#1e1f22" class="appbar position_component">
-      <v-container class="pa-0 ma-0" v-if="showDrawer" fluid>
+    <v-app-bar app density="compact" color="#1e1f22" class="appbar position_component app-bar-height">
+      <v-container class="pa-0 my-2" v-if="showDrawer" fluid>
         <v-row no-gutters class="pa-0 ma-0">
           <v-col cols=2>
             <DesktopLogo/>

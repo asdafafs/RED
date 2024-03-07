@@ -19,7 +19,7 @@
         </v-col>
         <v-col cols="1">
           <v-btn text class="black--text tab-button pa-0" width="100%"
-                 @click="changeButtonMenuState(1); $router.push({name: 'progress'}).catch(() => {})"
+                 @click="changeButtonMenuState(1); openProgressBar()"
                  :class="{'tab-background': isButtonMenuPressed[1],}">
             <span :class="{'tab-button-text': isButtonMenuPressed[1],}">Прогресс</span>
           </v-btn>
@@ -47,7 +47,7 @@
         </v-col>
         <v-col cols="">
           <v-btn text class="black--text tab-button pa-0" width="100%"
-                 @click="changeButtonMenuState(1); $router.push({name: 'progress'}).catch(() => {})"
+                 @click="changeButtonMenuState(1);openProgressBar()"
                  :class="{'tab-background': isButtonMenuPressed[1],}">
             <span :class="{'tab-button-text': isButtonMenuPressed[1],}">Прогресс</span>
           </v-btn>
@@ -63,12 +63,15 @@
 import {mapState} from "vuex";
 
 export default {
+  name: 'plan',
   components: {},
   data: () => ({
     showDrawer: true,
   }),
   methods: {
+
     changeButtonMenuState(index) {
+
       if (this.lastPressedIndex !== -1) {
         this.$set(this.isButtonMenuPressed, this.lastPressedIndex, false);
       }
@@ -78,11 +81,25 @@ export default {
     checkWindowWidth() {
       this.showDrawer = window.innerWidth >= 1260;
     },
+
+    openProgressBar() {
+      const currentStudentID = this.userId;
+      this.$router.push({ name: 'progressBar', params: { currentStudentID}  }).catch((err) => {
+        throw new Error(`Problem handling something: ${err}.`);
+      });
+    },
+
+    initialize(){
+    }
   },
   computed: {
     ...mapState(['user']),
     userName() {
       return this.user.name
+    },
+
+    userId(){
+      return this.user.userId
     },
 
     groupId() {
@@ -93,13 +110,14 @@ export default {
     },
 
     isButtonMenuPressed(){
-      return [this.$route.path.startsWith('/testPlan/mainCal'), this.$route.path.startsWith('/testPlan/progress')]
+      return [this.$route.path.startsWith('/testPlan/mainCal'), this.$route.path.startsWith('/testPlan/progressBar')]
     }
 
   },
   created() {
     this.checkWindowWidth();
     window.addEventListener('resize', this.checkWindowWidth);
+    this.initialize()
   },
 
   beforeDestroy() {
