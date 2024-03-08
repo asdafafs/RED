@@ -23,6 +23,19 @@
         </v-btn>
       </v-col>
     </v-row>
+    <v-row v-if="discriminatorUser">
+      <v-col lg="3" md="4" sm="6">
+        <v-select
+            no-data-text="Нет данных для отображения"
+            v-model="selectedTeacher"
+            label="Выберите инструктора"
+            :items="teachers"
+            :item-text="item => `${item.name} ${item.surname} ${item.middleName} `"
+            item-value="id"
+            @change="confirm(discriminatorUser)"
+        ></v-select>
+      </v-col>
+    </v-row>
     <v-row>
       <v-col>
         <v-sheet tile height="54" class="d-flex justify-center">
@@ -72,43 +85,70 @@
               </v-container>
             </template>
           </v-calendar>
-          <v-menu max-width="200px" min-width="200px"
-                  v-model="selectedOpen"
-                  :close-on-content-click="false"
-                  :activator="selectedElement"
-                  offset-x
-          >
+          <v-dialog v-model="selectedOpen" max-width="60em" persistent v-if="discriminatorUser">
+            <!--            <v-menu max-width="200px" min-width="200px"-->
+            <!--                    v-model="selectedOpen"-->
+            <!--                    :close-on-content-click="false"-->
+            <!--                    :activator="selectedElement"-->
+            <!--                    offset-x-->
+            <!--            >-->
             <v-card
                 :style="{ border: (selectedEvent.studentId === null && userID !== selectedEvent.studentId) ? '2px solid #4E7AEC' : '2px solid grey' }"
                 flat>
               <v-toolbar>
-                <v-toolbar-title v-html="formatTime(selectedEvent.startTime)"></v-toolbar-title>
+                <v-toolbar-title>
+                  <v-row>
+                    <v-col class="flex-column">
+                      <div class="text-subtitle-1 text-medium-emphasis">СВЕДЕНИЯ О ЗАПИСИ</div>
+                      <div class="text-lg-h4">Вождение</div>
+                    </v-col>
+                  </v-row>
+
+                </v-toolbar-title>
               </v-toolbar>
               <v-card-text>
-                <span v-html="selectedEvent.title"></span>
+                <v-container>
+                  <v-row>
+                    <v-col class="flex-column">
+                      <div class="">
+                        {{ selectedEvent && selectedEvent.startTime ? selectedEvent.startTime.split('T')[0] : '' }}
+                      </div>
+
+                      <div class="text-lg-h5 font-weight-bold">{{ formatTime(selectedEvent.startTime) }}
+                        {{ ' - ' }} {{ formatTime(selectedEvent.endTime) }}
+                      </div>
+                      <div class="text-subtitle-1 text-medium-emphasis">Преподаватель</div>
+                      <div class="text-subtitle-2 font-weight-regular">{{ selectedEvent.title }}</div>
+                      <div class="text-subtitle-1 text-medium-emphasis">Лимит часов</div>
+                      <div>Основные ({{ studentHours[1] }} из {{ studentHours[0] }})</div>
+                    </v-col>
+                  </v-row>
+                </v-container>
               </v-card-text>
               <v-card-actions>
                 <v-card-actions>
-                  <v-btn text color="secondary"
+                  <v-btn text color="secondary" @click="selectedOpen = false;">
+                    Отмена
+                  </v-btn>
+                  <v-btn text color="primary"
                          v-if="selectedEvent.studentId === null && discriminatorUser && userID !== selectedEvent.studentId"
                          @click="addEventStudent">
-                    Подписаться
+                    Записаться
                   </v-btn>
                   <v-btn text color="secondary"
                          v-else-if="discriminatorUser && userID === selectedEvent.studentId"
                          @click="removeEventStudent">
                     Отписаться
                   </v-btn>
-                  <v-btn text color="secondary" v-else @click="selectedOpen = false;">
-                    Закрыть
-                  </v-btn>
+
                 </v-card-actions>
               </v-card-actions>
             </v-card>
-          </v-menu>
+            <!--            </v-menu>-->
+          </v-dialog>
         </v-sheet>
       </v-col>
-      <v-dialog v-model="dialog" max-width="500px" persistent v-if="discriminatorUser">
+      <v-dialog max-width="500px" persistent v-if="discriminatorUser">
         <v-card>
           <v-card-title>
             <span class="text-h5">Выберите преподавателя</span>
@@ -206,7 +246,8 @@ export default {
     value: '',
     selectedElement: null,
     selectedTeacher: null,
-    isButtonPressed: [false, false, false]
+    isButtonPressed: [false, false, false],
+    studentHours: []
   }),
 
   created() {
@@ -215,6 +256,24 @@ export default {
   },
 
   methods: {
+    async getStudent() {
+      const student = new UsersRequest()
+      let hours
+      await student.getUsers().catch(x => console.log(x)).then((response) => {
+        const users = response.data.students; // Предположим, что данные находятся в массиве data
+        const foundUser = users.find(user => user.id === this.userID);
+        if (foundUser) {
+          // Здесь вы можете использовать найденного пользователя
+          console.log(foundUser)
+          hours = [foundUser.generalHours, foundUser.generalHoursSpent]
+          return console.log(this.studentHours = hours)
+        } else {
+          console.log('Пользователь с ID', this.userID, 'не найден.');
+        }
+      })
+
+    },
+
     async signPractice(body) {
       const practice = new EventsRequest()
       await practice.setStudent(body).catch(x => console.log(x))
@@ -263,6 +322,8 @@ export default {
     async initialize() {
       this.changeButtonState(0)
       await this.getEventsTeacher();
+      await this.getStudent()
+      console.log(this.studentHours)
       if (this.discriminatorUser === false) {
         await this.confirm(this.discriminatorUser)
       }
@@ -314,6 +375,7 @@ export default {
     },
 
     showEvent({nativeEvent, event}) {
+      console.log(event)
       const open = () => {
         this.selectedEvent = event
         this.selectedElement = nativeEvent.target

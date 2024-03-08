@@ -25,10 +25,10 @@
                     <v-text-field v-model="editedItem.title" label="Название"
                                   :rules="[titleRules.required]"></v-text-field>
                     <v-text-field v-model="editedItem.startTime" label="Начало занятия" type="datetime-local"
-                                  :rules="[startDateTimeRules.required]">
+                                  :rules="[startDateTimeRules.required]" :min="getTodayDate()">
                     </v-text-field>
                     <v-text-field v-model="editedItem.endTime" label="Конец занятия" type="datetime-local"
-                                  :rules="[endDateTimeRules.required]">
+                                  :rules="[endDateTimeRules.required]" :min="getTodayDate">
                     </v-text-field>
                     <v-select
                         ref="selectItem"
@@ -281,6 +281,25 @@ export default {
       }
 
       this.$emit('courses-updated', this.courses);
+    },
+
+    getTodayDate() {
+      const today = new Date();
+      const year = today.getFullYear();
+      let month = today.getMonth() + 1;
+      let day = today.getDate();
+      let hours = today.getHours();
+
+      if (month < 10) {
+        month = '0' + month;
+      }
+      if (day < 10) {
+        day = '0' + day;
+      }
+      if (hours < 10) {
+        hours = '0' + hours;
+      }
+      return `${year}-${month}-${day}T${hours}:00`;
     },
 
     getTableRowClass(item) {
