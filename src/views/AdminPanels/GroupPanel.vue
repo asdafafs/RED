@@ -9,18 +9,18 @@
                   mobile-breakpoint="0">
       <template v-slot:top>
         <v-toolbar flat>
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn color="#4E7AEC" dark class="ma-0 rounded-lg" v-bind="attrs"  @click="transitionNewCourse">
-              <v-col cols="1" class="px-0">
-                <i class="mdi mdi-plus-circle-outline" style="transform: scale(1.5)"></i>
-              </v-col>
-              <v-col cols="">
-                Добавить группу
-              </v-col>
-            </v-btn>
-          </template>
-          <v-dialog v-model="dialog" max-width="60em" persistent>
 
+          <v-dialog v-model="dialog" max-width="60em" persistent>
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn color="#4E7AEC" dark class="ma-0 rounded-lg" v-bind="attrs" v-on="on"  @click="transitionNewCourse">
+                <v-col cols="1" class="px-0">
+                  <i class="mdi mdi-plus-circle-outline" style="transform: scale(1.5)"></i>
+                </v-col>
+                <v-col cols="">
+                  Добавить группу
+                </v-col>
+              </v-btn>
+            </template>
             <v-card>
               <v-card-title>
                 <span class="text-h5">{{ formTitle }}</span>
@@ -103,12 +103,12 @@
       </template>
       <template v-slot:item="{ item }">
         <tr>
-          <td>{{ item.courseData.groupNum }}</td>
+          <td>{{ item.groupNum }}</td>
           <td>{{ item.title }}</td>
-          <td>{{ item.courseData.globalStartDate }}</td>
+          <td>{{ item.globalStartDate }}</td>
           <td>
             <div style="display: flex; flex-direction: row; flex-wrap: wrap;">
-        <span v-if="item.courseData.selectedStudents" v-for="(student, index) in item.courseData.selectedStudents"
+        <span v-if="item.selectedStudents" v-for="(student, index) in item.selectedStudents"
               :key="index">
           {{ student.name }} {{ student.surname }} {{ student.middleName }}, &nbsp;
           <br>
@@ -116,7 +116,7 @@
             </div>
           </td>
           <td class="text-xs-right">
-            <v-icon small class="mr-2 blue--text" @click="editItem(item)">mdi-pencil</v-icon>
+            <v-icon small class="mr-2 blue--text" @click="editGroupItem(item)">mdi-pencil</v-icon>
             <v-icon class="red--text" small @click="deleteItem(item)">mdi-delete</v-icon>
           </td>
         </tr>
@@ -132,12 +132,13 @@ import GroupsRequest from "@/services/GroupsRequest";
 import UsersRequest from "@/services/UsersRequest";
 import CoursesRequest from "@/services/CoursesRequest";
 import {mapState} from "vuex";
-import CoursesList from "@/views/AdminPanels/CoursesList.vue";
 import moment from 'moment';
 import Vue from "vue";
+import Item from "@/views/AdminPanels/Item.vue";
+import CoursesList from "@/views/AdminPanels/CoursesList.vue";
 
 export default {
-  components: {CoursesList},
+  components: {CoursesList, Item},
   data: () => ({
     globalStartTime: null,
     coursesData: null,
@@ -158,10 +159,10 @@ export default {
     search: '',
     chips: ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'],
     headersGroup: [
-      {text: '№', align: 'start', sortable: false, value: 'id', width: '5%'},
-      {text: 'Название', align: 'start', sortable: false, value: 'title', width: '20%'},
-      {text: 'Даты обучения', align: 'start', sortable: false, value: 'id', width: '20%'},
-      {text: 'Ученики', align: 'start', sortable: false, value: 'id', width: '50%'},
+      {text: '№', align: 'start', sortable: false,  width: '5%'},
+      {text: 'Название', align: 'start', sortable: false,  width: '20%'},
+      {text: 'Даты обучения', align: 'start', sortable: false,  width: '20%'},
+      {text: 'Ученики', align: 'start', sortable: false,  width: '50%'},
       {text: 'Действия', value: 'actions', sortable: false, width: '5%'},
     ],
     groups: [],
@@ -279,7 +280,6 @@ export default {
         this.coursesData = x.data.lecture
         this.globalStartTime = x.data.startTime
         this.globalStartDate = this.formatDatetime(x.data.startDate)
-        this.groupNumber = x.data.groupNumber
         this.studentList = this.studentList.concat(x.data.students);
         this.selectedStudents = x.data.students
       })
@@ -348,7 +348,7 @@ export default {
 
       const coursesData = await this.getCourseIdForEachGroup();
       this.groups = this.groups.map((group, index) => {
-        return {...group, courseData: coursesData[index]};
+        return {...group, ...coursesData[index]};
       });
       console.log(this.groups)
       this.studentList = await this.getFreeUsers()
@@ -390,11 +390,17 @@ export default {
       this.groupDelete = true;
     },
 
-    transitionNewCourse() {
-      const selectedGroupID = 0;
+
+    editGroupItem(item){
+      const selectedGroupID = item.groupId;
       this.$router.push({name: 'groupItem', params: {selectedGroupID}}).catch(() => {
       });
-      console.log('1')
+    },
+
+    transitionNewCourse() {
+      const selectedGroupID = '-1';
+      this.$router.push({name: 'groupItem', params: {selectedGroupID}}).catch(() => {
+      });
     },
 
     async newCourse() {
@@ -415,8 +421,11 @@ export default {
     },
 
     async editItem(item) {
+      console.log(this.selectedStudentsIds)
+
       this.showCoursesList = true;
       this.editedIndex = this.groups.indexOf(item);
+      console.log(this.editedIndex)
       await this.getCourseId(item.groupId);
       this.lessons = this.coursesData.map(item => {
         return {
@@ -446,6 +455,9 @@ export default {
           lectureType: null,
         },
       };
+      console.log(this.selectedStudents)
+      console.log(this.selectedStudentsIds)
+      console.log(this.editedItem)
       this.dialog = true;
     },
 
@@ -519,6 +531,7 @@ export default {
           "lecture": this.lessons
         }
         console.log("Что отправляем", body)
+        console.log(this.selectedStudentsIds)
         await this.postCourse(body).finally(() => {
           this.groupDisabled = false
           this.lessons = []

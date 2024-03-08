@@ -25,7 +25,7 @@ import ScheduleClasses from "@/views/SignUpClasses/ScheduleClasses.vue";
 import ClassesView from "@/views/SignUpClasses/ClassesView.vue";
 import Test from "@/views/Test";
 import InstructorsPlanTemplate from "@/views/AdminPanels/InstructorsPlanTemplate.vue";
-import GroupItem from "@/views/AdminPanels/GroupItem.vue";
+import Item from "@/views/AdminPanels/Item.vue";
 
 
 Vue.use(VueRouter)
@@ -86,14 +86,12 @@ const routes = [
                 path: 'groups',
                 name: 'admin-groups',
                 component: GroupPanel,
-                children: [
-                    {
-                        path: 'groupItem/:selectedGroupID',
-                        name: 'groupItem',
-                        component: GroupItem,
-                        props: true,
-                    },
-                ],
+            },
+            {
+                path: 'groupItem/:selectedGroupID',
+                name: 'groupItem',
+                component: Item,
+                props: true,
             },
             {
                 path: 'template/:selectedUserID',

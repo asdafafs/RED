@@ -94,9 +94,9 @@
           <td>{{ item.name + " " + item.surname + " " + item.middleName }}</td>
           <td>{{ item.email }}</td>
           <td>{{ item.generalHours}}</td>
-          <td>{{ item.generalHours - item.generalHoursSpent}}</td>
+          <td>{{ item.generalHoursSpent}}</td>
           <td>{{ item.additinalHours }}</td>
-          <td>{{item.additinalHours - item.additinalHoursSpent }}</td>
+          <td>{{ item.additinalHoursSpent }}</td>
           <td class="text-xs-right">
             <v-icon small class="mr-2 blue--text" @click="editItem(item)">mdi-pen</v-icon>
             <v-icon small class="red--text" @click="deleteItem(item)">mdi-delete</v-icon>
