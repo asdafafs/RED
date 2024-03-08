@@ -36,7 +36,7 @@
       <v-col cols="lg-2 md-3">
         <v-text-field v-model="editedItem.groups.startDate" label="Дата начала курса"
                       type="date" :rules="[startDateRules.required]"
-                      @input="updateGlobalStartDate" :min="getTodayDate"></v-text-field>
+                      @input="updateGlobalStartDate"  :min="getTodayDate()"></v-text-field>
       </v-col>
 
       <v-col cols="lg-2 md-2">

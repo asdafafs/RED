@@ -33,7 +33,7 @@
                                     :rules="[titleRules.required]"></v-text-field>
                       <v-text-field v-model="editedItem.groups.startDate" label="Дата начала курса"
                                     type="date" :rules="[startDateRules.required]"
-                                    @input="updateGlobalStartDate" :min="getTodayDate()"></v-text-field>
+                                    @input="updateGlobalStartDate" ></v-text-field>
                       <v-select
                           v-model="selectedStudents"
                           :value="editedItem.lecture.activeUser"
@@ -351,8 +351,6 @@ export default {
         return {...group, ...coursesData[index]};
       });
       console.log(this.groups)
-      this.studentList = await this.getFreeUsers()
-      this.teachers = await this.getEventsTeacher()
       await this.getCourseLast();
       this.lessons = this.coursesData.map(item => {
         return {
