@@ -1,12 +1,13 @@
 <template>
-  <v-data-table :headers="headers" :items="lessons" class="elevation-1" no-data-text="Нет данных для отображения"
+  <v-data-table :headers="headers" :items="lessons" class="elevation-1 custom-header-table"
+                no-data-text="Нет данных для отображения"
                 :sort-by.sync="sortBy" :sort-desc.sync="sortDesc"
                 :hide-default-footer="true"
-                disable-pagination
+                mobile-breakpoint="0"
+                disable-pagination :header-props="{ class: 'blue--text text--darken-2' }"
   >
     <template v-slot:top>
       <v-toolbar flat>
-        <v-spacer></v-spacer>
         <v-dialog v-model="dialog" max-width="500px" persistent>
           <template v-slot:activator="{ on, attrs }">
             <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on">
@@ -15,7 +16,7 @@
           </template>
           <v-card>
             <v-card-title>
-              <span class="text-h5">{{ formTitle}}</span>
+              <span class="text-h5">{{ formTitle }}</span>
             </v-card-title>
             <v-card-text>
               <v-container>
@@ -329,4 +330,5 @@ export default {
 </script>
 <style lang="scss">
 @import "@/assets/styles/eventTypesStyles.css";
+@import "@/assets/styles/dataTableStyles.css";
 </style>

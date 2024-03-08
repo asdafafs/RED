@@ -48,7 +48,7 @@ export default {
     isButtonPressed() {
       return [this.$route.path === '/admin/students',
         (this.$route.path === '/admin/teachers' || this.$route.path.startsWith('/admin/template')),
-        this.$route.path === '/admin/groups']
+        (this.$route.path === '/admin/groups' || this.$route.path.startsWith('/admin/groupItem'))]
     }
   }
 }
