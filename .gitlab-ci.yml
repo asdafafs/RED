@@ -1,0 +1,9 @@
+stages:
+  - deploy
+
+deploy-app:
+  stage: deploy
+  image: kroniak/ssh-client
+  script:
+    - echo "Hi"
+  
