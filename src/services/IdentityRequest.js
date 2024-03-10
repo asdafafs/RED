@@ -38,4 +38,8 @@ export default class IdentityRequest extends HTTPService {
     postLogout(code) {
         return this.post("logout", code)
     }
+
+    postPasswordNewUser(code){
+        return this.post("CreateUserPassword", code)
+    }
 }
