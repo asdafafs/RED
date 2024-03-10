@@ -63,13 +63,13 @@
           </div>
         </template>
       </v-col>
-      <v-col class="px-0">
+      <v-col class="">
         <v-btn class="tab-button pa-0 rounded-lg" color="#2B2A29" outlined @click="save"
                :disabled="isSaveButtonDisabled">
           <span class="black--text">Сохранить изменения</span>
         </v-btn>
       </v-col>
-      <v-col class="px-0">
+      <v-col class="">
         <v-btn class="tab-button pa-0 rounded-lg" color="#2B2A29" text @click="close">
           <span class="black--text">Выйти без изменений</span>
         </v-btn>

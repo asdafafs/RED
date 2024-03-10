@@ -1,10 +1,10 @@
 <template>
-  <v-container class="px-4 pa-0 ma-0" fluid v-if="true">
-    <div class="text-h3 font-weight-medium px-4">
+  <v-container class="px-3 pa-0 ma-0" fluid v-if="true">
+    <div class="text-h3 font-weight-medium px-0">
       Расписание школы
     </div>
     <hr>
-    <div class="text-h6 px-4">
+    <div class="text-h6 px-0">
       Ваши текущие занятия
     </div>
     <v-row>

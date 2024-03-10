@@ -14,12 +14,12 @@
               Новое занятие
             </v-btn>
           </template>
-          <v-card>
+          <v-card class="rounded-xl">
             <v-card-title>
-              <span class="text-h5">{{ formTitle }}</span>
+              <div class="text-h5">{{ formTitle }}</div>
             </v-card-title>
             <v-card-text>
-              <v-container>
+              <v-container class="pa-0">
                 <v-row>
                   <v-col cols="12" sm="12" md="12">
                     <v-text-field v-model="editedItem.title" label="Название"
@@ -58,7 +58,7 @@
                 </v-row>
               </v-container>
             </v-card-text>
-            <v-card-actions>
+            <v-card-actions style="display: flex; justify-content: space-between;">
               <v-spacer></v-spacer>
               <v-btn color="blue darken-1" text @click="close">
                 Отмена
@@ -70,7 +70,7 @@
           </v-card>
         </v-dialog>
         <v-dialog v-model="dialogDelete" max-width="500px">
-          <v-card>
+          <v-card class="rounded-xl">
             <v-card-title class="text-h5">Удалить занятие?</v-card-title>
             <v-card-actions>
               <v-spacer></v-spacer>

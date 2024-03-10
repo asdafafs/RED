@@ -26,6 +26,7 @@ import ClassesView from "@/views/SignUpClasses/ClassesView.vue";
 import Test from "@/views/Test";
 import InstructorsPlanTemplate from "@/views/AdminPanels/InstructorsPlanTemplate.vue";
 import Item from "@/views/AdminPanels/Item.vue";
+import AcceptPassword from "@/views/AuthorizationViews/AcceptPassword.vue";
 
 
 Vue.use(VueRouter)
@@ -66,6 +67,11 @@ const routes = [
         path: '/forget-password',
         name: 'forget-password',
         component: ForgetPassword,
+    },
+    {
+        path: '/accept-password',
+        name: 'accept-password',
+        component: AcceptPassword
     },
     {
         path: '/admin',
@@ -133,7 +139,7 @@ const routes = [
                 path: 'progressBar/:currentStudentID',
                 name: 'progressBar',
                 component: ProgressBar,
-                props: true, // Включаем передачу параметров маршрута в компонент
+                props: true,
             }
         ]
     },
