@@ -1,7 +1,7 @@
 <template>
   <v-container fluid>
     <v-row>
-      <v-col>
+      <v-col class="pa-0">
         <v-sheet tile height="54" class="d-flex justify-center">
           <v-btn icon class="ma-0  align-self-center" @click="$refs.calendar.prev()">
             <v-icon>mdi-chevron-left</v-icon>
@@ -12,7 +12,7 @@
             <v-icon>mdi-chevron-right</v-icon>
           </v-btn>
         </v-sheet>
-        <v-sheet height="600">
+        <v-sheet>
           <v-calendar
               ref="calendar"
               v-model="value"

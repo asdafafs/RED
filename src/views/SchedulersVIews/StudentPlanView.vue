@@ -34,7 +34,7 @@
           <div class="text-lg-h3 text-md-h4 text-sm-h5 text-xs-h5 font-weight-bold">
             Здравствуйте, {{ userName }}!
           </div>
-          <div class="text-subtitle-1 uno">Вы зачислены в группу №{{ groupId }}</div>
+          <div class="text-subtitle-1 uno">{{ groupId }}</div>
         </v-col>
       </v-row>
       <v-row>

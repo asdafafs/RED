@@ -257,7 +257,7 @@ export default {
         this.close();
       } else {
         console.log(1)
-        this.persons.students.push(this.editedTeacher);
+        this.persons.activeUsers.push(this.editedTeacher);
         const body = {
           "email": this.editedTeacher.email,
           "phoneNumber": this.editedTeacher.phoneNumber,

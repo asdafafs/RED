@@ -1,5 +1,6 @@
 import axios from "axios";
 import store from "@/store";
+import {errorAlert} from "@/components/Alerts/alert";
 
 export default class HttpService {
     basePath = 'api'
@@ -53,19 +54,53 @@ export default class HttpService {
     }
 
 
-    get(path) {
-        return this.baseRequest(path, "GET")
+    get(path, isAlertHandler = false) {
+        let response = this.baseRequest(path, "GET")
+        response = this._checkErrorHandling(response, isAlertHandler)
+        return response
     }
 
-    post(path, body) {
-        return this.baseRequest(path, "POST", body)
+    post(path, body, isAlertHandler = false) {
+        let response = this.baseRequest(path, "POST", body)
+        response = this._checkErrorHandling(response, isAlertHandler)
+        return response
     }
 
-    put(path, body) {
-        return this.baseRequest(path, "PUT", body)
+    put(path, body, isAlertHandler = false) {
+        let response = this.baseRequest(path, "PUT", body)
+        response = this._checkErrorHandling(response, isAlertHandler)
+        return response
     }
 
-    delete(path) {
-        return this.baseRequest(path, "DELETE");
+    delete(path, isAlertHandler = false) {
+        let response = this.baseRequest(path, "DELETE");
+        response = this._checkErrorHandling(response, isAlertHandler)
+        return response
+    }
+
+    _checkErrorHandling(promise, isAlertHandler) {
+        return this._addErrorHandler(promise, isAlertHandler);
+    }
+
+    _addErrorHandler(promise, isAlertHandler) {
+        return new Promise((resolve, reject) => {
+            promise.catch(error => {
+                if(error.response.request.status === 401 || error.response.request.status === 404 || error.response.request.status === 500 || isAlertHandler){
+                    const message = this.getErrorMessage(error)
+                    console.log(message)
+                    errorAlert(message, 4000);
+
+                    reject(false);
+                }
+                reject()
+            })
+            resolve(promise)
+        });
+    }
+
+    getErrorMessage(error){
+        console.log('error',error)
+        return error.message ?? 'Произошла неизвестная ошибка'
+
     }
 }

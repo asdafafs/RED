@@ -4,11 +4,11 @@
       Расписание школы
     </div>
     <hr>
-    <div class="text-h6 px-0">
+    <div class="text-lg-h6 text-md-h5 text-sm-h4 text-xs-h1 px-0">
       Ваши текущие занятия
     </div>
     <v-row>
-      <v-col>
+      <v-col class="pa-0">
         <router-view></router-view>
       </v-col>
     </v-row>

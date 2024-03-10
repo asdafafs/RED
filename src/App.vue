@@ -1,9 +1,8 @@
 <template>
-  <v-app >
+  <v-app>
     <AppBar :isDataLoaded="user.userId !== null">
     </AppBar>
-    <v-main>
-      <Alert/>
+    <v-main id="main">
       <router-view />
     </v-main>
   </v-app>
@@ -14,12 +13,11 @@
 import AppBar from "@/components/AppBar/AppBar.vue";
 import IdentityRequest from "@/services/IdentityRequest";
 import store from "@/store";
-import Alert from "@/components/Alerts/Alert";
 import {mapState} from "vuex";
 
 export default {
   name: 'App',
-  components: {Alert, AppBar},
+  components: { AppBar},
   data: () => ({
     isUserLoaded: false
   }),

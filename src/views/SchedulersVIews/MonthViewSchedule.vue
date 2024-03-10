@@ -1,21 +1,21 @@
 <template>
   <v-container fluid>
-    <v-row class="d-flex mt-0 ga-3 " no-gutters>
-      <v-col lg="2" md="2" sm="3">
-        <v-btn text class="black--text tab-button pa-0" width="100%"
+    <v-row class="d-flex mt-0 ga-3 " >
+      <v-col lg="2" md="2" sm="3" >
+        <v-btn text class="black--text tab-button px-0" width="100%"
                :class="{'tab-background': isButtonPressed[0],}"
                @click="changeButtonState(0);getAllEvents();">
           <span :class="{ 'tab-button-text':isButtonPressed[0]}">Смотреть все</span>
         </v-btn>
       </v-col>
-      <v-col lg="2" md="2" sm="3">
+      <v-col lg="2" md="2" sm="3" class="">
         <v-btn text class="black--text tab-button pa-0" width="100%"
                :class="{'tab-background': isButtonPressed[1]}"
                @click="changeButtonState(1); testLessons();">
           <span :class="{ 'tab-button-text':isButtonPressed[1]}">Теория</span>
         </v-btn>
       </v-col>
-      <v-col lg="2" md="2" sm="3">
+      <v-col lg="2" md="2" sm="3" class="">
         <v-btn text class="black--text tab-button pa-0" width="100%"
                :class="{'tab-background': isButtonPressed[2]}"
                @click="changeButtonState(2); testPractices();">
@@ -35,7 +35,7 @@
             <v-icon>mdi-chevron-right</v-icon>
           </v-btn>
         </v-sheet>
-        <v-sheet height="600">
+        <v-sheet>
           <v-calendar
               ref="calendar"
               v-model="value"
@@ -72,27 +72,54 @@
               </v-container>
             </template>
           </v-calendar>
-          <v-menu max-width="200px" min-width="200px"
-
-                  v-model="selectedOpen"
-                  :close-on-content-click="false"
-                  :activator="selectedElement"
-                  offset-x
-          >
-            <v-card color="grey lighten-4" flat>
-              <v-toolbar>
-                <v-toolbar-title v-html="formatTime(selectedEvent.startTime)"></v-toolbar-title>
-              </v-toolbar>
-              <v-card-text>
-                <span v-html="selectedEvent.title"></span>
+          <v-dialog v-model="selectedOpen" max-width="407px" persistent>
+            <v-card class="rounded-xl"
+                    :style="{ border: (selectedEvent.studentId === null && userID !== selectedEvent.studentId) ? '2px solid #4E7AEC' : '2px solid grey' }"
+                    flat>
+              <v-toolbar-title class="pa-3">
+                <v-row>
+                  <v-col class="flex-column">
+                    <div class="text-caption text-medium-emphasis grey--text">СВЕДЕНИЯ О ЗАПИСИ</div>
+                    <div class="text-lg-h4 font-weight-bold">Вождение</div>
+                  </v-col>
+                </v-row>
+              </v-toolbar-title>
+              <v-card-text class="pa-3 pt-0">
+                <v-container class="">
+                  <v-row class="">
+                    <v-col class="flex-column pa-0 flex-wrap">
+                      <div style="color: #4E7AEC">
+                        {{ selectedEvent && selectedEvent.startTime ? selectedEvent.startTime.split('T')[0] : '' }}
+                      </div>
+                      <div class="text-lg-h5 font-weight-bold black--text">{{ formatTime(selectedEvent.startTime) }}
+                        {{ ' - ' }} {{ formatTime(selectedEvent.endTime) }}
+                      </div>
+                      <div class="text-subtitle-1 text-medium-emphasis " v-if="discriminatorUser">Преподаватель</div>
+                      <div class="text-subtitle-2 font-weight-regular black--text" v-if="discriminatorUser">{{
+                          selectedEvent.title
+                        }}
+                      </div>
+                      <div class="text-subtitle-1 text-medium-emphasis" v-if="!discriminatorUser">Студент</div>
+                      <div class="text-subtitle-2 font-weight-regular black--text" v-if="!discriminatorUser">{{
+                          studentTitle
+                        }}
+                      </div>
+                      <div class="text-subtitle-1 text-medium-emphasis" v-if="discriminatorUser">Лимит часов</div>
+                      <div v-if="discriminatorUser" class="black--text">Основные <span
+                          style="color: #4E7AEC">({{ studentHours[1] }} из {{ studentHours[0] }})</span></div>
+                    </v-col>
+                  </v-row>
+                </v-container>
               </v-card-text>
-              <v-card-actions>
-                <v-btn textcolor="secondary" @click="selectedOpen = false">
-                  OK
-                </v-btn>
+              <v-card-actions class="pa-0">
+                <v-container class="pa-0" style="display: flex; justify-content: space-between;">
+                  <v-btn text color="secondary" @click="closeEvent()">
+                    ок
+                  </v-btn>
+                </v-container>
               </v-card-actions>
             </v-card>
-          </v-menu>
+          </v-dialog>
         </v-sheet>
       </v-col>
     </v-row>
@@ -104,6 +131,7 @@ import LectureLogo from "@/components/logos/LectureLogo.vue";
 import EventsRequest from "@/services/EventsRequest";
 import moment from "moment/moment";
 import {mapState} from "vuex";
+import UsersRequest from "@/services/UsersRequest";
 
 export default {
   components: {LectureLogo, CarLogo},
@@ -148,24 +176,49 @@ export default {
     selectedEvent: {},
     selectedElement: null,
     selectedOpen: false,
-    isButtonPressed: [false, false, false]
+    isButtonPressed: [false, false, false],
+    studentHours: [],
+    studentTitle: 'Студент не выбран',
   }),
 
   computed:{
     ...mapState(['user']),
 
-    userID() {
-      if (this.user && this.user.userId !== null) {
-        return this.$store.state.user.userId
-      } else {
-        return console.log('а id нету');
-      }
+    discriminatorUser() {
+      return this.user.discriminator !== 'Учитель'
     },
+
+    userID() {
+      return this.user.userId
+    },
+
+    groupId(){
+      return this.user.groupId
+    }
 
   },
 
   methods: {
+    closeEvent(){
+      this.selectedOpen = false
+
+      this.studentTitle = 'Студент не выбран'
+
+    },
+
+    async titleStudent(studentId){
+      const student = new UsersRequest()
+      await student.getUsers().catch(x => console.log(x)).then((response) => {
+        const users = response.data.students;
+        const foundUser = users.find(user => user.id === studentId);
+        if (foundUser) {
+          return this.studentTitle = `${foundUser.name} ${foundUser.surname} ${foundUser.middleName}`
+        }
+      })
+    },
+
     showEvent({nativeEvent, event}) {
+      this.titleStudent(event.studentId)
       const open = () => {
         this.selectedEvent = event
         this.selectedElement = nativeEvent.target

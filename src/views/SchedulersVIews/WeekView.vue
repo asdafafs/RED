@@ -31,7 +31,7 @@
       </v-row>
     </v-row>
     <v-row>
-      <v-col>
+      <v-col class="pa-0">
         <v-sheet>
           <v-calendar
               ref="calendar"

@@ -5,51 +5,51 @@ export default class UsersRequest extends HTTPService {
         super("User");
     }
 
-    getUsers() {
-        return this.get("student")
+    getUsers(isAlertHandler = false) {
+        return this.get("student", isAlertHandler)
     }
 
-    getStudentId(id){
-        return this.get("student/" + id)
+    getStudentId(id, isAlertHandler = false){
+        return this.get("student/" + id, isAlertHandler)
     }
 
-    getStudentNullGroup(){
-        return this.get("student/nullGroup")
+    getStudentNullGroup(isAlertHandler = false){
+        return this.get("student/nullGroup", isAlertHandler)
     }
 
-    postUser(code) {
-        return this.post("student", code)
+    postUser(code, isAlertHandler = false) {
+        return this.post("student", code, isAlertHandler)
     }
 
-    putUser(code) {
-        return this.put("student", code)
+    putUser(code, isAlertHandler= false) {
+        return this.put("student", code, isAlertHandler)
     }
 
-    deleteUser(id) {
-        return this.delete("student/" + id)
+    deleteUser(id, isAlertHandler = false) {
+        return this.delete("student/" + id, isAlertHandler)
     }
 
-    putStudentGroup(code){
-        return this.put("studentGroup", code)
+    putStudentGroup(code, isAlertHandler= false){
+        return this.put("studentGroup", code, isAlertHandler)
     }
 
-    postActiveUser(code) {
-        return this.post('active-user', code)
+    postActiveUser(code, isAlertHandler= false) {
+        return this.post('active-user', code, isAlertHandler)
     }
 
-    putActiveUser(code) {
-        return this.put('active-user', code)
+    putActiveUser(code, isAlertHandler= false) {
+        return this.put('active-user', code, isAlertHandler)
     }
 
-    deleteActiveUser(id) {
-        return this.delete("active-user/" + id)
+    deleteActiveUser(id, isAlertHandler = false) {
+        return this.delete("active-user/" + id, isAlertHandler)
     }
 
-    getActiveUserId(id) {
-        return this.get("active-user/" + id)
+    getActiveUserId(id, isAlertHandler = false) {
+        return this.get("active-user/" + id, isAlertHandler)
     }
 
-    getActiveUser() {
-        return this.get("active-user")
+    getActiveUser(isAlertHandler = false) {
+        return this.get("active-user", isAlertHandler)
     }
 }

@@ -40,20 +40,20 @@
                 <span class="text-h5">{{ formTitle }}</span>
               </v-card-title>
               <v-card-text>
-                <v-container>
+                <v-container class="pa-0">
                   <v-row>
                     <v-col cols="12" sm="12" md="12">
                       <v-text-field v-model="editedStudent.name" label="Имя"
-                                    :rules="[nameRule.required()]"></v-text-field>
-                      <v-text-field v-model="editedStudent.surname" label="Фамилия"
-                                    :rules="[surnameRule.required()]"></v-text-field>
-                      <v-text-field v-model="editedStudent.middleName" label="Отчество"
-                                    :rules="[middleNameRule.required()]"></v-text-field>
-                      <v-text-field v-model="editedStudent.email" label="email"
-                                    :rules="[emailRule.required()]"></v-text-field>
+                                    :rules="[nameRule.required()]" outlined class="py-2"></v-text-field>
+                      <v-text-field v-model="editedStudent.surname" outlined label="Фамилия"
+                                    :rules="[surnameRule.required()]" class="py-2"></v-text-field>
+                      <v-text-field v-model="editedStudent.middleName" outlined label="Отчество"
+                                    :rules="[middleNameRule.required()]" class="py-2"></v-text-field>
+                      <v-text-field v-model="editedStudent.email" outlined label="email"
+                                    :rules="[emailRule.required()]" class="py-2"></v-text-field>
                       <vue-text-mask class="phone-field" v-model="editedStudent.phoneNumber" :mask="mask"
                                      placeholderChar="#" :rules="[phoneRule.required()]"></vue-text-mask>
-                      <v-select
+                      <v-select outlined class="py-2"
                           v-model="editedStudent.groupId"
                           :items="groups"
                           :item-value="item => item.groupId"
@@ -65,14 +65,15 @@
                   </v-row>
                 </v-container>
               </v-card-text>
-              <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn color="blue darken-1" text @click="close">
-                  Отмена
-                </v-btn>
-                <v-btn color="blue darken-1" text @click="save" :disabled="isSaveButtonDisabled">
-                  OK
-                </v-btn>
+              <v-card-actions >
+                <v-container style="display: flex; justify-content: space-between;">
+                  <v-btn color="blue darken-1" text @click="close">
+                    Отмена
+                  </v-btn>
+                  <v-btn color="blue darken-1" text @click="save" :disabled="isSaveButtonDisabled">
+                    OK
+                  </v-btn>
+                </v-container>
               </v-card-actions>
             </v-card>
           </v-dialog>
@@ -259,8 +260,9 @@ export default {
           email: '',
           phoneNumber: '7'
         };
-        this.editedIndex = -1;
-      });
+
+      })
+      this.editedIndex = -1;
     },
 
     closeDelete() {
