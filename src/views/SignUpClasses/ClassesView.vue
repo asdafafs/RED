@@ -1,21 +1,21 @@
 <template>
   <v-container fluid>
-    <v-row class="d-flex mt-0 ga-1 flex-wrap "  >
-      <v-col lg="2" md="2" sm="3" class="px-0">
+    <v-row class="d-flex mt-0 ga-3 flex-wrap"  >
+      <v-col lg="2" md="2" sm="3" class="">
         <v-btn text class="black--text tab-button pa-0" width="100%"
                :class="{'tab-background': isButtonPressed[0],}"
                @click="changeButtonState(0); dialog = true">
           <span :class="{ 'tab-button-text':isButtonPressed[0]}">Практики</span>
         </v-btn>
       </v-col>
-      <v-col lg="2" md="2" sm="3" class="px-0">
+      <v-col lg="2" md="2" sm="3" class="">
         <v-btn text class="black--text tab-button pa-0" width="100%"
                :class="{'tab-background': isButtonPressed[1]}"
                @click="changeButtonState(1)">
           <span :class="{ 'tab-button-text':isButtonPressed[1]}">Экзамен</span>
         </v-btn>
       </v-col>
-      <v-col lg="2" md="2" sm="3" class="px-0">
+      <v-col lg="2" md="2" sm="3" class="">
         <v-btn text class="black--text tab-button pa-0" width="100%"
                :class="{'tab-background': isButtonPressed[2]}"
                @click="changeButtonState(2)">
@@ -32,7 +32,7 @@
               Показать
             </div>
           </v-col>
-          <v-col class="pa-0" cols="8">
+          <v-col class="pa-0" cols="8" >
             <v-select
                 v-model="type"
                 :items="types"
@@ -42,6 +42,7 @@
                 class="ma-2 rounded-lg"
                 :item-text="displayText"
                 :item-value="valueText"
+                height="36px"
 
             ></v-select>
           </v-col>
@@ -49,22 +50,25 @@
 
       </v-col>
     </v-row>
-    <v-row v-if="discriminatorUser">
-      <v-col lg="3" md="4" sm="6">
+    <v-row v-if="discriminatorUser" class="px-3">
+      <v-col lg="2" md="2" sm="6" class="pa-0 ">
         <v-select
             class="rounded-lg"
             no-data-text="Нет данных для отображения"
             v-model="selectedTeacher"
-            label="Выберите инструктора"
             :items="teachers"
             :item-text="item => `${item.name} ${item.surname} ${item.middleName} `"
             item-value="id"
             @change="confirm(discriminatorUser)"
+            hide-details
+            outlined
+            height="36px"
+            dense
         ></v-select>
       </v-col>
     </v-row>
     <v-row >
-      <v-col class="pa-0">
+      <v-col >
         <v-sheet tile height="54" class="d-flex justify-center">
           <v-btn icon class="ma-0  align-self-center" @click="$refs.calendar.prev()">
             <v-icon>mdi-chevron-left</v-icon>
@@ -141,7 +145,7 @@
                       </div>
                       <div class="text-subtitle-1 text-medium-emphasis" v-if="!discriminatorUser">Студент</div>
                       <div class="text-subtitle-2 font-weight-regular black--text" v-if="!discriminatorUser">{{
-                          selectedEvent.studentId
+                            studentTitle
                         }}
                       </div>
                       <div class="text-subtitle-1 text-medium-emphasis" v-if="discriminatorUser">Лимит часов</div>
@@ -153,14 +157,16 @@
               </v-card-text>
               <v-card-actions class="pa-0">
                 <v-container class="pa-0" style="display: flex; justify-content: space-between;">
-                  <v-btn text color="secondary" @click="selectedOpen = false;">
+                  <v-btn text color="secondary" @click="closeEvent()">
                     Отмена
                   </v-btn>
                   <div>
                     <v-btn text color="primary"
                            v-if="selectedEvent.studentId === null && discriminatorUser && userID !== selectedEvent.studentId"
-                           @click="addEventStudent">
-                      Записаться
+                           @click="addEventStudent"
+                    :disabled="groupId===null">
+                      <span v-if="groupId !== null">Записаться</span>
+                      <span v-else >Нужна группа</span>
                     </v-btn>
                     <v-btn text color="secondary"
                            v-else-if="discriminatorUser && userID === selectedEvent.studentId"
@@ -224,6 +230,10 @@ export default {
       return this.user.userId
     },
 
+    groupId(){
+      return this.user.groupId
+    }
+
   },
 
   mounted() {
@@ -272,9 +282,10 @@ export default {
     selectedTeacher: null,
     isButtonPressed: [false, false, false],
     studentHours: [],
+    studentTitle: 'Студент не выбран',
     selectedReason: null,
     reasonsRefusal: ['Ремонт', 'Семейные обстоятельства', 'Экзамен ', 'Здоровье', 'Задачи офиса'],
-    selectedReasonId: 0,
+    selectedReasonId: 1,
   }),
 
   created() {
@@ -284,6 +295,24 @@ export default {
   },
 
   methods: {
+    closeEvent(){
+      this.selectedOpen = false
+
+      this.studentTitle = 'Студент не выбран'
+
+    },
+
+    async titleStudent(studentId){
+      const student = new UsersRequest()
+      await student.getUsers().catch(x => console.log(x)).then((response) => {
+        const users = response.data.students;
+        const foundUser = users.find(user => user.id === studentId);
+        if (foundUser) {
+          return this.studentTitle = `${foundUser.name} ${foundUser.surname} ${foundUser.middleName}`
+        }
+      })
+    },
+
     displayText(item) {
       return item[1];
     },
@@ -317,14 +346,11 @@ export default {
       const student = new UsersRequest()
       let hours
       await student.getUsers().catch(x => console.log(x)).then((response) => {
-        const users = response.data.students; // Предположим, что данные находятся в массиве data
+        const users = response.data.students;
         const foundUser = users.find(user => user.id === this.userID);
         if (foundUser) {
-          console.log(foundUser)
           hours = [foundUser.generalHours, foundUser.generalHoursSpent]
-          return console.log(this.studentHours = hours)
-        } else {
-          console.log('Пользователь с ID', this.userID, 'не найден.');
+          return this.studentHours = hours
         }
       })
 
@@ -384,8 +410,6 @@ export default {
     async initialize() {
       this.changeButtonState(0)
       await this.getEventsTeacher();
-      await this.getStudent()
-      console.log(this.studentHours)
       if (this.discriminatorUser === false) {
         await this.confirm(this.discriminatorUser)
       }
@@ -437,7 +461,8 @@ export default {
     },
 
     showEvent({nativeEvent, event}) {
-      console.log(event)
+      this.titleStudent(event.studentId)
+      this.getStudent()
       const open = () => {
         this.selectedEvent = event
         this.selectedElement = nativeEvent.target

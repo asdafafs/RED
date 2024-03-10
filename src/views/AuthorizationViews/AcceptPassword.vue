@@ -34,7 +34,7 @@
             </v-card-text>
             <v-card-actions v-if="passwordsMatch">
               <v-btn color="#4E7AEC" @click="validatePassword" class="rounded-lg pa-0 white--text" block :disabled="loginButtonDisabled">
-                Обновить пароль
+                Добавить пароль
               </v-btn>
             </v-card-actions>
           </v-card>
@@ -72,12 +72,9 @@ export default {
     },
   },
   async mounted() {
-    const userId = this.$route.query.userId
-    const code = this.$route.query.code
-    await this.confirmEmail(userId, code)
   },
   methods: {
-    async confirmEmail(userId, code) {
+    async confirmPassword(userId, code) {
       const identity = new IdentityRequest()
       await identity.postNewPassword({userId, code}).then(() => {
         identity.getIdentity();
@@ -96,12 +93,11 @@ export default {
       }
       this.loginButtonDisabled = true
       const body = {
-        "userId": 0,
-        "newPassword": this.password,
-        "code": "string"
+        "userId": parseInt(this.$route.query.userId),
+        "password": this.password,
+        "code": this.$route.query.code
       }
       this.newPassword(body)
-      alert('пароль установлен')
       this.$router.push({name: 'main'}).catch(err => {
         console.log(err)
       })

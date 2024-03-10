@@ -8,7 +8,7 @@
       Выберите день, чтобы записаться на занятие
     </div>
     <v-row>
-      <v-col>
+      <v-col class="pa-0">
         <router-view></router-view>
       </v-col>
     </v-row>

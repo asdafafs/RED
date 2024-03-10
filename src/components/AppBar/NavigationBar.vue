@@ -1,5 +1,5 @@
 <template>
-  <v-navigation-drawer :value="drawer" app clipped color="#1e1f22" v-if="!showDrawer">
+  <v-navigation-drawer :value="drawer" app clipped color="#1e1f22" v-if="!showDrawer" hide-overlay>
     <v-list height="inherit" class="d-flex flex-column">
       <v-list-item
           class="white--text align-start align-center list-item">
@@ -39,8 +39,7 @@
       </v-list-item>
       <v-list-item
           @click.stop="exit(); $router.push({name: 'main'}).catch(() => {}); $emit('update:drawer', false)"
-          class="white--text align-end mt-auto align-center"
-          style="max-height: 4em;">
+          class="white--text align-end mt-auto align-center" style="max-height: 4em;" >
         <div class="d-flex flex-column">
           <div>
             <span class="mdi mdi-account-outline"></span>
@@ -84,9 +83,7 @@ export default {
   transform: rotate(45deg) scale(1.8);
 }
 
-.v-application .mt-auto {
-  margin-top: 12em !important;
-}
+
 
 .list-item {
   max-height: 4em;

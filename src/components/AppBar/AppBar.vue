@@ -31,7 +31,7 @@ export default {
   components: {DesktopLogo, UserProfile, MobileAppBar, AppButtons, NavigationBar},
   data() {
     return {
-      role: ["Ученик", "Учитель"],
+      role: ["Ученик", "Учитель", "Администратор"],
       drawer: false,
       showDrawer: true,
       student: false,

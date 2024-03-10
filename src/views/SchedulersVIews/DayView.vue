@@ -1,7 +1,7 @@
 <template>
   <v-container fluid>
     <v-row>
-      <v-col>
+      <v-col class="pa-0">
         <v-sheet tile height="54" class="d-flex justify-center">
           <v-btn icon class="ma-0  align-self-center" @click="prev()">
             <v-icon>mdi-chevron-left</v-icon>
