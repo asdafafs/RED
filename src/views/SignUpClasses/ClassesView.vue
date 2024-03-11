@@ -4,7 +4,7 @@
       <v-col lg="2" md="2" sm="3" class="px-0">
         <v-btn text class="black--text tab-button pa-0" width="100%"
                :class="{'tab-background': isButtonPressed[0],}"
-               @click="changeButtonState(0); dialog = true">
+               @click="changeButtonState(0);">
           <span :class="{ 'tab-button-text':isButtonPressed[0]}">Практики</span>
         </v-btn>
       </v-col>
@@ -42,11 +42,9 @@
                 class="ma-2 rounded-lg"
                 :item-text="displayText"
                 :item-value="valueText"
-
             ></v-select>
           </v-col>
         </v-row>
-
       </v-col>
     </v-row>
     <v-row v-if="discriminatorUser">
