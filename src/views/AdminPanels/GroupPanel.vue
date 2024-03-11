@@ -103,12 +103,12 @@
       </template>
       <template v-slot:item="{ item }">
         <tr>
-          <td>{{ item.groupNum }}</td>
+          <td>{{ item.groupNumber }}</td>
           <td>{{ item.title }}</td>
-          <td>{{ item.globalStartDate }}</td>
+          <td>{{ item.globalStartDate }} - {{item.courseEnd}}</td>
           <td>
             <div style="display: flex; flex-direction: row; flex-wrap: wrap;">
-        <span v-if="item.selectedStudents" v-for="(student, index) in item.selectedStudents"
+        <span v-if="item.students" v-for="(student, index) in item.students"
               :key="index">
           {{ student.name }} {{ student.surname }} {{ student.middleName }}, &nbsp;
           <br>
@@ -236,41 +236,8 @@ export default {
   },
 
   methods: {
-    getTodayDate() {
-      const today = new Date();
-      const year = today.getFullYear();
-      let month = today.getMonth() + 1;
-      let day = today.getDate();
-
-      if (month < 10) {
-        month = '0' + month;
-      }
-      if (day < 10) {
-        day = '0' + day;
-      }
-      return `${year}-${month}-${day}`;
-    },
-
-    async getEventsTeacher() {
-      const teachers = new UsersRequest();
-      let activeUsers
-      await teachers.getActiveUser().catch(x => console.log(x)).then(x => {
-        activeUsers = x.data.activeUsers
-      })
-      return activeUsers
-    },
-
     handleCoursesUpdated(courses) {
       this.lessons = courses
-    },
-
-    async getFreeUsers() {
-      const user = new UsersRequest();
-      let studentList
-      await user.getStudentNullGroup().catch(x => console.log(x)).then(x => {
-        studentList = x.data.students
-      })
-      return studentList
     },
 
     async getCourseId(id) {
@@ -347,10 +314,10 @@ export default {
       this.groups = await this.getGroups();
 
       const coursesData = await this.getCourseIdForEachGroup();
-      this.groups = this.groups.map((group, index) => {
-        return {...group, ...coursesData[index]};
-      });
-      console.log(this.groups)
+      // this.groups = this.groups.map((group, index) => {
+      //   return {...group, ...coursesData[index]};
+      // });
+      // console.log(this.groups)
       await this.getCourseLast();
       this.lessons = this.coursesData.map(item => {
         return {
@@ -399,64 +366,6 @@ export default {
       const selectedGroupID = '-1';
       this.$router.push({name: 'groupItem', params: {selectedGroupID}}).catch(() => {
       });
-    },
-
-    async newCourse() {
-      this.dialog = true;
-      this.showCoursesList = true;
-      await this.getCourseLast()
-
-      this.lessons = this.coursesData.map(item => {
-        return {
-          id: item.id,
-          title: item.title,
-          startTime: item.startTime,
-          endTime: item.endTime,
-          lectureType: item.lectureType,
-          activeUser: item.activeUser,
-        };
-      });
-    },
-
-    async editItem(item) {
-      console.log(this.selectedStudentsIds)
-
-      this.showCoursesList = true;
-      this.editedIndex = this.groups.indexOf(item);
-      console.log(this.editedIndex)
-      await this.getCourseId(item.groupId);
-      this.lessons = this.coursesData.map(item => {
-        return {
-          id: item.id,
-          title: item.title,
-          startTime: item.startTime,
-          endTime: item.endTime,
-          lectureType: item.lectureType,
-          activeUser: item.activeUser,
-
-        };
-      });
-      this.editedItem = {
-        groups: {
-          groupId: item.groupId,
-          title: item.title,
-          startDate: this.globalStartDate,
-          studentId: item.student
-        },
-
-        lecture: {
-          id: null,
-          title: '',
-          startTime: null,
-          endTime: null,
-          activeUser: null,
-          lectureType: null,
-        },
-      };
-      console.log(this.selectedStudents)
-      console.log(this.selectedStudentsIds)
-      console.log(this.editedItem)
-      this.dialog = true;
     },
 
     async deleteItemConfirm() {
@@ -518,12 +427,12 @@ export default {
     save: async function () {
       this.groupDisabled = true
       if (this.editedIndex > -1) {
-        this.$set(this.groups, this.editedIndex, this.editedItem.groups);
+        // this.$set(this.groups, this.editedIndex, this.editedItem.groups);
         const body = {
           "title": this.editedItem.groups.title,
           "courseStartDate": this.editedItem.groups.startDate,
           "startTime": this.globalStartTime,
-          'groupNumber': 0,
+          'groupNumber': this.editedItem.groupNumber,
           "groupId": this.editedItem.groups.groupId,
           "studentId": this.selectedStudentsIds,
           "lecture": this.lessons
@@ -533,6 +442,7 @@ export default {
         await this.postCourse(body).finally(() => {
           this.groupDisabled = false
           this.lessons = []
+          this.groups = this.getGroups();
         })
       } else {
 
@@ -548,7 +458,8 @@ export default {
         console.log("Что отправляем", body)
         await this.postCourse(body).finally(() => {
           this.groupDisabled = false
-          this.groups.push(this.editedItem.groups)
+          // this.groups.push(this.editedItem.groups)
+          this.groups = this.getGroups();
         })
 
       }
