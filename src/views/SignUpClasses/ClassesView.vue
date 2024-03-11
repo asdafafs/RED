@@ -4,7 +4,7 @@
       <v-col lg="2" md="2" sm="3" class="">
         <v-btn text class="black--text tab-button pa-0" width="100%"
                :class="{'tab-background': isButtonPressed[0],}"
-               @click="changeButtonState(0); dialog = true">
+               @click="changeButtonState(0);">
           <span :class="{ 'tab-button-text':isButtonPressed[0]}">Практики</span>
         </v-btn>
       </v-col>
@@ -47,7 +47,6 @@
             ></v-select>
           </v-col>
         </v-row>
-
       </v-col>
     </v-row>
     <v-row v-if="discriminatorUser" class="px-3">
@@ -56,6 +55,7 @@
             class="rounded-lg"
             no-data-text="Нет данных для отображения"
             v-model="selectedTeacher"
+            label="Выберите инструктора"
             :items="teachers"
             :item-text="item => `${item.name} ${item.surname} ${item.middleName} `"
             item-value="id"

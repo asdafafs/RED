@@ -50,6 +50,7 @@
               :hide-header=false
               @change="updateRange"
               event-more-text="+ {0}"
+              :past=false
           >
             <template v-slot:event="{event}">
               <v-container class="pa-1 mx-0 d-flex ">
