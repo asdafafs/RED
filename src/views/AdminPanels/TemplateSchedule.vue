@@ -151,7 +151,6 @@ export default {
     },
 
     eventsItems() {
-      //console.log('Unformulated Events:', this.eventsTemplate);
       this.eventsTemplate = this.events.map(item => {
         return {
           start: moment(item.start).format("YYYY-MM-DDTHH:mm:ss"),
@@ -162,7 +161,6 @@ export default {
           timed: item.timed
         }
       });
-      //console.log('Formatted Events:', this.eventsTemplate);
       return this.eventsTemplate;
     },
   },
@@ -211,6 +209,7 @@ export default {
       const minutes = date.getMinutes().toString().padStart(2, '0');
       return `${hours}:${minutes}`;
     },
+
     startDrag({event, timed}) {
       if (event && timed) {
         this.dragEvent = event
@@ -230,11 +229,8 @@ export default {
         const newStartTime = mouse - this.dragTime;
         const newStart = this.roundTime(newStartTime) - 1000;
         const newEnd = (newStart + duration - 1000);
-        // console.log('newStart', moment(newStart).format("YYYY-MM-DDTHH:mm:ss"))
-        // console.log('newEnd', newEnd)
-        // Проверяем пересечение с уже существующими событиями
         const isIntersect = this.eventsTemplate.some(event => {
-          if (event === this.dragEvent) return false; // Пропускаем проверку для перетаскиваемого события
+          if (event === this.dragEvent) return false;
 
           const existingStart = moment(event.start);
           const existingEnd = moment(event.end);
@@ -252,7 +248,6 @@ export default {
           return;
         }
 
-        // Продолжаем перемещение события
         this.dragEvent.start = newStart;
         this.dragEvent.end = newEnd;
       }
@@ -260,16 +255,14 @@ export default {
 
     endDrag() {
       if (this.dragEvent) {
-        // Проверяем пересечение с уже существующими событиями
         const isIntersect = this.eventsTemplate.some(event => {
-          if (event === this.dragEvent) return false; // Пропускаем проверку для перетаскиваемого события
+          if (event === this.dragEvent) return false;
           const existingStart = moment(event.start);
           const existingEnd = moment(event.end);
 
           return moment(this.dragEvent.start).isBetween(existingStart, existingEnd) || moment(this.dragEvent.end).isBetween(existingStart, existingEnd);
         });
         if (isIntersect) {
-          // Возвращаем событие в изначальное положение
           this.dragEvent.start = this.testTime;
           this.dragEvent.end = this.testTime + (new Date(this.dragEvent.end).getTime() - new Date(this.dragEvent.start).getTime());
         }
@@ -278,7 +271,6 @@ export default {
         } else {
           this.dragEvent.color = '#9DB9FF';
         }
-        // Убираем выделение и завершаем перетаскивание
         this.dragTime = null;
         this.dragEvent = null;
         this.createEvent = {
@@ -289,7 +281,6 @@ export default {
         };
         this.createStart = null;
         this.extendOriginal = null;
-
         this.$emit('plan-updated', this.eventsTemplate);
       }
     },
@@ -341,20 +332,9 @@ export default {
     roundTime(time, down = true) {
       const roundDownTime = 1000; // 1 секунда в миллисекундах
 
-      const roundedTime = down
+      return down
           ? time - time % roundDownTime
           : time + (roundDownTime - (time % roundDownTime));
-      const roundedDate = new Date(down
-          ? time - (time % roundDownTime)
-          : time + (roundDownTime - (time % roundDownTime)));
-
-
-      // Используем moment для форматирования времени без изменения секунд
-      const formattedTime = moment(roundedTime).format("YYYY-MM-DDTHH:mm:ss");
-
-      // console.log(formattedTime); // Выводим отформатированное время в консоль
-
-      return roundedTime;
     },
 
     toTime(tms) {

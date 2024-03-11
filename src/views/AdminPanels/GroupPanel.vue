@@ -9,85 +9,14 @@
                   mobile-breakpoint="0">
       <template v-slot:top>
         <v-toolbar flat>
-
-          <v-dialog v-model="dialog" max-width="60em" persistent>
-            <template v-slot:activator="{ on, attrs }">
-              <v-btn color="#4E7AEC" dark class="ma-0 rounded-lg" v-bind="attrs" v-on="on"  @click="transitionNewCourse">
-                <v-col cols="1" class="px-0">
-                  <i class="mdi mdi-plus-circle-outline" style="transform: scale(1.5)"></i>
-                </v-col>
-                <v-col cols="">
-                  Добавить группу
-                </v-col>
-              </v-btn>
-            </template>
-            <v-card>
-              <v-card-title>
-                <span class="text-h5">{{ formTitle }}</span>
-              </v-card-title>
-              <v-card-text>
-                <v-container>
-                  <v-row>
-                    <v-col cols="12" sm="12" md="12">
-                      <v-text-field v-model="editedItem.groups.title" label="Название группы"
-                                    :rules="[titleRules.required]"></v-text-field>
-                      <v-text-field v-model="editedItem.groups.startDate" label="Дата начала курса"
-                                    type="date" :rules="[startDateRules.required]"
-                                    @input="updateGlobalStartDate" ></v-text-field>
-                      <v-select
-                          v-model="selectedStudents"
-                          :value="editedItem.lecture.activeUser"
-                          :items="studentList"
-                          :item-text="item => `${item.name} ${item.surname} ${item.middleName}`"
-                          label="Список свободных учеников"
-                          multiple
-                          hint="Выберите студентов для группы"
-                          persistent-hint
-                          no-data-text="Нет данных для отображения"
-                          item-value="id"
-                          @change="updateSelectedStudentsIds"
-                      ></v-select>
-                      <v-col cols="4">
-                        <v-text-field
-                            label="Выберите время начала занятий"
-                            :value="globalStartTime"
-                            type="time"
-                            suffix="PST"
-                            @input="updateGlobalStartTime"
-                            :rules="[startTimeRules.required]"
-                        ></v-text-field>
-                      </v-col>
-                      <v-col>
-                        <template>
-                          <div>
-                            <v-chip
-                                v-for="(chip, index) in chips"
-                                :key="index"
-                                :color="selectedChips.includes(chip) ? 'blue' : null"
-                                @click="toggleSelectedChip(chip)"
-                            >
-                              <strong>{{ chip }}</strong>&nbsp;
-                            </v-chip>
-                          </div>
-                        </template>
-                      </v-col>
-                      <CoursesList :coursesData="lessons" :lectors="teachers" v-if="showCoursesList"
-                                   @courses-updated="handleCoursesUpdated"></CoursesList>
-                    </v-col>
-                  </v-row>
-                </v-container>
-              </v-card-text>
-              <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn color="blue darken-1" text @click="close" :disabled="groupDisabled">
-                  Отмена
-                </v-btn>
-                <v-btn color="blue darken-1" text @click="save" :disabled="isSaveButtonDisabled">
-                  OK
-                </v-btn>
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
+          <v-btn color="#4E7AEC" dark class="ma-0 rounded-lg" @click="transitionNewCourse">
+            <v-col cols="1" class="px-0">
+              <i class="mdi mdi-plus-circle-outline" style="transform: scale(1.5)"></i>
+            </v-col>
+            <v-col cols="">
+              Добавить группу
+            </v-col>
+          </v-btn>
           <v-dialog v-model="groupDelete" max-width="500px">
             <v-card>
               <v-card-title class="text-h5">Удалить группу?</v-card-title>
@@ -105,7 +34,7 @@
         <tr>
           <td>{{ item.groupNumber }}</td>
           <td>{{ item.title }}</td>
-          <td>{{ item.globalStartDate }} - {{item.courseEnd}}</td>
+          <td>{{ item.globalStartDate }} - {{ item.courseEnd.split('T')[0] }}</td>
           <td>
             <div style="display: flex; flex-direction: row; flex-wrap: wrap;">
         <span v-if="item.students" v-for="(student, index) in item.students"
@@ -129,12 +58,10 @@
 </template>
 <script>
 import GroupsRequest from "@/services/GroupsRequest";
-import UsersRequest from "@/services/UsersRequest";
 import CoursesRequest from "@/services/CoursesRequest";
 import {mapState} from "vuex";
 import moment from 'moment';
-import Vue from "vue";
-import Item from "@/views/AdminPanels/Item.vue";
+import Item from "@/views/AdminPanels/GroupTemplate.vue";
 import CoursesList from "@/views/AdminPanels/CoursesList.vue";
 
 export default {
@@ -159,10 +86,10 @@ export default {
     search: '',
     chips: ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'],
     headersGroup: [
-      {text: '№', align: 'start', sortable: false,  width: '5%'},
-      {text: 'Название', align: 'start', sortable: false,  width: '20%'},
-      {text: 'Даты обучения', align: 'start', sortable: false,  width: '20%'},
-      {text: 'Ученики', align: 'start', sortable: false,  width: '50%'},
+      {text: '№', align: 'start', sortable: false, width: '5%'},
+      {text: 'Название', align: 'start', sortable: false, width: '20%'},
+      {text: 'Даты обучения', align: 'start', sortable: false, width: '20%'},
+      {text: 'Ученики', align: 'start', sortable: false, width: '50%'},
       {text: 'Действия', value: 'actions', sortable: false, width: '5%'},
     ],
     groups: [],
@@ -210,25 +137,6 @@ export default {
     discriminatorUser() {
       return this.user.discriminator !== 'Учитель'
     },
-
-    isSaveButtonDisabled() {
-      return !(this.titleRules.required(this.editedItem.groups.title)
-          && this.startDateRules.required(this.editedItem.groups.startDate)
-          && this.startTimeRules.required(this.globalStartTime));
-    },
-
-    areDatesOfWeekNotEmpty() {
-      if (this.dateOfWeek.some(item => item === true))
-        return this.dateOfWeek.some(item => item === true);
-      else {
-        this.dateOfWeek[0] = true
-        return this.dateOfWeek.some(item => item === true);
-      }
-    },
-
-    formTitle() {
-      return this.editedIndex === -1 ? 'Новая группа' : 'Редактировать группу';
-    },
   },
 
   created() {
@@ -236,41 +144,6 @@ export default {
   },
 
   methods: {
-    handleCoursesUpdated(courses) {
-      this.lessons = courses
-    },
-
-    async getCourseId(id) {
-      const course = new CoursesRequest()
-      const getItem = {"id": id}
-      await course.getCourse(getItem.id).catch(x => console.log(x)).then(x => {
-        this.coursesData = x.data.lecture
-        this.globalStartTime = x.data.startTime
-        this.globalStartDate = this.formatDatetime(x.data.startDate)
-        this.studentList = this.studentList.concat(x.data.students);
-        this.selectedStudents = x.data.students
-      })
-    },
-
-    async getGroupData(id) {
-      const course = new CoursesRequest()
-      const getItem = {"id": id}
-      let cal = {globalStartTime: '', globalStartDate: '', groupNum: 0, selectedStudents: null}
-      await course.getCourse(getItem.id).catch(x => console.log(x)).then(x => {
-        cal.globalStartTime = x.data.startTime
-        cal.globalStartDate = this.formatDatetime(x.data.startDate)
-        cal.groupNum = x.data.groupNumber
-        cal.selectedStudents = x.data.students.map(student => {
-          return {
-            name: student.name,
-            surname: student.surname,
-            middleName: student.middleName
-          };
-        });
-      })
-      return cal
-    },
-
     async getCourseLast() {
       const course = new CoursesRequest()
       await course.getCourseNull().catch(x => console.log(x)).then(x => {
@@ -290,34 +163,14 @@ export default {
       return groupData
     },
 
-    async postCourse(body) {
-      const course = new CoursesRequest();
-      await course.postCourse(body).catch(x => console.log(x))
-    },
-
     async deleteGroups() {
       const groups = new GroupsRequest();
       const deletedItem = {"id": this.deletedIndex}
       await groups.deleteGroup(deletedItem.id).catch(x => console.log(x))
     },
 
-    async getCourseIdForEachGroup() {
-      const coursesData = [];
-      for (const group of this.groups) {
-        const courseId = await this.getGroupData(group.groupId);
-        coursesData.push(courseId);
-      }
-      return coursesData;
-    },
-
     async initialize() {
       this.groups = await this.getGroups();
-
-      const coursesData = await this.getCourseIdForEachGroup();
-      // this.groups = this.groups.map((group, index) => {
-      //   return {...group, ...coursesData[index]};
-      // });
-      // console.log(this.groups)
       await this.getCourseLast();
       this.lessons = this.coursesData.map(item => {
         return {
@@ -356,7 +209,7 @@ export default {
     },
 
 
-    editGroupItem(item){
+    editGroupItem(item) {
       const selectedGroupID = item.groupId;
       this.$router.push({name: 'groupItem', params: {selectedGroupID}}).catch(() => {
       });
@@ -369,10 +222,13 @@ export default {
     },
 
     async deleteItemConfirm() {
-      await this.deleteGroups().finally(() => this.groups.splice(this.editedIndex, 1)
+      await this.deleteGroups().finally(async () => {
+            this.groups = await this.getGroups();
+            this.closeDelete()
+          }
       )
-      this.closeDelete()
     },
+
     close() {
       this.dialog = false;
       this.showCoursesList = false;
@@ -424,48 +280,6 @@ export default {
       });
     },
 
-    save: async function () {
-      this.groupDisabled = true
-      if (this.editedIndex > -1) {
-        // this.$set(this.groups, this.editedIndex, this.editedItem.groups);
-        const body = {
-          "title": this.editedItem.groups.title,
-          "courseStartDate": this.editedItem.groups.startDate,
-          "startTime": this.globalStartTime,
-          'groupNumber': this.editedItem.groupNumber,
-          "groupId": this.editedItem.groups.groupId,
-          "studentId": this.selectedStudentsIds,
-          "lecture": this.lessons
-        }
-        console.log("Что отправляем", body)
-        console.log(this.selectedStudentsIds)
-        await this.postCourse(body).finally(() => {
-          this.groupDisabled = false
-          this.lessons = []
-          this.groups = this.getGroups();
-        })
-      } else {
-
-        const body = {
-          "title": this.editedItem.groups.title,
-          "courseStartDate": this.editedItem.groups.startDate,
-          "startTime": this.globalStartTime,
-          'groupNumber': 0,
-          "groupId": this.editedItem.groups.groupId,
-          "studentId": this.selectedStudentsIds,
-          "lecture": this.lessons
-        }
-        console.log("Что отправляем", body)
-        await this.postCourse(body).finally(() => {
-          this.groupDisabled = false
-          // this.groups.push(this.editedItem.groups)
-          this.groups = this.getGroups();
-        })
-
-      }
-      this.close();
-    },
-
     formatDatetime(timestamp) {
       if (!timestamp) return null;
       const date = new Date(timestamp);
@@ -473,111 +287,6 @@ export default {
       const month = String(date.getMonth() + 1).padStart(2, '0');
       const day = String(date.getDate()).padStart(2, '0');
       return `${year}-${month}-${day}`;
-    },
-
-    updateGlobalStartTime(value) {
-      this.globalStartTime = value;
-      if (this.selectedChips.some(chip => chip === true)) {
-        this.toggleSelectedChip(this.selectedChips);
-      } else {
-        this.toggleSelectedChip(0);
-      }
-
-    },
-
-    updateGlobalStartDate(value) {
-      this.globalStartDate = value;
-      if (this.selectedChips.some(chip => chip === true)) {
-        this.toggleSelectedChip(this.selectedChips);
-      } else {
-        this.toggleSelectedChip(0);
-      }
-    },
-
-    updateSelectedStudentsIds() {
-      this.selectedStudentsIds = this.selectedStudents.map(selectedStudent => {
-        this.studentList.find(student => {
-          const fullName = `${student.name} ${student.surname} ${student.middleName}`;
-          return fullName === selectedStudent;
-        });
-        return selectedStudent;
-      });
-    },
-
-    toggleSelectedChip(chip) {
-      const dayOfWeekMapping = {
-        'Пн': 0,
-        'Вт': 1,
-        'Ср': 2,
-        'Чт': 3,
-        'Пт': 4,
-        'Сб': 5,
-        'Вс': 6,
-      };
-
-      this.cursorDate = this.globalStartDate
-      const index = this.selectedChips.indexOf(chip);
-      if (index !== -1) {
-        this.selectedChips.splice(index, 1);
-      } else {
-        this.selectedChips.push(chip);
-      }
-
-      if (this.selectedChips.length === 0) return
-
-      const sortedSelectedDays = this.selectedChips.map(day => dayOfWeekMapping[day]);
-      this.dateOfWeek = this.dateOfWeek.map((value, idx) => sortedSelectedDays.includes(idx));
-
-      let [lectureStartHour, lectureStartMinutes] = this.globalStartTime.split(':').map(Number);
-
-      this.lessons.forEach(item => {
-
-        item.startTime = this.getNextDay().set({
-          hour: lectureStartHour,
-          minute: lectureStartMinutes,
-        })
-        const endTime = moment(item.startTime);
-        const lectureLengthTimeInHours = 2
-        endTime.add('hour', lectureLengthTimeInHours)
-
-        Vue.set(item, 'endTime', endTime);
-
-        Vue.set(item, 'startTime', item.startTime.format('YYYY-MM-DDTHH:mm'));
-        Vue.set(item, 'endTime', item.endTime.format('YYYY-MM-DDTHH:mm'));
-      })
-      this.cursorDateOfWeek = 0
-      this.cursorDate = moment(new Date())
-    },
-
-    getNextDay() {
-      const nextWeekendIndex = this.getNextWeekendDayIndex()
-      return this.getNextDayByWeekendDayIndex(nextWeekendIndex);
-    },
-
-    getNextWeekendDayIndex() {
-      if (!this.areDatesOfWeekNotEmpty) return;
-      while (true) {
-        if (this.dateOfWeek[this.cursorDateOfWeek]) {
-          this.cursorDateOfWeek++;
-          return this.cursorDateOfWeek - 1;
-        }
-        this.cursorDateOfWeek++;
-        if (this.cursorDateOfWeek > this.dateOfWeek.length - 1) {
-          this.cursorDateOfWeek = 0;
-        }
-      }
-
-    },
-
-    getNextDayByWeekendDayIndex(dayOfWeek) {
-      let day = dayOfWeek + 1;
-      const date = moment(this.cursorDate).isoWeekday(day)
-      if (date <= this.cursorDate) {
-        this.cursorDate = moment(this.cursorDate).add(1, 'weeks').isoWeekday(day)
-      } else {
-        this.cursorDate = date
-      }
-      return this.cursorDate;
     },
   },
 

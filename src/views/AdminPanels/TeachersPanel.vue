@@ -251,13 +251,12 @@ export default {
 
     async save() {
       if (this.editedIndex > -1) {
-        this.$set(this.persons.activeUsers, this.editedIndex, this.editedTeacher);
         const body = this.editedTeacher
-        await this.putActiveUser(body)
-        this.close();
+        await this.putActiveUser(body).finally(async () => {
+          this.persons = await this.getActiveUsers();
+          this.close();
+        })
       } else {
-        console.log(1)
-        this.persons.activeUsers.push(this.editedTeacher);
         const body = {
           "email": this.editedTeacher.email,
           "phoneNumber": this.editedTeacher.phoneNumber,
@@ -265,8 +264,11 @@ export default {
           "surname": this.editedTeacher.surname,
           "middleName": this.editedTeacher.middleName,
         }
-        await this.postActiveUser(body)
-        this.close();
+        await this.postActiveUser(body).finally(async () => {
+          this.persons = await this.getActiveUsers();
+          this.close();
+        })
+
       }
     },
   },
