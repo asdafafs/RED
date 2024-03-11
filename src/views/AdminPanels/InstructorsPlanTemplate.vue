@@ -69,7 +69,6 @@
 import TemplateSchedule from "@/views/AdminPanels/TemplateSchedule.vue";
 import UsersRequest from "@/services/UsersRequest";
 import PracticeCourseRequest from "@/services/PracticeCourseRequest";
-import moment from "moment";
 
 export default {
   name: 'PlanTemplate',
@@ -129,7 +128,6 @@ export default {
         this.eventsTemplate
 
       }
-      console.log(body)
       await this.postPracticeCourseTemplate(body)
     },
 
@@ -159,7 +157,6 @@ export default {
     },
 
     async getPracticeCourseTemplate() {
-      //console.log('getPracticeCourseTemplate',this.selectedTemplate)
       if (this.selectedTemplate === null) {
         return this.eventsTemplate = []
       }
@@ -177,7 +174,6 @@ export default {
             this.practiceCourseStart = response.data.practiceCourseStart.slice(0, 10);
             this.practiceCourseEnd = response.data.practiceCourseEnd.slice(0, 10);
           });
-      console.log(this.practiceCourseStart)
       return this.eventsTemplate = events
     },
 

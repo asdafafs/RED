@@ -164,7 +164,7 @@ export default {
     },
 
     coursesData: {
-      handler(newVal, oldVal) {
+      handler() {
         this.initialize();
       },
       deep: true

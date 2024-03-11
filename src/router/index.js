@@ -25,7 +25,7 @@ import ScheduleClasses from "@/views/SignUpClasses/ScheduleClasses.vue";
 import ClassesView from "@/views/SignUpClasses/ClassesView.vue";
 import Test from "@/views/Test";
 import InstructorsPlanTemplate from "@/views/AdminPanels/InstructorsPlanTemplate.vue";
-import Item from "@/views/AdminPanels/Item.vue";
+import Item from "@/views/AdminPanels/GroupTemplate.vue";
 import AcceptPassword from "@/views/AuthorizationViews/AcceptPassword.vue";
 
 

@@ -6,7 +6,7 @@
           <v-btn icon class="ma-0  align-self-center" @click="prev">
             <v-icon>mdi-chevron-left</v-icon>
           </v-btn>
-          <span class="text-h5" >{{ formTitle }}</span>
+          <span class="text-h5">{{ formTitle }}</span>
         </div>
       </v-col>
     </v-row>
@@ -29,14 +29,18 @@
       </v-col>
     </v-row>
     <v-row class="flex-wrap">
-      <v-col cols="lg-2 md-2">
+      <v-col cols="lg-1 md-2">
+        <v-text-field v-model="editedItem.groups.groupNumber" label="Номер группы"
+                      :rules="[groupNumberRules.required]"></v-text-field>
+      </v-col>
+      <v-col cols="lg-1 md-2">
         <v-text-field v-model="editedItem.groups.title" label="Название группы"
                       :rules="[titleRules.required]"></v-text-field>
       </v-col>
       <v-col cols="lg-2 md-3">
         <v-text-field v-model="editedItem.groups.startDate" label="Дата начала курса"
                       type="date" :rules="[startDateRules.required]"
-                      @input="updateGlobalStartDate"  :min="getTodayDate()"></v-text-field>
+                      @input="updateGlobalStartDate" :min="getTodayDate()"></v-text-field>
       </v-col>
 
       <v-col cols="lg-2 md-2">
@@ -152,6 +156,10 @@ export default {
     startTimeRules: {
       required: value => !!value
     },
+    groupNumberRules: {
+      required: value => !!value
+    },
+
     dateOfWeek: [false, false, false, false, false, false, false],
     cursorDateOfWeek: 0,
     cursorDate: moment(new Date())
@@ -165,7 +173,8 @@ export default {
     isSaveButtonDisabled() {
       return !(this.titleRules.required(this.editedItem.groups.title)
           && this.startDateRules.required(this.editedItem.groups.startDate)
-          && this.startTimeRules.required(this.globalStartTime));
+          && this.startTimeRules.required(this.globalStartTime)
+          && this.groupNumberRules.required(this.editedItem.groups.groupNumber));
     },
 
     areDatesOfWeekNotEmpty() {
@@ -193,11 +202,6 @@ export default {
   },
 
   methods: {
-    getGroupIdNew() {
-      const {selectedGroupID} = this.$route.params;
-      return parseInt(selectedGroupID);
-    },
-
     prev() {
       this.$router.push({name: 'admin-groups'})
     },
@@ -262,12 +266,6 @@ export default {
       await course.postCourse(body).catch(x => console.log(x))
     },
 
-    async deleteGroups() {
-      const groups = new GroupsRequest();
-      const deletedItem = {"id": this.deletedIndex}
-      await groups.deleteGroup(deletedItem.id).catch(x => console.log(x))
-    },
-
     async getCourseId(id) {
       const course = new CoursesRequest()
       const getItem = {"id": id}
@@ -321,7 +319,8 @@ export default {
             groupId: item.groupId,
             title: item.title,
             startDate: this.globalStartDate,
-            studentId: item.student
+            studentId: item.student,
+            groupNumber: item.groupNumber
           },
 
           lecture: {
@@ -335,13 +334,6 @@ export default {
         };
         this.updateSelectedStudentsIds()
       }
-
-    },
-
-    async deleteItemConfirm() {
-      await this.deleteGroups().finally(() => this.groups.splice(this.editedIndex, 1)
-      )
-      this.closeDelete()
     },
 
     close() {
@@ -372,63 +364,35 @@ export default {
       this.prev()
     },
 
-    closeDelete() {
-      this.groupDelete = false;
-      const nextGroupNumber = this.groups.length + 1;
-      this.$nextTick(() => {
-        this.editedItem = {
-          groups: {
-            groupId: null,
-            title: `Группа №${nextGroupNumber}`,
-            startDate: null,
-          },
-          lecture: {
-            id: null,
-            title: '',
-            startTime: null,
-            endTime: null,
-            activeUser: null,
-            lectureType: null,
-          },
-        };
-        this.editedIndex = -1;
-      });
-    },
-
     save: async function () {
       this.groupDisabled = true
       if (this.editedIndex > -1) {
-        this.$set(this.groups, this.editedIndex, this.editedItem.groups);
         const body = {
           "title": this.editedItem.groups.title,
           "courseStartDate": this.editedItem.groups.startDate,
           "startTime": this.globalStartTime,
-          'groupNumber': 0,
+          'groupNumber': this.editedItem.groups.groupNumber,
           "groupId": this.editedItem.groups.groupId,
           "studentId": this.selectedStudentsIds,
           "lecture": this.lessons
         }
-        console.log(body)
         await this.postCourse(body).finally(() => {
           this.groupDisabled = false
           this.lessons = []
         })
       } else {
-
         const body = {
           "title": this.editedItem.groups.title,
           "courseStartDate": this.editedItem.groups.startDate,
           "startTime": this.globalStartTime,
-          'groupNumber': 0,
+          'groupNumber': this.editedItem.groups.groupNumber,
           "groupId": this.editedItem.groups.groupId,
           "studentId": this.selectedStudentsIds,
           "lecture": this.lessons
         }
         await this.postCourse(body).finally(() => {
           this.groupDisabled = false
-          this.groups.push(this.editedItem.groups)
         })
-
       }
       this.close();
     },

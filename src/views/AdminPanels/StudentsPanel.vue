@@ -244,9 +244,11 @@ export default {
     },
 
     async deleteItemConfirm() {
-      this.persons.students.splice(this.editedIndex, 1);
-      await this.deleteUser()
-      this.closeDelete();
+      await this.deleteUser().finally(async () => {
+        this.persons = await this.getStudents();
+        this.closeDelete();
+      })
+
     },
 
     close() {
@@ -282,10 +284,11 @@ export default {
 
     async save() {
       if (this.editedIndex > -1) {
-        this.$set(this.persons.students, this.editedIndex, this.editedStudent);
         const body = this.editedStudent
-        await this.putUser(body)
-        this.close();
+        await this.putUser(body).finally(async () => {
+          this.persons = await this.getStudents();
+          this.close();
+        })
       } else {
         this.persons.students.push(this.editedStudent);
         const body = {
@@ -296,20 +299,12 @@ export default {
           "middleName": this.editedStudent.middleName,
           "groupId": this.editedStudent.groupId,
         }
-
-        console.log("body : ", body)
-        console.log(this.editedStudent)
-        await this.postUser(body)
-        this.close();
+        await this.postUser(body).finally(()=>{
+          this.persons = this.getStudents();
+          console.log(this.persons)
+          this.close();
+        })
       }
-    },
-
-    getGroupName(groupId) {
-      if (groupId === null) {
-        return "нет информации";
-      }
-      const group = this.groups.find(group => group.groupId === groupId);
-      return group ? group.title : '';
     },
   },
 };
