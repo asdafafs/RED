@@ -87,7 +87,6 @@ export default class HttpService {
             promise.catch(error => {
                 if(error.response.request.status === 401 || error.response.request.status === 404 || error.response.request.status === 500 || isAlertHandler){
                     const message = this.getErrorMessage(error)
-                    console.log(message)
                     errorAlert(message, 4000);
 
                     reject(false);
@@ -99,7 +98,6 @@ export default class HttpService {
     }
 
     getErrorMessage(error){
-        console.log('error',error)
         return error.message ?? 'Произошла неизвестная ошибка'
 
     }

@@ -35,18 +35,22 @@
                 </v-col>
               </v-btn>
             </template>
-            <v-card>
+            <v-card class="rounded-xl">
               <v-card-title>
                 <span class="text-h5">{{ formTitle }}</span>
               </v-card-title>
-              <v-card-text>
-                <v-container>
-                  <v-row>
-                    <v-col cols="12" sm="12" md="12">
-                      <v-text-field v-model="editedTeacher.name" label="Имя" :rules="[nameRule.required()]"></v-text-field>
-                      <v-text-field v-model="editedTeacher.surname" label="Фамилия" :rules="[surnameRule.required()]"></v-text-field>
-                      <v-text-field v-model="editedTeacher.middleName" label="Отчество" :rules="[middleNameRule.required()]"></v-text-field>
-                      <v-text-field v-model="editedTeacher.email" label="email" :rules="[emailRule.required()]"></v-text-field>
+              <v-card-text class="">
+                <v-container class="pa-0">
+                  <v-row class="pa-0">
+                    <v-col cols="12" sm="12" md="12" class="pb-0">
+                      <v-text-field v-model="editedTeacher.name" label="Имя" :rules="[nameRule.required()]" outlined
+                                    class="rounded-xl"></v-text-field>
+                      <v-text-field v-model="editedTeacher.surname" label="Фамилия" :rules="[surnameRule.required()]"
+                                    outlined class="rounded-xl"></v-text-field>
+                      <v-text-field v-model="editedTeacher.middleName" label="Отчество"
+                                    :rules="[middleNameRule.required()]" outlined class="rounded-xl"></v-text-field>
+                      <v-text-field v-model="editedTeacher.email" label="email" :rules="[emailRule.required()]"
+                                    class="rounded-xl" outlined></v-text-field>
                       <vue-text-mask class="phone-field" v-model="editedTeacher.phoneNumber" :mask="mask"
                                      placeholderChar="#" :rules="[phoneRule.required()]"></vue-text-mask>
                     </v-col>
@@ -54,13 +58,14 @@
                 </v-container>
               </v-card-text>
               <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn color="blue darken-1" text @click="close">
-                  Отмена
-                </v-btn>
-                <v-btn color="blue darken-1" text @click="save" :disabled="isSaveButtonDisabled">
-                  OK
-                </v-btn>
+                <v-container style="display: flex; justify-content: space-between;" class="py-0">
+                  <v-btn color="blue darken-1" text @click="close">
+                    Отмена
+                  </v-btn>
+                  <v-btn color="blue darken-1" text @click="save" :disabled="isSaveButtonDisabled">
+                    OK
+                  </v-btn>
+                </v-container>
               </v-card-actions>
             </v-card>
           </v-dialog>
@@ -79,10 +84,10 @@
       </template>
       <template v-slot:item="{ item }">
         <tr>
-          <td>{{ item.name + " " + item.surname + " " +  item.middleName}}</td>
+          <td>{{ item.name + " " + item.surname + " " + item.middleName }}</td>
           <td>{{ item.email }}</td>
           <td>
-            <v-btn cols="" class="tab-button pa-0 rounded-lg" color="#4E7AEC" @click ="openPlanTemplate(item)">
+            <v-btn cols="" class="tab-button pa-0 rounded-lg" color="#4E7AEC" @click="openPlanTemplate(item)">
               <span class="white--text">Редактировать</span>
             </v-btn>
 
@@ -109,13 +114,13 @@ export default {
     dialogDelete: false,
     mask: ['+', /\d/, '(', /[1-9]/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, '-', /\d/, /\d/],
     headers: [
-      {text: 'ФИО', align: 'start', sortable: false, },
-      {text: 'Email', align: 'start', sortable: false, },
-      {text: 'Практики', align: 'start', sortable: false, },
+      {text: 'ФИО', align: 'start', sortable: false,},
+      {text: 'Email', align: 'start', sortable: false,},
+      {text: 'Практики', align: 'start', sortable: false,},
       {text: 'Действия', value: 'actions', sortable: false},
     ],
     persons: {
-      activeUsers:[]
+      activeUsers: []
     },
     editedIndex: -1,
     deletedIndex: -1,
@@ -135,10 +140,10 @@ export default {
 
   computed: {
     formTitle() {
-      return this.editedIndex === -1 ? 'Новый элемент' : 'Редактировать элемент';
+      return this.editedIndex === -1 ? 'Новый инструктор' : 'Редактировать инструктора';
     },
 
-    isSaveButtonDisabled(){
+    isSaveButtonDisabled() {
       return !(this.nameRule.required(this.editedTeacher.name)
           && this.surnameRule.required(this.editedTeacher.surname)
           && this.middleNameRule.required(this.editedTeacher.middleName)
@@ -163,7 +168,8 @@ export default {
   methods: {
     openPlanTemplate(item) {
       const selectedUserID = item.id;
-      this.$router.push({ name: 'plan-template', params: { selectedUserID } }).catch(() => {});
+      this.$router.push({name: 'plan-template', params: {selectedUserID}}).catch(() => {
+      });
     },
 
     async getActiveUsers() {

@@ -14,13 +14,16 @@ export default class EventsRequest extends HTTPService {
     }
 
     getLectureGroupId(groupId) {
-        return this.get("lecture/" + groupId)
+        return this.get("lecture/group/" + groupId)
     }
 
     getPracticeActiveUser(id) {
         return this.get("practice/" + id)
     }
 
+    getPracticeAssigned() {
+        return this.get("practice/assigned")
+    }
 
     postPractice(code) {
         return this.post("practice", code)
