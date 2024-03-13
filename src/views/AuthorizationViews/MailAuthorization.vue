@@ -135,28 +135,27 @@ export default {
       )
     },
     async validateForm() {
-      if (!this.isPasswordValid) {
-        return;
-      }
+      if (!this.isPasswordValid) return
       this.loginButtonDisabled = true
-      const body = {"email": this.email, "password": this.password}
-      await this.login(body)
+      const body = {
+        "email": this.email,
+        "password": this.password
+      }
       const identity = new IdentityRequest()
+      await this.login(body)
       await identity.getIdentity()
           .then((x) => {
             this.$store.dispatch('GET_CURRENT_USER', x)
           }).finally(() => {
             this.loginButtonDisabled = false
-            console.log(this.loginButtonDisabled)
           })
-      if (this.wrongAuth) ;
-      else
+      if (!this.wrongAuth) {
         await this.$router.push({name: 'schedule-lessons'}).catch(err => {
           console.log(err)
         }).finally(() => {
           this.loginButtonDisabled = false
-          console.log(this.loginButtonDisabled)
         })
+      }
     }
   },
   computed: {
