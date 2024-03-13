@@ -26,7 +26,7 @@
         <v-toolbar flat>
           <v-dialog v-model="dialog" max-width="500px" persistent>
             <template v-slot:activator="{ on, attrs }">
-              <v-btn color="#4E7AEC " dark class="ma-0 rounded-lg" v-bind="attrs" v-on="on" >
+              <v-btn color="#4E7AEC " dark class="ma-0 rounded-lg" v-bind="attrs" v-on="on">
                 <v-col cols="1" class="px-0">
                   <i class="mdi mdi-plus-circle-outline" style="transform: scale(1.5)"></i>
                 </v-col>
@@ -35,38 +35,38 @@
                 </v-col>
               </v-btn>
             </template>
-            <v-card>
+            <v-card class="rounded-xl">
               <v-card-title>
                 <span class="text-h5">{{ formTitle }}</span>
               </v-card-title>
-              <v-card-text>
+              <v-card-text class="pb-0">
                 <v-container class="pa-0">
-                  <v-row>
-                    <v-col cols="12" sm="12" md="12">
+                  <v-row class="pa-0">
+                    <v-col cols="12" sm="12" md="12" class="pb-0">
                       <v-text-field v-model="editedStudent.name" label="Имя"
-                                    :rules="[nameRule.required()]" outlined class="py-2"></v-text-field>
+                                    :rules="[nameRule.required()]" outlined class="py-2 rounded-xl"></v-text-field>
                       <v-text-field v-model="editedStudent.surname" outlined label="Фамилия"
-                                    :rules="[surnameRule.required()]" class="py-2"></v-text-field>
+                                    :rules="[surnameRule.required()]" class="py-2 rounded-xl"></v-text-field>
                       <v-text-field v-model="editedStudent.middleName" outlined label="Отчество"
-                                    :rules="[middleNameRule.required()]" class="py-2"></v-text-field>
+                                    :rules="[middleNameRule.required()]" class="py-2 rounded-xl"></v-text-field>
                       <v-text-field v-model="editedStudent.email" outlined label="email"
-                                    :rules="[emailRule.required()]" class="py-2"></v-text-field>
+                                    :rules="[emailRule.required()]" class="py-2 rounded-xl"></v-text-field>
                       <vue-text-mask class="phone-field" v-model="editedStudent.phoneNumber" :mask="mask"
                                      placeholderChar="#" :rules="[phoneRule.required()]"></vue-text-mask>
-                      <v-select outlined class="py-2"
-                          v-model="editedStudent.groupId"
-                          :items="groups"
-                          :item-value="item => item.groupId"
-                          :item-text="item => `${item.title}`"
-                          label="Группа"
-                          no-data-text="Нет данных для отображения"
+                      <v-select outlined class="py-2 rounded-xl"
+                                v-model="editedStudent.groupId"
+                                :items="groups"
+                                :item-value="item => item.groupId"
+                                :item-text="item => `${item.title}`"
+                                label="Группа"
+                                no-data-text="Нет данных для отображения"
                       ></v-select>
                     </v-col>
                   </v-row>
                 </v-container>
               </v-card-text>
-              <v-card-actions >
-                <v-container style="display: flex; justify-content: space-between;">
+              <v-card-actions>
+                <v-container style="display: flex; justify-content: space-between;" class="py-0">
                   <v-btn color="blue darken-1" text @click="close">
                     Отмена
                   </v-btn>
@@ -94,8 +94,8 @@
         <tr>
           <td>{{ item.name + " " + item.surname + " " + item.middleName }}</td>
           <td>{{ item.email }}</td>
-          <td>{{ item.generalHours}}</td>
-          <td>{{ item.generalHoursSpent}}</td>
+          <td>{{ item.generalHours }}</td>
+          <td>{{ item.generalHoursSpent }}</td>
           <td>{{ item.additinalHours }}</td>
           <td>{{ item.additinalHoursSpent }}</td>
           <td class="text-xs-right">
@@ -156,7 +156,7 @@ export default {
 
   computed: {
     formTitle() {
-      return this.editedIndex === -1 ? 'Новый элемент' : 'Редактировать элемент';
+      return this.editedIndex === -1 ? 'Новый студент' : 'Редактировать студента';
     },
 
     isSaveButtonDisabled() {
@@ -299,7 +299,7 @@ export default {
           "middleName": this.editedStudent.middleName,
           "groupId": this.editedStudent.groupId,
         }
-        await this.postUser(body).finally(()=>{
+        await this.postUser(body).finally(() => {
           this.persons = this.getStudents();
           console.log(this.persons)
           this.close();

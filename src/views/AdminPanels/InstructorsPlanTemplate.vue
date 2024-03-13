@@ -11,29 +11,33 @@
       </v-col>
     </v-row>
     <hr>
-    <v-row class="flex-wrap" >
-      <v-col cols="lg-1 md-1 py-0" class="flex-column">
-        <v-radio-group class="px-0 py-0" v-model="selectedDuration" hide-details="true">
-          <v-radio label="1 час" :value=1></v-radio>
-          <v-radio label="2 часа" :value=2></v-radio>
+    <v-row class="flex-wrap">
+      <v-col cols="lg-1 md-1 py-0" class="flex-column align-center bg-surface-variant d-flex">
+        <v-radio-group class="px-0 py-0 align-center" v-model="selectedDuration" hide-details="true">
+          <v-radio label="1 час" :value="1"></v-radio>
+          <v-radio label="2 часа" :value="2"></v-radio>
         </v-radio-group>
       </v-col>
-      <v-col cols="lg-2 md-2 py-0">
+      <v-col cols="lg-2 md-2 py-0" class="align-center bg-surface-variant d-flex">
         <v-text-field v-model="practiceCourseStart" label="Дата начала" type="date"
-                      :rules="[startDateRules.required]" :min="getTodayDate()"></v-text-field>
+                      :rules="[startDateRules.required]" :min="getTodayDate()" outlined
+                      class="rounded-xl align-center" hide-details></v-text-field>
       </v-col>
-      <v-col cols="lg-2 md-2 py-0">
+      <v-col cols="lg-2 md-2 py-0" class="align-center bg-surface-variant d-flex">
         <v-text-field v-model="practiceCourseEnd" label="Дата окончания" type="date"
-                       :rules="[endTimeRules.required]" :min="getTodayDate()"></v-text-field>
+                      :rules="[endTimeRules.required]" :min="getTodayDate()" outlined
+                      class="rounded-xl align-center" hide-details></v-text-field>
       </v-col>
-      <v-col cols="lg-2 md-2 py-0">
+      <v-col cols="lg-2 md-2 py-0" class="align-center bg-surface-variant d-flex">
         <v-select v-model="selectedTemplate" label="Выберите шаблон практик" :items="listTemplates"
                   no-data-text="Нет данных для отображения"
                   :item-text="item => item.practiceCourseId ? `${new Date(item.practiceCourseStart).
                   toLocaleDateString().replace(/\./g, '-')} ${new Date(item.practiceCourseEnd)
                   .toLocaleDateString().replace(/\./g, '-')}` : 'Добавить новый шаблон'"
                   item-value="practiceCourseId"
-                  @change="getPracticeCourseTemplate()">>
+                  @change="getPracticeCourseTemplate()"
+                  outlined
+                  class="rounded-xl " hide-details>
         </v-select>
       </v-col>
       <v-col cols="lg-2 md-0 sm-0 pa-0"></v-col>

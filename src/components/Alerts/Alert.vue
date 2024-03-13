@@ -48,18 +48,14 @@ export default {
     if (!this.infinity) {
 
       setTimeout(() => {
-            console.log('setTimeout')
             x.className = x.className.replace('show', '');
             this.$emit('destroy');
           },
           this.timeout,
       );
-      console.log(this.timeout)
-
     }
   },
   created() {
-    console.log('я родился', this.link)
   },
   computed: {
     icon() {
@@ -81,14 +77,12 @@ export default {
       let x = this.$refs.snackbar;
       x.className = x.className.replace('show', '');
       this.$emit('destroy')
-      console.log('destroy')
     }
   }
 }
 </script>
 
 <style scoped>
-
 #snackbar {
   visibility: hidden;
   min-width: 250px;

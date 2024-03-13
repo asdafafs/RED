@@ -1,5 +1,5 @@
 <template>
-  <v-container class="px-4 pa-0 ma-0 " fluid>
+  <v-container class="px-0 pa-0 ma-0 " fluid>
     <div class="text-h5 font-weight-bold" style="">Мои успехи</div>
     <v-row class="flex-wrap py-2" no-gutters>
       <v-col class="">

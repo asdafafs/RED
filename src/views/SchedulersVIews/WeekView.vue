@@ -98,6 +98,7 @@ import CarLogo from "@/components/logos/CarLogo.vue";
 import LectureLogo from "@/components/logos/LectureLogo.vue";
 import EventsRequest from "@/services/EventsRequest";
 import {mapState} from "vuex";
+import UsersRequest from "@/services/UsersRequest";
 
 export default {
   components: {CarLogo, LectureLogo},
@@ -146,7 +147,7 @@ export default {
   }),
 
   created() {
-    this.selectCurrentFreeStudent()
+    this.initialize()
   },
 
   computed: {
@@ -158,6 +159,34 @@ export default {
   },
 
   methods: {
+    initialize() {
+      this.selectCurrentFreeStudent()
+    },
+
+    selectCurrentFreeStudent() {
+      const student = new UsersRequest();
+      student.getStudentNullGroup()
+          .then(response => {
+            const id = this.$store.state.user.userId;
+            const students = response.data.students;
+            const foundStudent = students.find(student => student.id === id);
+            console.log('foundStudent', foundStudent)
+            if (foundStudent) {
+              console.log('Этого студента не найдено в списке свободных');
+            } else {
+              console.log('else')
+              console.log(this.$store.state.user.groupId)
+              const groupId = this.$store.state.user.groupId
+              this.getAllEvents(groupId)
+
+              console.log("2", id);
+            }
+          })
+          .catch(error => {
+            console.log("Ошибка при поиске студента:", error);
+          });
+    },
+
     showEvent({nativeEvent, event}) {
       const open = () => {
         this.selectedEvent = event
@@ -175,10 +204,10 @@ export default {
       nativeEvent.stopPropagation()
     },
 
-    async getLessons() {
+    async getLessons(groupId) {
       const lessons = new EventsRequest()
       let kal
-      await lessons.getLecture().catch(x => console.log(x)).then(x => {
+      await lessons.getLectureGroupId(groupId).catch(x => console.log(x)).then(x => {
         kal = x.data.lecture.map(event => ({
           ...event,
           start: event.startTime,
@@ -191,7 +220,7 @@ export default {
     async getPractices() {
       const practices = new EventsRequest()
       let kal
-      await practices.getPracticeId().catch(x => console.log(x)).then(x => {
+      await practices.getPracticeAssigned().catch(x => console.log(x)).then(x => {
         kal = x.data.practice.map(event => ({
           ...event,
           start: event.startTime,
@@ -201,10 +230,11 @@ export default {
       return kal
     },
 
-    async getAllEvents() {
-      const lessons = await this.getLessons();
-      const practices = await this.getPractices();
-      this.events = [...lessons, ...practices];
+    async getAllEvents(groupId) {
+      const lessons = await this.getLessons(groupId);
+      let practices = []
+      practices = await this.getPractices();
+      this.events = [...lessons,  ...practices];
       this.events = this.events.map(item => {
         return {
           ...item,
@@ -305,7 +335,7 @@ export default {
       const mouse = this.toTime(tms)
       if (this.dragEvent && this.dragTime !== null) {
         console.log(this.dragEvent)
-        const start =  moment(this.dragEvent.startTime).format("YYYY-MM-DD HH:mm")
+        const start = moment(this.dragEvent.startTime).format("YYYY-MM-DD HH:mm")
         const end = moment(this.dragEvent.endTime).format("YYYY-MM-DD HH:mm")
         const duration = end - start
         const newStartTime = mouse - this.dragTime
@@ -314,8 +344,7 @@ export default {
 
         this.dragEvent.start = newStart
         this.dragEvent.end = newEnd
-      }
-      else if (this.createEvent && this.createStart !== null) {
+      } else if (this.createEvent && this.createStart !== null) {
         const mouseRounded = this.roundTime(mouse, false)
         const min = Math.min(mouseRounded, this.createStart)
         const max = Math.max(mouseRounded, this.createStart)
@@ -330,6 +359,7 @@ export default {
 </script>
 <style lang="scss">
 @import "@/assets/styles/buttonStyles.css";
+
 .v-event-timed.white--text {
   //display: flex;
   //justify-content: center;

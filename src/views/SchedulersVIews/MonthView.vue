@@ -131,7 +131,7 @@ export default {
   }),
 
   created() {
-    this.selectCurrentFreeStudent()
+    this.initialize()
   },
 
   computed: {
@@ -144,22 +144,26 @@ export default {
 
   methods: {
     initialize() {
+      this.selectCurrentFreeStudent()
     },
 
     selectCurrentFreeStudent() {
-      const id = this.userId;
       const student = new UsersRequest();
       student.getStudentNullGroup()
           .then(response => {
+            const id = this.$store.state.user.userId;
             const students = response.data.students;
             const foundStudent = students.find(student => student.id === id);
+            console.log('foundStudent', foundStudent)
             if (foundStudent) {
-              if (foundStudent.groupId != null){
-                const groupId = foundStudent.groupId
-                this.getAllEvents(groupId)
-              }
+              console.log('Этого студента не найдено в списке свободных');
             } else {
-              console.log("Студент с id", id, "не найден.");
+              console.log('else')
+              console.log(this.$store.state.user.groupId)
+              const groupId = this.$store.state.user.groupId
+              this.getAllEvents(groupId)
+
+              console.log("2", id);
             }
           })
           .catch(error => {
@@ -197,10 +201,10 @@ export default {
       return cal
     },
 
-    async getPractices(groupId) {
+    async getPractices() {
       const practices = new EventsRequest()
       let cal
-      await practices.getPracticeId().catch(x => console.log(x)).then(x => {
+      await practices.getPracticeAssigned().catch(x => console.log(x)).then(x => {
         cal = x.data.practice.map(event => ({
           ...event,
           start: new Date(event.startTime),
@@ -212,7 +216,9 @@ export default {
 
     async getAllEvents(groupId) {
       const lessons = await this.getLessons(groupId);
-      const practices = await this.getPractices(groupId);
+      console.log(lessons)
+      let practices = []
+      practices = await this.getPractices();
       this.events = [...lessons, ...practices];
       this.events = this.events.map(item => {
         return {
@@ -231,9 +237,13 @@ export default {
     },
 
     getEventColor(event) {
-      if (event.lectureType === 3) {
+      if (event.lectureType === 4) {
         return '#9DB9FF';
+      } else if (event.lectureType === 3) {
+        return '#E9E9E8';
       } else if (event.lectureType === 2) {
+        return '#E9E9E8';
+      } else if (event.lectureType === 1) {
         return '#E9E9E8';
       } else {
         return '#E9E9E8'
