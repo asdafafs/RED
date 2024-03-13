@@ -34,6 +34,11 @@ export default {
             })
           }
         })
+        // .finally(async () => {
+        //   await this.$router.push({
+        //     path: '/schedule/lessons',
+        //   })
+        // })
   }
 }
 </script>

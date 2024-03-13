@@ -11,24 +11,25 @@
         <v-dialog v-model="dialog" max-width="500px" persistent>
           <template v-slot:activator="{ on, attrs }">
             <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on">
-              Новое занятие
+              Добавить занятие
             </v-btn>
           </template>
           <v-card class="rounded-xl">
             <v-card-title>
               <div class="text-h5">{{ formTitle }}</div>
             </v-card-title>
-            <v-card-text>
+            <v-card-text class="pb-0">
               <v-container class="pa-0">
-                <v-row>
-                  <v-col cols="12" sm="12" md="12">
+                <v-row class="pa-0">
+                  <v-col cols="12" sm="12" md="12" class="pb-0">
                     <v-text-field v-model="editedItem.title" label="Название"
-                                  :rules="[titleRules.required]"></v-text-field>
+                                  :rules="[titleRules.required]" outlined class="rounded-xl"></v-text-field>
                     <v-text-field v-model="editedItem.startTime" label="Начало занятия" type="datetime-local"
-                                  :rules="[startDateTimeRules.required]" :min="getTodayDate()">
+                                  :rules="[startDateTimeRules.required]" :min="getTodayDate()" outlined
+                                  class="rounded-xl">
                     </v-text-field>
                     <v-text-field v-model="editedItem.endTime" label="Конец занятия" type="datetime-local"
-                                  :rules="[endDateTimeRules.required]" :min="getTodayDate">
+                                  :rules="[endDateTimeRules.required]" :min="getTodayDate" outlined class="rounded-xl">
                     </v-text-field>
                     <v-select
                         ref="selectItem"
@@ -36,6 +37,8 @@
                         label="Тип занятия"
                         :items="discriminator"
                         :rules="[typeEventRules.required]"
+                        outlined
+                        class="rounded-xl"
                     >
                       <template v-slot:item="{ item }">
                         <v-list-item :class="getListItemClass(item)" @click="selectItem(item)">
@@ -53,19 +56,22 @@
                         :items="[...teachers, { id: null, name: 'Преподаватель не назначен' }]"
                         :item-text="item => item ? `${item.name || ''} ${item.surname || ''} ${item.middleName || ''}` : 'Преподаватель не назначен'"
                         item-value="id"
+                        outlined
+                        class="rounded-xl"
                     ></v-select>
                   </v-col>
                 </v-row>
               </v-container>
             </v-card-text>
-            <v-card-actions style="display: flex; justify-content: space-between;">
-              <v-spacer></v-spacer>
-              <v-btn color="blue darken-1" text @click="close">
-                Отмена
-              </v-btn>
-              <v-btn color="blue darken-1" text @click="save" :disabled="isSaveButtonDisabled">
-                OK
-              </v-btn>
+            <v-card-actions >
+              <v-container style="display: flex; justify-content: space-between;" class="py-0">
+                <v-btn color="blue darken-1" text @click="close">
+                  Отмена
+                </v-btn>
+                <v-btn color="blue darken-1" text @click="save" :disabled="isSaveButtonDisabled">
+                  OK
+                </v-btn>
+              </v-container>
             </v-card-actions>
           </v-card>
         </v-dialog>

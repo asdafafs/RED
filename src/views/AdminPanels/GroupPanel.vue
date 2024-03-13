@@ -34,7 +34,7 @@
         <tr>
           <td>{{ item.groupNumber }}</td>
           <td>{{ item.title }}</td>
-          <td>{{ item.globalStartDate }} - {{ item.courseEnd.split('T')[0] }}</td>
+          <td>{{ formatDatetime(item.courseStartDate) }} - {{ formatDatetime(item.courseEndDate) }}</td>
           <td>
             <div style="display: flex; flex-direction: row; flex-wrap: wrap;">
         <span v-if="item.students" v-for="(student, index) in item.students"
@@ -67,24 +67,8 @@ import CoursesList from "@/views/AdminPanels/CoursesList.vue";
 export default {
   components: {CoursesList, Item},
   data: () => ({
-    globalStartTime: null,
-    coursesData: null,
-    studentList: null,
-    globalStartDate: null,
-    lessons: [],
-    selectedChips: [],
-    selectedStudents: [],
-    selectedStudentsIds: [],
-    teachers: [],
-    groupData: null,
-    groupDisabled: false,
-    lessonDisabled: false,
-    dialog: false,
-    lessonDelete: false,
     groupDelete: false,
-    showCoursesList: false,
     search: '',
-    chips: ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'],
     headersGroup: [
       {text: '№', align: 'start', sortable: false, width: '5%'},
       {text: 'Название', align: 'start', sortable: false, width: '20%'},
@@ -93,27 +77,7 @@ export default {
       {text: 'Действия', value: 'actions', sortable: false, width: '5%'},
     ],
     groups: [],
-    editedIndex: -1,
     deletedIndex: -1,
-    editedItem: {
-      groups: {
-        groupId: null,
-        title: ``,
-        startDate: null,
-        startTime: null,
-        fullGroupName: null,
-        groupNumber: null,
-      },
-
-      lecture: {
-        id: null,
-        title: '',
-        startTime: null,
-        endTime: null,
-        activeUser: null,
-        lectureType: null,
-      },
-    },
     titleRules: {
       required: value => !!value
     },
@@ -123,13 +87,7 @@ export default {
     startTimeRules: {
       required: value => !!value
     },
-    dateOfWeek: [false, false, false, false, false, false, false],
-    cursorDateOfWeek: 0,
-    cursorDate: moment(new Date())
   }),
-
-  mounted() {
-  },
 
   computed: {
     ...mapState(['user']),
@@ -144,16 +102,6 @@ export default {
   },
 
   methods: {
-    async getCourseLast() {
-      const course = new CoursesRequest()
-      await course.getCourseNull().catch(x => console.log(x)).then(x => {
-        this.coursesData = x.data.lecture
-        this.globalStartTime = x.data.startTime
-        this.globalStartDate = this.formatDatetime(x.data.startDate)
-        this.groupNumber = x.data.groupNumber
-      })
-    },
-
     async getGroups() {
       const groups = new GroupsRequest();
       let groupData
@@ -171,43 +119,13 @@ export default {
 
     async initialize() {
       this.groups = await this.getGroups();
-      await this.getCourseLast();
-      this.lessons = this.coursesData.map(item => {
-        return {
-          id: item.id,
-          title: item.title,
-          startTime: item.startTime,
-          endTime: item.endTime,
-          lectureType: item.lectureType,
-          activeUser: item.activeUser,
-        };
-      });
-      const nextGroupNumber = this.groups.length + 1;
-      this.editedItem.groups.title = `Группа №${nextGroupNumber}`;
     },
 
     deleteItem(item) {
       this.editedIndex = this.groups.indexOf(item);
-      this.editedItem = {
-        groups: {
-          groupId: item.groupId,
-          title: item.title,
-          startDate: this.globalStartDate,
-          startTime: null,
-        },
-
-        lecture: {
-          id: null,
-          title: '',
-          startTime: null,
-          endTime: null,
-          lectureType: null,
-        },
-      };
       this.deletedIndex = item.groupId
       this.groupDelete = true;
     },
-
 
     editGroupItem(item) {
       const selectedGroupID = item.groupId;
@@ -224,60 +142,13 @@ export default {
     async deleteItemConfirm() {
       await this.deleteGroups().finally(async () => {
             this.groups = await this.getGroups();
-            this.closeDelete()
+            this.closeDelete();
           }
       )
     },
 
-    close() {
-      this.dialog = false;
-      this.showCoursesList = false;
-      const nextGroupNumber = this.groups.length + 1;
-      this.$nextTick(() => {
-        this.editedItem = {
-          groups: {
-            groupId: null,
-            title: `Группа №${nextGroupNumber}`,
-            startDate: null,
-          },
-          lecture: {
-            id: null,
-            title: '',
-            startTime: null,
-            endTime: null,
-            activeUser: null,
-            lectureType: null,
-          },
-        };
-        this.editedIndex = -1;
-      });
-      this.selectedChips = []
-      this.lessons = []
-      this.studentList = []
-      this.initialize()
-    },
-
     closeDelete() {
       this.groupDelete = false;
-      const nextGroupNumber = this.groups.length + 1;
-      this.$nextTick(() => {
-        this.editedItem = {
-          groups: {
-            groupId: null,
-            title: `Группа №${nextGroupNumber}`,
-            startDate: null,
-          },
-          lecture: {
-            id: null,
-            title: '',
-            startTime: null,
-            endTime: null,
-            activeUser: null,
-            lectureType: null,
-          },
-        };
-        this.editedIndex = -1;
-      });
     },
 
     formatDatetime(timestamp) {

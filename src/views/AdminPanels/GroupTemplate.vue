@@ -31,31 +31,33 @@
     <v-row class="flex-wrap">
       <v-col cols="lg-1 md-2">
         <v-text-field v-model="editedItem.groups.groupNumber" label="Номер группы"
-                      :rules="[groupNumberRules.required]"></v-text-field>
+                      :rules="[groupNumberRules.required]" outlined hide-details></v-text-field>
       </v-col>
-      <v-col cols="lg-1 md-2">
+      <v-col cols="lg-2 md-3">
         <v-text-field v-model="editedItem.groups.title" label="Название группы"
-                      :rules="[titleRules.required]"></v-text-field>
+                      :rules="[titleRules.required]" outlined hide-details></v-text-field>
       </v-col>
       <v-col cols="lg-2 md-3">
         <v-text-field v-model="editedItem.groups.startDate" label="Дата начала курса"
                       type="date" :rules="[startDateRules.required]"
-                      @input="updateGlobalStartDate" :min="getTodayDate()"></v-text-field>
+                      @input="updateGlobalStartDate" :min="getTodayDate()" outlined hide-details></v-text-field>
       </v-col>
-
-      <v-col cols="lg-2 md-2">
+      <v-col cols="lg-1 md-2">
         <v-text-field
             label="Выберите время начала занятий"
             :value="globalStartTime"
             type="time"
-            suffix="PST"
+
             @input="updateGlobalStartTime"
             :rules="[startTimeRules.required]"
+            outlined
+            hide-details
+
         ></v-text-field>
       </v-col>
-      <v-col cols="lg-3 md-4 sm-6">
+      <v-col cols="lg-3 md-3 sm-6">
         <template>
-          <div>
+          <div class="chips-container">
             <v-chip
                 v-for="(chip, index) in chips"
                 :key="index"
@@ -283,7 +285,6 @@ export default {
       this.groups = await this.getGroups();
       const item = this.groups.find(group => group.groupId === this.getGroupId)
       this.editedIndex = this.groups.indexOf(item)
-      console.log(this.editedIndex)
       this.studentList = await this.getFreeUsers()
       this.teachers = await this.getEventsTeacher()
       if (this.editedIndex === -1) {
@@ -520,4 +521,16 @@ export default {
 .theme--light.v-chip:not(.v-chip--active) {
   background: rgba(255, 255, 255, 0.7);
 }
+
+.chips-container {
+  display: flex;
+  flex-wrap: wrap;
+  min-width: 210px; /* Минимальная ширина контейнера, чтобы вместить 3 элемента в одной строке */
+}
+
+.chips-container > .v-chip {
+  margin-right: 8px; /* Расстояние между элементами */
+  margin-bottom: 8px; /* Расстояние между строками */
+}
+
 </style>
