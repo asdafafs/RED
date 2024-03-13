@@ -1,41 +1,52 @@
 <template>
-  <v-container fluid>
-    <v-row class="d-flex mt-0 ga-3 " no-gutters>
-      <v-col lg="2" md="2" sm="3">
-        <v-btn text class="black--text tab-button pa-0" width="100%"
-               :class="{'tab-background': isButtonPressed[0],}"
-               @click="changeButtonState(0);getAllEvents();">
-          <span :class="{ 'tab-button-text':isButtonPressed[0]}">Смотреть все</span>
-        </v-btn>
-      </v-col>
-      <v-col lg="2" md="2" sm="3">
-        <v-btn text class="black--text tab-button pa-0" width="100%"
-               :class="{'tab-background': isButtonPressed[1]}"
-               @click="changeButtonState(1); testLessons();">
-          <span :class="{ 'tab-button-text':isButtonPressed[1]}">Теория</span>
-        </v-btn>
-      </v-col>
-      <v-col lg="2" md="2" sm="3">
-        <v-btn text class="black--text tab-button pa-0" width="100%"
-               :class="{'tab-background': isButtonPressed[2]}"
-               @click="changeButtonState(2); testPractices();">
-          <span :class="{ 'tab-button-text':isButtonPressed[2]}">Практика</span>
-        </v-btn>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col>
-        <v-sheet tile height="54" class="d-flex justify-center">
-          <v-btn icon class="ma-0  align-self-center" @click="$refs.calendar.prev()">
+  <div style="width: 100%; height:100%">
+    <v-btn-toggle
+      v-model="selectedLessonType"
+      group
+      color="black"
+    >
+      <v-btn
+        v-for="item in calendarButtons"
+        :key="item.id"
+        height="32"
+        class="toggle-button"
+        :value="item.id"
+        @click="onToggleClick(item.id)"
+      >
+        <span :class="selectedLessonType === item.id ? 'white--text' : 'black--text'">
+          {{ item.title }}
+        </span>
+      </v-btn>
+    </v-btn-toggle>
+    <div>
+      <div>
+        <v-sheet 
+          tile 
+          height="54" 
+          class="d-flex justify-center"
+        >
+          <v-btn 
+            icon 
+            class="ma-0 align-self-center" 
+            @click="$refs.calendar.prev()"
+          >
             <v-icon>mdi-chevron-left</v-icon>
           </v-btn>
-          <v-toolbar-title v-if="test" class="text-h6 align-self-center">{{ $refs.calendar.title.split(' ')[0] }}
+          <v-toolbar-title 
+            v-if="test" 
+            class="month-name"
+          >
+            {{ month }}
           </v-toolbar-title>
-          <v-btn icon class="ma-0  align-self-center" @click="$refs.calendar.next()">
+          <v-btn 
+            icon 
+            class="ma-0 align-self-center" 
+            @click="$refs.calendar.next()"
+          >
             <v-icon>mdi-chevron-right</v-icon>
           </v-btn>
         </v-sheet>
-        <v-sheet height="600">
+        <v-sheet>
           <v-calendar
               ref="calendar"
               v-model="value"
@@ -48,32 +59,21 @@
               :event-ripple="false"
               :event-height="num"
               :hide-header=false
-              @change="updateRange"
               event-more-text="+ {0}"
           >
             <template v-slot:event="{event}">
-              <v-container class="pa-1 mx-0 d-flex ">
-                <v-row class="ma-0">
-                  <v-col cols="4" class="black--text pa-0 align-self-center d-none d-lg-block">
-                    <div class="text-subtitle-2 d-flex justify-center">{{ formatTime(event.startTime) }}</div>
-                  </v-col>
-                  <v-col class="d-lg-none pa-0 event">
-                    <div class="logo ">
-                      <car-logo v-if="event.lectureType === 3"/>
-                      <lecture-logo
-                          v-if="event.lectureType === 2 || event.lectureType === 1 || event.lectureType === null"/>
-                    </div>
-                  </v-col>
-                  <v-col class="black--text pa-0 align-self-center d-none d-lg-block">
-                    <div class="font-weight-bold text-format" style="width: inherit">{{ event.title }}
-                    </div>
-                  </v-col>
-                </v-row>
-              </v-container>
+              <div class="d-flex flex-row" style="width: 100%">
+                <div class="d-flex align-center justify-center event-time" style="width: 30%">
+                  {{ formatTime(event.startTime) }}
+                </div>
+                <div class="d-flex align-center justify-center event-type" style="width: 70%">
+                  {{ event.title }}
+                </div>
+              </div>
             </template>
           </v-calendar>
+          
           <v-menu max-width="200px" min-width="200px"
-
                   v-model="selectedOpen"
                   :close-on-content-click="false"
                   :activator="selectedElement"
@@ -94,9 +94,9 @@
             </v-card>
           </v-menu>
         </v-sheet>
-      </v-col>
-    </v-row>
-  </v-container>
+      </div>
+    </div>
+  </div>
 </template>
 <script>
 import CarLogo from "@/components/logos/CarLogo.vue";
@@ -135,6 +135,7 @@ export default {
   },
 
   data: () => ({
+    selectedLessonType: 0,
     events: [],
     num: 70,
     test: false,
@@ -148,23 +149,47 @@ export default {
     selectedEvent: {},
     selectedElement: null,
     selectedOpen: false,
-    isButtonPressed: [false, false, false]
   }),
-
+  watch: {
+    userID(value) {
+      if (value) this.getAllEvents()
+    }
+  },
   computed:{
     ...mapState(['user']),
-
+    calendarButtons() {
+      return [
+        {
+          id: 0,
+          title: 'Смотреть всё',
+        },
+        {
+          id: 1,
+          title: 'Теория',
+        },
+        {
+          id: 2,
+          title: 'Практика',
+        },
+      ]
+    },
+    month() {
+      return this.$refs.calendar.title.split(' ')[0]
+    },
     userID() {
-      if (this.user && this.user.userId !== null) {
-        return this.$store.state.user.userId
-      } else {
-        return console.log('а id нету');
-      }
+      return this.user.userId
     },
 
   },
 
   methods: {
+    onToggleClick(id) {
+      switch (id) {
+        case 0: return this.getAllEvents()
+        case 1: return this.testLessons()
+        case 2: return this.testPractices()
+      }
+    }, 
     showEvent({nativeEvent, event}) {
       const open = () => {
         this.selectedEvent = event
@@ -183,6 +208,7 @@ export default {
     },
 
     async getLessons() {
+      console.log('2*',this.userID)
       const lessons = new EventsRequest()
       let lessonsData
       await lessons.getLectureActiveUser(this.userID).catch(x => console.log(x)).then(x => {
@@ -209,6 +235,7 @@ export default {
     },
 
     async getAllEvents() {
+      console.log('3*',this.userID)
       const lessons = await this.getLessons();
       const practices = await this.getPractices();
       this.events = [...lessons, ...practices];
@@ -235,10 +262,7 @@ export default {
       const minutes = date.getMinutes().toString().padStart(2, '0');
       return `${hours}:${minutes}`;
     },
-
-    updateRange() {
-    },
-
+    
     getEventColor(event) {
       if (event.lectureType === 3) {
         return '#9DB9FF';
@@ -248,15 +272,7 @@ export default {
         return '#E9E9E8'
       }
     },
-
-    changeButtonState(index) {
-      if (this.lastPressedIndex !== -1) {
-        this.$set(this.isButtonPressed, this.lastPressedIndex, false);
-      }
-      this.$set(this.isButtonPressed, index, true);
-      this.lastPressedIndex = index;
-    },
-
+    
     handleResize() {
       if (window.innerWidth < 1260) {
         this.num = 30;
@@ -267,17 +283,55 @@ export default {
 
     async initialize(){
       let index = this.userID
-      console.log(index)
-      this.changeButtonState(0)
+      console.log('initialize',index)
       await this.getAllEvents()
     }
   },
-  created() {
-    this.initialize()
-  },
 }
 </script>
-<style lang="scss">
-@import "@/assets/styles/buttonStyles.css";
+
+<style scoped lang="scss">
 @import "@/assets/styles/monthScheduleStyles.css";
+.toggle-button {
+  margin-right: 0 !important;
+  margin-left: 0 !important;
+  color: black !important;
+  border-radius: 4px !important;
+  text-transform: none !important;
+}
+.v-btn--active::before {
+  opacity: 1 !important;
+}
+.v-btn:hover,
+.v-btn:focus,
+{
+  color: black !important;
+}
+
+.month-name {
+  font-size: 24px !important;
+  font-weight: 700 !important;
+  display: flex !important;
+  align-items: center !important;
+  margin-right: 8px !important;
+  margin-left: 8px !important;
+}
+
+.event-time {
+  font-size: 16px !important;
+  font-weight: 600 !important;
+  color: black !important;
+}
+.event-type {
+  font-weight: 600 !important;
+  font-size: 12px !important;
+  color: black !important;
+}
+.event-instructor,
+.event-long
+{
+  font-weight: 400 !important;
+  font-size: 12px !important;
+  color: black !important;
+}
 </style>
