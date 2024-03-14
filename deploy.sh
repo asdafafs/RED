@@ -10,5 +10,5 @@ if [ ! -f "$env_file" ]; then
 fi
 
 sed -i "s/^FRONTEND_VERSION=.*/FRONTEND_VERSION=$FRONTEND_VERSION/" "$env_file"
-#docker compose down red-schedule-frontend
-#docker compose up -d
+docker compose down red-schedule-frontend
+docker compose up -d
