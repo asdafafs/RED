@@ -12,5 +12,5 @@ fi
 sed -i "s/^FRONTEND_VERSION=.*/FRONTEND_VERSION=$FRONTEND_VERSION/" "$env_file"
 docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY;
 docker pull $CI_REGISTRY_IMAGE/red/red-frontend:$FRONTEND_VERSION
-docker compose down red-schedule-frontend
+docker compose down frontend
 docker compose up -d
