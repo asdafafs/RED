@@ -9,7 +9,7 @@
         class="letter-spacing__unset ml-2"
         light
         @click="destroyAlert(link)">
-      {{ link.text }}
+      {{ }}
     </v-btn>
   </div>
 </template>
