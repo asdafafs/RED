@@ -1,0 +1,117 @@
+﻿.v-overlay--active .v-overlay__scrim {
+    display: none;
+}
+
+.v-overlay--active {
+    backdrop-filter: blur(2px);
+    background: rgb(0 0 0 / 0.8);
+}
+
+@media (prefers-color-scheme: dark) {
+    .v-overlay--active {
+        background: rgb(0 0 0 / 0.4);
+    }
+}
+
+.height {
+    min-height: 28rem;
+}
+
+
+.width-main-authorization-form {
+    width: 100em;
+}
+
+.width-mail-form {
+    width: 20em !important;
+}
+
+
+.authorization-card {
+    display: flex !important;
+    gap: 16px !important;
+    flex-direction: column !important;
+    min-height: 28rem !important;
+    width: 400px !important;
+    height: 400px !important;
+    
+    &__title {
+        font-weight: 700 !important;
+        font-size: 32px !important;
+        line-height: 37.5px !important;
+        color: #000000 !important;
+        caret-color: #000000 !important;
+        padding: 16px 25px !important;
+    }
+
+    &__subtitle {
+        font-weight: 400 !important;
+        font-size: 16px !important;
+        line-height: 18px !important;
+        color: #000000 !important;
+        caret-color: #000000 !important;
+        padding: 0 25px 16px 25px !important;
+    }
+
+    &__logo {
+        align-self: center !important;
+        transform: scale(2.1) !important;
+        margin-top: 2em !important;
+        margin-bottom: 2em !important;
+    }
+
+    &__actions {
+        display: flex !important;
+        flex-direction: column !important; 
+
+        &__btn {
+            border-radius: 8px !important;
+            padding: 0 !important;
+            margin: 4px 0 4px 0 !important;
+            width: 350px !important;
+            
+        }
+    }
+}
+
+.mail-authorization-card {
+    display: flex !important;
+    gap: 16px !important;
+    flex-direction: column !important;
+    min-height: 28rem !important;
+    width: 400px !important;
+    height: 560px !important;
+    
+    &__title {
+        font-weight: 700 !important;
+        font-size: 32px !important;
+        line-height: 37.5px !important;
+    }
+    &__subtitle {
+        font-weight: 400 !important;
+        font-size: 16px !important;
+        line-height: 18px !important;
+        color: #000000 !important;
+        caret-color: #000000 !important;
+        padding: 0 25px 16px 25px !important;
+    }
+    
+    &__logo {
+        align-self: center !important;
+        transform: scale(2.1) !important;
+        padding:8px 0 16px 0;
+    }
+    
+    &__actions {
+        display: flex;
+        flex-direction: column;
+
+        &__btn {
+            border-radius: 8px;
+            padding: 0;
+            margin: 4px 0 4px 0 !important;
+            width: 350px;
+
+        }
+    }
+}

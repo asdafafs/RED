@@ -1,34 +1,51 @@
 <template>
   <div>
-    <v-row align="center" justify="center" class=" ">
-      <v-col cols="4" class=" pa-0" align="center">
-        <v-dialog v-model="overlay" persistent width="auto" content-class="elevation-0">
-          <v-card class="d-flex justify-space-between flex-column white rounded-lg ma-2 width">
-            <v-card-title class="black--text"> Восстановление пароля</v-card-title>
-            <v-card-subtitle class="black--text">
-              Для восстановления пароля введите номер телефона
+    <v-row 
+      align="center" 
+      justify="center"
+    >
+      <v-col cols="4" class="pa-0">
+        <v-dialog 
+            v-model="overlay" 
+            persistent 
+            width="auto" 
+            content-class="elevation-0"
+        >
+          <v-card class="forget-password-card white">
+            <v-card-title class="forget-password-card__title">
+              Восстановление пароля
+            </v-card-title>
+            <v-card-subtitle class="forget-password-card__subtitle">
+              Для восстановления пароля введите электронную почту
             </v-card-subtitle>
-            <v-card-text class="pb-0 ">
+            <v-card-text class="pb-0">
               <v-text-field
-                  solo
-                  color="black"
-                  v-model=email
-                  :readonly="loading"
-                  :rules="[rulesEmail.required]"
-                  class="mb-2"
-                  clearable
-                  label="Email"
-              ></v-text-field>
+                solo
+                color="black"
+                v-model=email
+                :readonly="loading"
+                :rules="[rulesEmail.required]"
+                class="mb-2"
+                clearable
+                label="Email"
+              />
             </v-card-text>
-            <v-card-actions>
-              <v-col>
-                <v-btn color="#4E7AEC" @click=" validateEmail" class="rounded-lg pa-0 white--text" block :disabled = "loginButtonDisabled">
+            <v-card-actions class="forget-password-card__actions">
+                <v-btn 
+                    color="#4E7AEC" 
+                    @click="validateEmail" 
+                    class="forget-password-card__actions__btn white--text"  
+                    :disabled="loginButtonDisabled"
+                >
                   Ввести новый пароль
                 </v-btn>
-                <v-btn color="##E9E9E8" @click="$router.push({name: 'main'})" class="rounded-lg pa-0" block>
+                <v-btn 
+                  color="##E9E9E8" 
+                  @click="logout" 
+                  class="forget-password-card__actions__btn"
+                >
                   Выйти
                 </v-btn>
-              </v-col>
             </v-card-actions>
           </v-card>
         </v-dialog>
@@ -57,6 +74,13 @@ export default {
     }
   },
   methods: {
+    logout(){
+      this.$router.push(
+        {
+          name: 'main'
+        }
+      )
+    },
     async checkEmail(body) {
       this.loginButtonDisabled = true
       const email = new IdentityRequest()
@@ -77,8 +101,39 @@ export default {
   },
 }
 </script>
-<style scoped>
-.width {
-  width: 20em;
+<style lang="scss">
+.forget-password-card {
+  display: flex !important;
+  gap: 16px !important;
+  flex-direction: column !important;
+  width: 400px !important;
+  height: 370px !important;
+
+  &__title {
+    font-weight: 700 !important;
+    font-size: 28px !important;
+    line-height: 37.5px !important;
+  }
+  &__subtitle {
+    font-weight: 400 !important;
+    font-size: 16px !important;
+    line-height: 18px !important;
+    color: #000000 !important;
+    caret-color: #000000 !important;
+    padding: 0 25px 16px 25px !important;
+  }
+  
+  &__actions {
+    display: flex;
+    flex-direction: column;
+
+    &__btn {
+      border-radius: 8px;
+      padding: 0;
+      margin: 4px 0 4px 0 !important;
+      width: 350px;
+
+    }
+  }
 }
 </style>
