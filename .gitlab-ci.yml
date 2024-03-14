@@ -34,4 +34,4 @@ deploy-dev-app:
     - echo "$SSH_KNOWN_HOSTS" >> ~/.ssh/known_hosts
     - chmod 644 ~/.ssh/known_hosts
   script:
-    - ssh ${DEV_USER}@${DEV_HOST} "export "FRONTEND_VERSION=${VERSION}"; /bin/bash -s " < deploy.sh
+    - ssh ${DEV_USER}@${DEV_HOST} "cd ./docker_services/red_schedule; export "FRONTEND_VERSION=${VERSION}"; /bin/bash -s " < deploy.sh
