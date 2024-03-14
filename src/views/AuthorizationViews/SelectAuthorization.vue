@@ -1,23 +1,46 @@
 <template>
-  <v-overlay :value="overlay" contained class="">
-    <v-row align="center" justify="center" class="width-main-authorization-form ">
-      <v-col cols="4" class=" pa-0">
-        <v-card class="d-flex justify-space-between flex-column height white rounded-lg ma-2">
-          <v-card-title class="black--text"> Добро пожаловать!</v-card-title>
-          <v-card-subtitle class="black--text">
-            Для продолжения работы в RED: Расписание, пожалуйста, авторизуйтесь через Вконтакте.
+  <v-overlay 
+    :value="overlay"
+    contained
+  >
+    <v-row 
+      align="center" 
+      justify="center" 
+      class="width-main-authorization-form"
+    >
+      <v-col cols="4" class="pa-0 d-flex justify-center">
+        <v-card class="authorization-card white">
+          <v-card-title class="authorization-card__title"> 
+            Добро пожаловать!
+          </v-card-title>
+          <v-card-subtitle class="authorization-card__subtitle">
+            Для продолжения работы в RED: Расписание, пожалуйста, авторизуйтесь.
           </v-card-subtitle>
-          <LogoRed class="pos"></LogoRed>
-          <v-alert v-if="message" type="success">
+          <LogoRed 
+            class="authorization-card__logo"
+            :height="100"
+            :width="168"
+          />
+          <v-alert 
+            v-if="message" 
+            type="success"
+          >
             {{ message }}
           </v-alert>
-          <v-card-actions class="flex-column">
-            <v-btn color="#4E7AEC" @click="$router.push({name: 'mail'}).catch(() => {})"
-                   class="rounded-lg pa-0 ma-0 my-1" block>
+          <v-card-actions class="authorization-card__actions">
+            <v-btn
+              color="#4E7AEC"
+              class="authorization-card__actions__btn"
+              @click="LogIn"
+            >
               Войти
             </v-btn>
-            <v-btn color="#4E7AEC" @click="vkLogIn"
-                   class="rounded-lg pa-0 ma-0 my-1" block :disabled="loginButtonDisabled">
+            <v-btn
+              color="#4E7AEC"
+              class="authorization-card__actions__btn"
+              @click="vkLogIn"
+              :disabled="loginButtonDisabled"
+            >
               Войти через VK
             </v-btn>
           </v-card-actions>
@@ -52,9 +75,16 @@ export default {
       const responseType = process.env.RESPONSE_TYPE
       window.location.replace(`https://oauth.vk.com/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&display=${display}&response_type=${responseType}`)
     },
+    LogIn() {
+      this.$router.push(
+        {
+          name: 'mail'
+        }
+      )
+    }
   },
 }
 </script>
 <style lang="scss">
-@import "@/assets/styles/autorizationFormStyles.css";
+@import "@/assets/styles/autorizationFormStyles.scss";
 </style>

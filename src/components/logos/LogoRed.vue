@@ -1,5 +1,5 @@
 <template>
-  <svg width="78" height="43" viewBox="0 0 78 43" fill="none" xmlns="http://www.w3.org/2000/svg"
+  <svg :width="width" :height="height" viewBox="0 0 78 43" fill="none" xmlns="http://www.w3.org/2000/svg"
        xmlns:xlink="http://www.w3.org/1999/xlink" @click="goToMainPage" style="cursor: pointer">
     <g filter="url(#filter0_b_61_1245)">
       <rect width="77.594" height="43" fill="url(#pattern0)"/>
@@ -24,6 +24,16 @@
 
 <script>
 export default {
+  props: {
+    width: {
+      type: Number,
+      default: 78
+    },
+    height: {
+      type: Number,
+      default: 43
+    },
+  },
   methods: {
     goToMainPage() {
       if (this.$route.name !== 'main') this.$router.push({name: 'main'})
