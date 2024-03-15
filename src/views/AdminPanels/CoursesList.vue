@@ -243,7 +243,6 @@ export default {
     deleteItemConfirm() {
       this.courses.splice(this.editedIndex, 1);
       this.$emit('courses-updated', this.courses);
-      console.log("deleteItemConfirm", this.courses)
       this.closeDelete();
     },
 
@@ -280,13 +279,11 @@ export default {
     save() {
       if (this.editedIndex > -1) {
         this.$set(this.courses, this.editedIndex, this.editedItem);
-        this.close();
       } else {
         this.courses.push(this.editedItem);
-        this.close();
       }
-
       this.$emit('courses-updated', this.courses);
+      this.close();
     },
 
     getTodayDate() {
@@ -348,8 +345,6 @@ export default {
         this.$refs.selectItem.blur();
       }
     },
-
-
   },
 };
 </script>

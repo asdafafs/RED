@@ -47,12 +47,10 @@
             label="Выберите время начала занятий"
             :value="globalStartTime"
             type="time"
-
             @input="updateGlobalStartTime"
             :rules="[startTimeRules.required]"
             outlined
             hide-details
-
         ></v-text-field>
       </v-col>
       <v-col cols="lg-3 md-3 sm-6">
@@ -76,7 +74,7 @@
         </v-btn>
       </v-col>
       <v-col class="">
-        <v-btn class="tab-button pa-0 rounded-lg" color="#2B2A29" text @click="close">
+        <v-btn class="tab-button pa-0 rounded-lg" color="#2B2A29" text @click="cancelChanges">
           <span class="black--text">Выйти без изменений</span>
         </v-btn>
       </v-col>
@@ -87,6 +85,17 @@
                      @courses-updated="handleCoursesUpdated"></CoursesList>
       </v-col>
     </v-row>
+    <v-dialog v-model="cancelSaveChanges" max-width="500px">
+      <v-card>
+        <v-card-title class="text-h5">Вы уверены? Все несохраненные изменения будут удалены</v-card-title>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="blue darken-1" text @click="closeCanselChanges">Отмена</v-btn>
+          <v-btn color="blue darken-1" text @click="confirmCancelChanges">OK</v-btn>
+          <v-spacer></v-spacer>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 <script>
@@ -111,14 +120,8 @@ export default {
     selectedStudents: [],
     selectedStudentsIds: [],
     teachers: [],
-    groupData: null,
     groupDisabled: false,
-    lessonDisabled: false,
-    dialog: false,
-    lessonDelete: false,
-    groupDelete: false,
-    showCoursesList: false,
-    search: '',
+    cancelSaveChanges: false,
     chips: ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'],
     headersGroup: [
       {text: '№', align: 'start', sortable: false, value: 'id', width: '5%'},
@@ -129,7 +132,6 @@ export default {
     ],
     groups: [],
     editedIndex: -1,
-    deletedIndex: -1,
     editedItem: {
       groups: {
         groupId: null,
@@ -167,9 +169,6 @@ export default {
     cursorDate: moment(new Date())
   }),
 
-  mounted() {
-  },
-
   computed: {
     ...mapState(['user']),
     isSaveButtonDisabled() {
@@ -199,7 +198,6 @@ export default {
   },
 
   created() {
-
     this.initialize();
   },
 
@@ -312,34 +310,32 @@ export default {
             endTime: item.endTime,
             lectureType: item.lectureType,
             activeUser: item.activeUser,
-
           };
         });
-        this.editedItem = {
-          groups: {
+        this.editedItem.groups = {
             groupId: item.groupId,
             title: item.title,
             startDate: this.globalStartDate,
             studentId: item.student,
-            groupNumber: item.groupNumber
-          },
-
-          lecture: {
-            id: null,
-            title: '',
-            startTime: null,
-            endTime: null,
-            activeUser: null,
-            lectureType: null,
-          },
+            groupNumber: item.groupNumber,
         };
         this.updateSelectedStudentsIds()
       }
     },
 
+    closeCanselChanges() {
+      this.cancelSaveChanges = false
+    },
+
+    confirmCancelChanges() {
+      this.close()
+    },
+
+    cancelChanges() {
+      this.cancelSaveChanges = true
+    },
+
     close() {
-      this.dialog = false;
-      this.showCoursesList = false;
       const nextGroupNumber = this.groups.length + 1;
       this.$nextTick(() => {
         this.editedItem = {
@@ -525,12 +521,12 @@ export default {
 .chips-container {
   display: flex;
   flex-wrap: wrap;
-  min-width: 210px; /* Минимальная ширина контейнера, чтобы вместить 3 элемента в одной строке */
+  min-width: 210px;
 }
 
 .chips-container > .v-chip {
-  margin-right: 8px; /* Расстояние между элементами */
-  margin-bottom: 8px; /* Расстояние между строками */
+  margin-right: 8px;
+  margin-bottom: 8px;
 }
 
 </style>

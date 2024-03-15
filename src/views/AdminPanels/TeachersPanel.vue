@@ -260,7 +260,6 @@ export default {
         const body = this.editedTeacher
         await this.putActiveUser(body).finally(async () => {
           this.persons = await this.getActiveUsers();
-          this.close();
         })
       } else {
         const body = {
@@ -272,9 +271,8 @@ export default {
         }
         await this.postActiveUser(body).finally(async () => {
           this.persons = await this.getActiveUsers();
-          this.close();
         })
-
+        this.close();
       }
     },
   },

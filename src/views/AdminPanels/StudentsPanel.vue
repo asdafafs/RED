@@ -301,7 +301,6 @@ export default {
         }
         await this.postUser(body).finally(() => {
           this.persons = this.getStudents();
-          console.log(this.persons)
           this.close();
         })
       }

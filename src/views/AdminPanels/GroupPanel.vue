@@ -58,9 +58,7 @@
 </template>
 <script>
 import GroupsRequest from "@/services/GroupsRequest";
-import CoursesRequest from "@/services/CoursesRequest";
 import {mapState} from "vuex";
-import moment from 'moment';
 import Item from "@/views/AdminPanels/GroupTemplate.vue";
 import CoursesList from "@/views/AdminPanels/CoursesList.vue";
 
