@@ -1,15 +1,15 @@
 <template>
   <v-container class="px-3 pa-0 ma-0" fluid v-if="true">
-    <div class="text-lg-h3 text-md-h3 text-sm-h3 text-xs-h1 font-weight-medium px-0">
+    <div class="text-lg-h3 text-md-h3 text-sm-h3 text-xs-h1 font-weight-medium px-0 mb-3">
       Расписание ваших занятий
     </div>
     <hr>
-    <div class="text-lg-h6 text-md-h5 text-sm-h4 text-xs-h1 px-0">
+    <div class="text-lg-h6 text-md-h5 text-sm-h4 text-xs-h1 px-0 mb-3">
       Выберите день, чтобы записаться на занятие
     </div>
     <v-row>
       <v-col class="pa-0">
-        <router-view></router-view>
+        <router-view/>
       </v-col>
     </v-row>
   </v-container>
