@@ -5,7 +5,6 @@
         <v-sheet>
           <v-calendar
               ref="calendar"
-              v-model="focus"
               :events="eventsItems"
               color="primary"
               type="week"
@@ -95,16 +94,11 @@ export default {
             item.classList.toggle(x)
           })
         });
-    this.test = true
   },
 
   data: () => ({
     eventsTemplate: [],
-    focus: '',
     weekday: [1, 2, 3, 4, 5, 6, 0],
-    selectedEvent: {},
-    selectedElement: null,
-    selectedOpen: false,
     dragEvent: {
       start: '',
       end: '',
@@ -193,7 +187,7 @@ export default {
 
       this.$emit('plan-updated', this.eventsTemplate);
     }
-,
+    ,
 
     deleteEvent(event) {
       const index = this.eventsTemplate.indexOf(event);
@@ -242,7 +236,7 @@ export default {
           return dragStartInsideExisting || dragEndInsideExisting || existingInsideDrag;
         });
         const sec = 1000
-        const interval = Math.abs(newStart - start) >= sec ;
+        const interval = Math.abs(newStart - start) >= sec;
 
         if (isIntersect || !interval) {
           return;

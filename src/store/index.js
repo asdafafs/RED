@@ -18,6 +18,7 @@ export default new Vuex.Store({
             middleName: '',
             discriminator: '',
             groupId: 0,
+            vkUserId: 0,
         }
     },
     mutations: {
@@ -30,6 +31,7 @@ export default new Vuex.Store({
             state.user.middleName = user.data['middleName']
             state.user.discriminator = user.data['discriminator']
             state.user.groupId = user.data['groupId']
+            state.user.vkUserId = user.data['vkUserId']
         },
         RESET_CURRENT_USER(state) {
             state.user = {
@@ -42,6 +44,7 @@ export default new Vuex.Store({
                 middleName: '',
                 discriminator: '',
                 groupId: 0,
+                vkUserId: 0,
             }
         }
     },

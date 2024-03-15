@@ -21,25 +21,19 @@
               :type="type"
               :events="events"
               @click:event="showEvent"
-              :event-color="getEventColor"
+
               :event-ripple="false"
               :event-height="num"
               :hide-header=false
-              @change="updateRange"
               event-more-text="+ {0}"
           >
-            <template v-slot:event="{event}">
-              <v-container class="pa-1 mx-0 d-flex ">
+            <template v-slot:event="{event}" >
+              <v-container class="pa-1 mx-0 d-flex " :class="getTableRowClass(event)">
                 <v-row class="ma-0  ">
                   <v-col cols="4" class="black--text pa-0 align-self-center d-none d-lg-block">
                     <div class="text-subtitle-2 d-flex justify-center">{{ formatTime(event.startTime) }}</div>
                   </v-col>
                   <v-col class="d-lg-none pa-0" style="display: flex; align-items: center; justify-content: center;">
-                    <div class="logo ">
-                      <car-logo v-if="event.lectureType === 3"/>
-                      <lecture-logo
-                          v-if="event.lectureType === 2 || event.lectureType === 1 || event.lectureType === null"/>
-                    </div>
                   </v-col>
                   <v-col class="black--text pa-0 align-self-center d-none d-lg-block">
                     <div class="font-weight-bold text-format">{{ event.title }}</div>
@@ -236,21 +230,14 @@ export default {
       return `${hours}:${minutes}`;
     },
 
-    getEventColor(event) {
-      if (event.lectureType === 4) {
-        return '#9DB9FF';
-      } else if (event.lectureType === 3) {
-        return '#E9E9E8';
-      } else if (event.lectureType === 2) {
-        return '#E9E9E8';
-      } else if (event.lectureType === 1) {
-        return '#E9E9E8';
-      } else {
-        return '#E9E9E8'
-      }
-    },
-
-    updateRange() {
+    getTableRowClass(event) {
+      const classMap = {
+        1: ' green-background',
+        2: 'yellow-background',
+        3: 'red-background',
+        4: 'gray-background'
+      };
+      return classMap[event.lectureType] || 'free-practice';
     },
 
     handleResize() {
@@ -264,6 +251,7 @@ export default {
 }
 </script>
 <style lang="scss">
+@import "@/assets/styles/eventTypesStyles.css";
 @import "@/assets/styles/buttonStyles.css";
 
 .v-calendar-weekly__week {

@@ -6,14 +6,13 @@
           <v-btn icon class="ma-0  align-self-center" @click="prev()">
             <v-icon>mdi-chevron-left</v-icon>
           </v-btn>
-          <v-toolbar-title v-if="test" class="text-h6 align-self-center">{{ dateDay }}</v-toolbar-title>
+          <v-toolbar-title class="text-h6 align-self-center">{{ dateDay }}</v-toolbar-title>
           <v-btn icon class="ma-0  align-self-center" @click="next()">
             <v-icon>mdi-chevron-right</v-icon>
           </v-btn>
         </v-sheet>
         <v-sheet>
           <v-calendar
-              v-model="focus"
               style="overflow: hidden;"
               ref="cal"
               type="day"
@@ -22,10 +21,8 @@
               color="white"
               event-color="white"
               mode="stack"
-              class="day-calendar"
-
-          >
-            <template v-slot:event="data">
+              class="day-calendar">
+            <template v-slot:event="data" >
               <div class="day-event">
                 <div class="day">
                   {{ formatTime(data.event.start) }}
@@ -81,7 +78,6 @@ export default {
   components: {LectureLogo, CarLogo},
   data: () => ({
     events: [],
-    focus: '',
     test: false,
     dateDay: moment().locale('ru').format('Do MMMM'),
     currentDate: moment(),
@@ -137,12 +133,10 @@ export default {
             if (foundStudent) {
               console.log('Этого студента не найдено в списке свободных');
             } else {
-              console.log('else')
-              console.log(this.$store.state.user.groupId)
               const groupId = this.$store.state.user.groupId
               this.getAllEvents(groupId)
 
-              console.log("2", id);
+              console.log("2", this.events);
             }
           })
           .catch(error => {
@@ -195,10 +189,12 @@ export default {
 
     async getAllEvents(groupId) {
       const lessons = await this.getLessons(groupId);
+      console.log('lessons', lessons)
       let practices = []
       practices = await this.getPractices();
-
+      console.log('practices', practices)
       this.events = [...lessons, ...practices];
+      console.log('events',this.events )
       this.events = this.events.map(item => {
         return {
           ...item,
@@ -215,39 +211,42 @@ export default {
       return `${hours}:${minutes}`;
     },
 
-    getEventColor(event) {
-      if (event.lectureType === 3) {
-        return '#9DB9FF';
-      } else if (event.lectureType === 2) {
-        return '#E9E9E8';
-      } else {
-        return '#E9E9E8'
-      }
-    },
-
-    updateRange() {
+    getTableRowClass(event) {
+      const classMap = {
+        1: ' green-background',
+        2: 'yellow-background',
+        3: 'red-background',
+        4: 'gray-background'
+      };
+      return classMap[event.lectureType] || 'free-practice';
     },
 
     prev() {
       this.$refs.cal.prev(1);
       this.currentDate = this.currentDate.clone().subtract(1, 'day');
       this.updateDateRange()
+
     },
 
     next() {
       this.$refs.cal.next(1);
       this.currentDate = this.currentDate.clone().add(1, 'day');
       this.updateDateRange()
+
     },
 
     updateDateRange() {
       this.dateDay = this.currentDate.clone().locale('ru').format('Do MMMM');
-    }
+
+    },
+
   },
 }
 </script>
 
 <style lang="scss">
+@import "@/assets/styles/eventTypesStyles.css";
+
 .day-event {
   display: flex;
   height: 100%;

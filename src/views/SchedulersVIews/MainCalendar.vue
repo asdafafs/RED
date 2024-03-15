@@ -1,10 +1,6 @@
 <template>
   <v-container class="px-0 pa-0 ma-0 " fluid>
-<!--    <v-row class="">-->
-<!--      <v-col cols="12" class="">-->
-        <div class="text-h5 font-weight-bold">Мое расписание</div>
-<!--      </v-col>-->
-<!--    </v-row>-->
+    <div class="text-h5 font-weight-bold">Мое расписание</div>
     <v-row class="d-flex mt-0 ga-3" no-gutters>
       <v-col sm="3" md="3" lg="1">
         <v-btn text class="black--text tab-button pa-0" width="100%"

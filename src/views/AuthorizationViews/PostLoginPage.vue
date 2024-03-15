@@ -16,6 +16,7 @@ export default {
     const code = this.$route.query.code
     await this.identityService.postLoginVk(code)
         .then(async response => {
+          console.log(response.data.requireRegistration)
           if (response.data.requireRegistration) {
             this.$router.push({
               path: '/registration',
@@ -34,11 +35,6 @@ export default {
             })
           }
         })
-        // .finally(async () => {
-        //   await this.$router.push({
-        //     path: '/schedule/lessons',
-        //   })
-        // })
   }
 }
 </script>

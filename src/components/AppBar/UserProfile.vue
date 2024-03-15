@@ -19,7 +19,7 @@
           </template>
           <v-list>
             <v-list-item
-                @click.stop="linkVk()">
+                @click.stop="linkVk()" v-if="this.$store.state.user.vkUserId !== 0">
               Привязать аккуант к вк
             </v-list-item>
             <v-list-item
@@ -49,7 +49,7 @@ export default {
 
     async linkVk() {
       const clientId = '51785736'
-      const redirectUri = `https://red.techbeaver.ru/post-login`
+      const redirectUri = `${process.env.FRONT_PAGE_URL}/post-login`
       const display = 'popup'
       const responseType = 'code'
       window.location.replace(`https://oauth.vk.com/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&display=${display}&response_type=${responseType}`)

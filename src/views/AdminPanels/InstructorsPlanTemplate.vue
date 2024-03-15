@@ -99,12 +99,13 @@ export default {
       required: value => !!value
     },
   }),
-  watch: {},
+
   computed: {
     getIdUser() {
       const {selectedUserID} = this.$route.params;
       return selectedUserID;
     },
+
     savePlanDisabled() {
       return !(this.startDateRules.required(this.practiceCourseStart) && this.endTimeRules.required(this.practiceCourseEnd))
     },

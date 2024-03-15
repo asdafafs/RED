@@ -37,30 +37,25 @@
               ref="calendar"
               v-model="focus"
               :events="events"
-              color="primary"
               type="week"
-              :event-color="getEventColor"
-              :event-height="50"
               :weekdays="weekday"
-              @change="updateRange"
               @click:event="showEvent"
-
+              :event-ripple="false"
+              :hide-header=false
           >
-            <template v-slot:event="{event}">
-              <v-container class="pa-0 mx-0 d-flex " fill>
-                <v-row class="ma-0" fill>
-                  <v-col cols="4" class="black--text pa-0 align-self-center d-none d-lg-block">
+            <template v-slot:event="{event}" >
+              <v-container class="pa-0 mx-0 d-flex fill-height" fluid :class="getTableRowClass(event)" style="align-items: flex-start;">
+                <v-row class="ma-0 " fill v-if="$vuetify.breakpoint.lgAndUp">
+                  <v-col cols="4" class="black--text pa-0 ">
                     <div class="text-subtitle-2 d-flex justify-center">{{ formatTime(event.start) }}</div>
                   </v-col>
-                  <v-col class="d-lg-none pa-0" fill>
-                    <div class="logo ">
-                      <car-logo v-if="event.lectureType === 3"/>
-                      <lecture-logo
-                          v-if="event.lectureType === 2 || event.lectureType === 1 || event.lectureType === null"/>
-                    </div>
-                  </v-col>
-                  <v-col class="black--text pa-0 align-self-center d-none d-lg-block">
+                  <v-col cols="6" class="black--text pa-0 ">
                     <div class="font-weight-bold text-format-week">{{ event.title }}</div>
+                  </v-col>
+                </v-row>
+                <v-row class="ma-0 d-lg-none fill-height" fill >
+                  <v-col class="d-lg-none pa-0 black--text align-self-center text-center" fill>
+                    <div class="font-weight-bold text-format-week ">{{ formatTime(event.start) }}</div>
                   </v-col>
                 </v-row>
               </v-container>
@@ -140,7 +135,6 @@ export default {
     selectedElement: null,
     selectedOpen: false,
     dragEvent: null,
-    dragStart: null,
     createEvent: null,
     createStart: null,
     extendOriginal: null,
@@ -251,16 +245,6 @@ export default {
       const minutes = date.getMinutes().toString().padStart(2, '0');
       return `${hours}:${minutes}`;
     },
-
-    getEventColor(event) {
-      if (event.lectureType === 3) {
-        return '#9DB9FF';
-      } else if (event.lectureType === 2) {
-        return '#E9E9E8';
-      } else {
-        return '#E9E9E8'
-      }
-    },
     prev() {
       this.$refs.calendar.prev(1);
       this.currentDate = this.currentDate.clone().subtract(1, 'week');
@@ -278,23 +262,15 @@ export default {
       this.dateSunday = this.currentDate.clone().endOf('isoWeek').format('DD');
     },
 
-    updateRange() {
-    }
-    ,
-    startDrag({event, timed}) {
-      if (event && timed) {
-        this.dragEvent = event
-        this.dragTime = null
-        this.extendOriginal = null
-      }
-    },
-
-    endDrag() {
-      this.dragTime = null
-      this.dragEvent = null
-      this.createEvent = null
-      this.createStart = null
-      this.extendOriginal = null
+    getTableRowClass(event) {
+      const classMap = {
+        1: ' green-background',
+        2: 'yellow-background',
+        3: 'red-background',
+        4: 'gray-background'
+      };
+      console.log(classMap[event.lectureType] || 'free-practice')
+      return classMap[event.lectureType] || 'free-practice';
     },
 
     startTime(tms) {
@@ -330,46 +306,13 @@ export default {
     toTime(tms) {
       return new Date(tms.year, tms.month - 1, tms.day, tms.hour, tms.minute).getTime()
     },
-
-    mouseMove(tms) {
-      const mouse = this.toTime(tms)
-      if (this.dragEvent && this.dragTime !== null) {
-        console.log(this.dragEvent)
-        const start = moment(this.dragEvent.startTime).format("YYYY-MM-DD HH:mm")
-        const end = moment(this.dragEvent.endTime).format("YYYY-MM-DD HH:mm")
-        const duration = end - start
-        const newStartTime = mouse - this.dragTime
-        const newStart = this.roundTime(newStartTime)
-        const newEnd = newStart + duration
-
-        this.dragEvent.start = newStart
-        this.dragEvent.end = newEnd
-      } else if (this.createEvent && this.createStart !== null) {
-        const mouseRounded = this.roundTime(mouse, false)
-        const min = Math.min(mouseRounded, this.createStart)
-        const max = Math.max(mouseRounded, this.createStart)
-
-        this.createEvent.start = min
-        this.createEvent.end = max
-      }
-    },
   },
 
 }
 </script>
 <style lang="scss">
 @import "@/assets/styles/buttonStyles.css";
-
-.v-event-timed.white--text {
-  //display: flex;
-  //justify-content: center;
-  //align-items: center;
-}
-
-.theme--light.v-btn {
-  color: #4E7AEC;
-}
-
+@import "@/assets/styles/eventTypesStyles.css";
 .v-calendar .v-event-timed {
   white-space: pre-wrap;
   width: 100%;
@@ -424,6 +367,5 @@ export default {
   overflow: hidden;
   text-overflow: ellipsis;
   max-height: 7em;
-  max-width: 10em;
 }
 </style>
