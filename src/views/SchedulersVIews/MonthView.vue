@@ -21,47 +21,83 @@
               :type="type"
               :events="events"
               @click:event="showEvent"
-
               :event-ripple="false"
               :event-height="num"
               :hide-header=false
               event-more-text="+ {0}"
           >
-            <template v-slot:event="{event}" >
+            <template v-slot:event="{event}">
               <v-container class="pa-1 mx-0 d-flex " :class="getTableRowClass(event)">
-                <v-row class="ma-0  ">
+                <v-row class="ma-0" v-if="$vuetify.breakpoint.lgAndUp">
                   <v-col cols="4" class="black--text pa-0 align-self-center d-none d-lg-block">
                     <div class="text-subtitle-2 d-flex justify-center">{{ formatTime(event.startTime) }}</div>
-                  </v-col>
-                  <v-col class="d-lg-none pa-0" style="display: flex; align-items: center; justify-content: center;">
                   </v-col>
                   <v-col class="black--text pa-0 align-self-center d-none d-lg-block">
                     <div class="font-weight-bold text-format">{{ event.title }}</div>
                   </v-col>
                 </v-row>
+                <v-row class="ma-0 d-lg-none fill-height" fill>
+                  <v-col class="d-lg-none pa-0 black--text align-self-center text-center" fill>
+                    <div class="font-weight-bold text-format-week ">{{ formatTime(event.start) }}</div>
+                  </v-col>
+                </v-row>
               </v-container>
             </template>
           </v-calendar>
-          <v-menu max-width="200px" min-width="200px"
-                  v-model="selectedOpen"
-                  :close-on-content-click="false"
-                  :activator="selectedElement"
-                  offset-x
-          >
-            <v-card color="grey lighten-4" flat>
-              <v-toolbar>
-                <v-toolbar-title v-html="formatTime(selectedEvent.startTime)"></v-toolbar-title>
-              </v-toolbar>
-              <v-card-text>
-                <span v-html="selectedEvent.title"></span>
+          <v-dialog v-model="selectedOpen" max-width="407px" persistent>
+            <v-card class="rounded-xl"
+                    :style="{ border: (selectedEvent.studentId === null && userId !== selectedEvent.studentId) ? '2px solid #4E7AEC' : '2px solid grey' }"
+                    flat>
+              <v-toolbar-title class="pa-3">
+                <v-row>
+                  <v-col class="flex-column">
+                    <div class="text-caption text-medium-emphasis grey--text">СВЕДЕНИЯ О ЗАПИСИ</div>
+                    <div class="text-lg-h4 font-weight-bold" v-if="selectedEvent.lectureType">Лекция</div>
+                    <div class="text-lg-h4 font-weight-bold" v-else>Вождение</div>
+                  </v-col>
+                </v-row>
+              </v-toolbar-title>
+              <v-card-text class="pa-3 pt-0">
+                <v-container class="">
+                  <v-row class="">
+                    <v-col class="flex-column pa-0 flex-wrap">
+                      <div style="color: #4E7AEC">
+                        {{ selectedEvent && selectedEvent.startTime ? selectedEvent.startTime.split('T')[0] : '' }}
+                      </div>
+                      <div class="text-lg-h5 font-weight-bold black--text">{{ formatTime(selectedEvent.startTime) }}
+                        {{ ' - ' }} {{ formatTime(selectedEvent.endTime) }}
+                      </div>
+                      <div class="text-subtitle-1 text-medium-emphasis "
+                           v-if="discriminatorUser && !selectedEvent.lectureType">Преподаватель
+                      </div>
+                      <div class="text-subtitle-1 text-medium-emphasis "
+                           v-else>Тема лекции
+                      </div>
+                      <div class="text-subtitle-2 font-weight-regular black--text" v-if="discriminatorUser">{{
+                          selectedEvent.title
+                        }}
+                      </div>
+                      <div class="text-subtitle-1 text-medium-emphasis" v-if="!discriminatorUser">Студент</div>
+                      <div class="text-subtitle-2 font-weight-regular black--text" v-if="!discriminatorUser">{{
+                          studentTitle
+                        }}
+                      </div>
+                      <div class="text-subtitle-1 text-medium-emphasis" v-if="discriminatorUser">Лимит часов</div>
+                      <div v-if="discriminatorUser" class="black--text">Основные <span
+                          style="color: #4E7AEC">({{ studentHours[1] }} из {{ studentHours[0] }})</span></div>
+                    </v-col>
+                  </v-row>
+                </v-container>
               </v-card-text>
-              <v-card-actions>
-                <v-btn textcolor="secondary" @click="selectedOpen = false">
-                  Закрыть
-                </v-btn>
+              <v-card-actions class="pa-0">
+                <v-container class="pa-0" style="display: flex; justify-content: space-between;">
+                  <v-btn text color="secondary" @click="closeEvent()">
+                    Закрыть
+                  </v-btn>
+                </v-container>
               </v-card-actions>
             </v-card>
-          </v-menu>
+          </v-dialog>
         </v-sheet>
       </v-col>
     </v-row>
@@ -117,11 +153,13 @@ export default {
     modes: [
       'column'
     ],
+    studentTitle: 'Студент не найден',
     weekday: [1, 2, 3, 4, 5, 6, 0],
     value: '',
     selectedEvent: {},
     selectedElement: null,
     selectedOpen: false,
+    studentHours: 0,
   }),
 
   created() {
@@ -131,12 +169,26 @@ export default {
   computed: {
     ...mapState(['user']),
 
+
+    discriminatorUser() {
+      return this.user.discriminator !== 'Учитель'
+    },
+
     userId() {
       return this.$store.state.user.userId;
+    },
+
+    groupId() {
+      return this.user.groupId
     }
   },
 
   methods: {
+    closeEvent() {
+      this.selectedOpen = false
+      this.studentTitle = 'Студент не выбран'
+    },
+
     initialize() {
       this.selectCurrentFreeStudent()
     },
@@ -152,12 +204,10 @@ export default {
             if (foundStudent) {
               console.log('Этого студента не найдено в списке свободных');
             } else {
-              console.log('else')
               console.log(this.$store.state.user.groupId)
               const groupId = this.$store.state.user.groupId
               this.getAllEvents(groupId)
-
-              console.log("2", id);
+              this.studentTitle = `${this.$store.state.user.name} ${this.$store.state.user.surname} ${this.$store.state.user.middleName}`
             }
           })
           .catch(error => {
@@ -166,6 +216,7 @@ export default {
     },
 
     showEvent({nativeEvent, event}) {
+      console.log(event)
       const open = () => {
         this.selectedEvent = event
         this.selectedElement = nativeEvent.target
