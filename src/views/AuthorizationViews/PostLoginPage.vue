@@ -14,26 +14,11 @@ export default {
   },
   async created() {
     const code = this.$route.query.code
-    await this.identityService.postLoginVk(code)
-        .then(async response => {
-          console.log(response.data.requireRegistration)
-          if (response.data.requireRegistration) {
-            this.$router.push({
-              path: '/registration',
-              query: {
-                vkUserId: response.data.vkUserId
-              }
-            })
-          } else {
-            const identity = new IdentityRequest()
-            await identity.getIdentity()
-                .then(async (x) => {
-                  await store.dispatch('GET_CURRENT_USER', x)
-                })
-            await this.$router.push({
-              path: '/schedule/lessons',
-            })
-          }
+    await this.identityService.postLoginVk(code, process.env.REDIRECT_URI)
+        .then(async () => {
+          await this.$router.push({
+            path: '/schedule/lessons',
+          })
         })
   }
 }

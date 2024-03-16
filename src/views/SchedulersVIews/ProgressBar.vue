@@ -78,7 +78,7 @@ export default {
 
         this.items = [
           {
-            title: 'Пройдено теории',
+            title: 'Осталось лекций',
             hoursSpent: studentInfo.generalHoursSpent,
             totalHours: studentInfo.generalHours
           },

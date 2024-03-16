@@ -16,49 +16,79 @@
               style="overflow: hidden;"
               ref="cal"
               type="day"
+              v-model="value"
               event-overlap-mode="stack"
-              :events="events"
+              :events="all_events"
               color="white"
               event-color="white"
               mode="stack"
-              class="day-calendar">
-            <template v-slot:event="data" >
-              <div class="day-event">
-                <div class="day">
-                  {{ formatTime(data.event.start) }}
-                </div>
-                <div class="logo ">
-                  <car-logo v-if="data.event.lectureType === 3"/>
-                  <lecture-logo
-                      v-if="data.event.lectureType !== 3"/>
+              class="day-calendar"
+              @click:event="showEvent">
+            <template v-slot:event="{event}">
+              <div class="day-event " :class="getTableRowClass(event)">
+                <div class="day  ">
+                  {{ formatTime(event.start) }}
                 </div>
                 <div class="custom-info text-format-day">
-                  {{ data.event.title }}
+                  {{ event.title }}
                 </div>
               </div>
             </template>
           </v-calendar>
-          <v-menu
-              max-width="200px" min-width="200px"
-              v-model="selectedOpen"
-              :close-on-content-click="false"
-              :activator="selectedElement"
-              offset-x
-          >
-            <v-card color="grey lighten-4" flat>
-              <v-toolbar>
-                <v-toolbar-title v-html="formatTime(selectedEvent.startTime)"></v-toolbar-title>
-              </v-toolbar>
-              <v-card-text>
-                <span v-html="selectedEvent.title"></span>
+          <v-dialog v-model="selectedOpen" max-width="407px" persistent>
+            <v-card class="rounded-xl"
+                    :style="{ border: (selectedEvent.studentId === null && userId !== selectedEvent.studentId) ? '2px solid #4E7AEC' : '2px solid grey' }"
+                    flat>
+              <v-toolbar-title class="pa-3">
+                <v-row>
+                  <v-col class="flex-column">
+                    <div class="text-caption text-medium-emphasis grey--text">СВЕДЕНИЯ О ЗАПИСИ</div>
+                    <div class="text-lg-h4 font-weight-bold" v-if="selectedEvent.lectureType">Лекция</div>
+                    <div class="text-lg-h4 font-weight-bold" v-else>Вождение</div>
+                  </v-col>
+                </v-row>
+              </v-toolbar-title>
+              <v-card-text class="pa-3 pt-0">
+                <v-container class="">
+                  <v-row class="">
+                    <v-col class="flex-column pa-0 flex-wrap">
+                      <div style="color: #4E7AEC">
+                        {{ selectedEvent && selectedEvent.startTime ? selectedEvent.startTime.split('T')[0] : '' }}
+                      </div>
+                      <div class="text-lg-h5 font-weight-bold black--text">{{ formatTime(selectedEvent.startTime) }}
+                        {{ ' - ' }} {{ formatTime(selectedEvent.endTime) }}
+                      </div>
+                      <div class="text-subtitle-1 text-medium-emphasis "
+                           v-if="discriminatorUser && !selectedEvent.lectureType">Преподаватель
+                      </div>
+                      <div class="text-subtitle-1 text-medium-emphasis "
+                           v-else>Тема лекции
+                      </div>
+                      <div class="text-subtitle-2 font-weight-regular black--text" v-if="discriminatorUser">{{
+                          selectedEvent.title
+                        }}
+                      </div>
+                      <div class="text-subtitle-1 text-medium-emphasis" v-if="!discriminatorUser">Студент</div>
+                      <div class="text-subtitle-2 font-weight-regular black--text" v-if="!discriminatorUser">{{
+                          studentTitle
+                        }}
+                      </div>
+                      <div class="text-subtitle-1 text-medium-emphasis" v-if="discriminatorUser">Лимит часов</div>
+                      <div v-if="discriminatorUser" class="black--text">Основные <span
+                          style="color: #4E7AEC">({{ studentHours[1] }} из {{ studentHours[0] }})</span></div>
+                    </v-col>
+                  </v-row>
+                </v-container>
               </v-card-text>
-              <v-card-actions>
-                <v-btn textcolor="secondary" @click="selectedOpen = false">
-                  Закрыть
-                </v-btn>
+              <v-card-actions class="pa-0">
+                <v-container class="pa-0" style="display: flex; justify-content: space-between;">
+                  <v-btn text color="secondary" @click="closeEvent()">
+                    Закрыть
+                  </v-btn>
+                </v-container>
               </v-card-actions>
             </v-card>
-          </v-menu>
+          </v-dialog>
         </v-sheet>
       </v-col>
     </v-row>
@@ -77,7 +107,9 @@ export default {
   name: "ExampleDay.vue",
   components: {LectureLogo, CarLogo},
   data: () => ({
-    events: [],
+    value: '',
+    all_events: [],
+    today_events: [],
     test: false,
     dateDay: moment().locale('ru').format('Do MMMM'),
     currentDate: moment(),
@@ -93,6 +125,7 @@ export default {
     selectedEvent: {},
     selectedElement: null,
     selectedOpen: false,
+    studentHours: 0,
   }),
 
   mounted() {
@@ -114,11 +147,24 @@ export default {
 
     userId() {
       return this.$store.state.user.userId;
+    },
+
+    discriminatorUser() {
+      return this.user.discriminator !== 'Учитель'
+    },
+
+    groupId() {
+      return this.user.groupId
     }
   },
 
   methods: {
-    initialize(){
+    closeEvent() {
+      this.selectedOpen = false
+      this.studentTitle = 'Студент не выбран'
+    },
+
+    initialize() {
       this.selectCurrentFreeStudent()
     },
 
@@ -135,8 +181,7 @@ export default {
             } else {
               const groupId = this.$store.state.user.groupId
               this.getAllEvents(groupId)
-
-              console.log("2", this.events);
+              this.studentTitle = `${this.$store.state.user.name} ${this.$store.state.user.surname} ${this.$store.state.user.middleName}`
             }
           })
           .catch(error => {
@@ -193,9 +238,9 @@ export default {
       let practices = []
       practices = await this.getPractices();
       console.log('practices', practices)
-      this.events = [...lessons, ...practices];
-      console.log('events',this.events )
-      this.events = this.events.map(item => {
+      this.all_events = [...lessons, ...practices];
+      console.log('events', this.all_events)
+      this.all_events = this.all_events.map(item => {
         return {
           ...item,
           start: moment(item.start).format("YYYY-MM-DD HH:mm"),
@@ -222,14 +267,14 @@ export default {
     },
 
     prev() {
-      this.$refs.cal.prev(1);
+      this.$refs.cal.prev();
       this.currentDate = this.currentDate.clone().subtract(1, 'day');
       this.updateDateRange()
 
     },
 
     next() {
-      this.$refs.cal.next(1);
+      this.$refs.cal.next();
       this.currentDate = this.currentDate.clone().add(1, 'day');
       this.updateDateRange()
 
@@ -237,7 +282,7 @@ export default {
 
     updateDateRange() {
       this.dateDay = this.currentDate.clone().locale('ru').format('Do MMMM');
-
+      console.log(this.all_events)
     },
 
   },
@@ -250,24 +295,27 @@ export default {
 .day-event {
   display: flex;
   height: 100%;
-  background-color: #E9E9E8;
   border-radius: 12px;
   align-items: center;
+
   padding: 15px;
 
   .day {
+    display: flex;
     color: #000000;
     font-size: 40px;
     font-family: Roboto, sans-serif;
     font-weight: bold;
+    min-width: 120px;
+    margin: 0px 0px 0px 0px;
   }
 
   .custom-info {
-    font-size: 20px;
+    font-size: 16px;
     color: #000000;
     padding-left: 8px;
     font-family: Roboto, sans-serif;
-    font-weight: bold;
+    font-weight: 600;
     display: flex;
     flex-direction: column;
     white-space: normal;
@@ -280,9 +328,6 @@ export default {
 
   }
 
-  .logo {
-    padding-left: 22px;
-  }
 }
 
 .day-calendar {
@@ -311,7 +356,7 @@ export default {
   white-space: pre-wrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-height: 6em;
-  max-width: inherit;
+  max-height: inherit;
+  max-width: 100%;
 }
 </style>

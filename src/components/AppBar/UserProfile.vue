@@ -19,7 +19,7 @@
           </template>
           <v-list>
             <v-list-item
-                @click.stop="linkVk()" v-if="this.$store.state.user.vkUserId !== 0">
+                @click.stop="linkVk()">
               Привязать аккуант к вк
             </v-list-item>
             <v-list-item
