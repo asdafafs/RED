@@ -1,80 +1,105 @@
 <template>
-  <v-navigation-drawer :value="drawer" app clipped color="#1e1f22" v-if="!showDrawer" hide-overlay>
-    <v-list height="inherit" class="d-flex flex-column">
+  <v-navigation-drawer 
+    v-if="!showDrawer" 
+    :value="drawer" 
+    app 
+    clipped 
+    color="#1e1f22"
+  >
+    <v-list 
+      height="inherit" 
+      class="d-flex flex-column"
+    >
       <v-list-item
-          class="white--text align-start align-center list-item">
-        <span class="mdi mdi-plus rotate" @click.stop="$emit('update:drawer', false);"></span>
-      </v-list-item>
-      <v-list-item
-          @click.stop="$router.push({name: 'schedule-lessons'}).catch(() => {}); $emit('update:drawer', false)"
-          class="white--text align-start align-center list-item">
-        Расписание
-      </v-list-item>
-      <v-list-item
-          @click.stop="$router.push({name: 'singUpClasses-month'}).catch(() => {}); $emit('update:drawer', false)"
-          class="white--text align-start align-center list-item">
-        Запись на занятие
-      </v-list-item>
-      <v-list-item
-          @click.stop="$router.push('*').catch(() => {}); $emit('update:drawer', false)"
-          class="white--text align-start align-center list-item">
-        Лекции
-      </v-list-item>
-      <v-list-item
-          v-if="student"
-          @click.stop="$router.push({name: 'plan-main-month'}).catch(() => {}); $emit('update:drawer', false)"
-          class="white--text align-start align-center list-item">
-        Мой план
-      </v-list-item>
-      <v-list-item
-          v-if="!student"
-          @click.stop="$router.push({name: 'admin-students'}).catch(() => {}); $emit('update:drawer', false)"
-          class="white--text align-start align-center list-item">
-        Админпанель
-      </v-list-item>
-      <v-list-item
-          @click.stop="$router.push('*').catch(() => {}); $emit('update:drawer', false)"
-          class="white--text align-start align-center list-item">
-        Привязать аккуант к вк
-      </v-list-item>
-      <v-list-item
-          @click.stop="exit(); $router.push({name: 'main'}).catch(() => {}); $emit('update:drawer', false)"
-          class="white--text align-end mt-auto align-center" style="max-height: 4em;" >
-        <div class="d-flex flex-column">
-          <div>
-            <span class="mdi mdi-account-outline"></span>
-            {{ user }}
-          </div>
-          <div style="text-align: left;">
-            {{ student ? role[0] : role[1] }}
-          </div>
-        </div>
-        <span class="mdi mdi-login" style="transform: scale(1.5)"></span>
+        v-for="item in navigationItems"
+        :key="item.id"
+        class="white--text align-center list-item"
+        @click.stop="onClick(item)"
+        :class="{'align-end mt-auto': item.routerName === 'main'}"
+      >
+        <template #default>
+          {{item.title }} 
+          <v-icon color="white">{{ item.icon }}</v-icon>
+          <logoutButton v-if="item.routerName === 'main'"/>
+        </template>
       </v-list-item>
     </v-list>
   </v-navigation-drawer>
 </template>
 <script>
 import IdentityRequest from "@/services/IdentityRequest";
+import logoutButton from "@/components/UI/LogoutButton.vue";
 
 export default {
   name: 'NavigationBar',
+  components: {
+    logoutButton
+  },
   props: {
-    drawer: {},
-    role: {},
-    showDrawer: {},
-    student: {},
-    user: {}
+    drawer: Boolean,
+    showDrawer: Boolean,
+  },
+  computed: {
+    navigationItems() {
+      return [
+        {
+          id: 0,
+          icon: 'mdi-close-thick'
+        },
+        {
+          id: 1,
+          title: 'Расписание',
+          routerName: 'schedule-lessons'
+        },
+        {
+          id: 2,
+          title: 'Запись на занятие',
+          routerName: 'singUpClasses-month'
+        },
+        {
+          id: 3,
+          title: 'Лекции',
+          routerName: '*'
+        },
+        {
+          id: 4,
+          title: 'Мой план',
+          routerName: 'plan-main-month'
+        },
+        {
+          id: 5,
+          title: 'Админпанель',
+          routerName: 'admin-students'
+        },
+        {
+          id: 6,
+          title: 'Привязать аккуант к вк',
+          routerName: '*'
+        },
+        {
+          id: 7,
+          routerName: 'main'
+        },
+      ]
+    }
   },
   methods: {
     async logout() {
       const user = new IdentityRequest()
       await user.postLogout({})
     },
-
-    exit() {
-      this.logout()
-    }
+    onClick(item) {
+      if (item.routerName) {
+        this.$router.push(
+            {
+              name: item.routerName
+            }
+        ).catch(() => {}
+        );
+      }
+      this.$emit('update:drawer', false)
+      if (item.routerName === 'main') this.logout()
+    },
   }
 }
 </script>
