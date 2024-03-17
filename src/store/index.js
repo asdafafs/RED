@@ -13,7 +13,7 @@ export default new Vuex.Store({
             email: '',
             emailConfirmed: false,
             phoneNumber: '',
-            name: '1',
+            name: '',
             surname: '',
             middleName: '',
             discriminator: '',
@@ -39,11 +39,11 @@ export default new Vuex.Store({
                 email: '',
                 emailConfirmed: false,
                 phoneNumber: '',
-                name: '1',
+                name: '',
                 surname: '',
                 middleName: '',
                 discriminator: '',
-                groupId: 0,
+                groupNumber: 0,
                 vkUserId: 0,
             }
         }

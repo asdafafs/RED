@@ -1,12 +1,12 @@
 <template>
-  <div>
-    <v-container class="px-4 pa-0 ma-0" fluid v-if="showDrawer">
+  <div >
+    <v-container class="px-4 pa-0 ma-0" fluid v-if="showDrawer && groupId !==0" >
       <v-row no-gutters align="center" class="spacer">
         <v-col lg="">
           <div class="text-h4 font-weight-bold">Здравствуйте, {{ userName }}!</div>
         </v-col>
         <v-col lg="3" class="align-self-end text-start justify-start">
-          <div class="text-subtitle-1 uno">{{ groupId }}</div>
+          <div class="text-subtitle-1 uno">{{ groupTitle }}</div>
         </v-col>
         <v-col cols="">
         </v-col>
@@ -34,7 +34,7 @@
           <div class="text-lg-h3 text-md-h4 text-sm-h5 text-xs-h5 font-weight-bold">
             Здравствуйте, {{ userName }}!
           </div>
-          <div class="text-subtitle-1 uno">{{ groupId }}</div>
+          <div class="text-subtitle-1 uno">{{ groupTitle }}</div>
         </v-col>
       </v-row>
       <v-row>
@@ -61,13 +61,21 @@
 <script>
 
 import {mapState} from "vuex";
+import GroupsRequest from "@/services/GroupsRequest";
 
 export default {
   name: 'plan',
   components: {},
   data: () => ({
     showDrawer: true,
+    groupTitle: ''
   }),
+  watch: {
+    groupId(){
+      this.getGroupNumber()
+    }
+  },
+
   methods: {
 
     changeButtonMenuState(index) {
@@ -84,13 +92,31 @@ export default {
 
     openProgressBar() {
       const currentStudentID = this.userId;
-      this.$router.push({ name: 'progressBar', params: { currentStudentID}  }).catch((err) => {
+      this.$router.push({name: 'progressBar', params: {currentStudentID}}).catch((err) => {
         throw new Error(`Problem handling something: ${err}.`);
       });
     },
 
-    initialize(){
-    }
+    async getGroupNumber() {
+      const group = new GroupsRequest();
+      this.groupTitle = await group.getGroup(this.groupId)
+          .then(group => {
+            return group.data[0].groupNumber;
+          })
+          .catch(error => {
+            console.log("Error fetching group:", error);
+            return null;
+          });
+      if (this.groupTitle){
+       return this.groupTitle = `Вы зачислены в группу №${this.groupTitle}`
+      }
+      else this.groupTitle = 'Вы пока не зачислены в группу'
+      return this.groupTitle;
+    },
+
+    async initialize() {
+      await this.getGroupNumber()
+    },
   },
   computed: {
     ...mapState(['user']),
@@ -98,26 +124,25 @@ export default {
       return this.user.name
     },
 
-    userId(){
+    userId() {
       return this.user.userId
     },
 
     groupId() {
-      if (this.user.groupId != null)
-        return `Вы зачислены в группу № ${this.user.groupId}`
-      else
-        return 'Вы пока не зачислены в группу'
+      console.log('this.user.groupId',this.user.groupId)
+      return this.user.groupId
     },
 
-    isButtonMenuPressed(){
+    isButtonMenuPressed() {
       return [this.$route.path.startsWith('/testPlan/mainCal'), this.$route.path.startsWith('/testPlan/progressBar')]
-    }
+    },
 
   },
   created() {
     this.checkWindowWidth();
     window.addEventListener('resize', this.checkWindowWidth);
     this.initialize()
+
   },
 
   beforeDestroy() {

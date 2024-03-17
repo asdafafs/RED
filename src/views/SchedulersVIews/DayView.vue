@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid>
+  <v-container fluid v-if="groupId !==0">
     <v-row>
       <v-col class="pa-0">
         <v-sheet tile height="54" class="d-flex justify-center">
@@ -155,13 +155,16 @@ export default {
 
     groupId() {
       return this.user.groupId
-    }
+    },
+
+    studentTitle(){
+      return `${this.$store.state.user.name} ${this.$store.state.user.surname} ${this.$store.state.user.middleName}`
+    },
   },
 
   methods: {
     closeEvent() {
       this.selectedOpen = false
-      this.studentTitle = 'Студент не выбран'
     },
 
     initialize() {
@@ -179,9 +182,9 @@ export default {
             if (foundStudent) {
               console.log('Этого студента не найдено в списке свободных');
             } else {
-              const groupId = this.$store.state.user.groupId
+              console.log(this.groupId)
+              const groupId = this.groupId
               this.getAllEvents(groupId)
-              this.studentTitle = `${this.$store.state.user.name} ${this.$store.state.user.surname} ${this.$store.state.user.middleName}`
             }
           })
           .catch(error => {
