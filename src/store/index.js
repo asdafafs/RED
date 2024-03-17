@@ -49,9 +49,13 @@ export default new Vuex.Store({
         }
     },
     actions: {
-        async GET_CURRENT_USER({commit}, data) {
+        async GET_CURRENT_USER({commit}) {
             try {
-                commit('SET_CURRENT_USER', data);
+                const identity = new IdentityRequest()
+                await identity.getIdentity()
+                  .then((x) => {
+                      commit('SET_CURRENT_USER', x);
+                  })
             } catch (error) {
                 console.error("Error fetching user data:", error);
             }

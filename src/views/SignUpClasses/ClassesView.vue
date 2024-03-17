@@ -1,81 +1,82 @@
 <template>
-  <v-container fluid>
-    <v-row class="d-flex mt-0 ga-3 flex-wrap"  >
-      <v-col lg="2" md="2" sm="3" class="">
-        <v-btn text class="black--text tab-button pa-0" width="100%"
-               :class="{'tab-background': isButtonPressed[0],}"
-               @click="changeButtonState(0);">
-          <span :class="{ 'tab-button-text':isButtonPressed[0]}">Практики</span>
+  <div style="width: 100%; height:100%; padding: 0 12px 12px 12px">
+    <div class="d-flex justify-space-between" style="width: 100%">
+      <v-btn-toggle
+        v-model="selectedJoinType"
+        group
+        color="black"
+      >
+        <v-btn
+          v-for="item in calendarButtons"
+          :key="item.id"
+          height="32"
+          class="toggle-button"
+          :value="item.id"
+          @click="onToggleClick(item.id)"
+        >
+        <span :class="selectedJoinType === item.id ? 'white--text' : 'black--text'">
+          {{ item.title }}
+        </span>
         </v-btn>
-      </v-col>
-      <v-col lg="2" md="2" sm="3" class="">
-        <v-btn text class="black--text tab-button pa-0" width="100%"
-               :class="{'tab-background': isButtonPressed[1]}"
-               @click="changeButtonState(1)">
-          <span :class="{ 'tab-button-text':isButtonPressed[1]}">Экзамен</span>
-        </v-btn>
-      </v-col>
-      <v-col lg="2" md="2" sm="3" class="">
-        <v-btn text class="black--text tab-button pa-0" width="100%"
-               :class="{'tab-background': isButtonPressed[2]}"
-               @click="changeButtonState(2)">
-          <span :class="{ 'tab-button-text':isButtonPressed[2]}">Другое</span>
-        </v-btn>
-      </v-col>
-      <v-col cols="" v-if="$vuetify.breakpoint.lgAndUp">
-
-      </v-col>
-      <v-col lg="2" md="4" sm="6">
-        <v-row class="flex-nowrap">
-          <v-col class="pa-0 d-flex align-center justify-center">
-            <div class="">
-              Показать
-            </div>
-          </v-col>
-          <v-col class="pa-0" cols="8" >
-            <v-select
-                v-model="type"
-                :items="types"
-                dense
-                outlined
-                hide-details
-                class="ma-2 rounded-lg"
-                :item-text="displayText"
-                :item-value="valueText"
-                height="36px"
-
-            ></v-select>
-          </v-col>
-        </v-row>
-      </v-col>
-    </v-row>
-    <v-row v-if="discriminatorUser" class="px-3">
-      <v-col lg="2" md="2" sm="6" class="pa-0 ">
+      </v-btn-toggle>
+      <div class="d-flex align-center flex-row">
+        <span class="mr-3">Показать</span>
         <v-select
-            class="rounded-lg"
-            no-data-text="Нет данных для отображения"
-            v-model="selectedTeacher"
-            label="Выберите инструктора"
-            :items="teachers"
-            :item-text="item => `${item.name} ${item.surname} ${item.middleName} `"
-            item-value="id"
-            @change="confirm(discriminatorUser)"
-            hide-details
-            outlined
-            height="36px"
-            dense
-        ></v-select>
-      </v-col>
-    </v-row>
-    <v-row >
-      <v-col >
-        <v-sheet tile height="54" class="d-flex justify-center">
-          <v-btn icon class="ma-0  align-self-center" @click="$refs.calendar.prev()">
+          style="max-width: 130px"
+          height="32"
+          v-model="type"
+          :items="types"
+          dense
+          outlined
+          hide-details
+          class="select-period"
+          :item-text="displayText"
+          :item-value="valueText"
+        />
+      </div>
+    </div>
+    <div v-if="discriminatorUser">
+      <v-select
+          class="rounded-lg"
+          no-data-text="Нет данных для отображения"
+          v-model="selectedTeacher"
+          label="Выберите инструктора"
+          :items="teachers"
+          :item-text="item => `${item.name} ${item.surname} ${item.middleName} `"
+          item-value="id"
+          @change="confirm(discriminatorUser)"
+          hide-details
+          outlined
+          height="36px"
+          style="width: 350px;"
+          dense
+      />
+    </div>
+    <div>
+      <div>
+        <v-sheet
+            tile
+            height="54"
+            class="d-flex justify-center"
+        >
+          <v-btn
+              icon
+              class="ma-0 align-self-center"
+              @click="$refs.calendar.prev()"
+          >
             <v-icon>mdi-chevron-left</v-icon>
           </v-btn>
-          <v-toolbar-title v-if="test" class="text-h6 align-self-center">{{ $refs.calendar.title.split(' ')[0] }}
+          <v-toolbar-title
+              v-if="test"
+              class="month-name"
+          >
+            {{ month }}
           </v-toolbar-title>
-          <v-btn icon class="ma-0  align-self-center" @click="$refs.calendar.next()">
+          <v-btn
+              icon
+              class="ma-0 align-self-center"
+              @click="$refs.calendar.next()"
+          >
             <v-icon>mdi-chevron-right</v-icon>
           </v-btn>
         </v-sheet>
@@ -145,7 +146,7 @@
                       </div>
                       <div class="text-subtitle-1 text-medium-emphasis" v-if="!discriminatorUser">Студент</div>
                       <div class="text-subtitle-2 font-weight-regular black--text" v-if="!discriminatorUser">{{
-                            studentTitle
+                          selectedEvent.studentId
                         }}
                       </div>
                       <div class="text-subtitle-1 text-medium-emphasis" v-if="discriminatorUser">Лимит часов</div>
@@ -157,16 +158,14 @@
               </v-card-text>
               <v-card-actions class="pa-0">
                 <v-container class="pa-0" style="display: flex; justify-content: space-between;">
-                  <v-btn text color="secondary" @click="closeEvent()">
+                  <v-btn text color="secondary" @click="selectedOpen = false;">
                     Отмена
                   </v-btn>
                   <div>
                     <v-btn text color="primary"
                            v-if="selectedEvent.studentId === null && discriminatorUser && userID !== selectedEvent.studentId"
-                           @click="addEventStudent"
-                    :disabled="groupId===null">
-                      <span v-if="groupId !== null">Записаться</span>
-                      <span v-else >Нужна группа</span>
+                           @click="addEventStudent">
+                      Записаться
                     </v-btn>
                     <v-btn text color="secondary"
                            v-else-if="discriminatorUser && userID === selectedEvent.studentId"
@@ -205,9 +204,9 @@
             </v-card>
           </v-dialog>
         </v-sheet>
-      </v-col>
-    </v-row>
-  </v-container>
+      </div>
+    </div>
+  </div>
 </template>
 <script>
 import CarLogo from "@/components/logos/CarLogo.vue";
@@ -218,24 +217,29 @@ import {mapState} from "vuex";
 
 export default {
   components: {LectureLogo, CarLogo},
-
-  computed: {
-    ...mapState(['user']),
-
-    discriminatorUser() {
-      return this.user.discriminator !== 'Учитель'
-    },
-
-    userID() {
-      return this.user.userId
-    },
-
-    groupId(){
-      return this.user.groupId
-    }
-
-  },
-
+  data: () => ({
+    selectedJoinType: 0,
+    dialog: false,
+    test: false,
+    isMobile: false,
+    selectedOpen: false,
+    refusalModal: false,
+    num: 70,
+    events: [],
+    teachers: [],
+    weekday: [1, 2, 3, 4, 5, 6, 0],
+    selectedEvent: {},
+    type: 'month',
+    types: [['month', 'месяц'], ['week', 'неделя'], ['day', 'день']],
+    mode: 'stack',
+    value: '',
+    selectedElement: null,
+    selectedTeacher: null,
+    studentHours: [],
+    selectedReason: null,
+    reasonsRefusal: ['Ремонт', 'Семейные обстоятельства', 'Экзамен ', 'Здоровье', 'Задачи офиса'],
+    selectedReasonId: 0,
+  }),
   mounted() {
     const buttonStyleReplace = [
       'v-btn',
@@ -258,36 +262,40 @@ export default {
     window.addEventListener('resize', this.handleResize);
     this.handleResize();
   },
+  computed: {
+    ...mapState(['user']),
+    calendarButtons() {
+      return [
+        {
+          id: 0,
+          title: 'Практики',
+        },
+        {
+          id: 1,
+          title: 'Экзамен',
+        },
+        {
+          id: 2,
+          title: 'Другое',
+        },
+      ]
+    },
+    discriminatorUser() {
+      return this.user.discriminator !== 'Учитель'
+    },
 
+    userID() {
+      return this.user.userId
+    },
+    
+    month() {
+      return this.$refs.calendar.title.split(' ')[0]
+    },
+  },
   beforeDestroy() {
     window.removeEventListener('resize', this.handleResize);
   },
-
-  data: () => ({
-    dialog: false,
-    test: false,
-    isMobile: false,
-    selectedOpen: false,
-    refusalModal: false,
-    num: 70,
-    events: [],
-    teachers: [],
-    weekday: [1, 2, 3, 4, 5, 6, 0],
-    selectedEvent: {},
-    type: 'month',
-    types: [['month', 'месяц'], ['week', 'неделя'], ['day', 'день']],
-    mode: 'stack',
-    value: '',
-    selectedElement: null,
-    selectedTeacher: null,
-    isButtonPressed: [false, false, false],
-    studentHours: [],
-    studentTitle: 'Студент не выбран',
-    selectedReason: null,
-    reasonsRefusal: ['Ремонт', 'Семейные обстоятельства', 'Экзамен ', 'Здоровье', 'Задачи офиса'],
-    selectedReasonId: 1,
-  }),
-
+  
   created() {
     this.selectedReason = this.reasonsRefusal[0];
     this.initialize();
@@ -295,24 +303,13 @@ export default {
   },
 
   methods: {
-    closeEvent(){
-      this.selectedOpen = false
-
-      this.studentTitle = 'Студент не выбран'
-
+    onToggleClick(id) {
+      switch (id) {
+        case 0: return this.getAllEvents()
+        case 1: return this.testLessons()
+        case 2: return this.testPractices()
+      }
     },
-
-    async titleStudent(studentId){
-      const student = new UsersRequest()
-      await student.getUsers().catch(x => console.log(x)).then((response) => {
-        const users = response.data.students;
-        const foundUser = users.find(user => user.id === studentId);
-        if (foundUser) {
-          return this.studentTitle = `${foundUser.name} ${foundUser.surname} ${foundUser.middleName}`
-        }
-      })
-    },
-
     displayText(item) {
       return item[1];
     },
@@ -346,11 +343,14 @@ export default {
       const student = new UsersRequest()
       let hours
       await student.getUsers().catch(x => console.log(x)).then((response) => {
-        const users = response.data.students;
+        const users = response.data.students; // Предположим, что данные находятся в массиве data
         const foundUser = users.find(user => user.id === this.userID);
         if (foundUser) {
+          console.log(foundUser)
           hours = [foundUser.generalHours, foundUser.generalHoursSpent]
-          return this.studentHours = hours
+          return console.log(this.studentHours = hours)
+        } else {
+          console.log('Пользователь с ID', this.userID, 'не найден.');
         }
       })
 
@@ -408,8 +408,9 @@ export default {
     },
 
     async initialize() {
-      this.changeButtonState(0)
       await this.getEventsTeacher();
+      await this.getStudent()
+      
       if (this.discriminatorUser === false) {
         await this.confirm(this.discriminatorUser)
       }
@@ -461,8 +462,7 @@ export default {
     },
 
     showEvent({nativeEvent, event}) {
-      this.titleStudent(event.studentId)
-      this.getStudent()
+      console.log(event)
       const open = () => {
         this.selectedEvent = event
         this.selectedElement = nativeEvent.target
@@ -498,13 +498,7 @@ export default {
         return '#E9E9E8'
       }
     },
-
-    changeButtonState(index) {
-      this.$set(this.isButtonPressed, this.lastPressedIndex, false);
-      this.$set(this.isButtonPressed, index, true);
-      this.lastPressedIndex = index;
-    },
-
+    
     handleResize() {
       if (window.innerWidth < 1260) {
         this.num = 30;
@@ -516,6 +510,66 @@ export default {
 }
 </script>
 <style lang="scss">
-@import "@/assets/styles/buttonStyles.css";
 @import "@/assets/styles/monthScheduleStyles.css";
+.toggle-button {
+  margin-right: 0 !important;
+  margin-left: 0 !important;
+  color: black !important;
+  border-radius: 4px !important;
+  text-transform: none !important;
+  font-size: 16px !important;
+  
+  .v-btn:hover,
+  .v-btn:focus,
+  {
+    color: black !important;
+  }
+}
+
+.v-btn--active::before {
+  opacity: 1 !important;
+}
+
+
+.month-name {
+  font-size: 24px !important;
+  font-weight: 700 !important;
+  display: flex !important;
+  align-items: center !important;
+  margin-right: 8px !important;
+  margin-left: 8px !important;
+}
+
+.event-time {
+  font-size: 16px !important;
+  font-weight: 600 !important;
+  color: black !important;
+}
+.event-type {
+  font-weight: 600 !important;
+  font-size: 12px !important;
+  color: black !important;
+}
+.event-instructor,
+.event-long
+{
+  font-weight: 400 !important;
+  font-size: 12px !important;
+  color: black !important;
+}
+.select-period {
+  border-radius: 12px;
+  
+  .v-input__slot {
+    height: 32px !important;
+    min-height: 32px !important;
+    display: flex!important;
+    align-items: center!important;
+  }
+
+  .v-select__selection--comma {
+    margin: 0 !important;
+  }
+}
+
 </style>

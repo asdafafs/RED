@@ -1,5 +1,5 @@
 <template>
-  <div style="width: 100%; height:100%">
+  <div style="width: 100%; height:100%; padding: 0 12px 12px 12px">
     <v-btn-toggle
       v-model="selectedLessonType"
       group
