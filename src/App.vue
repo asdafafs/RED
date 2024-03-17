@@ -2,7 +2,7 @@
   <v-app>
     <AppBar :isDataLoaded="isDataLoaded"/>
     <v-main id="main">
-      <router-view v-if="isDataLoaded"/>
+      <router-view/>
     </v-main>
   </v-app>
 </template>
