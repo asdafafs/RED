@@ -10,8 +10,13 @@
       <v-toolbar flat>
         <v-dialog v-model="dialog" max-width="500px" persistent>
           <template v-slot:activator="{ on, attrs }">
-            <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on">
-              Добавить занятие
+            <v-btn class="rounded-lg app-bar-button-color" color="#4E7AEC" v-bind="attrs" v-on="on">
+              <v-col cols="1" class="px-0 tab-button-text">
+                <i class="mdi mdi-plus-circle-outline" style="transform: scale(1.5)"></i>
+              </v-col>
+              <v-col cols="" class="tab-button-text">
+                Добавить занятие
+              </v-col>
             </v-btn>
           </template>
           <v-card class="rounded-xl">
@@ -41,7 +46,7 @@
                         class="rounded-xl"
                     >
                       <template v-slot:item="{ item }">
-                        <v-list-item :class="getListItemClass(item)" @click="selectItem(item)">
+                        <v-list-item @click="selectItem(item)">
                           <v-list-item-content>
                             <v-list-item-title>
                               {{ item }}
@@ -63,7 +68,7 @@
                 </v-row>
               </v-container>
             </v-card-text>
-            <v-card-actions >
+            <v-card-actions>
               <v-container style="display: flex; justify-content: space-between;" class="py-0">
                 <v-btn color="blue darken-1" text @click="close">
                   Отмена
@@ -89,8 +94,10 @@
       </v-toolbar>
     </template>
     <template v-slot:item="{ item  }">
-      <tr :class="getTableRowClass(item)">
+      <tr>
         <td>{{ item.title }}</td>
+        <td>{{ getTitleTeacher(item.activeUser) }}</td>
+        <td>{{ discriminator[item.lectureType] }}</td>
         <td>
           {{
             formatDatetime(item.startTime)
@@ -130,6 +137,8 @@ export default {
     dialogDelete: false,
     headers: [
       {text: 'Название', align: 'start', sortable: false, value: 'title'},
+      {text: 'Преподаватель', align: 'start', sortable: false, value: ''},
+      {text: 'Тип занятия', align: 'start', sortable: false, value: ''},
       {text: 'Начало', align: 'start', sortable: false, value: 'startTime',},
       {text: 'Конец', align: 'start', sortable: false, value: 'endTime',},
       {text: 'Действия', value: 'actions', sortable: false},
@@ -199,8 +208,17 @@ export default {
   },
 
   methods: {
+    getTitleTeacher(activeUser) {
+      if (activeUser) {
+        const teacher = this.teachers.find(teacher => teacher.id === activeUser);
+        console.log(teacher)
+        return teacher ? `${teacher.surname} ${teacher.name.substring(0, 1)}.  ${teacher.middleName.substring(0, 1)}.` : '';
+      }
+    },
+
     initialize() {
       this.teachers = this.lectors
+      console.log(this.teachers)
       this.courses = this.coursesData.map(item => {
         return {
           id: item.id,

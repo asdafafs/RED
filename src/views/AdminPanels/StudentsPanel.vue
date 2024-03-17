@@ -3,14 +3,6 @@
     <div class="text-h4 font-weight-medium px-4">
       Студенты и планы
     </div>
-    <v-text-field
-        v-model="search"
-        label="Поиск"
-        prepend-inner-icon="mdi-magnify"
-        single-line
-        variant="outlined"
-        hide-details
-    ></v-text-field>
     <v-data-table
         :headers="headers"
         :items="persons.students"
@@ -88,6 +80,18 @@
               </v-card-actions>
             </v-card>
           </v-dialog>
+          <v-spacer></v-spacer>
+          <v-col cols="3" class="pa-0 text-right col-auto">
+            <v-text-field
+                v-model="search"
+                label="Поиск"
+                prepend-inner-icon="mdi-magnify"
+                single-line
+                outlined
+                hide-details
+                dense
+            ></v-text-field>
+          </v-col>
         </v-toolbar>
       </template>
       <template v-slot:item="{ item }">

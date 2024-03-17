@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid>
+  <v-container fluid v-if="groupId !==0">
     <v-row>
       <v-row class="justify-center">
         <v-btn icon class="ma-0  align-self-center" @click="prev">
@@ -171,7 +171,6 @@ export default {
     createEvent: null,
     createStart: null,
     extendOriginal: null,
-    studentTitle: 'Студент не найден',
     studentHours: 0,
   }),
 
@@ -192,13 +191,16 @@ export default {
 
     groupId() {
       return this.user.groupId
-    }
+    },
+
+    studentTitle(){
+      return `${this.$store.state.user.name} ${this.$store.state.user.surname} ${this.$store.state.user.middleName}`
+    },
   },
 
   methods: {
     closeEvent() {
       this.selectedOpen = false
-      this.studentTitle = 'Студент не выбран'
     },
 
     initialize() {
@@ -209,18 +211,16 @@ export default {
       const student = new UsersRequest();
       student.getStudentNullGroup()
           .then(response => {
-            const id = this.$store.state.user.userId;
+            const id = this.userId;
             const students = response.data.students;
             const foundStudent = students.find(student => student.id === id);
             console.log('foundStudent', foundStudent)
             if (foundStudent) {
               console.log('Этого студента не найдено в списке свободных');
             } else {
-              console.log('else')
-              console.log(this.$store.state.user.groupId)
-              const groupId = this.$store.state.user.groupId
+              console.log(this.groupId)
+              const groupId = this.groupId
               this.getAllEvents(groupId)
-              this.studentTitle = `${this.$store.state.user.name} ${this.$store.state.user.surname} ${this.$store.state.user.middleName}`
             }
           })
           .catch(error => {

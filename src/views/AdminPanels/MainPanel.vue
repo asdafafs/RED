@@ -12,14 +12,14 @@
         <v-btn text class="black--text tab-button pa-0" width="100%"
                :class="{'tab-background': isButtonPressed[1]}"
                @click="changeButtonState(1); $router.push({name: 'admin-teachers'}).catch(() => {})">
-          <span :class="{ 'tab-button-text':isButtonPressed[1]}">Преподаватели</span>
+          <span :class="{ 'tab-button-text':isButtonPressed[1]}">Инструкторы</span>
         </v-btn>
       </v-col>
       <v-col cols="lg-2 md-4">
         <v-btn cols="" text class="black--text tab-button pa-0" width="100%"
                :class="{'tab-background': isButtonPressed[2]}"
                @click="changeButtonState(2); $router.push({name: 'admin-groups'}).catch(() => {})">
-          <span :class="{ 'tab-button-text':isButtonPressed[2]}">Практика</span>
+          <span :class="{ 'tab-button-text':isButtonPressed[2]}">Группы</span>
         </v-btn>
       </v-col>
     </v-row>

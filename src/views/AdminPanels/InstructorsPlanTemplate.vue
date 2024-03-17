@@ -13,7 +13,8 @@
     <hr>
     <v-row class="flex-wrap">
       <v-col cols="lg-1 md-1 py-0" class="flex-column align-center bg-surface-variant d-flex">
-        <v-radio-group class="px-0 py-0 align-center" v-model="selectedDuration" hide-details="true">
+        <v-radio-group class="px-0 py-0 align-center" v-model="selectedDuration" hide-details="true"
+                       :disabled="blockEditableTemplate">
           <v-radio label="1 час" :value="1"></v-radio>
           <v-radio label="2 часа" :value="2"></v-radio>
         </v-radio-group>
@@ -21,12 +22,12 @@
       <v-col cols="lg-2 md-2 py-0" class="align-center bg-surface-variant d-flex">
         <v-text-field v-model="practiceCourseStart" label="Дата начала" type="date"
                       :rules="[startDateRules.required]" :min="getTodayDate()" outlined
-                      class="rounded-xl align-center" hide-details></v-text-field>
+                      class="rounded-xl align-center" hide-details :disabled="blockEditableTemplate"></v-text-field>
       </v-col>
       <v-col cols="lg-2 md-2 py-0" class="align-center bg-surface-variant d-flex">
         <v-text-field v-model="practiceCourseEnd" label="Дата окончания" type="date"
                       :rules="[endTimeRules.required]" :min="getTodayDate()" outlined
-                      class="rounded-xl align-center" hide-details></v-text-field>
+                      class="rounded-xl align-center" hide-details :disabled="blockEditableTemplate"></v-text-field>
       </v-col>
       <v-col cols="lg-2 md-2 py-0" class="align-center bg-surface-variant d-flex">
         <v-select v-model="selectedTemplate" label="Выберите шаблон практик" :items="listTemplates"
@@ -35,9 +36,11 @@
                   toLocaleDateString().replace(/\./g, '-')} ${new Date(item.practiceCourseEnd)
                   .toLocaleDateString().replace(/\./g, '-')}` : 'Добавить новый шаблон'"
                   item-value="practiceCourseId"
-                  @change="getPracticeCourseTemplate()"
+                  @change="getPracticeCourseTemplate();
+blockEditableTemplate = selectedTemplate ? !!selectedTemplate.practiceCourseId : false"
                   outlined
-                  class="rounded-xl " hide-details>
+                  class="rounded-xl " hide-details
+                  style="min-width:256px;">
         </v-select>
       </v-col>
       <v-col cols="lg-2 md-0 sm-0 pa-0"></v-col>
@@ -91,7 +94,7 @@ export default {
     }],
     selectedTemplate: null,
     cancelSaveChanges: false,
-
+    blockEditableTemplate: false,
     startDateRules: {
       required: value => !!value
     },
@@ -179,6 +182,8 @@ export default {
             this.practiceCourseStart = response.data.practiceCourseStart.slice(0, 10);
             this.practiceCourseEnd = response.data.practiceCourseEnd.slice(0, 10);
           });
+      console.log(this.selectedTemplate)
+      this.blockEditableTemplate = this.selectedTemplate !== null;
       return this.eventsTemplate = events
     },
 

@@ -9,8 +9,31 @@
           <span class="text-h5">{{ formTitle }}</span>
         </div>
       </v-col>
+      <v-col class="text-right col-auto  mr-4">
+        <v-btn class="tab-button pa-0 rounded-lg app-bar-button-color" color="#4E7AEC" outlined @click="save"
+               :disabled="isSaveButtonDisabled" style="min-width: 196px;">
+          <span class="tab-button-text">Сохранить изменения</span>
+        </v-btn>
+      </v-col>
+      <v-col class="text-right col-auto">
+        <v-btn class="tab-button pa-0 rounded-lg" color="#2B2A29" @click="cancelChanges" style="min-width: 196px"
+               outlined>
+          <span class="black--text">Выйти без изменений</span>
+        </v-btn>
+      </v-col>
     </v-row>
     <hr>
+    <v-row class="flex-wrap">
+      <v-col cols="lg-1 md-2">
+        <v-text-field v-model="editedItem.groups.groupNumber" label="Номер группы"
+                      :rules="[groupNumberRules.required, groupNumberRules.integer]" outlined hide-details
+                      @change="newGroupTitle"></v-text-field>
+      </v-col>
+      <v-col cols="lg-2 md-3">
+        <v-text-field v-model="editedItem.groups.title" label="Название группы"
+                      :rules="[titleRules.required]" outlined hide-details disabled></v-text-field>
+      </v-col>
+    </v-row >
     <v-row class="flex-wrap">
       <v-col cols="12">
         <v-select
@@ -29,14 +52,6 @@
       </v-col>
     </v-row>
     <v-row class="flex-wrap">
-      <v-col cols="lg-1 md-2">
-        <v-text-field v-model="editedItem.groups.groupNumber" label="Номер группы"
-                      :rules="[groupNumberRules.required]" outlined hide-details></v-text-field>
-      </v-col>
-      <v-col cols="lg-2 md-3">
-        <v-text-field v-model="editedItem.groups.title" label="Название группы"
-                      :rules="[titleRules.required]" outlined hide-details></v-text-field>
-      </v-col>
       <v-col cols="lg-2 md-3">
         <v-text-field v-model="editedItem.groups.startDate" label="Дата начала курса"
                       type="date" :rules="[startDateRules.required]"
@@ -53,9 +68,9 @@
             hide-details
         ></v-text-field>
       </v-col>
-      <v-col cols="lg-3 md-3 sm-6">
+      <v-col cols="lg-4 md-4 sm-8" class="d-flex justify-space-around">
         <template>
-          <div class="chips-container">
+          <div class="chips-container" style="display: flex; justify-content: space-around; width: 100%;">
             <v-chip
                 v-for="(chip, index) in chips"
                 :key="index"
@@ -67,20 +82,9 @@
           </div>
         </template>
       </v-col>
-      <v-col class="">
-        <v-btn class="tab-button pa-0 rounded-lg" color="#2B2A29" outlined @click="save"
-               :disabled="isSaveButtonDisabled">
-          <span class="black--text">Сохранить изменения</span>
-        </v-btn>
-      </v-col>
-      <v-col class="">
-        <v-btn class="tab-button pa-0 rounded-lg" color="#2B2A29" text @click="cancelChanges">
-          <span class="black--text">Выйти без изменений</span>
-        </v-btn>
-      </v-col>
     </v-row>
     <v-row>
-      <v-col>
+      <v-col class="py-0">
         <CoursesList :coursesData="lessons" :lectors="teachers"
                      @courses-updated="handleCoursesUpdated"></CoursesList>
       </v-col>
@@ -139,7 +143,7 @@ export default {
         startDate: null,
         startTime: null,
         fullGroupName: null,
-        groupNumber: null,
+        groupNumber: 0,
       },
 
       lecture: {
@@ -161,7 +165,8 @@ export default {
       required: value => !!value
     },
     groupNumberRules: {
-      required: value => !!value
+      required: value => !!value,
+      integer: value => Number.isInteger(Number(value)) || 'Введите целое число',
     },
 
     dateOfWeek: [false, false, false, false, false, false, false],
@@ -195,6 +200,7 @@ export default {
     formTitle() {
       return this.editedIndex === -1 ? 'Новая группа' : 'Редактировать группу';
     },
+
   },
 
   created() {
@@ -204,6 +210,10 @@ export default {
   methods: {
     prev() {
       this.$router.push({name: 'admin-groups'})
+    },
+
+    newGroupTitle() {
+      return this.editedItem.groups.title = `Группа №${this.editedItem.groups.groupNumber}`;
     },
 
     getTodayDate() {
@@ -297,8 +307,7 @@ export default {
             activeUser: item.activeUser,
           };
         });
-        const nextGroupNumber = this.groups.length + 1;
-        this.editedItem.groups.title = `Группа №${nextGroupNumber}`;
+        this.editedItem.groups.title = `Группа №0`;
 
       } else {
         await this.getCourseId(this.getGroupId);
@@ -313,11 +322,11 @@ export default {
           };
         });
         this.editedItem.groups = {
-            groupId: item.groupId,
-            title: item.title,
-            startDate: this.globalStartDate,
-            studentId: item.student,
-            groupNumber: item.groupNumber,
+          groupId: item.groupId,
+          title: item.title,
+          startDate: this.globalStartDate,
+          studentId: item.student,
+          groupNumber: item.groupNumber,
         };
         this.updateSelectedStudentsIds()
       }
