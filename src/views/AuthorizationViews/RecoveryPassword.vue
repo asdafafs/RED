@@ -12,22 +12,31 @@
             content-class="elevation-0"
         >
           <v-card class="forget-password-card white">
+            <div class="logo-container">
+              <LogoRed
+                  class="logo"
+                  :height="50"
+                  :width="84"
+              />
+            </div>
             <v-card-title class="forget-password-card__title">
               Восстановление пароля
             </v-card-title>
             <v-card-subtitle class="forget-password-card__subtitle">
-              Для восстановления пароля введите электронную почту
+              Введите электронный адрес аккаунта, для которого нужно восстановить пароль,
+              и отправьте запрос. На указанный e-mail придет ссылка для создания нового пароля.
             </v-card-subtitle>
             <v-card-text class="pb-0">
               <v-text-field
-                solo
                 color="black"
                 v-model=email
                 :readonly="loading"
                 :rules="[rulesEmail.required]"
-                class="mb-2"
+                class="forget-password-card__text-field"
                 clearable
-                label="Email"
+                label="E-mail"
+                outlined
+                hide-details
               />
             </v-card-text>
             <v-card-actions class="forget-password-card__actions">
@@ -37,14 +46,15 @@
                     class="forget-password-card__actions__btn white--text"  
                     :disabled="loginButtonDisabled"
                 >
-                  Ввести новый пароль
+                  Отправить запрос
                 </v-btn>
                 <v-btn 
                   color="##E9E9E8" 
                   @click="logout" 
                   class="forget-password-card__actions__btn"
+                  text
                 >
-                  Выйти
+                  Отмена
                 </v-btn>
             </v-card-actions>
           </v-card>
@@ -55,10 +65,11 @@
 </template>
 <script>
 import IdentityRequest from "@/services/IdentityRequest";
+import LogoRed from "@/components/logos/LogoRed.vue";
 
 export default {
   name: 'RecoveryPassword',
-  components: {},
+  components: {LogoRed},
   data: () => ({
     loginButtonDisabled: false,
     overlay: true,
@@ -102,17 +113,36 @@ export default {
 }
 </script>
 <style lang="scss">
+.v-dialog > .v-card > .v-card__actions {
+  padding: 0px 16px;
+}
+
+.logo {
+  align-self: center !important;
+  margin-left: 16px;
+
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+  margin-left: 16px;
+
+}
+
 .forget-password-card {
   display: flex !important;
-  gap: 16px !important;
+  //gap: 16px !important;
   flex-direction: column !important;
   width: 400px !important;
-  height: 370px !important;
+  height: 372px !important;
 
   &__title {
     font-weight: 700 !important;
     font-size: 28px !important;
     line-height: 37.5px !important;
+    padding: 0 24px 10px !important;
+    margin-bottom: 16px !important;
   }
   &__subtitle {
     font-weight: 400 !important;
@@ -120,7 +150,13 @@ export default {
     line-height: 18px !important;
     color: #000000 !important;
     caret-color: #000000 !important;
-    padding: 0 25px 16px 25px !important;
+    padding: 0 25px 0 25px !important;
+    margin-bottom: 16px !important;
+  }
+
+  &__text-field{
+    border-radius: 12px !important;
+    margin-bottom: 16px !important;
   }
   
   &__actions {
@@ -130,7 +166,8 @@ export default {
     &__btn {
       border-radius: 8px;
       padding: 0;
-      margin: 4px 0 4px 0 !important;
+      //margin: 4px 0 4px 0 !important;
+      margin: 0 0 0 0 !important;
       width: 350px;
 
     }
