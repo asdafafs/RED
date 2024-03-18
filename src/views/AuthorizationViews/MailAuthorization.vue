@@ -1,82 +1,85 @@
 <template>
   <div class="no-scroll">
-    <v-row 
-      align="center" 
-      justify="center"
+    <v-row
+        align="center"
+        justify="center"
     >
       <v-col cols="4" class="pa-0 overflow-x-hidden">
-        <v-dialog 
-          v-model="overlay" 
-          persistent 
-          width="auto" 
-          content-class="elevation-0" 
+        <v-dialog
+            v-model="overlay"
+            persistent
+            width="auto"
+            content-class="elevation-0"
         >
-          <v-card 
-            v-if="overlay" 
-            class="mail-authorization-card height"
+          <v-card
+              v-if="overlay"
+              class="mail-authorization-card height"
           >
-            <v-card-title class="mail-authorization-card__title"> Авторизация</v-card-title>
+            <div class="logo-container">
+              <LogoRed
+                  v-if="!message"
+                  class="mail-authorization-card__logo"
+                  :height="50"
+                  :width="84"
+              />
+            </div>
+            <v-card-title class="mail-authorization-card__title">
+
+              Авторизация</v-card-title>
             <v-card-subtitle class="mail-authorization-card__subtitle">
               Для продолжения работы в RED: Расписание, пожалуйста, авторизуйтесь.
             </v-card-subtitle>
-            <LogoRed
-                v-if="!message"
-                class="mail-authorization-card__logo"
-                :height="50"
-                :width="84"
-            />
+
             <v-card-text class="pb-0">
               <v-alert v-if="message" type="error">
                 {{ message }}
               </v-alert>
               <v-text-field
-                solo
-                color="black"
-                v-model="email"
-                :readonly="loading"
-                :rules="[rulesEmail.required]"
-                class="mb-2"
-                clearable
-                label="Email"
+                  color="black"
+                  v-model="email"
+                  :readonly="loading"
+                  :rules="[rulesEmail.required]"
+                  class="mb-2 mail-authorization-card__field"
+                  clearable
+                  label="Email"
+                  outlined
               />
               <v-text-field
-                solo
-                color="black"
-                v-model="password"
-                :append-icon="show ? 'mdi-eye ' : 'mdi-eye-off '"
-                :rules="[rulesPassword.required, rulesPassword.min]"
-                :type="show ? 'text' : 'password'"
-                name="input-10-4"
-                label="Пароль"
-                hint="Минимум 8 символов"
-                counter
-                @click:append="show = !show"
+                  color="black"
+                  v-model="password"
+                  :append-icon="show ? 'mdi-eye ' : 'mdi-eye-off '"
+                  :rules="[rulesPassword.required, rulesPassword.min]"
+                  :type="show ? 'text' : 'password'"
+                  name="input-10-4"
+                  label="Пароль"
+                  hint="Минимум 8 символов"
+                  counter
+                  @click:append="show = !show"
+                  outlined
+                  class="mail-authorization-card__field"
               />
-              <v-btn 
-                color="#4E7AEC" 
-                @click="forgetPassword"
-                class="rounded-lg pa-0 ma-0" block text
-              >
+              <span @click="forgetPassword" class="authorization-card__actions__btn" style="color: #4E7AEC">
                 Забыли пароль?
-              </v-btn>
+              </span>
             </v-card-text>
             <v-card-actions class="mail-authorization-card__actions">
-                <v-btn 
-                  color="#4E7AEC" 
-                  @click="validateForm" 
+              <v-btn
+                  color="#4E7AEC"
+                  @click="validateForm"
                   class="authorization-card__actions__btn white--text"
                   :disabled="loginButtonDisabled"
-                >
-                  Войти
-                </v-btn>
-                <v-btn 
-                  color="#E9E9E8" 
-                  @click="logout" 
-                  class="authorization-card__actions__btn" 
+              >
+                Войти
+              </v-btn>
+              <v-btn
+                  color="#2B2A29"
+                  text
+                  @click="logout"
+                  class="authorization-card__actions__btn"
                   :disabled="loginButtonDisabled"
-                >
-                  Выйти
-                </v-btn>
+              >
+                Отмена
+              </v-btn>
             </v-card-actions>
           </v-card>
         </v-dialog>
@@ -122,16 +125,16 @@ export default {
     },
     logout() {
       this.$router.push(
-        {
-          name: 'main'
-        }
+          {
+            name: 'main'
+          }
       )
     },
     forgetPassword() {
       this.$router.push(
-        {
-          name: 'recPass'
-        }
+          {
+            name: 'recPass'
+          }
       )
     },
     async validateForm() {
@@ -171,4 +174,12 @@ export default {
 .no-scroll {
   overflow: hidden;
 }
+
+.logo-container {
+  display: flex;
+  align-items: center;
+  margin-left: 16px; /* или другое значение отступа */
+  padding: 8px 0 16px 0;
+}
+
 </style>
