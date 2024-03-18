@@ -5,7 +5,7 @@
     </div>
     <v-data-table
         :headers="headers"
-        :items="persons.students"
+        :items="persons"
         :search="search"
         class="elevation-1 custom-header-table"
         no-data-text="Нет данных для отображения"
@@ -83,7 +83,7 @@
           <v-spacer></v-spacer>
           <v-col cols="3" class="pa-0 text-right col-auto">
             <v-text-field
-                v-model="search"
+                  v-model="search"
                 label="Поиск"
                 prepend-inner-icon="mdi-magnify"
                 single-line
@@ -96,7 +96,7 @@
       </template>
       <template v-slot:item="{ item }">
         <tr>
-          <td>{{ item.name + " " + item.surname + " " + item.middleName }}</td>
+          <td>{{ item.fullName }}</td>
           <td>{{ item.email }}</td>
           <td>{{ item.generalHours }}</td>
           <td>{{ item.generalHoursSpent }}</td>
@@ -124,18 +124,16 @@ export default {
     dialogDelete: false,
     mask: ['+', /\d/, '(', /[1-9]/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, '-', /\d/, /\d/],
     headers: [
-      {text: 'ФИО', align: 'start', sortable: false,},
-      {text: 'E-mail', align: 'start', sortable: false,},
-      {text: 'Общие практики всего', align: 'start', sortable: false,},
-      {text: 'Общие практики остаток', sortable: false},
-      {text: 'Доппрактики всего', sortable: false},
-      {text: 'Доппрактики остаток', sortable: false},
-      {text: 'Действия', sortable: false},
+      {text: 'ФИО', align: 'start', sortable: false, value: 'fullName'},
+      {text: 'E-mail', align: 'start', sortable: false, value: 'email'},
+      {text: 'Общие практики всего', align: 'start', sortable: false, value: 'generalHours'},
+      {text: 'Общие практики остаток', sortable: false, value: 'generalHoursSpent' },
+      {text: 'Доппрактики всего', sortable: false, value: 'additinalHours'},
+      {text: 'Доппрактики остаток', sortable: false, value: 'additinalHoursSpent'},
+      {text: 'Действия', sortable: false,},
     ],
     groups: [],
-    persons: {
-      students: []
-    },
+    persons: [],
     editedIndex: -1,
     deletedIndex: -1,
     editedStudent: {
@@ -159,6 +157,8 @@ export default {
   }),
 
   computed: {
+
+
     formTitle() {
       return this.editedIndex === -1 ? 'Новый студент' : 'Редактировать студента';
     },
@@ -198,11 +198,19 @@ export default {
 
     async getStudents() {
       const user = new UsersRequest();
-      let studentsData
-      await user.getUsers().catch(x => console.log(x)).then(x => {
-        studentsData = x.data
-      })
-      return studentsData
+      let studentsData;
+      await user.getUsers()
+          .then(response => {
+            studentsData = response.data.students.map(student => ({
+              ...student,
+              fullName: `${student.name} ${student.surname} ${student.middleName}`
+            }));
+          })
+          .catch(error => {
+            console.error(error);
+          });
+      console.log(studentsData);
+      return studentsData;
     },
 
     async postUser(body) {
@@ -223,11 +231,12 @@ export default {
 
     async initialize() {
       this.persons = await this.getStudents()
+      console.log(this.persons)
       this.groups = await this.getGroups()
     },
 
     editItem(item) {
-      this.editedIndex = this.persons.students.indexOf(item);
+      this.editedIndex = this.persons.indexOf(item);
       this.editedStudent = {
         id: item.id,
         email: item.email,
@@ -241,7 +250,7 @@ export default {
     },
 
     deleteItem(item) {
-      this.editedIndex = this.persons.students.indexOf(item);
+      this.editedIndex = this.persons.indexOf(item);
       this.editedStudent = {name: item.name};
       this.deletedIndex = item.id
       this.dialogDelete = true;
@@ -291,10 +300,9 @@ export default {
         const body = this.editedStudent
         await this.putUser(body).finally(async () => {
           this.persons = await this.getStudents();
-          this.close();
         })
       } else {
-        this.persons.students.push(this.editedStudent);
+        this.persons.push(this.editedStudent);
         const body = {
           "email": this.editedStudent.email,
           "phoneNumber": this.editedStudent.phoneNumber,
@@ -305,9 +313,9 @@ export default {
         }
         await this.postUser(body).finally(() => {
           this.persons = this.getStudents();
-          this.close();
         })
       }
+      this.close();
     },
   },
 };

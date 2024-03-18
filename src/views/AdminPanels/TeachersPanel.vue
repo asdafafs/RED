@@ -5,7 +5,7 @@
     </div>
     <v-data-table
         :headers="headers"
-        :items="persons.activeUsers"
+        :items="persons"
         :search="search"
         class="elevation-1 custom-header-table"
         no-data-text="Нет данных для отображения"
@@ -88,7 +88,7 @@
       </template>
       <template v-slot:item="{ item }">
         <tr>
-          <td>{{ item.name + " " + item.surname + " " + item.middleName }}</td>
+          <td>{{ item.fullName }}</td>
           <td>{{ item.email }}</td>
           <td>
             <v-btn cols="" class="tab-button pa-0 rounded-lg" color="#4E7AEC" @click="openPlanTemplate(item)">
@@ -118,14 +118,12 @@ export default {
     dialogDelete: false,
     mask: ['+', /\d/, '(', /[1-9]/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, '-', /\d/, /\d/],
     headers: [
-      {text: 'ФИО', align: 'start', sortable: false,},
-      {text: 'Email', align: 'start', sortable: false,},
-      {text: 'Практики', align: 'start', sortable: false,},
-      {text: 'Действия', value: 'actions', sortable: false},
+      {text: 'ФИО', align: 'start', sortable: false, value: 'fullName'},
+      {text: 'Email', align: 'start', sortable: false, value: 'email'},
+      {text: 'Практики', align: 'start', sortable: false, },
+      {text: 'Действия', sortable: false},
     ],
-    persons: {
-      activeUsers: []
-    },
+    persons: [],
     editedIndex: -1,
     deletedIndex: -1,
     editedTeacher: {
@@ -178,12 +176,21 @@ export default {
 
     async getActiveUsers() {
       const user = new UsersRequest();
-      let teachersData
-      await user.getActiveUser().catch(x => console.log(x)).then(x => {
-        teachersData = x.data
-      })
-      return teachersData
+      let teachersData;
+      await user.getActiveUser()
+          .then(response => {
+            teachersData = response.data.activeUsers.map(user => ({
+              ...user,
+              fullName: `${user.name} ${user.surname} ${user.middleName}`
+            }));
+          })
+          .catch(error => {
+            console.error(error);
+          });
+      console.log(teachersData);
+      return teachersData;
     },
+
 
     async postActiveUser(body) {
       const user = new UsersRequest();
