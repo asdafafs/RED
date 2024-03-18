@@ -24,12 +24,10 @@
               />
             </div>
             <v-card-title class="mail-authorization-card__title">
-
               Авторизация</v-card-title>
             <v-card-subtitle class="mail-authorization-card__subtitle">
               Для продолжения работы в RED: Расписание, пожалуйста, авторизуйтесь.
             </v-card-subtitle>
-
             <v-card-text class="pb-0">
               <v-alert v-if="message" type="error">
                 {{ message }}
