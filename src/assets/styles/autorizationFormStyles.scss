@@ -4,7 +4,7 @@
 
 .v-overlay--active {
     backdrop-filter: blur(2px);
-    background: rgb(0 0 0 / 0.8);
+    background: #4E7AEC33;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -65,11 +65,29 @@
         flex-direction: column !important; 
 
         &__btn {
+            text-transform: none !important;
             border-radius: 8px !important;
             padding: 0 !important;
             margin: 4px 0 4px 0 !important;
             width: 350px !important;
-            
+
+            &__email{
+                text-transform: none !important;
+                color: white !important;
+                border-radius: 8px !important;
+                padding: 0 !important;
+                margin: 4px 0 4px 0 !important;
+                width: 350px !important;
+            }
+
+            &__vk{
+                text-transform: none !important;
+                color: black !important;
+                border-radius: 8px !important;
+                padding: 0 !important;
+                margin: 4px 0 4px 0 !important;
+                width: 350px !important;
+            }
         }
     }
 }
@@ -86,6 +104,7 @@
         font-weight: 700 !important;
         font-size: 32px !important;
         line-height: 37.5px !important;
+        padding: 0px 24px 10px !important;
     }
     &__subtitle {
         font-weight: 400 !important;
@@ -100,6 +119,13 @@
         align-self: center !important;
         transform: scale(2.1) !important;
         padding:8px 0 16px 0;
+        margin-left: 16px;
+        margin-top: 2em !important;
+
+    }
+
+    &__field {
+        border-radius: 12px !important;
     }
     
     &__actions {

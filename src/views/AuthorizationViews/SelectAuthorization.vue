@@ -30,18 +30,19 @@
           <v-card-actions class="authorization-card__actions">
             <v-btn
               color="#4E7AEC"
-              class="authorization-card__actions__btn"
+              class="authorization-card__actions__btn__email"
               @click="LogIn"
             >
-              Войти
+              Войти по e-mail
             </v-btn>
             <v-btn
-              color="#4E7AEC"
-              class="authorization-card__actions__btn"
+              color="#FEFEFE"
+              class="authorization-card__actions__btn__vk"
               @click="vkLogIn"
               :disabled="loginButtonDisabled"
             >
-              Войти через VK
+              <vk-icon style="width: 24px; height: 24px"/>
+              <span class="text--black">Войти через VK</span>
             </v-btn>
           </v-card-actions>
         </v-card>
@@ -52,10 +53,12 @@
 <script>
 import LogoRed from "@/components/logos/LogoRed.vue"
 import ConfirmEmailMessageMixin from "@/mixins/ConfirmEmailMessageMixin";
+import loginIcon from "@/components/Icons/LoginIcon.vue";
+import VkIcon from "@/components/Icons/VkIcon.vue";
 
 export default {
   name: 'AuthorizationForm',
-  components: {LogoRed},
+  components: {VkIcon, loginIcon, LogoRed},
   mixins: [ConfirmEmailMessageMixin],
   props: {
     overlay: {
