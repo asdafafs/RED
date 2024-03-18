@@ -40,6 +40,7 @@
               class="authorization-card__actions__btn__vk"
               @click="vkLogIn"
               :disabled="loginButtonDisabled"
+              outlined
             >
               <vk-icon style="width: 24px; height: 24px"/>
               <span class="text--black">Войти через VK</span>

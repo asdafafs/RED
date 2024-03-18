@@ -41,7 +41,7 @@
                   :rules="[rulesEmail.required]"
                   class="mb-2 mail-authorization-card__field"
                   clearable
-                  label="Email"
+                  label="E-mail"
                   outlined
               />
               <v-text-field
@@ -62,7 +62,7 @@
                 Забыли пароль?
               </span>
             </v-card-text>
-            <v-card-actions class="mail-authorization-card__actions">
+            <v-card-actions class="mail-authorization-card__actions py-0">
               <v-btn
                   color="#4E7AEC"
                   @click="validateForm"
@@ -178,7 +178,7 @@ export default {
 .logo-container {
   display: flex;
   align-items: center;
-  margin-left: 16px; /* или другое значение отступа */
+  margin-left: 16px;
   padding: 8px 0 16px 0;
 }
 
