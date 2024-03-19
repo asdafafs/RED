@@ -176,7 +176,6 @@ export default {
       lectureType: null,
       activeUser: null,
     },
-
     titleRules: {
       required: value => !!value
     },
