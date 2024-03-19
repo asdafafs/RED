@@ -514,7 +514,6 @@ export default {
           this.cursorDateOfWeek = 0;
         }
       }
-
     },
 
     getNextDayByWeekendDayIndex(dayOfWeek) {
