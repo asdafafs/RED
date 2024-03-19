@@ -5,6 +5,7 @@
                 :hide-default-footer="true"
                 mobile-breakpoint="0"
                 disable-pagination :header-props="{ class: 'blue--text text--darken-2' }"
+                v-model="selectedRows"
   >
     <template v-slot:top>
       <v-toolbar flat>
@@ -30,7 +31,7 @@
                     <v-text-field v-model="editedItem.title" label="Название"
                                   :rules="[titleRules.required]" outlined class="rounded-xl"></v-text-field>
                     <v-text-field v-model="editedItem.startTime" label="Начало занятия" type="datetime-local"
-                                  :rules="[startDateTimeRules.required]" :min="getTodayDate()" outlined
+                                  :rules="[startDateTimeRules.required]" :min="getTodayDate" outlined
                                   class="rounded-xl">
                     </v-text-field>
                     <v-text-field v-model="editedItem.endTime" label="Конец занятия" type="datetime-local"
@@ -44,6 +45,7 @@
                         :rules="[typeEventRules.required]"
                         outlined
                         class="rounded-xl"
+                        no-data-text="Нет данных для отображения"
                     >
                       <template v-slot:item="{ item }">
                         <v-list-item @click="selectItem(item)">
@@ -63,6 +65,7 @@
                         item-value="id"
                         outlined
                         class="rounded-xl"
+                        no-data-text="Нет данных для отображения"
                     ></v-select>
                   </v-col>
                 </v-row>
@@ -70,10 +73,10 @@
             </v-card-text>
             <v-card-actions>
               <v-container style="display: flex; justify-content: space-between;" class="py-0">
-                <v-btn color="blue darken-1" text @click="close">
+                <v-btn color="blue darken-1" text @click="closeEditItem">
                   Отмена
                 </v-btn>
-                <v-btn color="blue darken-1" text @click="save" :disabled="isSaveButtonDisabled">
+                <v-btn color="blue darken-1" text @click="save" :disabled="hasChanges || isSaveButtonDisabled">
                   OK
                 </v-btn>
               </v-container>
@@ -85,7 +88,7 @@
             <v-card-title class="text-h5">Удалить занятие?</v-card-title>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="blue darken-1" text @click="closeDelete">Отмена</v-btn>
+              <v-btn color="blue darken-1" text @click="closeDelete()">Отмена</v-btn>
               <v-btn color="blue darken-1" text @click="deleteItemConfirm">OK</v-btn>
               <v-spacer></v-spacer>
             </v-card-actions>
@@ -94,7 +97,8 @@
       </v-toolbar>
     </template>
     <template v-slot:item="{ item  }">
-      <tr>
+      <tr :class="selectedRows.indexOf(item.id)>-1?'selected-row':''">
+
         <td>{{ item.title }}</td>
         <td>{{ getTitleTeacher(item.activeUser) }}</td>
         <td>{{ discriminator[item.lectureType] }}</td>
@@ -109,7 +113,7 @@
           }}
         </td>
         <td class="text-xs-right">
-          <v-icon small class="mr-2" @click="editItem(item)">mdi-pencil</v-icon>
+          <v-icon small class="mr-2" @click="editItem(item);">mdi-pencil</v-icon>
           <v-icon small @click="deleteItem(item)">mdi-delete</v-icon>
         </td>
       </tr>
@@ -117,6 +121,8 @@
   </v-data-table>
 </template>
 <script>
+import moment from "moment";
+
 export default {
   props: {
     coursesData: {
@@ -127,7 +133,12 @@ export default {
     lectors: {
       type: Array,
       default: () => []
-    }
+    },
+
+    initialData: {
+      type: Array,
+      default: () => [],
+    },
   },
   data: () => ({
     sortBy: 'startTime',
@@ -135,6 +146,7 @@ export default {
     discriminator: [null, "Основы вождения", "Основы ПДД", "Медицина", "Другое"],
     dialog: false,
     dialogDelete: false,
+    selectedRows: [],
     headers: [
       {text: 'Название', align: 'start', sortable: false, value: 'title'},
       {text: 'Преподаватель', align: 'start', sortable: false, value: ''},
@@ -147,6 +159,15 @@ export default {
     courses: [],
     editedIndex: -1,
     deletedIndex: -1,
+    initialCourses: [],
+    initialItem: {
+      id: null,
+      title: null,
+      startTime: null,
+      endTime: null,
+      lectureType: null,
+      activeUser: null,
+    },
     editedItem: {
       id: null,
       title: null,
@@ -171,13 +192,6 @@ export default {
   }),
 
   watch: {
-    dialog(val) {
-      val || this.close();
-    },
-    dialogDelete(val) {
-      val || this.closeDelete();
-    },
-
     coursesData: {
       handler() {
         this.initialize();
@@ -187,6 +201,22 @@ export default {
   },
 
   computed: {
+    hasChanges() {
+      const editedItem = this.editedItem
+      const initialItem = this.initialItem
+      const keys1 = Object.keys(this.editedItem);
+      const keys2 = Object.keys(this.initialItem);
+      if (keys1.length !== keys2.length) {
+        return false;
+      }
+      for (let key of keys1) {
+        if (editedItem[key] !== initialItem[key]) {
+          return false;
+        }
+      }
+      return true;
+    },
+
     isSaveButtonDisabled() {
       return !(this.titleRules.required(this.editedItem.title)
           && this.startDateTimeRules.required(this.editedItem.startTime)
@@ -201,6 +231,20 @@ export default {
     formTitle() {
       return this.editedIndex === -1 ? 'Новое занятие' : 'Редактировать занятие';
     },
+
+    isEditedItemEqualInitialItem() {
+      if (!this.editedItem || !this.initialCourses.length) {
+        return false;
+      }
+      const editedItem = this.courses.find(course => course.id === this.editedItem.id);
+      const initialItem = this.initialCourses.find(course => course.id === this.editedItem.id);
+      if (initialItem && editedItem) {
+        const sortedEditedItem = this.sortObjectKeys(editedItem);
+        const sortedInitialItem = this.sortObjectKeys(initialItem);
+        return JSON.stringify(sortedEditedItem) === JSON.stringify(sortedInitialItem);
+      }
+      return false;
+    },
   },
 
   created() {
@@ -208,18 +252,48 @@ export default {
   },
 
   methods: {
+    sortObjectKeys(obj) {
+      const sortedObj = {};
+      Object.keys(obj).sort().forEach(key => {
+        sortedObj[key] = obj[key];
+      });
+      return sortedObj;
+    },
+
+    toggleSelection() {
+      if (this.isEditedItemEqualInitialItem) {
+        const index = this.selectedRows.indexOf(this.editedItem.id);
+        if (index !== -1) {
+          this.selectedRows.splice(index, 1);
+        }
+      } else {
+
+        if (!this.selectedRows.includes(this.editedItem.id)) {
+          this.selectedRows.push(this.editedItem.id);
+        }
+      }
+    },
+
     getTitleTeacher(activeUser) {
       if (activeUser) {
         const teacher = this.teachers.find(teacher => teacher.id === activeUser);
-        console.log(teacher)
         return teacher ? `${teacher.surname} ${teacher.name.substring(0, 1)}.  ${teacher.middleName.substring(0, 1)}.` : '';
       }
     },
 
     initialize() {
       this.teachers = this.lectors
-      console.log(this.teachers)
       this.courses = this.coursesData.map(item => {
+        return {
+          id: item.id,
+          title: item.title,
+          startTime: item.startTime,
+          endTime: item.endTime,
+          lectureType: item.lectureType,
+          activeUser: item.activeUser,
+        };
+      });
+      this.initialCourses = this.initialData.map(item => {
         return {
           id: item.id,
           title: item.title,
@@ -246,14 +320,6 @@ export default {
 
     deleteItem(item) {
       this.editedIndex = this.courses.findIndex(course => course.id === item.id);
-      this.editedItem = {
-        id: item.id,
-        title: item.title,
-        startTime: item.startTime,
-        endTime: item.endTime,
-        activeUser: item.activeUser,
-        lectureType: parseInt(item.lectureType),
-      };
       this.deletedIndex = this.editedIndex
       this.dialogDelete = true;
     },
@@ -262,6 +328,10 @@ export default {
       this.courses.splice(this.editedIndex, 1);
       this.$emit('courses-updated', this.courses);
       this.closeDelete();
+    },
+
+    closeEditItem() {
+      this.close();
     },
 
     close() {
@@ -295,12 +365,16 @@ export default {
     },
 
     save() {
+      this.editedItem.startTime = moment(this.editedItem.startTime).format('YYYY-MM-DDTHH:mm:ss')
+      this.editedItem.endTime = moment(this.editedItem.endTime).format('YYYY-MM-DDTHH:mm:ss')
       if (this.editedIndex > -1) {
         this.$set(this.courses, this.editedIndex, this.editedItem);
       } else {
         this.courses.push(this.editedItem);
       }
+      console.log(this.editedItem.startTime, this.editedItem.endTime)
       this.$emit('courses-updated', this.courses);
+      this.toggleSelection();
       this.close();
     },
 
@@ -323,17 +397,6 @@ export default {
       return `${year}-${month}-${day}T${hours}:00`;
     },
 
-    getTableRowClass(item) {
-      const classMap = {
-        1: ' green-background',
-        2: 'yellow-background',
-        3: 'red-background',
-        4: 'gray-background'
-      };
-
-      return classMap[item.lectureType] || '';
-    },
-
     formatDatetime(timestamp) {
       if (!timestamp) return null;
       const date = new Date(timestamp);
@@ -342,17 +405,6 @@ export default {
       const hours = String(date.getHours()).padStart(2, '0');
       const minutes = String(date.getMinutes()).padStart(2, '0');
       return `${month}-${day} ${hours}:${minutes}`;
-    },
-
-    getListItemClass(item) {
-      const classMap = {
-        'Основы вождения': 'green-background',
-        'Основы ПДД': 'yellow-background',
-        'Медицина': 'red-background',
-        'Другое': 'gray-background'
-      };
-      const isSelected = this.editedItem.lectureType === item;
-      return !isSelected ? classMap[item] || 'gray-background' : '';
     },
 
     selectItem(item) {

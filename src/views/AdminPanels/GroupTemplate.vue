@@ -85,7 +85,7 @@
     </v-row>
     <v-row>
       <v-col class="py-0">
-        <CoursesList :coursesData="lessons" :lectors="teachers"
+        <CoursesList :coursesData="lessons" :lectors="teachers" :initialData="initialData"
                      @courses-updated="handleCoursesUpdated"></CoursesList>
       </v-col>
     </v-row>
@@ -120,6 +120,7 @@ export default {
     studentList: null,
     globalStartDate: null,
     lessons: [],
+    initialData: [],
     selectedChips: [],
     selectedStudents: [],
     selectedStudentsIds: [],
@@ -241,6 +242,7 @@ export default {
     },
 
     handleCoursesUpdated(courses) {
+      console.log('lessons', courses)
       this.lessons = courses
     },
 
@@ -298,6 +300,16 @@ export default {
       if (this.editedIndex === -1) {
         await this.getCourseLast();
         this.lessons = this.coursesData.map(item => {
+          return {
+            id: item.id,
+            title: item.title,
+            startTime: item.startTime,
+            endTime: item.endTime,
+            lectureType: item.lectureType,
+            activeUser: item.activeUser,
+          };
+        });
+        this.initialData = this.coursesData.map(item => {
           return {
             id: item.id,
             title: item.title,

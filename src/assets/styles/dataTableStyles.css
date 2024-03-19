@@ -13,3 +13,7 @@
 .v-toolbar--flat{
     height: auto !important;
 }
+
+.selected-row{
+   background-color:  #9DB9FF
+}
