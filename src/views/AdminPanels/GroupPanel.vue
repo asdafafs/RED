@@ -1,7 +1,20 @@
 <template>
-  <v-container fluid>
-    <div class="text-h4 font-weight-medium px-4">
+  <div style="width: 100%">
+    <div class="big-title">
       Группы и планы обучения
+    </div>
+    <hr>
+    <div class="d-flex flex-row justify-space-between align-center mb-3">
+      <v-btn
+          color="#4E7AEC"
+          class="add-instructor-btn"
+          @click="transitionNewCourse"
+      >
+        <section class="d-flex flex-row align-center" style="padding: 8px 12px 8px 12px !important;">
+          <v-icon color="white">mdi-plus-circle-outline</v-icon>
+          <span class="add-instructor-text">Добавить группу</span>
+        </section>
+      </v-btn>
     </div>
     <v-data-table :headers="headersGroup" :search="search" :items="groups" class="elevation-1 custom-header-table"
                   v-if="!discriminatorUser" no-data-text="Нет данных для отображения"
@@ -9,14 +22,6 @@
                   mobile-breakpoint="0">
       <template v-slot:top>
         <v-toolbar flat>
-          <v-btn color="#4E7AEC" dark class="ma-0 rounded-lg" @click="transitionNewCourse">
-            <v-col cols="1" class="px-0">
-              <i class="mdi mdi-plus-circle-outline" style="transform: scale(1.5)"></i>
-            </v-col>
-            <v-col cols="">
-              Добавить группу
-            </v-col>
-          </v-btn>
           <v-dialog v-model="groupDelete" max-width="500px">
             <v-card>
               <v-card-title class="text-h5">Удалить группу?</v-card-title>
@@ -54,7 +59,7 @@
     <div v-else>
       <p>Вы не авторизованы для просмотра этой страницы</p>
     </div>
-  </v-container>
+  </div>
 </template>
 <script>
 import GroupsRequest from "@/services/GroupsRequest";
@@ -163,8 +168,77 @@ export default {
 </script>
 <style>
 @import "@/assets/styles/dataTableStyles.css";
-
 .theme--light.v-chip:not(.v-chip--active) {
   background: rgba(255, 255, 255, 0.7);
+}
+
+
+.grid-button {
+  width: 155px !important;
+  height: 28px !important;
+  border-radius: 12px !important;
+  text-transform: none !important;
+}
+
+.header-grid-text {
+  font-weight: 600 !important;
+  font-size: 16px !important;
+}
+
+.grid-actions {
+  text-align: end !important;
+  padding-right: 30px !important;
+}
+
+.add-instructor {
+  &-btn {
+    border-radius: 12px !important;
+    height: 32px !important;
+    width: 225px !important;
+    text-transform: none !important;
+  }
+
+  &-text {
+    font-size: 16px !important;
+    font-weight: 500 !important;
+    color: white !important;
+    margin-left: 8px !important;
+    line-height: 18.75px !important;
+  }
+}
+
+.v-text-field {
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.v-text-field--outlined .v-label {
+  top: 7px !important;
+}
+
+.search-field {
+  .v-input__slot {
+    display: flex !important;
+    align-items: center !important;
+    min-height: 32px !important;
+  }
+
+  .v-input__prepend-inner {
+    margin: 0 !important;
+  }
+
+  .v-input__icon {
+    height: 32px !important;
+  }
+}
+
+.v-btn {
+  letter-spacing: unset !important;
+}
+
+.big-title {
+  font-weight: 700 !important;
+  font-size: 40px !important;
+  line-height: 46px !important;
 }
 </style>

@@ -2,17 +2,17 @@
   <div style="width: 100%; height:100%; padding: 0 12px 12px 12px">
     <div class="d-flex justify-space-between mb-1" style="width: 100%">
       <v-btn-toggle
-        v-model="selectedJoinType"
-        group
-        color="black"
+          v-model="selectedJoinType"
+          group
+          color="black"
       >
         <v-btn
-          v-for="item in calendarButtons"
-          :key="item.id"
-          height="32"
-          class="toggle-button"
-          :value="item.id"
-          @click="onToggleClick(item.id)"
+            v-for="item in calendarButtons"
+            :key="item.id"
+            height="32"
+            class="toggle-button"
+            :value="item.id"
+            @click="onToggleClick(item.id)"
         >
         <span :class="selectedJoinType === item.id ? 'white--text' : 'black--text'">
           {{ item.title }}
@@ -22,16 +22,16 @@
       <div class="d-flex align-center flex-row">
         <span class="mr-3">Показать</span>
         <v-select
-          style="max-width: 130px"
-          height="32"
-          v-model="type"
-          :items="types"
-          dense
-          outlined
-          hide-details
-          class="select-period"
-          :item-text="displayText"
-          :item-value="valueText"
+            style="max-width: 130px"
+            height="32"
+            v-model="type"
+            :items="types"
+            dense
+            outlined
+            hide-details
+            class="select-period"
+            :item-text="displayText"
+            :item-value="valueText"
         />
       </div>
     </div>
@@ -95,6 +95,9 @@
               :hide-header=false
               @change="updateRange"
               event-more-text="+ {0}"
+              :first-interval=6
+              :interval-minutes=60
+              :interval-count=18
           >
             <template v-slot:event="{event}">
               <v-container class="pa-1 mx-0 d-flex ">
@@ -287,7 +290,7 @@ export default {
     userID() {
       return this.user.userId
     },
-    
+
     month() {
       return this.$refs.calendar.title.split(' ')[0]
     },
@@ -295,7 +298,7 @@ export default {
   beforeDestroy() {
     window.removeEventListener('resize', this.handleResize);
   },
-  
+
   created() {
     this.selectedReason = this.reasonsRefusal[0];
     this.initialize();
@@ -305,9 +308,12 @@ export default {
   methods: {
     onToggleClick(id) {
       switch (id) {
-        case 0: return this.getAllEvents()
-        case 1: return this.testLessons()
-        case 2: return this.testPractices()
+        case 0:
+          return this.getAllEvents()
+        case 1:
+          return this.testLessons()
+        case 2:
+          return this.testPractices()
       }
     },
     displayText(item) {
@@ -410,7 +416,7 @@ export default {
     async initialize() {
       await this.getEventsTeacher();
       await this.getStudent()
-      
+
       if (this.discriminatorUser === false) {
         await this.confirm(this.discriminatorUser)
       }
@@ -498,7 +504,7 @@ export default {
         return '#E9E9E8'
       }
     },
-    
+
     handleResize() {
       if (window.innerWidth < 1260) {
         this.num = 30;
@@ -511,6 +517,7 @@ export default {
 </script>
 <style lang="scss">
 @import "@/assets/styles/monthScheduleStyles.css";
+
 .toggle-button {
   margin-right: 0 !important;
   margin-left: 0 !important;
@@ -518,7 +525,7 @@ export default {
   border-radius: 4px !important;
   text-transform: none !important;
   font-size: 16px !important;
-  
+
   .v-btn:hover,
   .v-btn:focus,
   {
@@ -545,26 +552,28 @@ export default {
   font-weight: 600 !important;
   color: black !important;
 }
+
 .event-type {
   font-weight: 600 !important;
   font-size: 12px !important;
   color: black !important;
 }
+
 .event-instructor,
-.event-long
-{
+.event-long {
   font-weight: 400 !important;
   font-size: 12px !important;
   color: black !important;
 }
+
 .select-period {
   border-radius: 12px;
-  
+
   .v-input__slot {
     height: 32px !important;
     min-height: 32px !important;
-    display: flex!important;
-    align-items: center!important;
+    display: flex !important;
+    align-items: center !important;
   }
 
   .v-select__selection--comma {

@@ -9,8 +9,14 @@ export default class IdentityRequest extends HTTPService {
         return this.get("")
     }
 
-    postLoginVk(code, redirectUri) {
+    postLoginVkRegistration(code, redirectUri) {
         return this.post("login-vk", {
+            code, redirectUri
+        })
+    }
+
+    postBindVk(code, redirectUri) {
+        return this.post("Bind", {
             code, redirectUri
         })
     }
