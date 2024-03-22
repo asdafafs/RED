@@ -14,7 +14,7 @@ export default {
   },
   async created() {
     const code = this.$route.query.code
-    await this.identityService.postLoginVk(code, process.env.REDIRECT_URI)
+    await this.identityService.postBindVk(code, process.env.REDIRECT_URI)
         .then(async () => {
           await this.$router.push({
             path: '/schedule/lessons',

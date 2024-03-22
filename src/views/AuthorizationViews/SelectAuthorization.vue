@@ -74,11 +74,12 @@ export default {
     async vkLogIn() {
       this.loginButtonDisabled = true
       const clientId = process.env.CLIENT_ID
-      const redirectUri = process.env.REDIRECT_URI
+      const redirectUri = 'https://anton.techbeaver.ru/post-vkLogin'
       const display = process.env.DISPLAY
       const responseType = process.env.RESPONSE_TYPE
       window.location.replace(`https://oauth.vk.com/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&display=${display}&response_type=${responseType}`)
     },
+
     LogIn() {
       this.$router.push(
         {

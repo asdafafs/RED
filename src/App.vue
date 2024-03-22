@@ -20,6 +20,7 @@ export default {
     const isRetry = this.$route.query.retry
     const isConfirmRequired = this.$route.query.isConfirmRequired
     if (this.$route.path === '/post-login'
+        || this.$route.path === '/post-vkLogin'
         || isRetry
         || isConfirmRequired
         || this.$route.path === '/confirm-email'
