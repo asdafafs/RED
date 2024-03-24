@@ -27,6 +27,7 @@ import Test from "@/views/Test";
 import InstructorsPlanTemplate from "@/views/AdminPanels/InstructorsPlanTemplate.vue";
 import Item from "@/views/AdminPanels/GroupTemplate.vue";
 import AcceptPassword from "@/views/AuthorizationViews/AcceptPassword.vue";
+import PostAuthorizationVkPage from "@/views/AuthorizationViews/PostAuthorizationVkPage.vue";
 
 
 Vue.use(VueRouter)
@@ -57,6 +58,11 @@ const routes = [
         path: '/post-login',
         name: 'post-login',
         component: PostLoginPage,
+    },
+    {
+        path: '/post-vkLogin',
+        name: 'post-vk-login',
+        component: PostAuthorizationVkPage,
     },
     {
         path: '/confirm-email',

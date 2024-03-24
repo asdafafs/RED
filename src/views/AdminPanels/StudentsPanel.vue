@@ -1,7 +1,31 @@
 <template>
-  <v-container fluid>
-    <div class="text-h4 font-weight-medium px-4">
+  <div style="width: 100%">
+    <div class="big-title">
       Студенты и планы
+    </div>
+    <hr>
+    <div class="d-flex flex-row justify-space-between align-center mb-3">
+      <v-btn
+          color="#4E7AEC"
+          class="add-instructor-btn"
+          @click="dialog = true"
+      >
+        <section class="d-flex flex-row align-center" style="padding: 8px 12px 8px 12px !important;">
+          <v-icon color="white">mdi-plus-circle-outline</v-icon>
+          <span class="add-instructor-text">Добавить студента</span>
+        </section>
+      </v-btn>
+      <v-text-field
+          v-model="search"
+          outlined
+          dense
+          label="Поиск"
+          prepend-inner-icon="mdi-magnify"
+          variant="outlined"
+          hide-details
+          class="search-field"
+          style=" max-width: 256px !important;  border-radius: 12px !important; max-height: 32px !important;"
+      />
     </div>
     <v-data-table
         :headers="headers"
@@ -17,16 +41,6 @@
       <template v-slot:top>
         <v-toolbar flat>
           <v-dialog v-model="dialog" max-width="500px" persistent>
-            <template v-slot:activator="{ on, attrs }">
-              <v-btn color="#4E7AEC " dark class="ma-0 rounded-lg" v-bind="attrs" v-on="on">
-                <v-col cols="1" class="px-0">
-                  <i class="mdi mdi-plus-circle-outline" style="transform: scale(1.5)"></i>
-                </v-col>
-                <v-col cols="">
-                  Добавить студента
-                </v-col>
-              </v-btn>
-            </template>
             <v-card class="rounded-xl">
               <v-card-title>
                 <span class="text-h5">{{ formTitle }}</span>
@@ -80,18 +94,6 @@
               </v-card-actions>
             </v-card>
           </v-dialog>
-          <v-spacer></v-spacer>
-          <v-col cols="3" class="pa-0 text-right col-auto">
-            <v-text-field
-                  v-model="search"
-                label="Поиск"
-                prepend-inner-icon="mdi-magnify"
-                single-line
-                outlined
-                hide-details
-                dense
-            ></v-text-field>
-          </v-col>
         </v-toolbar>
       </template>
       <template v-slot:item="{ item }">
@@ -109,7 +111,7 @@
         </tr>
       </template>
     </v-data-table>
-  </v-container>
+  </div>
 </template>
 <script>
 import UsersRequest from "@/services/UsersRequest";
@@ -127,7 +129,7 @@ export default {
       {text: 'ФИО', align: 'start', sortable: false, value: 'fullName'},
       {text: 'E-mail', align: 'start', sortable: false, value: 'email'},
       {text: 'Общие практики всего', align: 'start', sortable: false, value: 'generalHours'},
-      {text: 'Общие практики остаток', sortable: false, value: 'generalHoursSpent' },
+      {text: 'Общие практики остаток', sortable: false, value: 'generalHoursSpent'},
       {text: 'Доппрактики всего', sortable: false, value: 'additinalHours'},
       {text: 'Доппрактики остаток', sortable: false, value: 'additinalHoursSpent'},
       {text: 'Действия', sortable: false,},
@@ -323,4 +325,73 @@ export default {
 <style lang="scss">
 @import "@/assets/styles/phoneMaskStyles.css";
 @import "@/assets/styles/dataTableStyles.css";
+
+.grid-button {
+  width: 155px !important;
+  height: 28px !important;
+  border-radius: 12px !important;
+  text-transform: none !important;
+}
+
+.header-grid-text {
+  font-weight: 600 !important;
+  font-size: 16px !important;
+}
+
+.grid-actions {
+  text-align: end !important;
+  padding-right: 30px !important;
+}
+
+.add-instructor {
+  &-btn {
+    border-radius: 12px !important;
+    height: 32px !important;
+    width: 225px !important;
+    text-transform: none !important;
+  }
+
+  &-text {
+    font-size: 16px !important;
+    font-weight: 500 !important;
+    color: white !important;
+    margin-left: 8px !important;
+    line-height: 18.75px !important;
+  }
+}
+
+.v-text-field {
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.v-text-field--outlined .v-label {
+  top: 7px !important;
+}
+
+.search-field {
+  .v-input__slot {
+    display: flex !important;
+    align-items: center !important;
+    min-height: 32px !important;
+  }
+
+  .v-input__prepend-inner {
+    margin: 0 !important;
+  }
+
+  .v-input__icon {
+    height: 32px !important;
+  }
+}
+
+.v-btn {
+  letter-spacing: unset !important;
+}
+
+.big-title {
+  font-weight: 700 !important;
+  font-size: 40px !important;
+  line-height: 46px !important;
+}
 </style>
