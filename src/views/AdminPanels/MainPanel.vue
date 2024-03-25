@@ -33,7 +33,7 @@ export default {
           {
             name: router
           }
-      )
+      ).catch(error=> {})
     }
   },
   computed: {

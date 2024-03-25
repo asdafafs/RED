@@ -14,3 +14,7 @@
 .app-bar-height{
     height: auto !important;
 }
+
+.v-dialog{
+    border-radius: 12px !important;
+}

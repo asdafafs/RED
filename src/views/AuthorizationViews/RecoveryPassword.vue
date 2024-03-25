@@ -12,9 +12,9 @@
             content-class="elevation-0"
         >
           <v-card class="forget-password-card white">
-            <div class="logo-container">
+            <div class="logo-container-recovery-password">
               <LogoRed
-                  class="logo"
+                  class="logo-container-recovery-password__image"
                   :height="50"
                   :width="84"
               />
@@ -117,17 +117,16 @@ export default {
   padding: 0px 16px;
 }
 
-.logo {
-  align-self: center !important;
-  margin-left: 16px;
-
-}
-
-.logo-container {
+.logo-container-recovery-password {
   display: flex;
-  align-items: center;
-  margin-left: 16px;
+  align-items: center !important;
+  margin-left: 24px !important;
+  padding: 8px 0 16px 0 !important;
 
+  &__image{
+    align-self: center !important;
+    width: auto;
+  }
 }
 
 .forget-password-card {
@@ -162,6 +161,7 @@ export default {
   &__actions {
     display: flex;
     flex-direction: column;
+    margin-top: 16px !important;
 
     &__btn {
       border-radius: 8px;

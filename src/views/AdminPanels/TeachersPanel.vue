@@ -1,5 +1,5 @@
 <template>
-  <div style="width: 100%"> 
+  <div style="width: 100%">
     <div class="big-title">
       Инструкторы и планы
     </div>
@@ -8,6 +8,7 @@
       <v-btn
           color="#4E7AEC"
           class="add-instructor-btn"
+          @click="dialog=true"
       >
         <section class="d-flex flex-row align-center" style="padding: 8px 12px 8px 12px !important;">
           <v-icon color="white">mdi-plus-circle-outline</v-icon>
@@ -38,19 +39,9 @@
         :header-props="{ class: 'blue--text text--darken-2 header-grid-text' }"
         mobile-breakpoint="0"
     >
-<!--      <template v-slot:top>
+      <template v-slot:top>
         <v-toolbar flat>
           <v-dialog v-model="dialog" max-width="500px">
-            <template v-slot:activator="{ on, attrs }">
-              <v-btn color="#4E7AEC " dark class="ma-0 rounded-lg" v-bind="attrs" v-on="on">
-                <v-col cols="1" class="px-0">
-                  <i class="mdi mdi-plus-circle-outline" style="transform: scale(1.5)"></i>
-                </v-col>
-                <v-col cols="">
-                  Добавить инструктора
-                </v-col>
-              </v-btn>
-            </template>
             <v-card class="rounded-xl">
               <v-card-title>
                 <span class="text-h5">{{ formTitle }}</span>
@@ -97,15 +88,15 @@
             </v-card>
           </v-dialog>
         </v-toolbar>
-      </template>-->
+      </template>
       <template v-slot:item="{ item }">
         <tr>
           <td>{{ item.fullName }}</td>
           <td>{{ item.email }}</td>
           <td>
-            <v-btn 
-                class="grid-button" 
-                color="#4E7AEC" 
+            <v-btn
+                class="grid-button"
+                color="#4E7AEC"
                 @click="openPlanTemplate(item)"
             >
               <span class="white--text">Определить план</span>
@@ -308,27 +299,32 @@ export default {
 <style lang="scss">
 @import "@/assets/styles/phoneMaskStyles.css";
 @import "@/assets/styles/dataTableStyles.css";
+
 .grid-button {
   width: 155px !important;
-  height: 28px !important; 
+  height: 28px !important;
   border-radius: 12px !important;
   text-transform: none !important;
 }
+
 .header-grid-text {
   font-weight: 600 !important;
   font-size: 16px !important;
 }
+
 .grid-actions {
   text-align: end !important;
   padding-right: 30px !important;
 }
+
 .add-instructor {
   &-btn {
-    border-radius: 12px!important;
+    border-radius: 12px !important;
     height: 32px !important;
     width: 225px !important;
     text-transform: none !important;
   }
+
   &-text {
     font-size: 16px !important;
     font-weight: 500 !important;
@@ -337,29 +333,36 @@ export default {
     line-height: 18.75px !important;
   }
 }
+
 .v-text-field {
   padding: 0 !important;
   margin: 0 !important;
 }
+
 .v-text-field--outlined .v-label {
- top: 7px !important;
+  top: 7px !important;
 }
+
 .search-field {
   .v-input__slot {
     display: flex !important;
     align-items: center !important;
     min-height: 32px !important;
   }
+
   .v-input__prepend-inner {
     margin: 0 !important;
   }
+
   .v-input__icon {
     height: 32px !important;
   }
 }
+
 .v-btn {
   letter-spacing: unset !important;
 }
+
 .big-title {
   font-weight: 700 !important;
   font-size: 40px !important;

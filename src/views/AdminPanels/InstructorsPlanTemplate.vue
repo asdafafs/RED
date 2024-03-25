@@ -10,7 +10,7 @@
         </div>
       </v-col>
     </v-row>
-    <hr>
+    <hr style="margin: 1em 0 2em 0 !important;">
     <v-row class="flex-wrap">
       <v-col cols="lg-1 md-1 py-0" class="flex-column align-center bg-surface-variant d-flex">
         <v-radio-group class="px-0 py-0 align-center" v-model="selectedDuration" hide-details="true"
@@ -76,6 +76,7 @@ blockEditableTemplate = selectedTemplate ? !!selectedTemplate.practiceCourseId :
 import TemplateSchedule from "@/views/AdminPanels/TemplateSchedule.vue";
 import UsersRequest from "@/services/UsersRequest";
 import PracticeCourseRequest from "@/services/PracticeCourseRequest";
+import {successAlert, warningAlert} from "@/components/Alerts/alert";
 
 export default {
   name: 'PlanTemplate',
@@ -122,21 +123,35 @@ export default {
     },
 
     prev() {
-      this.$router.push({name: 'admin-teachers'})
+      const hasUnsavedTime = this.eventsTemplate.some(event => event.savedTime === undefined);
+      if (hasUnsavedTime){
+        warningAlert('Есть несохранненые изменения', 5000)
+      }
+      else{
+        this.$router.push({name: 'admin-teachers'})
+      }
     },
 
     async save() {
-      const body = {
-        "practiceCourseId": this.selectedTemplate,
-        "practiceCourseStart": this.practiceCourseStart,
-        "practiceCourseEnd": this.practiceCourseEnd,
-        "activeUserId": this.getIdUser,
-        'duration': this.selectedDuration,
-        "practices":
-        this.eventsTemplate
+      const hasUnsavedTime = this.eventsTemplate.some(event => event.savedTime === undefined);
+      if (hasUnsavedTime) {
+        const body = {
+          "practiceCourseId": this.selectedTemplate,
+          "practiceCourseStart": this.practiceCourseStart,
+          "practiceCourseEnd": this.practiceCourseEnd,
+          "activeUserId": this.getIdUser,
+          'duration': this.selectedDuration,
+          "practices": this.eventsTemplate
+        };
 
+        await this.postPracticeCourseTemplate(body);
+        await this.getPracticeCourseTemplate()
+        successAlert('Изменения сохранены успешно', 5000);
+
+
+      } else {
+        warningAlert('Не обнаружено доступных изменений', 5000)
       }
-      await this.postPracticeCourseTemplate(body)
     },
 
 
@@ -182,7 +197,6 @@ export default {
             this.practiceCourseStart = response.data.practiceCourseStart.slice(0, 10);
             this.practiceCourseEnd = response.data.practiceCourseEnd.slice(0, 10);
           });
-      console.log(this.selectedTemplate)
       this.blockEditableTemplate = this.selectedTemplate !== null;
       return this.eventsTemplate = events
     },
@@ -207,7 +221,12 @@ export default {
     },
 
     cancelChanges() {
-      this.cancelSaveChanges = true
+      const hasUnsavedTime = this.eventsTemplate.some(event => event.savedTime === undefined);
+      if (!hasUnsavedTime) {
+        warningAlert('Не обнаружено доступных изменений', 5000)
+      } else {
+        warningAlert('Есть несохранненые изменения', 5000)
+      }
     },
 
     getTodayDate() {
