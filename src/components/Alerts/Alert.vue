@@ -1,23 +1,19 @@
 <template>
   <div class="alert" ref="snackbar" id="snackbar">
-    {{ message }}
-
-    <v-btn
-        v-bind="link.bind"
-        :href="link.href"
-        :target="link.target"
-        class="letter-spacing__unset ml-2"
-        light
-        @click="destroyAlert(link)">
-      {{ link.text }}
-    </v-btn>
+    <success-icon style="width: 18px; height: 18px" v-if="type === 'success'" class="icon"></success-icon>
+    <warning-icon style="width: 18px; height: 18px" v-else-if="type === 'warning'" class="icon"></warning-icon>
+    <span>{{ message }}</span>
   </div>
 </template>
 
 <script>
 
+import WarningIcon from "@/components/Icons/WarningIcon.vue";
+import SuccessIcon from "@/components/Icons/SuccessIcon.vue";
+
 export default {
   name: "Alert.vue",
+  components: {SuccessIcon, WarningIcon},
 
   props: {
     message: {
@@ -40,20 +36,11 @@ export default {
     }
   },
   mounted() {
-    let x = this.$refs.snackbar;
-    console.log(x)
-    x.className = `show custom-${this.type}-alert`;
-    console.log(x.className )
+    this.showSnackbar();
+    // if (!document.querySelector('#snackbar')) {
+    //   this.showSnackbar();
+    // }
 
-    if (!this.infinity) {
-
-      setTimeout(() => {
-            x.className = x.className.replace('show', '');
-            this.$emit('destroy');
-          },
-          this.timeout,
-      );
-    }
   },
   created() {
   },
@@ -73,6 +60,20 @@ export default {
   },
 
   methods: {
+    showSnackbar() {
+      let x = this.$refs.snackbar;
+      console.log(x)
+      x.className = `show custom-${this.type}-alert`;
+      if (!this.infinity) {
+        setTimeout(() => {
+              x.className = x.className.replace('show', '');
+              this.$emit('destroy');
+            },
+            this.timeout,
+        );
+      }
+    },
+
     destroyAlert() {
       let x = this.$refs.snackbar;
       x.className = x.className.replace('show', '');
@@ -89,13 +90,22 @@ export default {
   margin-left: -125px;
   background-color: white;
   color: black;
+  font-size: 16px;
+  font-weight: 400;
   text-align: center;
-  border-radius: 2px;
+  border-radius: 12px;
   padding: 16px;
   position: fixed;
   z-index: 10000;
   left: 50%;
   bottom: 30px;
+  line-height: 19px;
+}
+
+.icon {
+  vertical-align: bottom;
+  margin-right: 8px;
+  margin-bottom: 1px;
 }
 
 .custom-info-alert {
@@ -104,17 +114,17 @@ export default {
 }
 
 .custom-warning-alert {
-  color: white !important;
-  background-color: #FF5722 !important;
+  color: #2B2A29 !important;
+  background-color: #FFCD6D !important;
 }
 
 .custom-success-alert {
-  color: white !important;
-  background-color: #4CAF50 !important;
+  color: #2B2A29 !important;
+  background-color: #8CED7C !important;
 }
 
 .custom-error-alert {
-  color: white !important;
+  color: #2B2A29 !important;
   background-color: #FF5252 !important;
 }
 

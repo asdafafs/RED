@@ -3,7 +3,6 @@
 </template>
 <script>
 import IdentityRequest from "@/services/IdentityRequest";
-import store from "@/store";
 
 export default {
   name: "PostLogin",
@@ -16,9 +15,7 @@ export default {
     const code = this.$route.query.code
     await this.identityService.postBindVk(code, process.env.REDIRECT_URI)
         .then(async () => {
-          await this.$router.push({
-            path: '/schedule/lessons',
-          })
+          window.location.replace('https://anton.techbeaver.ru/schedule/lessons')
         })
   }
 }

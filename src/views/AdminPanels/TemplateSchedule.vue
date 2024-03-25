@@ -26,12 +26,12 @@
                   </v-col>
                 </v-row>
                 <v-row class="ma-0" fill>
-                  <v-col class="black--text pa-0 align-self-center  d-lg-block" cols="9">
-                    <div class="font-weight-bold text-format-week">{{ `Вождение` }}</div>
-                    <div class="text-subtitle-2 d-flex">{{ abbreviatedName }}</div>
+                  <v-col class="black--text pa-0 align-self-center  d-lg-block" cols="9" >
+                    <div class="font-weight-bold text-format-week">Вождение</div>
+                    <div class="text-lg-subtitle-2 d-flex" >{{ abbreviatedName }}</div>
                   </v-col>
-                  <v-col cols="2">
-                    <v-icon class="red--text" @click="deleteEvent(event)">mdi-window-close</v-icon>
+                  <v-col cols="2" style="padding-left: 0px !important;">
+                    <v-icon class="red--text" @click="deleteEvent(event)" >mdi-window-close</v-icon>
                   </v-col>
                 </v-row>
               </v-container>

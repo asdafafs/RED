@@ -40,46 +40,47 @@
     >
       <template v-slot:top>
         <v-toolbar flat>
-          <v-dialog v-model="dialog" max-width="500px" persistent>
-            <v-card class="rounded-xl">
-              <v-card-title>
-                <span class="text-h5">{{ formTitle }}</span>
+          <v-dialog v-model="dialog" width="auto" persistent>
+            <v-card class="card-edit-student">
+              <v-card-title   >
+                <span class="card-edit-student__type_edit">{{ formTitle }}</span>
+                <span class="card-edit-student__title">Общая информация</span>
               </v-card-title>
               <v-card-text class="pb-0">
                 <v-container class="pa-0">
                   <v-row class="pa-0">
                     <v-col cols="12" sm="12" md="12" class="pb-0">
-                      <v-text-field v-model="editedStudent.name" label="Имя"
-                                    :rules="[nameRule.required()]" outlined class="py-2 rounded-xl"></v-text-field>
-                      <v-text-field v-model="editedStudent.surname" outlined label="Фамилия"
-                                    :rules="[surnameRule.required()]" class="py-2 rounded-xl"></v-text-field>
+                      <v-text-field v-model="editedStudent.name" label="Имя" style="border-radius: 12px"
+                                    :rules="[nameRule.required()]" outlined class="py-2"></v-text-field>
+                      <v-text-field v-model="editedStudent.surname" outlined label="Фамилия" style="border-radius: 12px"
+                                    :rules="[surnameRule.required()]" class="py-2 "></v-text-field>
                       <v-text-field v-model="editedStudent.middleName" outlined label="Отчество"
-                                    :rules="[middleNameRule.required()]" class="py-2 rounded-xl"></v-text-field>
-                      <v-text-field v-model="editedStudent.email" outlined label="email"
-                                    :rules="[emailRule.required()]" class="py-2 rounded-xl"></v-text-field>
+                                    style="border-radius: 12px"
+                                    :rules="[middleNameRule.required()]" class="py-2 "></v-text-field>
+                      <v-text-field v-model="editedStudent.email" outlined label="email" style="border-radius: 12px"
+                                    :rules="[emailRule.required()]" class="py-2 "></v-text-field>
                       <vue-text-mask class="phone-field" v-model="editedStudent.phoneNumber" :mask="mask"
                                      placeholderChar="#" :rules="[phoneRule.required()]"></vue-text-mask>
-                      <v-select outlined class="py-2 rounded-xl"
+                      <v-select outlined class="py-2 " style="border-radius: 12px"
                                 v-model="editedStudent.groupId"
                                 :items="groups"
                                 :item-value="item => item.groupId"
                                 :item-text="item => `${item.title}`"
                                 label="Группа"
                                 no-data-text="Нет данных для отображения"
+                                height="32px"
                       ></v-select>
                     </v-col>
                   </v-row>
                 </v-container>
               </v-card-text>
-              <v-card-actions>
-                <v-container style="display: flex; justify-content: space-between;" class="py-0">
+              <v-card-actions class="test py-0">
                   <v-btn color="blue darken-1" text @click="close">
                     Отмена
                   </v-btn>
                   <v-btn color="blue darken-1" text @click="save" :disabled="isSaveButtonDisabled">
                     OK
                   </v-btn>
-                </v-container>
               </v-card-actions>
             </v-card>
           </v-dialog>
@@ -162,7 +163,7 @@ export default {
 
 
     formTitle() {
-      return this.editedIndex === -1 ? 'Новый студент' : 'Редактировать студента';
+      return this.editedIndex === -1 ? 'НОВЫЙ СТУДЕНТ' : 'РЕДАКТИРОВАТЬ СТУДЕНТА';
     },
 
     isSaveButtonDisabled() {
@@ -211,7 +212,6 @@ export default {
           .catch(error => {
             console.error(error);
           });
-      console.log(studentsData);
       return studentsData;
     },
 
@@ -389,9 +389,109 @@ export default {
   letter-spacing: unset !important;
 }
 
+.test{
+  display: flex !important;
+  justify-content: space-between !important;
+}
+
 .big-title {
   font-weight: 700 !important;
   font-size: 40px !important;
   line-height: 46px !important;
 }
+.align-left {
+  margin-right: auto !important;
+}
+
+.align-right {
+  margin-left: auto !important;
+}
+
+
+.card-edit-student {
+  width: 392px !important;
+  //display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  gap: 9px !important;
+
+  background: #FFFFFF !important;
+  border: 1px solid #AAA7A6 !important;
+  border-radius: 12px !important;
+
+  &__type_edit {
+    width: 100% !important;
+    height: 11px !important;
+
+    font-style: normal !important;
+    font-weight: 400 !important;
+    font-size: 12px !important;
+    line-height: 14px !important;
+    color: #AAA7A6 !important;
+    flex: none !important;
+    order: 0 !important;
+    flex-grow: 0 !important;
+  }
+
+  &__title {
+    width: 100% !important;
+    height: 28px !important;
+
+    font-style: normal !important;
+    font-weight: 700 !important;
+    font-size: 24px !important;
+    line-height: 28px !important;
+    color: #000000 !important;
+    flex: none !important;
+    order: 0 !important;
+    flex-grow: 0 !important;
+  }
+
+  &__card_text {
+    gap: 12px !important;
+
+    &__field {
+      display: flex !important;
+      flex-direction: row !important;
+      align-items: center !important;
+
+      margin-top: 12px !important;
+      margin-bottom: 12px !important;
+
+      width: 352px !important;
+      height: 32px !important;
+
+      background: #FEFEFE !important;
+      border: 1px solid #4E7AEC !important;
+      border-radius: 12px !important;
+      flex: none !important;
+      order: 1 !important;
+      align-self: stretch !important;
+      flex-grow: 0 !important;
+    }
+  }
+
+}
+
+.field {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+
+  margin-top: 12px !important;
+  margin-bottom: 12px !important;
+
+  width: 352px !important;
+  height: 32px !important;
+
+  background: #FEFEFE !important;
+  border: 1px solid #4E7AEC !important;
+  border-radius: 12px !important;
+  flex: none !important;
+  order: 1 !important;
+  align-self: stretch !important;
+  flex-grow: 0 !important;
+
+}
+
 </style>

@@ -37,25 +37,31 @@
                   v-model="email"
                   :readonly="loading"
                   :rules="[rulesEmail.required]"
-                  class="mb-2 mail-authorization-card__field"
-                  clearable
+                  class="mb-2 mail-authorization-card__field "
                   label="E-mail"
                   outlined
-              />
+              >
+                <template v-slot:append>
+                  <span class="material-icons" @click="email=''">close</span>
+                </template>
+                </v-text-field>
               <v-text-field
                   color="black"
                   v-model="password"
-                  :append-icon="show ? 'mdi-eye ' : 'mdi-eye-off '"
                   :rules="[rulesPassword.required, rulesPassword.min]"
                   :type="show ? 'text' : 'password'"
                   name="input-10-4"
                   label="Пароль"
                   hint="Минимум 8 символов"
                   counter
-                  @click:append="show = !show"
                   outlined
                   class="mail-authorization-card__field"
-              />
+              >
+                <template v-slot:append>
+                  <span class="material-icons" v-if="show" @click="show = false">visibility</span>
+                  <span class="material-icons" v-else @click="show = true">visibility_off</span>
+                </template>
+              </v-text-field>
               <span @click="forgetPassword" class="authorization-card__actions__btn" style="color: #4E7AEC">
                 Забыли пароль?
               </span>
@@ -168,6 +174,13 @@ export default {
 </script>
 <style lang="scss">
 @import "@/assets/styles/autorizationFormStyles.scss";
+.material-symbols-outlined {
+  font-variation-settings:
+      'FILL' 0,
+      'wght' 400,
+      'GRAD' 0,
+      'opsz' 24
+}
 
 .no-scroll {
   overflow: hidden;
@@ -179,5 +192,4 @@ export default {
   margin-left: 16px;
   padding: 8px 0 16px 0;
 }
-
 </style>
