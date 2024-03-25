@@ -1,6 +1,6 @@
 <template>
   <div style="width: 100%; height:100%; padding: 0 12px 12px 12px">
-    <div class="d-flex justify-space-between mb-1" style="width: 100%">
+    <div class="d-flex justify-space-between mb-1 flex-wrap" style="width: 100%">
       <v-btn-toggle
           v-model="selectedJoinType"
           group
@@ -121,7 +121,7 @@
             </template>
           </v-calendar>
           <v-dialog v-model="selectedOpen" max-width="407px" persistent>
-            <v-card class="rounded-xl"
+            <v-card class="" style="border-radius: 12px"
                     :style="{ border: (selectedEvent.studentId === null && userID !== selectedEvent.studentId) ? '2px solid #4E7AEC' : '2px solid grey' }"
                     flat>
               <v-toolbar-title class="pa-3">
@@ -185,9 +185,15 @@
               </v-card-actions>
             </v-card>
           </v-dialog>
-          <v-dialog v-model="refusalModal" max-width="40em" persistent>
+          <v-dialog v-model="refusalModal" max-width="407px" persistent>
             <v-card>
-              <v-toolbar-title>Укажите причину отмены</v-toolbar-title>
+              <v-toolbar-title class="px-6">
+                <v-row>
+                  <v-col class="flex-column">
+                    <div class="text-lg-h4 font-weight-bold">Укажите причину отмены</div>
+                  </v-col>
+                </v-row>
+              </v-toolbar-title>
               <v-card-text>
                 <v-select no-data-text="Нет данных для отображения"
                           v-model="selectedReason"
@@ -195,14 +201,22 @@
                           item-value="id"
                           @change="confirmReason(selectedReason)"
                 ></v-select>
+                <v-select no-data-text="Нет данных для отображения"
+                          v-model="selectedState"
+                          :items="stateRefusal"
+                          item-value="id"
+                          @change="confirmState(selectedState)"
+                ></v-select>
               </v-card-text>
               <v-card-actions>
-                <v-btn text color="primary" @click="confirmDeletePractice()">
-                  Подтвердить
-                </v-btn>
+                <v-container class="pa-0" style="display: flex; justify-content: space-between;">
                 <v-btn text color="secondary" @click="closeModal()">
                   Отменить
                 </v-btn>
+                <v-btn text color="primary" @click="confirmDeletePractice()">
+                  Подтвердить
+                </v-btn>
+                </v-container>
               </v-card-actions>
             </v-card>
           </v-dialog>
@@ -240,8 +254,12 @@ export default {
     selectedTeacher: null,
     studentHours: [],
     selectedReason: null,
+    selectedState: null,
     reasonsRefusal: ['Ремонт', 'Семейные обстоятельства', 'Экзамен ', 'Здоровье', 'Задачи офиса'],
+    stateRefusal: ['Закрыта', 'Сгорела', 'Отменена'],
     selectedReasonId: 0,
+    selectedStateId: 0,
+
   }),
   mounted() {
     const buttonStyleReplace = [
@@ -324,17 +342,28 @@ export default {
       return item[0];
     },
 
-    async confirmDeletePractice() {
+    async confirmClosePractice(){
       const body = {
         "id": this.selectedEvent.id,
-        "stateEnum": 3,
-        "deleteReasonEnum": this.selectedReasonId
+        "stateEnum": this.selectedStateId,
       }
       await this.closePractice(body).catch(x => console.log(x)).finally(this.closeModal)
     },
 
+    async confirmDeletePractice() {
+      const body = {
+        "id": this.selectedEvent.id,
+        "stateEnum": this.selectedStateId,
+        "deleteReasonEnum": this.selectedReasonId
+      }
+      await this.closePractice(body).catch(x => console.log(x)).finally(this.closeModal)
+      await this.confirm(this.discriminatorUser)
+
+    },
+
     closeModal() {
       this.refusalModal = false
+      this.selectedOpen = false;
     },
 
     openRefusalModal() {
@@ -343,6 +372,10 @@ export default {
 
     confirmReason(selectedReason) {
       return this.selectedReasonId = this.reasonsRefusal.indexOf(selectedReason) + 1
+    },
+
+    confirmState(selectedState){
+      return this.selectedStateId = this.stateRefusal.indexOf(selectedState) + 1
     },
 
     async getStudent() {
@@ -465,6 +498,7 @@ export default {
         this.editedItem = {name: ''};
         this.editedIndex = -1;
       });
+      this.selectedOpen = false;
     },
 
     showEvent({nativeEvent, event}) {

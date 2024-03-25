@@ -11,7 +11,7 @@ const $alert = (message, type, timeout) => {
 
     component.$mount();
     document.getElementById('main').appendChild(component.$el);
-    console.log(document.getElementById('main'))
+
     const destroy = () => {
         component.$off('destroy');
         document.getElementById('main').removeChild(component.$el)

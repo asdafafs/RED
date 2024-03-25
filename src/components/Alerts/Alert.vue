@@ -62,7 +62,6 @@ export default {
   methods: {
     showSnackbar() {
       let x = this.$refs.snackbar;
-      console.log(x)
       x.className = `show custom-${this.type}-alert`;
       if (!this.infinity) {
         setTimeout(() => {

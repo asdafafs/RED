@@ -135,7 +135,7 @@ export default {
   },
 
   data: () => ({
-    selectedLessonType: 0,
+    selectedLessonType: null,
     events: [],
     num: 70,
     test: false,
@@ -208,7 +208,6 @@ export default {
     },
 
     async getLessons() {
-      console.log('2*',this.userID)
       const lessons = new EventsRequest()
       let lessonsData
       await lessons.getLectureActiveUser(this.userID).catch(x => console.log(x)).then(x => {
@@ -235,7 +234,6 @@ export default {
     },
 
     async getAllEvents() {
-      console.log('3*',this.userID)
       const lessons = await this.getLessons();
       const practices = await this.getPractices();
       this.events = [...lessons, ...practices];
@@ -282,11 +280,10 @@ export default {
     },
 
     async initialize(){
-      let index = this.userID
-      console.log('initialize',index)
       await this.getAllEvents()
     }
   },
+
 }
 </script>
 
