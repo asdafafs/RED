@@ -16,6 +16,7 @@
         class="white--text align-center list-item"
         @click.stop="onClick(item)"
         :class="{'align-end mt-auto': item.routerName === 'main'}"
+        v-if="item.id !== 5 || !student"
       >
         <template #default>
           {{item.title }} 
@@ -36,6 +37,7 @@ export default {
     logoutButton
   },
   props: {
+    student: Boolean,
     drawer: Boolean,
     showDrawer: Boolean,
   },
@@ -59,7 +61,7 @@ export default {
         {
           id: 3,
           title: 'Лекции',
-          routerName: '*'
+          routerName: 'notFound'
         },
         {
           id: 4,
