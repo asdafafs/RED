@@ -155,6 +155,9 @@ export default {
       if (value) this.getAllEvents()
     }
   },
+  created() {
+    if (this.userID) this.getAllEvents()
+  },
   computed:{
     ...mapState(['user']),
     calendarButtons() {
