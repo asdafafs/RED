@@ -2,6 +2,7 @@
   <div style="width: 100%; height:100%; padding: 0 12px 12px 12px">
     <div class="d-flex justify-space-between mb-1 flex-wrap" style="width: 100%">
       <v-btn-toggle
+          mandatory
           v-model="selectedJoinType"
           group
           color="black"

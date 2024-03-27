@@ -3,6 +3,7 @@
     <div style="max-width: 200px;width: 100%;" v-if="needAdminPanel && showAdminPanelText"/>
     <v-btn-toggle
         v-model="selectedButton"
+        mandatory
         group
     >
       <v-btn
