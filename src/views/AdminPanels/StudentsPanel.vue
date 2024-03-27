@@ -52,16 +52,16 @@
                   <v-row class="pa-0">
                     <v-col cols="12" sm="12" md="12" class="pb-0">
                       <v-text-field v-model="editedStudent.name" label="Имя" style="border-radius: 12px"
-                                    :rules="[rules.required]" outlined class="py-2"></v-text-field>
+                                    :rules="[nameRule.required]" outlined class="py-2"></v-text-field>
                       <v-text-field v-model="editedStudent.surname" outlined label="Фамилия" style="border-radius: 12px"
-                                    :rules="[rules.required]" class="py-2 "></v-text-field>
+                                    :rules="[surnameRule.required]" class="py-2 "></v-text-field>
                       <v-text-field v-model="editedStudent.middleName" outlined label="Отчество"
                                     style="border-radius: 12px"
-                                    :rules="[rules.required]" class="py-2 "></v-text-field>
+                                    :rules="[middleNameRule.required]" class="py-2 "></v-text-field>
                       <v-text-field v-model="editedStudent.email" outlined label="email" style="border-radius: 12px"
-                                    :rules="[rules.required]" class="py-2 "></v-text-field>
+                                    :rules="[emailRule.required]" class="py-2 "></v-text-field>
                       <vue-text-mask class="phone-field" v-model="editedStudent.phoneNumber" :mask="mask"
-                                     placeholderChar="#" :rules="[rules.required]"></vue-text-mask>
+                                     placeholderChar="#" :rules="[phoneRule.required]"></vue-text-mask>
                       <v-select outlined class="py-2 " style="border-radius: 12px"
                                 v-model="editedStudent.groupId"
                                 :items="groups"
@@ -153,9 +153,11 @@ export default {
       additinalHoursSpent: 0,
     },
 
-    rules: {
-      required: value => !!value || 'Field is required',
-    },
+    nameRule: {required: value => !!value},
+    surnameRule: {required: value => !!value},
+    middleNameRule: {required: value => !!value},
+    emailRule: {required: value => !!value},
+    phoneRule: {required: value => !!value},
   }),
 
   computed: {

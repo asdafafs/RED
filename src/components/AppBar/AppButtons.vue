@@ -63,20 +63,22 @@ export default {
         {
           id: 0,
           title:'Мое расписание',
-          router: 'schedule-lessons'
+          router: 'schedule-lessons',
+          visible: true,
         },
         {
           id: 1,
           title:'Запись на занятие',
-          router: 'singUpClasses-month'
+          router: 'singUpClasses-month',
+          visible: this.student,
         },
         {
           id: 2,
           title:'Личный кабинет',
-          router: 'plan-main-day'
-          
+          router: 'plan-main-day',
+          visible: true,
         },
-      ]
+      ].filter(x => x.visible)
     },
   },
   methods: {
