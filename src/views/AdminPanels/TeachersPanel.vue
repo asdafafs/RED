@@ -50,16 +50,16 @@
                 <v-container class="pa-0">
                   <v-row class="pa-0">
                     <v-col cols="12" sm="12" md="12" class="pb-0">
-                      <v-text-field v-model="editedTeacher.name" label="Имя" :rules="[nameRule.required()]" outlined
-                                    class="rounded-xl"></v-text-field>
-                      <v-text-field v-model="editedTeacher.surname" label="Фамилия" :rules="[surnameRule.required()]"
-                                    outlined class="rounded-xl"></v-text-field>
+                      <v-text-field v-model="editedTeacher.name" label="Имя" :rules="[rules.required]" outlined
+                                    class="rounded-xl"/>
+                      <v-text-field v-model="editedTeacher.surname" label="Фамилия" :rules="[rules.required]"
+                                    outlined class="rounded-xl"/>
                       <v-text-field v-model="editedTeacher.middleName" label="Отчество"
-                                    :rules="[middleNameRule.required()]" outlined class="rounded-xl"></v-text-field>
-                      <v-text-field v-model="editedTeacher.email" label="email" :rules="[emailRule.required()]"
-                                    class="rounded-xl" outlined></v-text-field>
+                                    :rules="[rules.required]" outlined class="rounded-xl"></v-text-field>
+                      <v-text-field v-model="editedTeacher.email" label="email" :rules="[rules.required]"
+                                    class="rounded-xl" outlined/>
                       <vue-text-mask class="phone-field" v-model="editedTeacher.phoneNumber" :mask="mask"
-                                     placeholderChar="#" :rules="[phoneRule.required()]"></vue-text-mask>
+                                     placeholderChar="#" :rules="[rules.required]"/>
                     </v-col>
                   </v-row>
                 </v-container>
@@ -140,11 +140,9 @@ export default {
       email: '',
       phoneNumber: '7'
     },
-    nameRule: {required: value => !!value},
-    surnameRule: {required: value => !!value},
-    middleNameRule: {required: value => !!value},
-    emailRule: {required: value => !!value},
-    phoneRule: {required: value => !!value},
+    rules: {
+      required: value => !!value || 'Field is required',
+    },
   }),
 
   computed: {
