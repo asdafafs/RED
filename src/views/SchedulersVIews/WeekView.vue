@@ -35,7 +35,7 @@
         <v-sheet>
           <v-calendar
               ref="calendar"
-              v-model="focus"
+              v-model="value"
               :events="events"
               type="week"
               :weekdays="weekday"
@@ -46,8 +46,9 @@
               :interval-minutes=60
               :interval-count=18
           >
-            <template v-slot:event="{event}" >
-              <v-container class="pa-0 mx-0 d-flex fill-height" fluid :class="getTableRowClass(event)" style="align-items: flex-start;">
+            <template v-slot:event="{event}">
+              <v-container class="pa-0 mx-0 d-flex fill-height" fluid :class="getTableRowClass(event)"
+                           style="align-items: flex-start;">
                 <v-row class="ma-0 " fill v-if="$vuetify.breakpoint.lgAndUp">
                   <v-col cols="4" class="black--text pa-0 ">
                     <div class="text-subtitle-2 d-flex justify-center">{{ formatTime(event.start) }}</div>
@@ -56,7 +57,7 @@
                     <div class="font-weight-bold text-format-week">{{ event.title }}</div>
                   </v-col>
                 </v-row>
-                <v-row class="ma-0 d-lg-none fill-height" fill >
+                <v-row class="ma-0 d-lg-none fill-height" fill>
                   <v-col class="d-lg-none pa-0 black--text align-self-center text-center" fill>
                     <div class="font-weight-bold text-format-week ">{{ formatTime(event.start) }}</div>
                   </v-col>
@@ -135,6 +136,10 @@ export default {
   components: {CarLogo, LectureLogo},
   watch: {
     events() {
+    },
+
+    value(newValue) {
+      this.confirmOnChangeMonthAndYear(newValue);
     }
   },
   mounted() {
@@ -156,12 +161,13 @@ export default {
           })
         });
     this.test = true
+    this.prevMonthAndYear = this.getMonthAndYear(this.value);
   },
 
   data: () => ({
     events: [],
     currentDate: moment(),
-    focus: '',
+    value: new Date().toISOString().substr(0, 7) + '-01',
     weekday: [1, 2, 3, 4, 5, 6, 0],
     today: new Date(),
     test: false,
@@ -181,6 +187,7 @@ export default {
     this.initialize()
   },
 
+
   computed: {
     ...mapState(['user']),
 
@@ -196,12 +203,26 @@ export default {
       return this.user.groupId
     },
 
-    studentTitle(){
+    studentTitle() {
       return `${this.$store.state.user.name} ${this.$store.state.user.surname} ${this.$store.state.user.middleName}`
     },
   },
 
   methods: {
+    async confirmOnChangeMonthAndYear(newValue) {
+      const currentMonthAndYear = this.getMonthAndYear(newValue);
+      if (currentMonthAndYear !== this.prevMonthAndYear) {
+        const groupId = this.groupId
+        await this.getAllEvents(groupId);
+        this.prevMonthAndYear = currentMonthAndYear;
+      }
+    },
+
+    getMonthAndYear(dateString) {
+      const [year, month] = dateString.split('-');
+      return `${year}-${month}`;
+    },
+
     closeEvent() {
       this.selectedOpen = false
     },
@@ -221,7 +242,6 @@ export default {
             if (foundStudent) {
               console.log('Этого студента не найдено в списке свободных');
             } else {
-              console.log(this.groupId)
               const groupId = this.groupId
               this.getAllEvents(groupId)
             }
@@ -251,7 +271,8 @@ export default {
     async getLessons(groupId) {
       const lessons = new EventsRequest()
       let kal
-      await lessons.getLectureGroupId(groupId).catch(x => console.log(x)).then(x => {
+      const monthTime = `Date=${this.value}`
+      await lessons.getLectureGroupId(groupId, monthTime).catch(x => console.log(x)).then(x => {
         kal = x.data.lecture.map(event => ({
           ...event,
           start: event.startTime,
@@ -264,7 +285,8 @@ export default {
     async getPractices() {
       const practices = new EventsRequest()
       let kal
-      await practices.getPracticeAssigned().catch(x => console.log(x)).then(x => {
+      const monthTime = `Date=${this.value}`
+      await practices.getPracticeAssigned(monthTime).catch(x => console.log(x)).then(x => {
         kal = x.data.practice.map(event => ({
           ...event,
           start: event.startTime,
@@ -278,7 +300,7 @@ export default {
       const lessons = await this.getLessons(groupId);
       let practices = []
       practices = await this.getPractices();
-      this.events = [...lessons,  ...practices];
+      this.events = [...lessons, ...practices];
       this.events = this.events.map(item => {
         return {
           ...item,
@@ -363,6 +385,7 @@ export default {
 <style lang="scss">
 @import "@/assets/styles/buttonStyles.css";
 @import "@/assets/styles/eventTypesStyles.css";
+
 .v-calendar .v-event-timed {
   white-space: pre-wrap;
   width: 100%;

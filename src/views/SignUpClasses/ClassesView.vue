@@ -249,7 +249,7 @@ export default {
     type: 'month',
     types: [['month', 'месяц'], ['week', 'неделя'], ['day', 'день']],
     mode: 'stack',
-    value: '',
+    value: new Date().toISOString().substr(0, 7) + '-01',
     selectedElement: null,
     selectedTeacher: null,
     studentHours: [],
@@ -259,7 +259,7 @@ export default {
     stateRefusal: ['Закрыта', 'Сгорела', 'Отменена'],
     selectedReasonId: 0,
     selectedStateId: 0,
-
+    prevMonthAndYear: '',
   }),
   mounted() {
     const buttonStyleReplace = [
@@ -282,7 +282,15 @@ export default {
     this.test = true
     window.addEventListener('resize', this.handleResize);
     this.handleResize();
+    this.prevMonthAndYear = this.getMonthAndYear(this.value);
   },
+
+  watch: {
+    value(newValue) {
+      this.confirmOnChangeMonthAndYear(newValue);
+    }
+  },
+
   computed: {
     ...mapState(['user']),
     calendarButtons() {
@@ -320,7 +328,6 @@ export default {
   created() {
     this.selectedReason = this.reasonsRefusal[0];
     this.initialize();
-
   },
 
   methods: {
@@ -340,6 +347,18 @@ export default {
 
     valueText(item) {
       return item[0];
+    },
+
+    async confirmOnChangeMonthAndYear(newValue) {
+      const currentMonthAndYear = this.getMonthAndYear(newValue);
+      if (currentMonthAndYear !== this.prevMonthAndYear) {
+        await this.confirm(this.discriminatorUser);
+        this.prevMonthAndYear = currentMonthAndYear;
+      }
+    },
+    getMonthAndYear(dateString) {
+      const [year, month] = dateString.split('-');
+      return `${year}-${month}`;
     },
 
     async confirmClosePractice(){
@@ -385,7 +404,7 @@ export default {
         const users = response.data.students; // Предположим, что данные находятся в массиве data
         const foundUser = users.find(user => user.id === this.userID);
         if (foundUser) {
-          console.log(foundUser)
+          // console.log(foundUser)
           hours = [foundUser.generalHours, foundUser.generalHoursSpent]
           return console.log(this.studentHours = hours)
         } else {
@@ -489,7 +508,8 @@ export default {
 
     async getEventsSelectedTeacher(teacherId) {
       const practice = new EventsRequest()
-      return practice.getPracticeId(teacherId);
+      const monthTime = `Date=${this.value}`
+      return practice.getPracticeId(teacherId, monthTime);
     },
 
     close() {
