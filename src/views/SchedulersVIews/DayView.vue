@@ -110,7 +110,7 @@ export default {
   name: "ExampleDay.vue",
   components: {LectureLogo, CarLogo},
   data: () => ({
-    value: '',
+    value: new Date().toISOString().substr(0, 7) + '-01',
     all_events: [],
     today_events: [],
     test: false,
@@ -131,6 +131,12 @@ export default {
     studentHours: 0,
   }),
 
+  watch:{
+    value(newValue) {
+      this.confirmOnChangeMonthAndYear(newValue);
+    }
+  },
+
   mounted() {
     this.classesSelectorsToRemove.forEach(item => {
       this.$refs.cal.$el.querySelectorAll(item).forEach(item => {
@@ -139,6 +145,7 @@ export default {
     })
     this.test = true
     this.$refs.cal.checkChange()
+    this.prevMonthAndYear = this.getMonthAndYear(this.value);
   },
 
   created() {
@@ -166,6 +173,20 @@ export default {
   },
 
   methods: {
+    async confirmOnChangeMonthAndYear(newValue) {
+      const currentMonthAndYear = this.getMonthAndYear(newValue);
+      if (currentMonthAndYear !== this.prevMonthAndYear) {
+        const groupId = this.groupId
+        await this.getAllEvents(groupId);
+        this.prevMonthAndYear = currentMonthAndYear;
+      }
+    },
+
+    getMonthAndYear(dateString) {
+      const [year, month] = dateString.split('-');
+      return `${year}-${month}`;
+    },
+
     closeEvent() {
       this.selectedOpen = false
     },
@@ -181,11 +202,9 @@ export default {
             const id = this.$store.state.user.userId;
             const students = response.data.students;
             const foundStudent = students.find(student => student.id === id);
-            console.log('foundStudent', foundStudent)
             if (foundStudent) {
               console.log('Этого студента не найдено в списке свободных');
             } else {
-              console.log(this.groupId)
               const groupId = this.groupId
               this.getAllEvents(groupId)
             }
@@ -215,7 +234,8 @@ export default {
     async getLessons(groupId) {
       const lessons = new EventsRequest()
       let cal
-      await lessons.getLectureGroupId(groupId).catch(x => console.log(x)).then(x => {
+      const monthTime = `Date=${this.value}`
+      await lessons.getLectureGroupId(groupId,monthTime).catch(x => console.log(x)).then(x => {
         cal = x.data.lecture.map(event => ({
           ...event,
           start: new Date(event.startTime),
@@ -228,7 +248,8 @@ export default {
     async getPractices() {
       const practices = new EventsRequest()
       let cal
-      await practices.getPracticeAssigned().catch(x => console.log(x)).then(x => {
+      const monthTime = `Date=${this.value}`
+      await practices.getPracticeAssigned(monthTime).catch(x => console.log(x)).then(x => {
         cal = x.data.practice.map(event => ({
           ...event,
           start: new Date(event.startTime),
@@ -240,12 +261,9 @@ export default {
 
     async getAllEvents(groupId) {
       const lessons = await this.getLessons(groupId);
-      console.log('lessons', lessons)
       let practices = []
       practices = await this.getPractices();
-      console.log('practices', practices)
       this.all_events = [...lessons, ...practices];
-      console.log('events', this.all_events)
       this.all_events = this.all_events.map(item => {
         return {
           ...item,

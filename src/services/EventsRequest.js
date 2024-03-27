@@ -4,39 +4,25 @@ export default class EventsRequest extends HTTPService {
     constructor() {
         super("Event");
     }
-
-    getLecture() {
-        return this.get("lecture")
+    getLectureActiveUser(id, query) {
+        return this.get("lecture/" + id + `?${query}`)
     }
 
-    getLectureActiveUser(id) {
-        return this.get("lecture/" + id)
+    getLectureGroupId(groupId, query) {
+        return this.get("lecture/group/" + groupId + `?${query}`)
     }
 
-    getLectureGroupId(groupId) {
-        return this.get("lecture/group/" + groupId)
+    getPracticeActiveUser(id, query) {
+        return this.get("practice/" + id + `?${query}`)
     }
 
-    getPracticeActiveUser(id) {
-        return this.get("practice/" + id)
+    getPracticeAssigned(query) {
+        return this.get("practice/assigned" + `?${query}` )
     }
 
-    getPracticeAssigned() {
-        return this.get("practice/assigned")
+    getPracticeId(id, query) {
+        return this.get("practice/" + id + `?${query}`)
     }
-
-    postPractice(code) {
-        return this.post("practice", code)
-    }
-
-    putPractice(code) {
-        return this.put("practice", code)
-    }
-
-    getPracticeId(id) {
-        return this.get("practice/" + id)
-    }
-
 
     setStudent(code) {
         return this.put("practice/setstudent", code)

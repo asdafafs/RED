@@ -1,17 +1,17 @@
 <template>
   <div style="width: 100%; height:100%; padding: 0 12px 12px 12px">
     <v-btn-toggle
-      v-model="selectedLessonType"
-      group
-      color="black"
+        v-model="selectedLessonType"
+        group
+        color="black"
     >
       <v-btn
-        v-for="item in calendarButtons"
-        :key="item.id"
-        height="32"
-        class="toggle-button"
-        :value="item.id"
-        @click="onToggleClick(item.id)"
+          v-for="item in calendarButtons"
+          :key="item.id"
+          height="32"
+          class="toggle-button"
+          :value="item.id"
+          @click="onToggleClick(item.id)"
       >
         <span :class="selectedLessonType === item.id ? 'white--text' : 'black--text'">
           {{ item.title }}
@@ -20,28 +20,28 @@
     </v-btn-toggle>
     <div>
       <div>
-        <v-sheet 
-          tile 
-          height="54" 
-          class="d-flex justify-center"
+        <v-sheet
+            tile
+            height="54"
+            class="d-flex justify-center"
         >
-          <v-btn 
-            icon 
-            class="ma-0 align-self-center" 
-            @click="$refs.calendar.prev()"
+          <v-btn
+              icon
+              class="ma-0 align-self-center"
+              @click="$refs.calendar.prev()"
           >
             <v-icon>mdi-chevron-left</v-icon>
           </v-btn>
-          <v-toolbar-title 
-            v-if="test" 
-            class="month-name"
+          <v-toolbar-title
+              v-if="test"
+              class="month-name"
           >
             {{ month }}
           </v-toolbar-title>
-          <v-btn 
-            icon 
-            class="ma-0 align-self-center" 
-            @click="$refs.calendar.next()"
+          <v-btn
+              icon
+              class="ma-0 align-self-center"
+              @click="$refs.calendar.next()"
           >
             <v-icon>mdi-chevron-right</v-icon>
           </v-btn>
@@ -72,7 +72,7 @@
               </div>
             </template>
           </v-calendar>
-          
+
           <v-menu max-width="200px" min-width="200px"
                   v-model="selectedOpen"
                   :close-on-content-click="false"
@@ -128,12 +128,12 @@ export default {
     this.test = true
     window.addEventListener('resize', this.handleResize);
     this.handleResize();
+    this.prevMonthAndYear = this.getMonthAndYear(this.value);
   },
 
   beforeDestroy() {
     window.removeEventListener('resize', this.handleResize);
   },
-
   data: () => ({
     selectedLessonType: null,
     events: [],
@@ -145,7 +145,7 @@ export default {
       'column'
     ],
     weekday: [1, 2, 3, 4, 5, 6, 0],
-    value: '',
+    value: new Date().toISOString().substr(0, 7) + '-01',
     selectedEvent: {},
     selectedElement: null,
     selectedOpen: false,
@@ -153,9 +153,13 @@ export default {
   watch: {
     userID(value) {
       if (value) this.getAllEvents()
+    },
+
+    value(newValue) {
+      this.confirmOnChangeMonthAndYear(newValue);
     }
   },
-  computed:{
+  computed: {
     ...mapState(['user']),
     calendarButtons() {
       return [
@@ -185,11 +189,28 @@ export default {
   methods: {
     onToggleClick(id) {
       switch (id) {
-        case 0: return this.getAllEvents()
-        case 1: return this.testLessons()
-        case 2: return this.testPractices()
+        case 0:
+          return this.getAllEvents()
+        case 1:
+          return this.testLessons()
+        case 2:
+          return this.testPractices()
       }
-    }, 
+    },
+
+    async confirmOnChangeMonthAndYear(newValue) {
+      const currentMonthAndYear = this.getMonthAndYear(newValue);
+      if (currentMonthAndYear !== this.prevMonthAndYear) {
+        await this.getAllEvents();
+        this.prevMonthAndYear = currentMonthAndYear;
+      }
+    },
+
+    getMonthAndYear(dateString) {
+      const [year, month] = dateString.split('-');
+      return `${year}-${month}`;
+    },
+
     showEvent({nativeEvent, event}) {
       const open = () => {
         this.selectedEvent = event
@@ -210,7 +231,8 @@ export default {
     async getLessons() {
       const lessons = new EventsRequest()
       let lessonsData
-      await lessons.getLectureActiveUser(this.userID).catch(x => console.log(x)).then(x => {
+      const monthTime = `Date=${this.value}`
+      await lessons.getLectureActiveUser(this.userID, monthTime).catch(x => console.log(x)).then(x => {
         lessonsData = x.data.lecture.map(event => ({
           ...event,
           start: new Date(event.startTime),
@@ -223,7 +245,8 @@ export default {
     async getPractices() {
       const practices = new EventsRequest()
       let cal
-      await practices.getPracticeActiveUser(this.userID).catch(x => console.log(x)).then(x => {
+      const monthTime = `Date=${this.value}`
+      await practices.getPracticeActiveUser(this.userID, monthTime).catch(x => console.log(x)).then(x => {
         cal = x.data.practice.map(event => ({
           ...event,
           start: new Date(event.startTime),
@@ -260,7 +283,7 @@ export default {
       const minutes = date.getMinutes().toString().padStart(2, '0');
       return `${hours}:${minutes}`;
     },
-    
+
     getEventColor(event) {
       if (event.lectureType === 3) {
         return '#9DB9FF';
@@ -270,7 +293,7 @@ export default {
         return '#E9E9E8'
       }
     },
-    
+
     handleResize() {
       if (window.innerWidth < 1260) {
         this.num = 30;
@@ -279,8 +302,8 @@ export default {
       }
     },
 
-    async initialize(){
-      await this.getAllEvents()
+    async initialize() {
+      this.onToggleClick(0)
     }
   },
 
@@ -289,6 +312,7 @@ export default {
 
 <style scoped lang="scss">
 @import "@/assets/styles/monthScheduleStyles.css";
+
 .toggle-button {
   margin-right: 0 !important;
   margin-left: 0 !important;
@@ -296,9 +320,11 @@ export default {
   border-radius: 4px !important;
   text-transform: none !important;
 }
+
 .v-btn--active::before {
   opacity: 1 !important;
 }
+
 .v-btn:hover,
 .v-btn:focus,
 {
@@ -319,14 +345,15 @@ export default {
   font-weight: 600 !important;
   color: black !important;
 }
+
 .event-type {
   font-weight: 600 !important;
   font-size: 12px !important;
   color: black !important;
 }
+
 .event-instructor,
-.event-long
-{
+.event-long {
   font-weight: 400 !important;
   font-size: 12px !important;
   color: black !important;
