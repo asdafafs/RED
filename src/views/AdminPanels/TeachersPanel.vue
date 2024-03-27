@@ -220,7 +220,8 @@ export default {
     },
 
     editItem(item) {
-      this.editedIndex = this.persons.activeUsers.indexOf(item);
+      console.log(item)
+      this.editedIndex = this.persons.indexOf(item);
       this.editedTeacher = {
         id: item.id,
         email: item.email,
@@ -233,7 +234,7 @@ export default {
     },
 
     deleteItem(item) {
-      this.editedIndex = this.persons.activeUsers.indexOf(item);
+      this.editedIndex = this.persons.indexOf(item);
       this.editedTeacher = {name: item.name};
       this.deletedIndex = item.id
       this.dialogDelete = true;

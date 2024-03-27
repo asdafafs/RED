@@ -238,6 +238,7 @@ export default {
     },
 
     editItem(item) {
+      console.log(item)
       this.editedIndex = this.persons.indexOf(item);
       this.editedStudent = {
         id: item.id,
