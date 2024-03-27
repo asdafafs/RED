@@ -50,16 +50,16 @@
                 <v-container class="pa-0">
                   <v-row class="pa-0">
                     <v-col cols="12" sm="12" md="12" class="pb-0">
-                      <v-text-field v-model="editedTeacher.name" label="Имя" :rules="[nameRule.required()]" outlined
+                      <v-text-field v-model="editedTeacher.name" label="Имя" :rules="[nameRule.required]" outlined
                                     class="rounded-xl"></v-text-field>
-                      <v-text-field v-model="editedTeacher.surname" label="Фамилия" :rules="[surnameRule.required()]"
+                      <v-text-field v-model="editedTeacher.surname" label="Фамилия" :rules="[surnameRule.required]"
                                     outlined class="rounded-xl"></v-text-field>
                       <v-text-field v-model="editedTeacher.middleName" label="Отчество"
-                                    :rules="[middleNameRule.required()]" outlined class="rounded-xl"></v-text-field>
-                      <v-text-field v-model="editedTeacher.email" label="email" :rules="[emailRule.required()]"
+                                    :rules="[middleNameRule.required]" outlined class="rounded-xl"></v-text-field>
+                      <v-text-field v-model="editedTeacher.email" label="email" :rules="[emailRule.required]"
                                     class="rounded-xl" outlined></v-text-field>
                       <vue-text-mask class="phone-field" v-model="editedTeacher.phoneNumber" :mask="mask"
-                                     placeholderChar="#" :rules="[phoneRule.required()]"></vue-text-mask>
+                                     placeholderChar="#" :rules="[phoneRule.required]"></vue-text-mask>
                     </v-col>
                   </v-row>
                 </v-container>
@@ -220,7 +220,8 @@ export default {
     },
 
     editItem(item) {
-      this.editedIndex = this.persons.activeUsers.indexOf(item);
+      console.log(item)
+      this.editedIndex = this.persons.indexOf(item);
       this.editedTeacher = {
         id: item.id,
         email: item.email,
@@ -233,7 +234,7 @@ export default {
     },
 
     deleteItem(item) {
-      this.editedIndex = this.persons.activeUsers.indexOf(item);
+      this.editedIndex = this.persons.indexOf(item);
       this.editedTeacher = {name: item.name};
       this.deletedIndex = item.id
       this.dialogDelete = true;

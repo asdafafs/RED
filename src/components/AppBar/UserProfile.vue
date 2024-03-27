@@ -4,17 +4,8 @@
       <v-col cols="12">
         <v-menu offset-y>
           <template v-slot:activator="{ on }">
-            <v-btn text min-height="3em" color="white" class="pa-0 app-bar-button-style" block v-on="on">
-              <div class="d-flex flex-column">
-                <div>
-                  <span class="mdi mdi-account-outline"></span>
-                  {{ user }}
-                </div>
-                <div style="text-align: left;">
-                  {{ student ? role[0] : role[1] }}
-                </div>
-              </div>
-              <span class="mdi mdi-login" style="transform: scale(1.5)"></span>
+            <v-btn text block v-on="on" style="height: 40px; padding: 0 0 0 8px">
+              <logout-button/>
             </v-btn>
           </template>
           <v-list>
@@ -34,8 +25,15 @@
 </template>
 <script>
 
+import LogoutButton from "@/components/UI/LogoutButton.vue";
+import loginIcon from "@/components/Icons/LoginIcon.vue";
+
 export default {
   name: 'UserProfile',
+  components:{
+    loginIcon,
+    LogoutButton
+  },
   props: {
     role: {},
     student: {},
@@ -60,5 +58,5 @@ export default {
 }
 </script>
 <style lang="scss">
-@import "@/assets/styles/buttonStyles.css";
+
 </style>

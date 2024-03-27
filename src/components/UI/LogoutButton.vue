@@ -1,6 +1,6 @@
 ﻿<template>
-  <div class="d-flex flex-row" style="width: 150px">
-    <div class="d-flex flex-column" style="width: 75%;">
+  <div class="d-flex flex-row">
+    <div class="d-flex flex-column">
       <div class="user-info-section">
         <v-icon color="white">mdi-account-outline</v-icon>
         <span class="user-name">{{ userName }}</span>
@@ -9,7 +9,7 @@
         <span class="user-role-name">{{ userRole }}</span>
       </div>
     </div>
-    <div class="d-flex align-center">
+    <div class="d-flex align-center ml-2">
       <login-icon style="width: 24px; height: 24px"/>
     </div>
   </div>  
@@ -27,7 +27,7 @@ export default {
   computed: {
     ...mapState(['user']),
     userName() {
-      return this.user.name
+      return `${this.user.middleName} ${this.user.name[0]}. ${this.user.surname[0]}.`
     },
     userRole() {
       return this.user.discriminator
@@ -41,12 +41,14 @@ export default {
   font-weight: 600;
   font-size: 16px;
   line-height: 18.75px;
+  text-transform: none;
   color: white;
 }
 .user-role-name {
   font-weight: 600;
   font-size: 12px;
   line-height: 14px;
+  color: white;
   opacity: 80%;
 }
 .user-role-section {

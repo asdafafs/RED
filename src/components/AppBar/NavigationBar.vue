@@ -46,43 +46,51 @@ export default {
       return [
         {
           id: 0,
-          icon: 'mdi-close-thick'
+          icon: 'mdi-close-thick',
+          visible: true,
         },
         {
           id: 1,
           title: 'Расписание',
-          routerName: 'schedule-lessons'
+          routerName: 'schedule-lessons',
+          visible: true,
         },
         {
           id: 2,
           title: 'Запись на занятие',
-          routerName: 'singUpClasses-month'
+          routerName: 'singUpClasses-month',
+          visible: this.student,
         },
         {
           id: 3,
           title: 'Лекции',
-          routerName: 'notFound'
+          routerName: 'notFound',
+          visible: true,
         },
         {
           id: 4,
           title: 'Мой план',
-          routerName: 'plan-main-month'
+          routerName: 'plan-main-month',
+          visible: true,
         },
         {
           id: 5,
           title: 'Админпанель',
-          routerName: 'admin-students'
+          routerName: 'admin-students',
+          visible: true,
         },
         {
           id: 6,
           title: 'Привязать аккуант к вк',
-          link: 'linkVk'
+          link: 'linkVk',
+          visible: true,
         },
         {
           id: 7,
-          routerName: 'main'
+          routerName: 'main',
+          visible: true,
         },
-      ]
+      ].filter(x => x.visible)
     }
   },
   methods: {
