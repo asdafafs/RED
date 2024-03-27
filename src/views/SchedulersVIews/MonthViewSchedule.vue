@@ -1,9 +1,10 @@
 <template>
   <div style="width: 100%; height:100%; padding: 0 12px 12px 12px">
     <v-btn-toggle
-        v-model="selectedLessonType"
-        group
-        color="black"
+      mandatory
+      v-model="selectedLessonType"
+      group
+      color="black"
     >
       <v-btn
           v-for="item in calendarButtons"
@@ -72,7 +73,7 @@
               </div>
             </template>
           </v-calendar>
-
+          
           <v-menu max-width="200px" min-width="200px"
                   v-model="selectedOpen"
                   :close-on-content-click="false"
@@ -134,6 +135,7 @@ export default {
   beforeDestroy() {
     window.removeEventListener('resize', this.handleResize);
   },
+
   data: () => ({
     selectedLessonType: null,
     events: [],
@@ -159,7 +161,10 @@ export default {
       this.confirmOnChangeMonthAndYear(newValue);
     }
   },
-  computed: {
+  created() {
+    if (this.userID) this.getAllEvents()
+  },
+  computed:{
     ...mapState(['user']),
     calendarButtons() {
       return [
@@ -283,7 +288,7 @@ export default {
       const minutes = date.getMinutes().toString().padStart(2, '0');
       return `${hours}:${minutes}`;
     },
-
+    
     getEventColor(event) {
       if (event.lectureType === 3) {
         return '#9DB9FF';
@@ -293,7 +298,7 @@ export default {
         return '#E9E9E8'
       }
     },
-
+    
     handleResize() {
       if (window.innerWidth < 1260) {
         this.num = 30;
@@ -312,7 +317,6 @@ export default {
 
 <style scoped lang="scss">
 @import "@/assets/styles/monthScheduleStyles.css";
-
 .toggle-button {
   margin-right: 0 !important;
   margin-left: 0 !important;
@@ -320,11 +324,9 @@ export default {
   border-radius: 4px !important;
   text-transform: none !important;
 }
-
 .v-btn--active::before {
   opacity: 1 !important;
 }
-
 .v-btn:hover,
 .v-btn:focus,
 {
@@ -345,13 +347,11 @@ export default {
   font-weight: 600 !important;
   color: black !important;
 }
-
 .event-type {
   font-weight: 600 !important;
   font-size: 12px !important;
   color: black !important;
 }
-
 .event-instructor,
 .event-long {
   font-weight: 400 !important;

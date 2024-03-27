@@ -3,6 +3,7 @@
     
       <v-btn-toggle
         v-model="selectedButton"
+        mandatory
         group
         color="black"
      >

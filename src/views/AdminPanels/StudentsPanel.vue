@@ -31,11 +31,12 @@
         :headers="headers"
         :items="persons"
         :search="search"
-        class="elevation-1 custom-header-table"
+        class="custom-header-table"
+        style="border-bottom: thin solid rgba(0, 0, 0, 0.12); border-radius: unset !important;"
         no-data-text="Нет данных для отображения"
         :hide-default-footer="true"
         disable-pagination
-        :header-props="{ class: 'blue--text text--darken-2' }"
+        :header-props="{ class: 'blue--text text--darken-2 header-grid-text' }"
         mobile-breakpoint="0"
     >
       <template v-slot:top>
@@ -51,16 +52,16 @@
                   <v-row class="pa-0">
                     <v-col cols="12" sm="12" md="12" class="pb-0">
                       <v-text-field v-model="editedStudent.name" label="Имя" style="border-radius: 12px"
-                                    :rules="[nameRule.required()]" outlined class="py-2"></v-text-field>
+                                    :rules="[nameRule.required]" outlined class="py-2"></v-text-field>
                       <v-text-field v-model="editedStudent.surname" outlined label="Фамилия" style="border-radius: 12px"
-                                    :rules="[surnameRule.required()]" class="py-2 "></v-text-field>
+                                    :rules="[surnameRule.required]" class="py-2 "></v-text-field>
                       <v-text-field v-model="editedStudent.middleName" outlined label="Отчество"
                                     style="border-radius: 12px"
-                                    :rules="[middleNameRule.required()]" class="py-2 "></v-text-field>
+                                    :rules="[middleNameRule.required]" class="py-2 "></v-text-field>
                       <v-text-field v-model="editedStudent.email" outlined label="email" style="border-radius: 12px"
-                                    :rules="[emailRule.required()]" class="py-2 "></v-text-field>
+                                    :rules="[emailRule.required]" class="py-2 "></v-text-field>
                       <vue-text-mask class="phone-field" v-model="editedStudent.phoneNumber" :mask="mask"
-                                     placeholderChar="#" :rules="[phoneRule.required()]"></vue-text-mask>
+                                     placeholderChar="#" :rules="[phoneRule.required]"></vue-text-mask>
                       <v-select outlined class="py-2 " style="border-radius: 12px"
                                 v-model="editedStudent.groupId"
                                 :items="groups"
@@ -105,9 +106,9 @@
           <td>{{ item.generalHoursSpent }}</td>
           <td>{{ item.additinalHours }}</td>
           <td>{{ item.additinalHoursSpent }}</td>
-          <td class="text-xs-right">
-            <v-icon small class="mr-2 blue--text" @click="editItem(item)">mdi-pen</v-icon>
-            <v-icon small class="red--text" @click="deleteItem(item)">mdi-delete</v-icon>
+          <td class="text-xs-right grid-actions">
+            <v-icon class="mr-2 blue--text" @click="editItem(item)">mdi-pencil</v-icon>
+            <v-icon class="red--text" @click="deleteItem(item)">mdi-delete</v-icon>
           </td>
         </tr>
       </template>
@@ -133,7 +134,7 @@ export default {
       {text: 'Общие практики остаток', sortable: false, value: 'generalHoursSpent'},
       {text: 'Доппрактики всего', sortable: false, value: 'additinalHours'},
       {text: 'Доппрактики остаток', sortable: false, value: 'additinalHoursSpent'},
-      {text: 'Действия', sortable: false,},
+      {text: 'Действия', align: 'end', value: 'actions', sortable: false},
     ],
     groups: [],
     persons: [],
@@ -233,11 +234,11 @@ export default {
 
     async initialize() {
       this.persons = await this.getStudents()
-      console.log(this.persons)
       this.groups = await this.getGroups()
     },
 
     editItem(item) {
+      console.log(item)
       this.editedIndex = this.persons.indexOf(item);
       this.editedStudent = {
         id: item.id,

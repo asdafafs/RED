@@ -4,7 +4,7 @@
       Группы и планы обучения
     </div>
     <hr>
-    <div class="d-flex flex-row justify-space-between align-center mb-3">
+    <div class="mb-3">
       <v-btn
           color="#4E7AEC"
           class="add-instructor-btn"
@@ -16,24 +16,33 @@
         </section>
       </v-btn>
     </div>
-    <v-data-table :headers="headersGroup" :search="search" :items="groups" class="elevation-1 custom-header-table"
-                  v-if="!discriminatorUser" no-data-text="Нет данных для отображения"
-                  :hide-default-footer="true" disable-pagination :header-props="{ class: 'blue--text text--darken-2' }"
-                  mobile-breakpoint="0">
-      <template v-slot:top>
-        <v-toolbar flat>
-          <v-dialog v-model="groupDelete" max-width="500px">
-            <v-card>
-              <v-card-title class="text-h5">Удалить группу?</v-card-title>
-              <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn color="blue darken-1" text @click="closeDelete">Отмена</v-btn>
-                <v-btn color="blue darken-1" text @click="deleteItemConfirm">OK</v-btn>
-                <v-spacer></v-spacer>
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
-        </v-toolbar>
+    <v-data-table 
+        :headers="headersGroup" 
+        :search="search" 
+        :items="groups"
+        class="custom-header-table"
+        style="border-bottom: thin solid rgba(0, 0, 0, 0.12); border-radius: unset !important;"
+        v-if="!discriminatorUser" 
+        no-data-text="Нет данных для отображения"
+        :hide-default-footer="true" 
+        disable-pagination
+        :header-props="{ class: 'blue--text text--darken-2 header-grid-text' }"
+        mobile-breakpoint="0"
+    >
+     <template v-slot:top>
+       <v-toolbar flat>
+         <v-dialog v-model="groupDelete" max-width="500px">
+           <v-card>
+             <v-card-title class="text-h5">Удалить группу?</v-card-title>
+             <v-card-actions>
+               <v-spacer></v-spacer>
+               <v-btn color="blue darken-1" text @click="closeDelete">Отмена</v-btn>
+               <v-btn color="blue darken-1" text @click="deleteItemConfirm">OK</v-btn>
+               <v-spacer></v-spacer>
+             </v-card-actions>
+           </v-card>
+         </v-dialog>
+       </v-toolbar>
       </template>
       <template v-slot:item="{ item }">
         <tr>
@@ -49,9 +58,9 @@
         </span>
             </div>
           </td>
-          <td class="text-xs-right">
-            <v-icon small class="mr-2 blue--text" @click="editGroupItem(item)">mdi-pencil</v-icon>
-            <v-icon class="red--text" small @click="deleteItem(item)">mdi-delete</v-icon>
+          <td class="text-xs-right grid-actions">
+            <v-icon class="mr-2 blue--text" @click="editGroupItem(item)">mdi-pencil</v-icon>
+            <v-icon class="red--text" @click="deleteItem(item)">mdi-delete</v-icon>
           </td>
         </tr>
       </template>
@@ -71,13 +80,12 @@ export default {
   components: {CoursesList, Item},
   data: () => ({
     groupDelete: false,
-    search: '',
     headersGroup: [
       {text: '№', align: 'start', sortable: false, width: '5%'},
       {text: 'Название', align: 'start', sortable: false, width: '20%'},
       {text: 'Даты обучения', align: 'start', sortable: false, width: '20%'},
       {text: 'Ученики', align: 'start', sortable: false, width: '50%'},
-      {text: 'Действия', value: 'actions', sortable: false, width: '5%'},
+      {text: 'Действия', align: 'end', value: 'actions', sortable: false,width: '5%'},
     ],
     groups: [],
     deletedIndex: -1,
