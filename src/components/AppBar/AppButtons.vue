@@ -1,6 +1,6 @@
 <template>
   <div style="width: 100%; height: 100%" class="d-flex justify-center align-center">
-    <div style="max-width: 200px;width: 100%;" v-if="needAdminPanel && showAdminPanelText"/>
+    <div style="flex: 1; height: 100%;" v-if="needAdminPanel && showAdminPanelText"/>
     <v-btn-toggle
         v-model="selectedButton"
         mandatory
@@ -113,8 +113,7 @@ export default {
     display: flex;
     align-items: center;
     justify-content: end;
-    max-width: 200px;
-    width: 100%;
+    flex: 1
   }
   &_button {
     background-color: #4E7AEC !important;
