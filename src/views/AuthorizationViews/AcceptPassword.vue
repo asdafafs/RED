@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div >
     <v-row align="center" justify="center" class=" ">
       <v-col cols="4" class=" pa-0" align="center">
         <v-dialog v-model="overlay" persistent width="auto" content-class="elevation-0">
