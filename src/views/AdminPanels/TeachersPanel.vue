@@ -7,7 +7,7 @@
     <div class="d-flex flex-row justify-space-between align-center mb-3">
       <v-btn
           color="#4E7AEC"
-          class="add-instructor-btn"
+          class="add-instructor-card-btn"
           @click="dialog=true"
       >
         <section class="d-flex flex-row align-center" style="padding: 8px 12px 8px 12px !important;">
@@ -42,10 +42,10 @@
       <template v-slot:top>
         <v-toolbar flat>
           <v-dialog v-model="dialog" width="auto">
-            <v-card class="card-edit-student">
+            <v-card class="add-instructor-card">
               <v-card-title class="pa-3 pb-0 ">
-                <span class="card-edit-student__type_edit">{{ formTitle }}</span>
-                <span class="card-edit-student__title">Общая информация</span>
+                <span class="add-instructor-card__type_edit">{{ formTitle }}</span>
+                <span class="add-instructor-card__title">Общая информация</span>
               </v-card-title>
               <v-card-text class="pa-3 pt-0">
                 <v-container class="">
@@ -69,7 +69,7 @@
                   </v-row>
                 </v-container>
               </v-card-text>
-              <v-card-actions>
+              <v-card-actions class="px-3 ">
                 <v-container class="pa-0" style="display: flex; justify-content: space-between; margin-bottom: auto">
                   <v-btn text @click="close" style="text-transform: none !important;">
                     <span style="color: black">Отмена</span>
@@ -320,6 +320,55 @@ export default {
 .grid-actions {
   text-align: end !important;
   padding-right: 30px !important;
+}
+
+.add-instructor-card {
+  width: 392px !important;
+  height: 484px !important;
+  border-radius: 12px !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  background: #FFFFFF !important;
+  border: 1px solid #AAA7A6 !important;
+
+  &__type_edit {
+    width: 100% !important;
+    height: 12px !important;
+    margin-bottom: 12px !important;
+    font-style: normal !important;
+    font-weight: 400 !important;
+    font-size: 12px !important;
+    line-height: 14px !important;
+    color: #AAA7A6 !important;
+    flex: none !important;
+    order: 0 !important;
+    flex-grow: 0 !important;
+  }
+
+  &__title {
+    width: 100% !important;
+    height: 28px !important;
+
+    font-style: normal !important;
+    font-weight: 700 !important;
+    font-size: 24px !important;
+    line-height: 28px !important;
+    color: #000000 !important;
+    flex: none !important;
+    order: 0 !important;
+    flex-grow: 0 !important;
+  }
+
+  &__card_text {
+    gap: 12px !important;
+  }
+
+    &-btn {
+      border-radius: 12px !important;
+      height: 32px !important;
+      width: 225px !important;
+      text-transform: none !important;
+    }
 }
 
 .add-instructor {

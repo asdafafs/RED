@@ -1,129 +1,128 @@
 <template>
-  <v-data-table :headers="headers" :items="lessons" class="elevation-1 custom-header-table"
-                no-data-text="Нет данных для отображения"
-                :sort-by.sync="sortBy" :sort-desc.sync="sortDesc"
-                :hide-default-footer="true"
-                mobile-breakpoint="0"
-                disable-pagination :header-props="{ class: 'blue--text text--darken-2' }"
-                v-model="selectedRows"
-  >
-    <template v-slot:top>
-      <v-toolbar flat>
-        <v-dialog v-model="dialog" width="auto" persistent>
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn class="rounded-lg app-bar-button-color" color="#4E7AEC" v-bind="attrs" v-on="on">
-              <v-col cols="1" class="px-0 tab-button-text">
-                <i class="mdi mdi-plus-circle-outline" style="transform: scale(1.5)"></i>
-              </v-col>
-              <v-col cols="" class="tab-button-text">
-                Добавить занятие
-              </v-col>
-            </v-btn>
-          </template>
-          <v-card class="course-event-card">
-            <v-card-title class="pa-3 pb-0 ">
-              <span class="course-event-card__title">{{ formTitle }}</span>
-            </v-card-title>
-            <v-card-text class="pa-3 pt-0">
-              <v-container class="">
-                <v-row class="pa-0">
-                  <v-col class="flex-column pa-0 flex-wrap">
-                    <v-text-field v-model="editedItem.title" label="Название" height="32px" dense hide-details
-                                  :rules="[titleRules.required]" outlined
-                                  class="v-text-field-custom-course"></v-text-field>
-                    <v-text-field v-model="editedItem.startTime" label="Начало занятия" type="datetime-local"
-                                  :rules="[startDateTimeRules.required]" :min="getTodayDate" outlined height="32px"
-                                  dense hide-details
-                                  class="v-text-field-custom-course">
-                    </v-text-field>
-                    <v-text-field v-model="editedItem.endTime" label="Конец занятия" type="datetime-local" height="32px"
-                                  dense hide-details
-                                  :rules="[endDateTimeRules.required]" :min="getTodayDate" outlined
-                                  class="v-text-field-custom-course">
-                    </v-text-field>
-                    <v-select height="32px" dense hide-details
-                              ref="selectItem"
-                              v-model="discriminator[editedItem.lectureType]"
-                              label="Тип занятия"
-                              :items="discriminator"
-                              :rules="[typeEventRules.required]"
-                              outlined
-                              class="v-text-field-custom-course"
-                              no-data-text="Нет данных для отображения"
-                    >
-                      <template v-slot:item="{ item }">
-                        <v-list-item @click="selectItem(item)">
-                          <v-list-item-content>
-                            <v-list-item-title>
-                              {{ item }}
-                            </v-list-item-title>
-                          </v-list-item-content>
-                        </v-list-item>
-                      </template>
-                    </v-select>
-                    <v-select
-                        height="32px" dense hide-details
-                        v-model="editedItem.activeUser"
-                        label="Выберите преподавателя"
-                        :items="[...teachers, { id: null, name: 'Преподаватель не назначен' }]"
-                        :item-text="item => item ? `${item.name || ''} ${item.surname || ''} ${item.middleName || ''}` : 'Преподаватель не назначен'"
-                        item-value="id"
-                        outlined
-                        class="v-text-field-custom-course"
-                        no-data-text="Нет данных для отображения"
-                    ></v-select>
-                  </v-col>
-                </v-row>
-              </v-container>
-            </v-card-text>
-            <v-card-actions>
-              <v-container style="display: flex; justify-content: space-between;" class="pa-0 ">
-                <v-btn  text @click="closeEditItem" style="text-transform: none !important;">
-                  <span style="color: black">Отмена</span>
-                </v-btn>
-                <v-btn class="close-button" text @click="save" :disabled="hasChanges || isSaveButtonDisabled">
-                  <span style="color: white">Добавить</span>
-                </v-btn>
-              </v-container>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
-        <v-dialog v-model="dialogDelete" max-width="500px">
-          <v-card class="rounded-xl">
-            <v-card-title class="text-h5">Удалить занятие?</v-card-title>
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn color="blue darken-1" text @click="closeDelete()">Отмена</v-btn>
-              <v-btn color="blue darken-1" text @click="deleteItemConfirm">OK</v-btn>
-              <v-spacer></v-spacer>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
-      </v-toolbar>
-    </template>
-    <template v-slot:item="{ item  }">
-      <tr :class="selectedRows.indexOf(item.id)>-1?'selected-row':''">
+  <div>
+    <v-btn class="add-student-btn" @click="dialog = true">
+      <section class="d-flex flex-row align-center" style="padding: 8px 12px 8px 12px !important;">
+        <v-icon color="white">mdi-plus-circle-outline</v-icon>
+        <span class="add-student-btn-text">Добавить занятие</span>
+      </section>
+    </v-btn>
+    <v-data-table :headers="headers" :items="lessons" class="elevation-1 custom-header-table"
+                  no-data-text="Нет данных для отображения"
+                  :sort-by.sync="sortBy" :sort-desc.sync="sortDesc"
+                  :hide-default-footer="true"
+                  mobile-breakpoint="0"
+                  disable-pagination :header-props="{ class: 'blue--text text--darken-2' }"
+                  v-model="selectedRows"
+    >
+      <template v-slot:top>
+        <v-toolbar flat>
+          <v-dialog v-model="dialog" width="auto" persistent>
+            <v-card class="course-event-card">
+              <v-card-title class="pa-3 pb-0 ">
+                <span class="course-event-card__title">{{ formTitle }}</span>
+              </v-card-title>
+              <v-card-text class="pa-3 pt-0">
+                <v-container class="">
+                  <v-row class="pa-0">
+                    <v-col class="flex-column pa-0 flex-wrap">
+                      <v-text-field v-model="editedItem.title" label="Название" height="32px" dense hide-details
+                                    :rules="[titleRules.required]" outlined
+                                    class="v-text-field-custom-course"></v-text-field>
+                      <v-text-field v-model="editedItem.startTime" label="Начало занятия" type="datetime-local"
+                                    :rules="[startDateTimeRules.required]" :min="getTodayDate" outlined height="32px"
+                                    dense hide-details
+                                    class="v-text-field-custom-course">
+                      </v-text-field>
+                      <v-text-field v-model="editedItem.endTime" label="Конец занятия" type="datetime-local"
+                                    height="32px"
+                                    dense hide-details
+                                    :rules="[endDateTimeRules.required]" :min="getTodayDate" outlined
+                                    class="v-text-field-custom-course">
+                      </v-text-field>
+                      <v-select height="32px" dense hide-details
+                                ref="selectItem"
+                                v-model="discriminator[editedItem.lectureType]"
+                                label="Тип занятия"
+                                :items="discriminator"
+                                :rules="[typeEventRules.required]"
+                                outlined
+                                class="v-text-field-custom-course"
+                                no-data-text="Нет данных для отображения"
+                      >
+                        <template v-slot:item="{ item }">
+                          <v-list-item @click="selectItem(item)">
+                            <v-list-item-content>
+                              <v-list-item-title>
+                                {{ item }}
+                              </v-list-item-title>
+                            </v-list-item-content>
+                          </v-list-item>
+                        </template>
+                      </v-select>
+                      <v-select
+                          height="32px" dense hide-details
+                          v-model="editedItem.activeUser"
+                          label="Выберите преподавателя"
+                          :items="[...teachers, { id: null, name: 'Преподаватель не назначен' }]"
+                          :item-text="item => item ? `${item.name || ''} ${item.surname || ''} ${item.middleName || ''}` : 'Преподаватель не назначен'"
+                          item-value="id"
+                          outlined
+                          class="v-text-field-custom-course"
+                          no-data-text="Нет данных для отображения"
+                      ></v-select>
+                    </v-col>
+                  </v-row>
+                </v-container>
+              </v-card-text>
+              <v-card-actions class="px-3">
+                <v-container style="display: flex; justify-content: space-between;" class="pa-0 ">
+                  <v-btn text @click="closeEditItem" style="text-transform: none !important;">
+                    <span style="color: black">Отмена</span>
+                  </v-btn>
+                  <v-btn class="close-button" text @click="save" :disabled="hasChanges || isSaveButtonDisabled">
+                    <span style="color: white">Добавить</span>
+                  </v-btn>
+                </v-container>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+          <v-dialog v-model="dialogDelete" max-width="500px">
+            <v-card class="rounded-xl">
+              <v-card-title class="text-h5">Удалить занятие?</v-card-title>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="blue darken-1" text @click="closeDelete()">Отмена</v-btn>
+                <v-btn color="blue darken-1" text @click="deleteItemConfirm">OK</v-btn>
+                <v-spacer></v-spacer>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+        </v-toolbar>
+      </template>
+      <template v-slot:item="{ item  }">
+        <tr :class="selectedRows.indexOf(item.id)>-1?'selected-row':''">
 
-        <td>{{ item.title }}</td>
-        <td>{{ getTitleTeacher(item.activeUser) }}</td>
-        <td>{{ discriminator[item.lectureType] }}</td>
-        <td>
-          {{
-            formatDatetime(item.startTime)
-          }}
-        </td>
-        <td>
-          {{
-            formatDatetime(item.endTime)
-          }}
-        </td>
-        <td class="text-xs-right">
-          <v-icon small class="mr-2" @click="editItem(item);">mdi-pencil</v-icon>
-          <v-icon small @click="deleteItem(item)">mdi-delete</v-icon>
-        </td>
-      </tr>
-    </template>
-  </v-data-table>
+          <td>{{ item.title }}</td>
+          <td>{{ getTitleTeacher(item.activeUser) }}</td>
+          <td>{{ discriminator[item.lectureType] }}</td>
+          <td>
+            {{
+              formatDatetime(item.startTime)
+            }}
+          </td>
+          <td>
+            {{
+              formatDatetime(item.endTime)
+            }}
+          </td>
+          <td class="text-xs-right">
+            <v-icon small class="mr-2 blue--text" @click="editItem(item);">mdi-pencil</v-icon>
+            <v-icon small class="red--text" @click="deleteItem(item)">mdi-delete</v-icon>
+          </td>
+        </tr>
+      </template>
+    </v-data-table>
+  </div>
 </template>
 <script>
 import moment from "moment";
@@ -425,7 +424,7 @@ export default {
 @import "@/assets/styles/eventTypesStyles.css";
 @import "@/assets/styles/dataTableStyles.css";
 
-.course-event-card{
+.course-event-card {
   width: 407px !important;
   height: 369px !important;
   border-radius: 12px !important;
@@ -460,6 +459,7 @@ export default {
 .v-text-field-custom-course.v-text-field--outlined .v-input__control .v-input__slot .v-select {
   min-height: 32px !important;
 }
+
 .v-text-field-custom-course .v-text-field {
   padding: 0 !important;
   margin: 0 !important;
@@ -491,5 +491,22 @@ export default {
 .v-text-field--outlined, {
   border-radius: 12px !important;
 }
+
+.add-student-btn {
+  background-color: #4E7AEC !important;
+  border-radius: 12px !important;
+  height: 32px !important;
+  width: 191px !important;
+  text-transform: none !important;
+
+  &-text {
+    font-size: 16px !important;
+    font-weight: 500 !important;
+    color: white !important;
+    margin-left: 8px !important;
+    line-height: 18.75px !important;
+  }
+}
+
 
 </style>

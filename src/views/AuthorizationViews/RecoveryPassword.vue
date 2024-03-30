@@ -1,14 +1,14 @@
 <template>
   <div>
-    <v-row 
-      align="center" 
-      justify="center"
+    <v-row
+        align="center"
+        justify="center"
     >
       <v-col cols="4" class="pa-0">
-        <v-dialog 
-            v-model="overlay" 
-            persistent 
-            width="auto" 
+        <v-dialog
+            v-model="overlay"
+            persistent
+            width="auto"
             content-class="elevation-0"
         >
           <v-card class="forget-password-card white">
@@ -28,34 +28,34 @@
             </v-card-subtitle>
             <v-card-text class="pb-0">
               <v-text-field
-                color="black"
-                v-model=email
-                :readonly="loading"
-                :rules="[rulesEmail.required]"
-                class="forget-password-card__text-field"
-                clearable
-                label="E-mail"
-                outlined
-                hide-details
+                  color="black"
+                  v-model=email
+                  :readonly="loading"
+                  :rules="[rulesEmail.required]"
+                  class="forget-password-card__text-field"
+                  clearable
+                  label="E-mail"
+                  hide-details
+                  dense outlined
               />
             </v-card-text>
             <v-card-actions class="forget-password-card__actions">
-                <v-btn 
-                    color="#4E7AEC" 
-                    @click="validateEmail" 
-                    class="forget-password-card__actions__btn white--text"  
-                    :disabled="loginButtonDisabled"
-                >
-                  Отправить запрос
-                </v-btn>
-                <v-btn 
-                  color="##E9E9E8" 
-                  @click="logout" 
+              <v-btn
+                  color="#4E7AEC"
+                  @click="validateEmail"
+                  class="forget-password-card__actions__btn white--text"
+                  :disabled="loginButtonDisabled"
+              >
+                Отправить запрос
+              </v-btn>
+              <v-btn
+                  color="##E9E9E8"
+                  @click="logout"
                   class="forget-password-card__actions__btn"
                   text
-                >
-                  Отмена
-                </v-btn>
+              >
+                Отмена
+              </v-btn>
             </v-card-actions>
           </v-card>
         </v-dialog>
@@ -85,11 +85,11 @@ export default {
     }
   },
   methods: {
-    logout(){
+    logout() {
       this.$router.push(
-        {
-          name: 'main'
-        }
+          {
+            name: 'main'
+          }
       )
     },
     async checkEmail(body) {
@@ -123,7 +123,7 @@ export default {
   margin-left: 24px !important;
   padding: 8px 0 16px 0 !important;
 
-  &__image{
+  &__image {
     align-self: center !important;
     width: auto;
   }
@@ -143,6 +143,7 @@ export default {
     padding: 0 24px 10px !important;
     margin-bottom: 16px !important;
   }
+
   &__subtitle {
     font-weight: 400 !important;
     font-size: 16px !important;
@@ -153,11 +154,26 @@ export default {
     margin-bottom: 16px !important;
   }
 
-  &__text-field{
+  &__text-field {
     border-radius: 12px !important;
-    margin-bottom: 16px !important;
+    margin-bottom: 16px !important;;
+    max-height: 32px !important;
+
+    .v-input__slot {
+      display: flex !important;
+      align-items: center !important;
+      min-height: 32px !important;
+    }
+
+    .v-input__prepend-inner {
+      margin: 0 !important;
+    }
+
+    .v-input__icon {
+      height: 32px !important;
+    }
   }
-  
+
   &__actions {
     display: flex;
     flex-direction: column;

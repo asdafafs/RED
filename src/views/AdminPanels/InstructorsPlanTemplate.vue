@@ -13,7 +13,7 @@
     <hr style="margin: 1em 0 2em 0 !important;">
     <v-row class="flex-wrap">
       <v-col cols="lg-1 md-1 py-0" class="flex-column align-center bg-surface-variant d-flex">
-        <v-radio-group class="px-0 py-0 align-center" v-model="selectedDuration" hide-details="true"
+        <v-radio-group class="px-0 py-0 align-center ma-0" v-model="selectedDuration" hide-details
                        :disabled="blockEditableTemplate">
           <v-radio label="1 час" :value="1"></v-radio>
           <v-radio label="2 часа" :value="2"></v-radio>
@@ -22,12 +22,16 @@
       <v-col cols="lg-2 md-2 py-0" class="align-center bg-surface-variant d-flex">
         <v-text-field v-model="practiceCourseStart" label="Дата начала" type="date"
                       :rules="[startDateRules.required]" :min="getTodayDate()" outlined
-                      class="rounded-xl align-center" hide-details :disabled="blockEditableTemplate"></v-text-field>
+                      class="select-practice-template" hide-details :disabled="blockEditableTemplate"
+                      style="border-radius: 12px !important; max-height: 32px !important;"
+        ></v-text-field>
       </v-col>
       <v-col cols="lg-2 md-2 py-0" class="align-center bg-surface-variant d-flex">
         <v-text-field v-model="practiceCourseEnd" label="Дата окончания" type="date"
                       :rules="[endTimeRules.required]" :min="getTodayDate()" outlined
-                      class="rounded-xl align-center" hide-details :disabled="blockEditableTemplate"></v-text-field>
+                      class="select-practice-template"
+                      style="border-radius: 12px !important; max-height: 32px !important;"
+                      hide-details :disabled="blockEditableTemplate"></v-text-field>
       </v-col>
       <v-col cols="lg-2 md-2 py-0" class="align-center bg-surface-variant d-flex">
         <v-select v-model="selectedTemplate" label="Выберите шаблон практик" :items="listTemplates"
@@ -38,9 +42,9 @@
                   item-value="practiceCourseId"
                   @change="getPracticeCourseTemplate();
 blockEditableTemplate = selectedTemplate ? !!selectedTemplate.practiceCourseId : false"
-                  outlined
-                  class="rounded-xl " hide-details
-                  style="min-width:256px;">
+                  outlined hide-details
+                  class="select-practice-template"
+                  style="border-radius: 12px !important; max-height: 32px !important; min-width: 256px !important;">
         </v-select>
       </v-col>
       <v-col cols="lg-2 md-0 sm-0 pa-0"></v-col>
@@ -277,4 +281,27 @@ export default {
 }
 </script>
 <style>
+
+.select-practice-template {
+  .v-input__slot {
+    display: flex !important;
+    align-items: center !important;
+    min-height: 32px !important;
+  }
+
+  .v-input__prepend-inner {
+    margin: 0 !important;
+  }
+
+  .v-input__icon {
+    max-height: 32px !important;
+  }
+
+  .v-input__control {
+    max-height: 32px !important;
+    .v-input__slot {
+      max-height: 32px !important;
+    }
+  }
+}
 </style>

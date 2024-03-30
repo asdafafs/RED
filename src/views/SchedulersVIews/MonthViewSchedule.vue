@@ -20,7 +20,8 @@
         </span>
         </v-btn>
       </v-btn-toggle>
-      <v-select v-model="selectedTeacher" height="32px" class="v-text-field-admin-select " outlined dense hide-details
+      <v-select v-model="selectedTeacher" class="select-practice-template " outlined dense hide-details
+                style=" max-width: 367px !important;  border-radius: 12px !important; max-height: 32px !important;"
                 no-data-text="Нет данных для отображения" label="Выберите инструктора для редактирования"
                 :items="[...listTeachers, { id: null, name: 'Преподаватель не назначен' }]"
                 :item-text="item => item ? `${item.name || ''} ${item.surname || ''} ${item.middleName || ''}` : 'Преподаватель не назначен'"
@@ -139,7 +140,7 @@
                         </v-radio-group>
                         <v-select height="32px" class="v-text-field-custom " outlined dense hide-details v-model="selectedStudent"
                                   no-data-text="Нет данных для отображения" label="Ученик" item-value="id"
-                                  :items="[...listStudents, { id: null, name: 'Преподаватель не назначен' }]"
+                                  :items="[...listStudents, { id: null, name: 'Студент не назначен' }]"
                                   :item-text="item => item ? `${item.name || ''} ${item.surname || ''} ${item.middleName || ''}` : 'Студент не назначен'"></v-select>
                       </div>
                       <div v-if="openDeleteMode">
@@ -672,13 +673,31 @@ export default {
   border-radius: 12px !important;
 }
 
-.v-text-field-admin-select {
-  max-width: 367px !important;
-  height: 32px !important;
-}
-
 .flex-row {
   display: flex;
   align-items: center;
+}
+
+.select-practice-template {
+  .v-input__slot {
+    display: flex !important;
+    align-items: center !important;
+    min-height: 32px !important;
+  }
+
+  .v-input__prepend-inner {
+    margin: 0 !important;
+  }
+
+  .v-input__icon {
+    max-height: 32px !important;
+  }
+
+  .v-input__control {
+    max-height: 32px !important;
+    .v-input__slot {
+      max-height: 32px !important;
+    }
+  }
 }
 </style>

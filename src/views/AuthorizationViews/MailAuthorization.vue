@@ -192,6 +192,5 @@ export default {
   display: flex;
   align-items: center;
   margin-left: 16px;
-  //padding: 8px 0 16px 0;
 }
 </style>
