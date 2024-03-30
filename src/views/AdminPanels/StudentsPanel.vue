@@ -213,7 +213,7 @@ export default {
           .then(response => {
             studentsData = response.data.students.map(student => ({
               ...student,
-              fullName: `${student.name} ${student.surname} ${student.middleName}`
+              fullName: `${student.surname} ${student.name} ${student.middleName} `
             }));
           })
           .catch(error => {

@@ -64,17 +64,6 @@ blockEditableTemplate = selectedTemplate ? !!selectedTemplate.practiceCourseId :
                         :fullNameActiveUser="fullName" :events="eventsTemplate"
                         :practiceCourseStart="dateFirstPractice"></TemplateSchedule>
     </v-row>
-    <v-dialog v-model="cancelSaveChanges" max-width="500px">
-      <v-card>
-        <v-card-title class="text-h5">Вы уверены? Все несохраненные изменения будут удалены</v-card-title>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn color="blue darken-1" text @click="closeCanselChanges">Отмена</v-btn>
-          <v-btn color="blue darken-1" text @click="confirmCancelChanges">OK</v-btn>
-          <v-spacer></v-spacer>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
   </v-container>
 </template>
 <script>
@@ -232,10 +221,6 @@ export default {
       await practiceCourse.postPracticeCourse(body).catch(x => console.log(x))
     },
 
-    closeCanselChanges() {
-      this.cancelSaveChanges = false
-    },
-
     confirmCancelChanges() {
       this.$router.push({name: 'admin-teachers'}).finally(() => {
         this.eventsTemplate = []
@@ -253,6 +238,7 @@ export default {
       } else {
         warningAlert('Есть несохранненые изменения', 5000)
       }
+      this.confirmCancelChanges()
     },
 
     getTodayDate() {
@@ -274,14 +260,13 @@ export default {
       return !(this.startDateRules.required(this.practiceCourseStart) && this.endTimeRules.required(this.practiceCourseEnd))
     },
 
-
     initialize() {
       this.getListTemplates()
       this.checkInitialValidity();
     }
   },
   created() {
-    this.getActiveUser().then(response => this.fullName = `${response.name} ${response.surname} ${response.middleName}`)
+    this.getActiveUser().then(response => this.fullName = `${response.surname} ${response.name} ${response.middleName}`)
     this.initialize()
   }
 }

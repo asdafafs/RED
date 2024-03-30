@@ -168,7 +168,7 @@ export default {
 
   data: () => ({
     events: [],
-    А: moment(),
+    currentDate: moment(),
     value: moment().locale('ru').format('YYYY-MM-DD'),
     weekday: [1, 2, 3, 4, 5, 6, 0],
     today: new Date(),
@@ -205,7 +205,7 @@ export default {
     },
 
     studentTitle() {
-      return `${this.$store.state.user.name} ${this.$store.state.user.surname} ${this.$store.state.user.middleName}`
+      return `${this.$store.state.user.surname} ${this.$store.state.user.name} ${this.$store.state.user.middleName}`
     },
   },
 

@@ -171,7 +171,7 @@ export default {
     },
 
     studentTitle(){
-      return `${this.$store.state.user.name} ${this.$store.state.user.surname} ${this.$store.state.user.middleName}`
+      return `${this.$store.state.user.surname} ${this.$store.state.user.name} ${this.$store.state.user.middleName}`
     },
   },
 
@@ -334,7 +334,7 @@ export default {
     font-family: Roboto, sans-serif;
     font-weight: bold;
     min-width: 120px;
-    margin: 0px 0px 0px 0px;
+    margin: 0 0 0 0;
   }
 
   .custom-info {
