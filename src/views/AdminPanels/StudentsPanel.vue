@@ -81,7 +81,7 @@
                   </v-row>
                 </v-container>
               </v-card-text>
-              <v-card-actions>
+              <v-card-actions class="px-3">
                 <v-container class="pa-0" style="display: flex; justify-content: space-between; margin-bottom: auto">
                   <v-btn text @click="close" style="text-transform: none !important;">
                     <span style="color: black">Отмена</span>

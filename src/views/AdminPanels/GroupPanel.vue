@@ -179,7 +179,6 @@ export default {
   background: rgba(255, 255, 255, 0.7);
 }
 
-
 .grid-button {
   width: 155px !important;
   height: 28px !important;
@@ -217,22 +216,6 @@ export default {
 
 .v-text-field--outlined .v-label {
   top: 7px !important;
-}
-
-.search-field {
-  .v-input__slot {
-    display: flex !important;
-    align-items: center !important;
-    min-height: 32px !important;
-  }
-
-  .v-input__prepend-inner {
-    margin: 0 !important;
-  }
-
-  .v-input__icon {
-    height: 32px !important;
-  }
 }
 
 .v-btn {

@@ -39,7 +39,7 @@
     </div>
     <div v-if="discriminatorUser">
       <v-select
-          class="rounded-lg"
+          class="select-teacher"
           no-data-text="Нет данных для отображения"
           v-model="selectedTeacher"
           label="Выберите инструктора"
@@ -56,29 +56,14 @@
     </div>
     <div>
       <div>
-        <v-sheet
-            tile
-            height="54"
-            class="d-flex justify-center"
-        >
-          <v-btn
-              icon
-              class="ma-0 align-self-center"
-              @click="prev()"
-          >
+        <v-sheet tile height="54" class="d-flex justify-center">
+          <v-btn icon class="ma-0 align-self-center" @click="prev()">
             <v-icon>mdi-chevron-left</v-icon>
           </v-btn>
-          <v-toolbar-title
-              v-if="test"
-              class="month-name"
-          >
+          <v-toolbar-title v-if="test" class="month-name">
             {{ month }}
           </v-toolbar-title>
-          <v-btn
-              icon
-              class="ma-0 align-self-center"
-              @click="next()"
-          >
+          <v-btn icon class="ma-0 align-self-center" @click="next()">
             <v-icon>mdi-chevron-right</v-icon>
           </v-btn>
         </v-sheet>
@@ -262,7 +247,6 @@ export default {
           id: 0,
           title: 'Практики',
         },
-
       ]
     },
     discriminatorUser() {
@@ -303,7 +287,7 @@ export default {
     },
 
     async confirmOnChangeMonthAndYear(newValue) {
-      if (this.type !== 'week'){
+      if (this.type !== 'week') {
         const currentMonthAndYear = this.getMonthAndYear(newValue);
         if (currentMonthAndYear !== this.prevMonthAndYear) {
 
@@ -326,12 +310,12 @@ export default {
       }
     },
 
-   async next() {
+    async next() {
       this.$refs.calendar.next()
-     if (this.type === 'week') {
-       this.currentDate = this.currentDate.clone().add(1, 'week');
-       await this.confirm(this.discriminatorUser)
-     }
+      if (this.type === 'week') {
+        this.currentDate = this.currentDate.clone().add(1, 'week');
+        await this.confirm(this.discriminatorUser)
+      }
     },
 
     async confirmClosePractice() {
@@ -479,7 +463,7 @@ export default {
     },
 
     async getEventsSelectedTeacher(teacherId) {
-      if (this.type === 'week'){
+      if (this.type === 'week') {
         const practice = new EventsRequest()
         console.log(this.currentDate)
         const monday = this.currentDate.clone().startOf('isoWeek').format('YYYY-MM-DD')
@@ -569,7 +553,7 @@ export default {
     font-family: Roboto, sans-serif;
     font-weight: bold;
     min-width: 120px;
-    margin: 0px 0px 0px 0px;
+    margin: 0 0 0 0;
   }
 
   .custom-info {
@@ -658,14 +642,42 @@ export default {
   color: black !important;
 }
 
-.select-period {
-  border-radius: 12px;
+//.select-period {
+//  border-radius: 12px;
+//
+//  .v-input__slot {
+//    height: 32px !important;
+//    min-height: 32px !important;
+//    display: flex !important;
+//    align-items: center !important;
+//  }
+//
+//  .v-select__selection--comma {
+//    margin: 0 !important;
+//  }
+//}
 
+.select-teacher {
   .v-input__slot {
-    height: 32px !important;
-    min-height: 32px !important;
     display: flex !important;
     align-items: center !important;
+    min-height: 32px !important;
+  }
+
+  .v-input__prepend-inner {
+    margin: 0 !important;
+  }
+
+  .v-input__icon {
+    max-height: 32px !important;
+  }
+
+  .v-input__control {
+    max-height: 32px !important;
+
+    .v-input__slot {
+      max-height: 32px !important;
+    }
   }
 
   .v-select__selection--comma {
@@ -673,4 +685,31 @@ export default {
   }
 }
 
+.select-period {
+  .v-input__slot {
+    display: flex !important;
+    align-items: center !important;
+    min-height: 32px !important;
+  }
+
+  .v-input__prepend-inner {
+    margin: 0 !important;
+  }
+
+  .v-input__icon {
+    max-height: 32px !important;
+  }
+
+  .v-input__control {
+    max-height: 32px !important;
+
+    .v-input__slot {
+      max-height: 32px !important;
+    }
+  }
+
+  .v-select__selection--comma {
+    margin: 0 !important;
+  }
+}
 </style>
