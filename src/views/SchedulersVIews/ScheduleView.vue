@@ -1,7 +1,7 @@
 <template>
   <v-container class="px-3 pa-0 ma-0" fluid v-if="true">
     <div class="text-h3 font-weight-medium px-0 mb-3">
-      Расписание школы
+      Мое расписание
     </div>
     <hr>
     <div class="text-lg-h6 text-md-h5 text-sm-h4 text-xs-h1 px-0 mb-3">
