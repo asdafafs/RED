@@ -13,9 +13,10 @@ export default {
   },
   async created() {
     const code = this.$route.query.code
+    const redirectUri = `${process.env.REDIRECT_URI}/schedule/lessons`
     await this.identityService.postBindVk(code, process.env.REDIRECT_URI)
         .then(async () => {
-          window.location.replace('https://anton.techbeaver.ru/schedule/lessons')
+          window.location.replace(redirectUri)
         })
   }
 }

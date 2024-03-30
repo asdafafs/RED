@@ -14,10 +14,11 @@ export default {
 
   async created() {
     const code = this.$route.query.code;
-    await this.identityService.postLoginVkRegistration(code, "https://anton.techbeaver.ru/post-vkLogin")
+    const redirectUri = `${process.env.FRONT_PAGE_URL}/post-vkLogin`
+    const redirectLessons = `${process.env.FRONT_PAGE_URL}/schedule/lessons`
+    await this.identityService.postLoginVkRegistration(code, redirectUri)
         .then(async () => {
-          window.location.replace('https://anton.techbeaver.ru/schedule/lessons')
-
+          window.location.replace(redirectLessons)
         });
   }
 }

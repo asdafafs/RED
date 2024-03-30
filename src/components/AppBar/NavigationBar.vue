@@ -70,7 +70,7 @@ export default {
         {
           id: 4,
           title: 'Мой план',
-          routerName: 'plan-main-month',
+          routerName: 'plan',
           visible: true,
         },
         {
@@ -109,7 +109,6 @@ export default {
       }
       this.$emit('update:drawer', false)
       if (item.routerName === 'main') this.logout()
-
       if (item.link === 'linkVk') this.linkVk()
     },
 

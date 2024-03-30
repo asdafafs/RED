@@ -120,28 +120,6 @@ const routes = [
         component: StudentPlanView,
         children: [
             {
-                path: "mainCal",
-                name: 'plan-main',
-                component: MainCalendar,
-                children: [
-                    {
-                        path: "testDay",
-                        name: 'plan-main-day',
-                        component: DayView,
-                    },
-                    {
-                        path: "testWeek",
-                        name: 'plan-main-week',
-                        component: WeeklyView,
-                    },
-                    {
-                        path: "testMonth",
-                        name: 'plan-main-month',
-                        component: MonthView,
-                    },
-                ]
-            },
-            {
                 path: 'progressBar/:currentStudentID',
                 name: 'progressBar',
                 component: ProgressBar,

@@ -426,7 +426,7 @@ export default {
 
 .course-event-card {
   width: 407px !important;
-  height: 369px !important;
+  height: 329px !important;
   border-radius: 12px !important;
   flex-direction: column !important;
   align-items: flex-start !important;

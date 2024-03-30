@@ -75,7 +75,7 @@ export default {
         {
           id: 2,
           title:'Личный кабинет',
-          router: 'plan-main-day',
+          router: 'plan',
           visible: this.student,
         },
       ].filter(x => x.visible)
@@ -90,7 +90,7 @@ export default {
           {
             name: router
           }
-      )
+      ).catch(() => {})
     },
   },
 }
