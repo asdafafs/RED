@@ -1,5 +1,5 @@
 <template>
-  <div >
+  <div  >
     <v-container class="px-4 pa-0 ma-0" fluid v-if="showDrawer && groupId !==0" >
       <v-row no-gutters align="center" class="spacer">
         <v-col lg="">
