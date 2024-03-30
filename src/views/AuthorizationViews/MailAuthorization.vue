@@ -29,9 +29,6 @@
               Для продолжения работы в RED: Расписание, пожалуйста, авторизуйтесь.
             </v-card-subtitle>
             <v-card-text class="pb-0">
-              <v-alert v-if="message" type="error">
-                {{ message }}
-              </v-alert>
               <v-text-field
                   color="black"
                   v-model="email"

@@ -3,7 +3,7 @@
     <v-row align="center" justify="center" class=" ">
       <v-col cols="4" class=" pa-0" align="center">
         <v-dialog v-model="overlay" persistent width="auto" content-class="elevation-0">
-          <v-card class="d-flex justify-space-between flex-column white rounded-lg ma-2 width">
+          <v-card class="d-flex flex-column white rounded-lg ma-2 width" style="height: 290px !important;">
             <v-card-title class="black--text"> Создание пароля</v-card-title>
             <v-card-subtitle class="black--text">
               Введите  пароль
@@ -30,10 +30,9 @@
                   counter
                   @click:append="show = !show"
               ></v-text-field>
-              <v-alert v-if="!passwordsMatch" type="error">Пароли не совпадают</v-alert>
             </v-card-text>
-            <v-card-actions v-if="passwordsMatch">
-              <v-btn color="#4E7AEC" @click="validatePassword" class="rounded-lg pa-0 white--text" block :disabled="loginButtonDisabled">
+            <v-card-actions>
+              <v-btn color="#4E7AEC" @click="validatePassword" class="rounded-lg pa-0 white--text" block :disabled="loginButtonDisabled || !passwordsMatch">
                 Добавить пароль
               </v-btn>
             </v-card-actions>

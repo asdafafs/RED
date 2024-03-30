@@ -382,7 +382,7 @@ export default {
 
 .card-edit-student {
   width: 392px !important;
-  height: 484px !important;
+  height: 464px !important;
   border-radius: 12px !important;
   flex-direction: column !important;
   align-items: flex-start !important;

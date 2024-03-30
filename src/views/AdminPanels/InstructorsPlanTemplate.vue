@@ -270,8 +270,14 @@ export default {
       return `${year}-${month}-${day}`;
     },
 
+    checkInitialValidity(){
+      return !(this.startDateRules.required(this.practiceCourseStart) && this.endTimeRules.required(this.practiceCourseEnd))
+    },
+
+
     initialize() {
       this.getListTemplates()
+      this.checkInitialValidity();
     }
   },
   created() {

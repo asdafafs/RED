@@ -1,12 +1,7 @@
 <template>
   <div style="width: 100%; height:100%; padding: 0 12px 12px 12px">
     <div class="flex-row" style="margin-bottom: 12px !important;">
-      <v-btn-toggle
-          mandatory
-          v-model="selectedLessonType"
-          group
-          color="black"
-      >
+      <v-btn-toggle mandatory v-model="selectedLessonType" group color="black" >
         <v-btn
             v-for="item in calendarButtons"
             :key="item.id"
@@ -40,29 +35,15 @@
     </v-btn>
     <div>
       <div>
-        <v-sheet
-            tile
-            height="54"
-            class="d-flex justify-center"
+        <v-sheet tile height="54" class="d-flex justify-center"
         >
-          <v-btn
-              icon
-              class="ma-0 align-self-center"
-              @click="$refs.calendar.prev()"
-          >
+          <v-btn icon class="ma-0 align-self-center" @click="$refs.calendar.prev()" >
             <v-icon>mdi-chevron-left</v-icon>
           </v-btn>
-          <v-toolbar-title
-              v-if="test"
-              class="month-name"
-          >
+          <v-toolbar-title v-if="test" class="month-name" >
             {{ month }}
           </v-toolbar-title>
-          <v-btn
-              icon
-              class="ma-0 align-self-center"
-              @click="$refs.calendar.next()"
-          >
+          <v-btn icon class="ma-0 align-self-center" @click="$refs.calendar.next()" >
             <v-icon>mdi-chevron-right</v-icon>
           </v-btn>
         </v-sheet>

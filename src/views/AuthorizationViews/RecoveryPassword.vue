@@ -66,6 +66,7 @@
 <script>
 import IdentityRequest from "@/services/IdentityRequest";
 import LogoRed from "@/components/logos/LogoRed.vue";
+import {successAlert, warningAlert} from "@/components/Alerts/alert";
 
 export default {
   name: 'RecoveryPassword',
@@ -104,7 +105,7 @@ export default {
       }
 
       this.checkEmail(this.email);
-      alert('проверьте почтовый ящик');
+      successAlert('проверьте почтовый ящик');
       this.$router.push({name: 'main'}).catch(err => {
         console.log(err)
       })

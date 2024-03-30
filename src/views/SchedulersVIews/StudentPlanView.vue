@@ -10,20 +10,6 @@
         </v-col>
         <v-col cols="">
         </v-col>
-        <v-col cols="1">
-          <v-btn text class="black--text tab-button pa-0" width="100%"
-                 @click="changeButtonMenuState(0); $router.push({name: 'plan-main-month'}).catch(() => {})"
-                 :class="{'tab-background': isButtonMenuPressed[0],}">
-            <span :class="{'tab-button-text': isButtonMenuPressed[0],}">Календарь</span>
-          </v-btn>
-        </v-col>
-        <v-col cols="1">
-          <v-btn text class="black--text tab-button pa-0" width="100%"
-                 @click="changeButtonMenuState(1); openProgressBar()"
-                 :class="{'tab-background': isButtonMenuPressed[1],}">
-            <span :class="{'tab-button-text': isButtonMenuPressed[1],}">Прогресс</span>
-          </v-btn>
-        </v-col>
       </v-row>
       <hr>
       <router-view></router-view>
@@ -35,22 +21,6 @@
             Здравствуйте, {{ userName }}!
           </div>
           <div class="text-subtitle-1 uno">{{ groupTitle }}</div>
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col cols="">
-          <v-btn text class="black--text tab-button pa-0" width="100%"
-                 @click="changeButtonMenuState(0); $router.push({name: 'plan-main-day'}).catch(() => {})"
-                 :class="{'tab-background': isButtonMenuPressed[0],}">
-            <span :class="{'tab-button-text': isButtonMenuPressed[0],}">Календарь</span>
-          </v-btn>
-        </v-col>
-        <v-col cols="">
-          <v-btn text class="black--text tab-button pa-0" width="100%"
-                 @click="changeButtonMenuState(1);openProgressBar()"
-                 :class="{'tab-background': isButtonMenuPressed[1],}">
-            <span :class="{'tab-button-text': isButtonMenuPressed[1],}">Прогресс</span>
-          </v-btn>
         </v-col>
       </v-row>
       <hr>
@@ -77,15 +47,6 @@ export default {
   },
 
   methods: {
-
-    changeButtonMenuState(index) {
-
-      if (this.lastPressedIndex !== -1) {
-        this.$set(this.isButtonMenuPressed, this.lastPressedIndex, false);
-      }
-      this.$set(this.isButtonMenuPressed, index, true);
-      this.lastPressedIndex = index;
-    },
     checkWindowWidth() {
       this.showDrawer = window.innerWidth >= 1260;
     },
@@ -129,12 +90,7 @@ export default {
     },
 
     groupId() {
-      console.log('this.user.groupId',this.user.groupId)
       return this.user.groupId
-    },
-
-    isButtonMenuPressed() {
-      return [this.$route.path.startsWith('/testPlan/mainCal'), this.$route.path.startsWith('/testPlan/progressBar')]
     },
 
   },
@@ -147,6 +103,10 @@ export default {
 
   beforeDestroy() {
     window.removeEventListener('resize', this.checkWindowWidth);
+  },
+
+  updated() {
+    this.openProgressBar()
   },
 }
 

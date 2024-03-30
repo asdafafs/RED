@@ -324,7 +324,7 @@ export default {
 
 .add-instructor-card {
   width: 392px !important;
-  height: 484px !important;
+  height: 410px !important;
   border-radius: 12px !important;
   flex-direction: column !important;
   align-items: flex-start !important;
