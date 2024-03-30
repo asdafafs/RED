@@ -262,14 +262,7 @@ export default {
           id: 0,
           title: 'Практики',
         },
-        {
-          id: 1,
-          title: 'Экзамен',
-        },
-        {
-          id: 2,
-          title: 'Другое',
-        },
+
       ]
     },
     discriminatorUser() {
@@ -299,10 +292,6 @@ export default {
       switch (id) {
         case 0:
           return this.confirm(this.discriminatorUser)
-        case 1:
-          return this.getExam()
-        case 2:
-          return this.getOtherEvents()
       }
     },
     displayText(item) {
@@ -311,12 +300,6 @@ export default {
 
     valueText(item) {
       return item[0];
-    },
-
-    getOtherEvents() {
-    },
-
-    getExam() {
     },
 
     async confirmOnChangeMonthAndYear(newValue) {
