@@ -224,14 +224,12 @@ export default {
         this.selectedElement = nativeEvent.target
         requestAnimationFrame(() => requestAnimationFrame(() => this.selectedOpen = true))
       }
-
       if (this.selectedOpen) {
         this.selectedOpen = false
         requestAnimationFrame(() => requestAnimationFrame(() => open()))
       } else {
         open()
       }
-
       nativeEvent.stopPropagation()
     },
 
