@@ -11,6 +11,7 @@
               :event-height="50"
               :weekdays="weekday"
               :event-ripple="false"
+              v-model="practiceCourseStart"
               @mousedown:event="startDrag"
               @mousedown:time="startTime"
               @mousemove:time="mouseMove"
@@ -118,6 +119,10 @@ export default {
   }),
 
   props: {
+    practiceCourseStart:{
+      type: String,
+      default: '',
+    },
     selectedDuration: {
       type: Number,
       default: 1,

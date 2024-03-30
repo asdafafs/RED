@@ -19,6 +19,7 @@ export default new Vuex.Store({
             discriminator: '',
             groupId: 0,
             vkUserId: 0,
+            isAdmin: false,
         }
     },
     mutations: {
@@ -32,6 +33,7 @@ export default new Vuex.Store({
             state.user.discriminator = user.data['discriminator']
             state.user.groupId = user.data['groupId']
             state.user.vkUserId = user.data['vkUserId']
+            state.user.isAdmin = user.data['isAdmin']
         },
         RESET_CURRENT_USER(state) {
             state.user = {
@@ -45,6 +47,7 @@ export default new Vuex.Store({
                 discriminator: '',
                 groupNumber: 0,
                 vkUserId: 0,
+                isAdmin: false,
             }
         }
     },

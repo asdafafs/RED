@@ -57,7 +57,8 @@ blockEditableTemplate = selectedTemplate ? !!selectedTemplate.practiceCourseId :
     </v-row>
     <v-row>
       <TemplateSchedule @plan-updated="handleEvents" :selectedDuration="selectedDuration"
-                        :fullNameActiveUser="fullName" :events="eventsTemplate"></TemplateSchedule>
+                        :fullNameActiveUser="fullName" :events="eventsTemplate"
+                        :practiceCourseStart="dateFirstPractice"></TemplateSchedule>
     </v-row>
     <v-dialog v-model="cancelSaveChanges" max-width="500px">
       <v-card>
@@ -87,6 +88,7 @@ export default {
     selectedDuration: 1,
     practiceCourseStart: null,
     practiceCourseEnd: null,
+    dateFirstPractice: null,
     listTemplates: [{
       "practiceCourseId": null,
       "practiceCourseStart": null,
@@ -119,15 +121,23 @@ export default {
   methods: {
     handleEvents(events) {
       this.eventsTemplate = events
-      console.log('handleEvents', this.eventsTemplate)
+      if (events.length > 0) {
+        const earliestEvent = events.reduce((earliest, current) => {
+          if (current.start < earliest.start) {
+            return current;
+          } else {
+            return earliest;
+          }
+        });
+        this.dateFirstPractice = earliestEvent.start;
+      }
     },
 
     prev() {
       const hasUnsavedTime = this.eventsTemplate.some(event => event.savedTime === undefined);
-      if (hasUnsavedTime){
+      if (hasUnsavedTime) {
         warningAlert('Есть несохранненые изменения', 5000)
-      }
-      else{
+      } else {
         this.$router.push({name: 'admin-teachers'})
       }
     },
@@ -198,6 +208,18 @@ export default {
             this.practiceCourseEnd = response.data.practiceCourseEnd.slice(0, 10);
           });
       this.blockEditableTemplate = this.selectedTemplate !== null;
+
+      if (events.length > 0) {
+        const earliestEvent = events.reduce((earliest, current) => {
+          if (current.start < earliest.start) {
+            return current;
+          } else {
+            return earliest;
+          }
+        });
+        this.dateFirstPractice = earliestEvent.start;
+      }
+
       return this.eventsTemplate = events
     },
 

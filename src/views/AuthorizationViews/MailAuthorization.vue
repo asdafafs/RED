@@ -40,6 +40,7 @@
                   class="mb-2 mail-authorization-card__field "
                   label="E-mail"
                   outlined
+                  dense
               >
                 <template v-slot:append>
                   <span class="material-icons" @click="email=''">close</span>
@@ -53,6 +54,7 @@
                   name="input-10-4"
                   label="Пароль"
                   hint="Минимум 8 символов"
+                  dense
                   counter
                   outlined
                   class="mail-authorization-card__field"
@@ -190,6 +192,6 @@ export default {
   display: flex;
   align-items: center;
   margin-left: 16px;
-  padding: 8px 0 16px 0;
+  //padding: 8px 0 16px 0;
 }
 </style>

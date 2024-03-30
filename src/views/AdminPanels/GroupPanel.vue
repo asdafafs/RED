@@ -17,8 +17,7 @@
       </v-btn>
     </div>
     <v-data-table 
-        :headers="headersGroup" 
-        :search="search" 
+        :headers="headersGroup"
         :items="groups"
         class="custom-header-table"
         style="border-bottom: thin solid rgba(0, 0, 0, 0.12); border-radius: unset !important;"
@@ -215,10 +214,6 @@ export default {
   }
 }
 
-.v-text-field {
-  padding: 0 !important;
-  margin: 0 !important;
-}
 
 .v-text-field--outlined .v-label {
   top: 7px !important;

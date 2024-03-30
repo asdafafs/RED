@@ -94,17 +94,17 @@
 
 .mail-authorization-card {
     display: flex !important;
-    gap: 16px !important;
     flex-direction: column !important;
     min-height: 28rem !important;
-    width: 400px !important;
-    height: 560px !important;
+    width: 396px !important;
+    height: 396px !important;
     
     &__title {
         font-weight: 700 !important;
         font-size: 32px !important;
         line-height: 37.5px !important;
         padding: 0px 24px 10px !important;
+        margin-bottom: 16px !important;
     }
     &__subtitle {
         font-weight: 400 !important;

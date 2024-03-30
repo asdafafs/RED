@@ -9,7 +9,7 @@
   >
     <template v-slot:top>
       <v-toolbar flat>
-        <v-dialog v-model="dialog" max-width="500px" persistent>
+        <v-dialog v-model="dialog" width="auto" persistent>
           <template v-slot:activator="{ on, attrs }">
             <v-btn class="rounded-lg app-bar-button-color" color="#4E7AEC" v-bind="attrs" v-on="on">
               <v-col cols="1" class="px-0 tab-button-text">
@@ -20,32 +20,36 @@
               </v-col>
             </v-btn>
           </template>
-          <v-card class="rounded-xl">
-            <v-card-title>
-              <div class="text-h5">{{ formTitle }}</div>
+          <v-card class="course-event-card">
+            <v-card-title class="pa-3 pb-0 ">
+              <span class="course-event-card__title">{{ formTitle }}</span>
             </v-card-title>
-            <v-card-text class="pb-0">
-              <v-container class="pa-0">
+            <v-card-text class="pa-3 pt-0">
+              <v-container class="">
                 <v-row class="pa-0">
-                  <v-col cols="12" sm="12" md="12" class="pb-0">
-                    <v-text-field v-model="editedItem.title" label="Название"
-                                  :rules="[titleRules.required]" outlined class="rounded-xl"></v-text-field>
+                  <v-col class="flex-column pa-0 flex-wrap">
+                    <v-text-field v-model="editedItem.title" label="Название" height="32px" dense hide-details
+                                  :rules="[titleRules.required]" outlined
+                                  class="v-text-field-custom-course"></v-text-field>
                     <v-text-field v-model="editedItem.startTime" label="Начало занятия" type="datetime-local"
-                                  :rules="[startDateTimeRules.required]" :min="getTodayDate" outlined
-                                  class="rounded-xl">
+                                  :rules="[startDateTimeRules.required]" :min="getTodayDate" outlined height="32px"
+                                  dense hide-details
+                                  class="v-text-field-custom-course">
                     </v-text-field>
-                    <v-text-field v-model="editedItem.endTime" label="Конец занятия" type="datetime-local"
-                                  :rules="[endDateTimeRules.required]" :min="getTodayDate" outlined class="rounded-xl">
+                    <v-text-field v-model="editedItem.endTime" label="Конец занятия" type="datetime-local" height="32px"
+                                  dense hide-details
+                                  :rules="[endDateTimeRules.required]" :min="getTodayDate" outlined
+                                  class="v-text-field-custom-course">
                     </v-text-field>
-                    <v-select
-                        ref="selectItem"
-                        v-model="discriminator[editedItem.lectureType]"
-                        label="Тип занятия"
-                        :items="discriminator"
-                        :rules="[typeEventRules.required]"
-                        outlined
-                        class="rounded-xl"
-                        no-data-text="Нет данных для отображения"
+                    <v-select height="32px" dense hide-details
+                              ref="selectItem"
+                              v-model="discriminator[editedItem.lectureType]"
+                              label="Тип занятия"
+                              :items="discriminator"
+                              :rules="[typeEventRules.required]"
+                              outlined
+                              class="v-text-field-custom-course"
+                              no-data-text="Нет данных для отображения"
                     >
                       <template v-slot:item="{ item }">
                         <v-list-item @click="selectItem(item)">
@@ -58,13 +62,14 @@
                       </template>
                     </v-select>
                     <v-select
+                        height="32px" dense hide-details
                         v-model="editedItem.activeUser"
                         label="Выберите преподавателя"
                         :items="[...teachers, { id: null, name: 'Преподаватель не назначен' }]"
                         :item-text="item => item ? `${item.name || ''} ${item.surname || ''} ${item.middleName || ''}` : 'Преподаватель не назначен'"
                         item-value="id"
                         outlined
-                        class="rounded-xl"
+                        class="v-text-field-custom-course"
                         no-data-text="Нет данных для отображения"
                     ></v-select>
                   </v-col>
@@ -72,12 +77,12 @@
               </v-container>
             </v-card-text>
             <v-card-actions>
-              <v-container style="display: flex; justify-content: space-between;" class="py-0">
-                <v-btn color="blue darken-1" text @click="closeEditItem">
-                  Отмена
+              <v-container style="display: flex; justify-content: space-between;" class="pa-0 ">
+                <v-btn  text @click="closeEditItem" style="text-transform: none !important;">
+                  <span style="color: black">Отмена</span>
                 </v-btn>
-                <v-btn color="blue darken-1" text @click="save" :disabled="hasChanges || isSaveButtonDisabled">
-                  OK
+                <v-btn class="close-button" text @click="save" :disabled="hasChanges || isSaveButtonDisabled">
+                  <span style="color: white">Добавить</span>
                 </v-btn>
               </v-container>
             </v-card-actions>
@@ -371,7 +376,6 @@ export default {
       } else {
         this.courses.push(this.editedItem);
       }
-      console.log(this.editedItem.startTime, this.editedItem.endTime)
       this.$emit('courses-updated', this.courses);
       this.toggleSelection();
       this.close();
@@ -420,4 +424,72 @@ export default {
 <style lang="scss">
 @import "@/assets/styles/eventTypesStyles.css";
 @import "@/assets/styles/dataTableStyles.css";
+
+.course-event-card{
+  width: 407px !important;
+  height: 369px !important;
+  border-radius: 12px !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  background: #FFFFFF !important;
+  border: 1px solid #AAA7A6 !important;
+
+  &__title {
+    width: 100% !important;
+    height: 32px !important;
+    font-style: normal !important;
+    font-weight: 700 !important;
+    font-size: 32px !important;
+    line-height: 32px !important;
+    color: #000000 !important;
+    flex: none !important;
+    order: 0 !important;
+    flex-grow: 0 !important;
+  }
+
+  &__card_text {
+    gap: 12px !important;
+  }
+}
+
+.v-text-field-custom-course.v-text-field--outlined .v-input__control .v-input__slot {
+  width: 367px !important;
+  min-height: 32px !important;
+}
+
+.v-text-field-custom-course.v-text-field--outlined .v-input__control .v-input__slot .v-select {
+  min-height: 32px !important;
+}
+.v-text-field-custom-course .v-text-field {
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.v-text-field-custom-course {
+  width: 367px !important;
+  height: 32px !important;
+  margin-top: 12px !important;
+}
+
+.close-button {
+  border-radius: 12px !important;
+  background-color: #4E7AEC !important;
+  height: 32px !important;
+  width: 89px !important;
+  text-transform: none !important;
+  margin-bottom: 12px !important;
+  margin-right: 12px !important;
+
+  &__text {
+    text-transform: none !important;
+    font-weight: 600 !important;
+    font-size: 16px !important;
+    line-height: 18.75px !important;
+  }
+}
+
+.v-text-field--outlined, {
+  border-radius: 12px !important;
+}
+
 </style>

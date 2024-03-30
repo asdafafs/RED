@@ -138,11 +138,9 @@ export default {
     events() {
     },
 
-    value(newValue) {
-      this.confirmOnChangeMonthAndYear(newValue);
-    }
   },
-  mounted() {
+
+  updated() {
     const buttonStyleReplace = [
       'v-btn',
       'v-btn--fab',
@@ -152,22 +150,26 @@ export default {
       'v-size--small',
       'transparent',
     ]
-    this.$refs.calendar.$el
-        .querySelectorAll('.v-btn.v-btn--fab.v-btn--has-bg.v-btn--round.theme--light.v-size--default.primary')
-        .forEach(item => {
-          item.classList = '';
-          buttonStyleReplace.forEach(x => {
-            item.classList.toggle(x)
-          })
-        });
+    this.$nextTick(() => {
+      this.$refs.calendar.$el
+          .querySelectorAll('.v-btn.v-btn--fab.v-btn--has-bg.v-btn--round.theme--light.v-size--default.primary')
+          .forEach(item => {
+            item.classList = '';
+            buttonStyleReplace.forEach(x => {
+              item.classList.toggle(x)
+            })
+          });
+    });
+  },
+
+  mounted() {
     this.test = true
-    this.prevMonthAndYear = this.getMonthAndYear(this.value);
   },
 
   data: () => ({
     events: [],
-    currentDate: moment(),
-    value: new Date().toISOString().substr(0, 7) + '-01',
+    А: moment(),
+    value: moment().locale('ru').format('YYYY-MM-DD'),
     weekday: [1, 2, 3, 4, 5, 6, 0],
     today: new Date(),
     test: false,
@@ -186,7 +188,6 @@ export default {
   created() {
     this.initialize()
   },
-
 
   computed: {
     ...mapState(['user']),
@@ -209,20 +210,6 @@ export default {
   },
 
   methods: {
-    async confirmOnChangeMonthAndYear(newValue) {
-      const currentMonthAndYear = this.getMonthAndYear(newValue);
-      if (currentMonthAndYear !== this.prevMonthAndYear) {
-        const groupId = this.groupId
-        await this.getAllEvents(groupId);
-        this.prevMonthAndYear = currentMonthAndYear;
-      }
-    },
-
-    getMonthAndYear(dateString) {
-      const [year, month] = dateString.split('-');
-      return `${year}-${month}`;
-    },
-
     closeEvent() {
       this.selectedOpen = false
     },
@@ -238,7 +225,6 @@ export default {
             const id = this.userId;
             const students = response.data.students;
             const foundStudent = students.find(student => student.id === id);
-            console.log('foundStudent', foundStudent)
             if (foundStudent) {
               console.log('Этого студента не найдено в списке свободных');
             } else {
@@ -271,8 +257,11 @@ export default {
     async getLessons(groupId) {
       const lessons = new EventsRequest()
       let kal
-      const monthTime = `Date=${this.value}`
-      await lessons.getLectureGroupId(groupId, monthTime).catch(x => console.log(x)).then(x => {
+      const monday = this.currentDate.clone().startOf('isoWeek').format('YYYY-MM-DD')
+      const sunday = this.currentDate.clone().endOf('isoWeek').format('YYYY-MM-DD')
+      console.log(monday, sunday)
+      const interval = `Date=${monday}&Date2=${sunday}`
+      await lessons.getLectureGroupId(groupId, interval).catch(x => console.log(x)).then(x => {
         kal = x.data.lecture.map(event => ({
           ...event,
           start: event.startTime,
@@ -285,8 +274,11 @@ export default {
     async getPractices() {
       const practices = new EventsRequest()
       let kal
-      const monthTime = `Date=${this.value}`
-      await practices.getPracticeAssigned(monthTime).catch(x => console.log(x)).then(x => {
+      const monday = this.currentDate.clone().startOf('isoWeek').format('YYYY-MM-DD');
+      const sunday = this.currentDate.clone().endOf('isoWeek').format('YYYY-MM-DD')
+      console.log(monday, sunday)
+      const interval = `Date=${monday}&Date2=${sunday}`
+      await practices.getPracticeAssigned(interval).catch(x => console.log(x)).then(x => {
         kal = x.data.practice.map(event => ({
           ...event,
           start: event.startTime,
@@ -306,7 +298,6 @@ export default {
           ...item,
           start: moment(item.start).format("YYYY-MM-DD HH:mm"),
           end: moment(item.end).format("YYYY-MM-DD HH:mm"),
-
         }
       })
     },
@@ -332,6 +323,8 @@ export default {
     updateDateRange() {
       this.dateMonday = this.currentDate.clone().startOf('isoWeek').format('DD');
       this.dateSunday = this.currentDate.clone().endOf('isoWeek').format('DD');
+      const groupId = this.groupId
+      this.getAllEvents(groupId)
     },
 
     getTableRowClass(event) {
@@ -341,7 +334,6 @@ export default {
         3: 'red-background',
         4: 'gray-background'
       };
-      console.log(classMap[event.lectureType] || 'free-practice')
       return classMap[event.lectureType] || 'free-practice';
     },
 
