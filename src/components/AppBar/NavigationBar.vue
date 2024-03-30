@@ -62,12 +62,6 @@ export default {
           visible: this.student,
         },
         {
-          id: 3,
-          title: 'Лекции',
-          routerName: 'notFound',
-          visible: true,
-        },
-        {
           id: 4,
           title: 'Мой план',
           routerName: 'plan',

@@ -31,7 +31,7 @@
                     <div class="font-weight-bold text-format-week">Вождение</div>
                     <div class="text-lg-subtitle-2 d-flex" >{{ abbreviatedName }}</div>
                   </v-col>
-                  <v-col cols="2" style="padding-left: 0px !important;">
+                  <v-col cols="2" style="padding-left: 0 !important;">
                     <v-icon class="red--text" @click="deleteEvent(event)" >mdi-window-close</v-icon>
                   </v-col>
                 </v-row>

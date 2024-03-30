@@ -44,7 +44,7 @@
           v-model="selectedTeacher"
           label="Выберите инструктора"
           :items="teachers"
-          :item-text="item => `${item.name} ${item.surname} ${item.middleName} `"
+          :item-text="item => `${item.surname} ${item.name} ${item.middleName} `"
           item-value="id"
           @change="confirm(discriminatorUser)"
           hide-details
@@ -641,21 +641,6 @@ export default {
   font-size: 12px !important;
   color: black !important;
 }
-
-//.select-period {
-//  border-radius: 12px;
-//
-//  .v-input__slot {
-//    height: 32px !important;
-//    min-height: 32px !important;
-//    display: flex !important;
-//    align-items: center !important;
-//  }
-//
-//  .v-select__selection--comma {
-//    margin: 0 !important;
-//  }
-//}
 
 .select-teacher {
   .v-input__slot {

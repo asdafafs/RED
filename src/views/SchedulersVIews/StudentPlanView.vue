@@ -41,9 +41,9 @@ export default {
     groupTitle: ''
   }),
   watch: {
-    groupId(){
-      this.getGroupNumber()
-    }
+    // groupId(){
+    //   this.getGroupNumber()
+    // }
   },
 
   methods: {
@@ -82,7 +82,7 @@ export default {
   computed: {
     ...mapState(['user']),
     userName() {
-      return this.user.name
+      return `${this.user.name} ${this.user.middleName} ${this.user.surname}`
     },
 
     userId() {

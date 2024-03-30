@@ -192,7 +192,7 @@ export default {
           .then(response => {
             teachersData = response.data.activeUsers.map(user => ({
               ...user,
-              fullName: `${user.name} ${user.surname} ${user.middleName}`
+              fullName: `${user.surname} ${user.name} ${user.middleName}`
             }));
           })
           .catch(error => {

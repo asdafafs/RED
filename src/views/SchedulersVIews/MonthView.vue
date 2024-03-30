@@ -188,7 +188,7 @@ export default {
     },
 
     studentTitle(){
-      return `${this.$store.state.user.name} ${this.$store.state.user.surname} ${this.$store.state.user.middleName}`
+      return `${this.$store.state.user.surname} ${this.$store.state.user.name} ${this.$store.state.user.middleName} `
     },
   },
   watch: {

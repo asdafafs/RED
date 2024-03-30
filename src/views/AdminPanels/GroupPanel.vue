@@ -52,7 +52,7 @@
             <div style="display: flex; flex-direction: row; flex-wrap: wrap;">
         <span v-if="item.students" v-for="(student, index) in item.students"
               :key="index">
-          {{ student.name }} {{ student.surname }} {{ student.middleName }}, &nbsp;
+          {{ student.surname }} {{ student.name }} {{ student.middleName }}, &nbsp;
           <br>
         </span>
             </div>
@@ -167,7 +167,7 @@ export default {
       const year = String(date.getFullYear());
       const month = String(date.getMonth() + 1).padStart(2, '0');
       const day = String(date.getDate()).padStart(2, '0');
-      return `${year}-${month}-${day}`;
+      return `${day}.${month}.${year}`;
     },
   },
 

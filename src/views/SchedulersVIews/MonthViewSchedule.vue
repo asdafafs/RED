@@ -1,7 +1,7 @@
 <template>
   <div style="width: 100%; height:100%; padding: 0 12px 12px 12px">
     <div class="flex-row" style="margin-bottom: 12px !important;">
-      <v-btn-toggle mandatory v-model="selectedLessonType" group color="black" >
+      <v-btn-toggle mandatory v-model="selectedLessonType" group color="black">
         <v-btn
             v-for="item in calendarButtons"
             :key="item.id"
@@ -19,7 +19,7 @@
                 style=" max-width: 367px !important;  border-radius: 12px !important; max-height: 32px !important;"
                 no-data-text="Нет данных для отображения" label="Выберите инструктора для редактирования"
                 :items="[...listTeachers, { id: null, name: 'Преподаватель не назначен' }]"
-                :item-text="item => item ? `${item.name || ''} ${item.surname || ''} ${item.middleName || ''}` : 'Преподаватель не назначен'"
+                :item-text="item => item ? `${item.surname || ''} ${item.name || ''} ${item.middleName || ''}` : 'Преподаватель не назначен'"
                 item-value="id" @change="acceptEditableTeacher()" v-if="this.$store.state.user.isAdmin"></v-select>
     </div>
     <v-btn
@@ -37,13 +37,13 @@
       <div>
         <v-sheet tile height="54" class="d-flex justify-center"
         >
-          <v-btn icon class="ma-0 align-self-center" @click="$refs.calendar.prev()" >
+          <v-btn icon class="ma-0 align-self-center" @click="$refs.calendar.prev()">
             <v-icon>mdi-chevron-left</v-icon>
           </v-btn>
-          <v-toolbar-title v-if="test" class="month-name" >
+          <v-toolbar-title v-if="test" class="month-name">
             {{ month }}
           </v-toolbar-title>
-          <v-btn icon class="ma-0 align-self-center" @click="$refs.calendar.next()" >
+          <v-btn icon class="ma-0 align-self-center" @click="$refs.calendar.next()">
             <v-icon>mdi-chevron-right</v-icon>
           </v-btn>
         </v-sheet>
@@ -105,10 +105,7 @@
                         {{ ' - ' }} {{ formatTime(selectedEvent.endTime) }}
                       </div>
                       <div class="text-subtitle-1 text-medium-emphasis ">Преподаватель</div>
-                      <div class="text-subtitle-2 font-weight-regular black--text">{{
-                          selectedEvent.title
-                        }}
-                      </div>
+                      <div class="text-subtitle-2 font-weight-regular black--text">{{ selectedEvent.title }}</div>
                       <div v-if="openEditMode">
                         <v-text-field v-model="newDateEvent" height="32px" hide-details label="Дата" type="date"
                                       class="v-text-field-custom "
@@ -117,12 +114,13 @@
                                       class="v-text-field-custom " outlined dense></v-text-field>
                         <v-radio-group class="flex-row" row hide-details v-model="newSelectedDuration">
                           <v-radio label="1 Час" :value="1"></v-radio>
-                          <v-radio label="2 Час" :value="2"></v-radio>
+                          <v-radio label="2 Часа" :value="2"></v-radio>
                         </v-radio-group>
-                        <v-select height="32px" class="v-text-field-custom " outlined dense hide-details v-model="selectedStudent"
+                        <v-select height="32px" class="v-text-field-custom " outlined dense hide-details
+                                  v-model="selectedStudent"
                                   no-data-text="Нет данных для отображения" label="Ученик" item-value="id"
                                   :items="[...listStudents, { id: null, name: 'Студент не назначен' }]"
-                                  :item-text="item => item ? `${item.name || ''} ${item.surname || ''} ${item.middleName || ''}` : 'Студент не назначен'"></v-select>
+                                  :item-text="item => item ? `${item.surname || ''} ${item.name || ''} ${item.middleName || ''} ` : 'Студент не назначен'"></v-select>
                       </div>
                       <div v-if="openDeleteMode">
                         <v-radio-group class="flex-row" row hide-details v-model="newSelectedReason">
@@ -217,9 +215,7 @@ export default {
     test: false,
     type: 'month',
     mode: 'stack',
-    modes: [
-      'column'
-    ],
+    modes: ['column'],
     weekday: [1, 2, 3, 4, 5, 6, 0],
     value: moment().locale('ru').format('YYYY-MM-DD'),
     selectedEvent: {},
@@ -301,12 +297,12 @@ export default {
       if (this.selectedTeacher === null) {
         const selectedTeacherObj = this.listTeachers.find(teacher => teacher.id === this.userID);
         if (selectedTeacherObj) {
-          this.titleNewEvent = `${selectedTeacherObj.name || ''} ${selectedTeacherObj.surname || ''} ${selectedTeacherObj.middleName || ''}`;
+          this.titleNewEvent = `${selectedTeacherObj.surname || ''} ${selectedTeacherObj.name || ''} ${selectedTeacherObj.middleName || ''}`;
         }
       } else {
         const selectedTeacherObj = this.listTeachers.find(teacher => teacher.id === this.selectedTeacher);
         if (selectedTeacherObj) {
-          this.titleNewEvent = `${selectedTeacherObj.name || ''} ${selectedTeacherObj.surname || ''} ${selectedTeacherObj.middleName || ''}`;
+          this.titleNewEvent = `${selectedTeacherObj.surname || ''} ${selectedTeacherObj.name || ''} ${selectedTeacherObj.middleName || ''}`;
         }
       }
       this.selectedEvent.title = this.titleNewEvent
@@ -332,8 +328,7 @@ export default {
         await this.postNewEvent(body).catch(x => console.log(x)).finally(async () => {
           await this.getAllEvents()
         })
-      }
-      else {
+      } else {
         const body = {
           id: this.selectedEvent.id,
           "startTime": startTime,
@@ -421,7 +416,7 @@ export default {
       await event.putPractice(body).catch(x => console.log(x))
     },
 
-    async postNewEvent(body){
+    async postNewEvent(body) {
       const event = new EventsRequest()
       await event.postPractice(body).catch(x => console.log(x))
     },
@@ -540,7 +535,7 @@ export default {
       return this.listTeachers = activeUsers
     },
 
-    async getAllStudents(){
+    async getAllStudents() {
       const student = new UsersRequest()
       let studentList
       await student.getUsers().catch(x => console.log(x)).then(x => {
@@ -676,6 +671,7 @@ export default {
 
   .v-input__control {
     max-height: 32px !important;
+
     .v-input__slot {
       max-height: 32px !important;
     }

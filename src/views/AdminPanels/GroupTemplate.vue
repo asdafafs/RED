@@ -44,7 +44,7 @@
             v-model="selectedStudents"
             :value="editedItem.lecture.activeUser"
             :items="studentList"
-            :item-text="item => `${item.name} ${item.surname} ${item.middleName}`"
+            :item-text="item => `${item.surname} ${item.name} ${item.middleName} `"
             label="Список свободных учеников"
             multiple
             hint="Выберите студентов для группы"
@@ -61,7 +61,7 @@
                       type="date" :rules="[startDateRules.required]"
                       class="text-field-group-template"
                       style="border-radius: 12px !important; max-height: 32px !important;"
-                      @input="updateGlobalStartDate" :min="getTodayDate()" outlined hide-details></v-text-field>
+                      @input="updateGlobalStartDate" :min="getTodayDate()" @change="newGroupTitle" outlined hide-details></v-text-field>
       </v-col>
       <v-col cols="lg-1 md-2">
         <v-text-field dense
@@ -198,13 +198,8 @@ export default {
     },
 
     formTitle() {
-      return this.editedIndex === -1 ? 'Новая группа' : this.editGroupTitle;
-    },
-
-    editGroupTitle() {
       return this.editedItem.groups.title
     },
-
   },
 
   created() {
@@ -217,7 +212,10 @@ export default {
     },
 
     newGroupTitle() {
-      return this.editedItem.groups.title = `Группа №${this.editedItem.groups.groupNumber}`;
+      let startDate = this.editedItem.groups.startDate;
+      let parts = startDate.split('-');
+      let rearranged = [parts[2], parts[1], parts[0]].join('.');
+      return this.editedItem.groups.title = `Группа №${this.editedItem.groups.groupNumber} Старт ${rearranged}`;
     },
 
     getTodayDate() {
