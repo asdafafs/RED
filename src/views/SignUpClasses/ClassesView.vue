@@ -23,6 +23,7 @@
       <div class="d-flex align-center flex-row">
         <span class="mr-3">Показать</span>
         <v-select
+            no-data-text="Нет данных для отображения"
             style="max-width: 130px"
             height="32"
             v-model="type"
@@ -63,7 +64,7 @@
           <v-btn
               icon
               class="ma-0 align-self-center"
-              @click="$refs.calendar.prev()"
+              @click="prev()"
           >
             <v-icon>mdi-chevron-left</v-icon>
           </v-btn>
@@ -76,7 +77,7 @@
           <v-btn
               icon
               class="ma-0 align-self-center"
-              @click="$refs.calendar.next()"
+              @click="next()"
           >
             <v-icon>mdi-chevron-right</v-icon>
           </v-btn>
@@ -103,17 +104,10 @@
             <template v-slot:event="{event}">
               <v-container class="pa-1 mx-0 d-flex ">
                 <v-row class="ma-0">
-                  <v-col cols="4" class="black--text pa-0 align-self-center d-none d-lg-block">
+                  <v-col cols="4" class="black--text pa-0 align-self-center">
                     <div class="text-subtitle-2 d-flex justify-center">{{ formatTime(event.startTime) }}</div>
                   </v-col>
-                  <v-col class="d-lg-none pa-0 event">
-                    <div class="logo ">
-                      <car-logo v-if="event.lectureType === 3"/>
-                      <lecture-logo
-                          v-if="event.lectureType === 2 || event.lectureType === 1 || event.lectureType === null"/>
-                    </div>
-                  </v-col>
-                  <v-col class="black--text pa-0 align-self-center d-none d-lg-block">
+                  <v-col class="black--text pa-0 align-self-center">
                     <div class="font-weight-bold text-format" style="width: inherit">{{ event.title }}
                     </div>
                   </v-col>
@@ -186,41 +180,6 @@
               </v-card-actions>
             </v-card>
           </v-dialog>
-          <v-dialog v-model="refusalModal" max-width="407px" persistent>
-            <v-card>
-              <v-toolbar-title class="px-6">
-                <v-row>
-                  <v-col class="flex-column">
-                    <div class="text-lg-h4 font-weight-bold">Укажите причину отмены</div>
-                  </v-col>
-                </v-row>
-              </v-toolbar-title>
-              <v-card-text>
-                <v-select no-data-text="Нет данных для отображения"
-                          v-model="selectedReason"
-                          :items="reasonsRefusal"
-                          item-value="id"
-                          @change="confirmReason(selectedReason)"
-                ></v-select>
-                <v-select no-data-text="Нет данных для отображения"
-                          v-model="selectedState"
-                          :items="stateRefusal"
-                          item-value="id"
-                          @change="confirmState(selectedState)"
-                ></v-select>
-              </v-card-text>
-              <v-card-actions>
-                <v-container class="pa-0" style="display: flex; justify-content: space-between;">
-                <v-btn text color="secondary" @click="closeModal()">
-                  Отменить
-                </v-btn>
-                <v-btn text color="primary" @click="confirmDeletePractice()">
-                  Подтвердить
-                </v-btn>
-                </v-container>
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
         </v-sheet>
       </div>
     </div>
@@ -232,6 +191,7 @@ import LectureLogo from "@/components/logos/LectureLogo.vue";
 import EventsRequest from "@/services/EventsRequest";
 import UsersRequest from "@/services/UsersRequest";
 import {mapState} from "vuex";
+import moment from "moment/moment";
 
 export default {
   components: {LectureLogo, CarLogo},
@@ -250,12 +210,14 @@ export default {
     type: 'month',
     types: [['month', 'месяц'], ['week', 'неделя'], ['day', 'день']],
     mode: 'stack',
-    value: new Date().toISOString().substr(0, 7) + '-01',
+    value: moment().locale('ru').format('YYYY-MM-DD'),
+    currentDate: moment(),
     selectedElement: null,
     selectedTeacher: null,
     studentHours: [],
     selectedReason: null,
     selectedState: null,
+    lastSelectedJoinType: 0,
     reasonsRefusal: ['Ремонт', 'Семейные обстоятельства', 'Экзамен ', 'Здоровье', 'Задачи офиса'],
     stateRefusal: ['Закрыта', 'Сгорела', 'Отменена'],
     selectedReasonId: 0,
@@ -333,13 +295,14 @@ export default {
 
   methods: {
     onToggleClick(id) {
+      this.lastSelectedJoinType = id;
       switch (id) {
         case 0:
-          return this.getAllEvents()
+          return this.confirm(this.discriminatorUser)
         case 1:
-          return this.testLessons()
+          return this.getExam()
         case 2:
-          return this.testPractices()
+          return this.getOtherEvents()
       }
     },
     displayText(item) {
@@ -350,11 +313,21 @@ export default {
       return item[0];
     },
 
+    getOtherEvents() {
+    },
+
+    getExam() {
+    },
+
     async confirmOnChangeMonthAndYear(newValue) {
-      const currentMonthAndYear = this.getMonthAndYear(newValue);
-      if (currentMonthAndYear !== this.prevMonthAndYear) {
-        await this.confirm(this.discriminatorUser);
-        this.prevMonthAndYear = currentMonthAndYear;
+      if (this.type !== 'week'){
+        const currentMonthAndYear = this.getMonthAndYear(newValue);
+        if (currentMonthAndYear !== this.prevMonthAndYear) {
+
+          console.log(this.lastSelectedJoinType)
+          this.onToggleClick(this.lastSelectedJoinType);
+          this.prevMonthAndYear = currentMonthAndYear;
+        }
       }
     },
     getMonthAndYear(dateString) {
@@ -362,7 +335,23 @@ export default {
       return `${year}-${month}`;
     },
 
-    async confirmClosePractice(){
+    async prev() {
+      this.$refs.calendar.prev()
+      if (this.type === 'week') {
+        this.currentDate = this.currentDate.clone().subtract(1, 'week');
+        await this.confirm(this.discriminatorUser)
+      }
+    },
+
+   async next() {
+      this.$refs.calendar.next()
+     if (this.type === 'week') {
+       this.currentDate = this.currentDate.clone().add(1, 'week');
+       await this.confirm(this.discriminatorUser)
+     }
+    },
+
+    async confirmClosePractice() {
       const body = {
         "id": this.selectedEvent.id,
         "stateEnum": this.selectedStateId,
@@ -382,7 +371,6 @@ export default {
     },
 
     closeModal() {
-      this.refusalModal = false
       this.selectedOpen = false;
     },
 
@@ -394,7 +382,7 @@ export default {
       return this.selectedReasonId = this.reasonsRefusal.indexOf(selectedReason) + 1
     },
 
-    confirmState(selectedState){
+    confirmState(selectedState) {
       return this.selectedStateId = this.stateRefusal.indexOf(selectedState) + 1
     },
 
@@ -402,10 +390,9 @@ export default {
       const student = new UsersRequest()
       let hours
       await student.getUsers().catch(x => console.log(x)).then((response) => {
-        const users = response.data.students; // Предположим, что данные находятся в массиве data
+        const users = response.data.students;
         const foundUser = users.find(user => user.id === this.userID);
         if (foundUser) {
-          // console.log(foundUser)
           hours = [foundUser.generalHours, foundUser.generalHoursSpent]
           return console.log(this.studentHours = hours)
         } else {
@@ -504,10 +491,21 @@ export default {
         });
 
       this.events = cal
+      console.log(this.events)
       this.close();
     },
 
     async getEventsSelectedTeacher(teacherId) {
+      if (this.type === 'week'){
+        const practice = new EventsRequest()
+        console.log(this.currentDate)
+        const monday = this.currentDate.clone().startOf('isoWeek').format('YYYY-MM-DD')
+        const sunday = this.currentDate.clone().endOf('isoWeek').format('YYYY-MM-DD')
+        console.log(monday, sunday)
+        const interval = `Date=${monday}&Date2=${sunday}`
+        return practice.getPracticeId(teacherId, interval);
+      }
+      console.log('huy')
       const practice = new EventsRequest()
       const monthTime = `Date=${this.value}`
       return practice.getPracticeId(teacherId, monthTime);
@@ -572,6 +570,62 @@ export default {
 </script>
 <style lang="scss">
 @import "@/assets/styles/monthScheduleStyles.css";
+
+.day-event {
+  display: flex;
+  height: 100%;
+  border-radius: 12px;
+  align-items: center;
+
+  padding: 15px;
+
+  .day {
+    display: flex;
+    color: #000000;
+    font-size: 40px;
+    font-family: Roboto, sans-serif;
+    font-weight: bold;
+    min-width: 120px;
+    margin: 0px 0px 0px 0px;
+  }
+
+  .custom-info {
+    font-size: 16px;
+    color: #000000;
+    padding-left: 8px;
+    font-family: Roboto, sans-serif;
+    font-weight: 600;
+    display: flex;
+    flex-direction: column;
+    white-space: normal;
+
+    .teacher {
+      font-family: Roboto, sans-serif;
+      font-weight: normal;
+      font-size: 12px;
+    }
+
+  }
+
+}
+
+.day-calendar {
+  :only-child {
+    .theme--light.v-calendar-daily .v-calendar-daily__day-interval {
+      border-top: #e0e0e0 0;
+    }
+
+    .theme--light.v-calendar-daily {
+      border-top: none;
+    }
+  }
+
+  border-top: none;
+}
+
+.v-calendar-daily__scroll-area {
+  overflow-y: hidden;
+}
 
 .toggle-button {
   margin-right: 0 !important;

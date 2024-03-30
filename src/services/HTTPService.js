@@ -66,13 +66,13 @@ export default class HttpService {
         return response
     }
 
-    put(path, body, isAlertHandler = false) {
+    put(path, body, isAlertHandler = true) {
         let response = this.baseRequest(path, "PUT", body)
         response = this._checkErrorHandling(response, isAlertHandler)
         return response
     }
 
-    delete(path, isAlertHandler = false) {
+    delete(path, isAlertHandler = true) {
         let response = this.baseRequest(path, "DELETE");
         response = this._checkErrorHandling(response, isAlertHandler)
         return response
@@ -85,7 +85,7 @@ export default class HttpService {
     _addErrorHandler(promise, isAlertHandler) {
         return new Promise((resolve, reject) => {
             promise.catch(error => {
-                if(error.response.request.status === 401 || error.response.request.status === 404 || error.response.request.status === 500 || isAlertHandler){
+                if(error.response.request.status === 400 || error.response.request.status === 401 || error.response.request.status === 404 || error.response.request.status === 500 || isAlertHandler){
                     const message = this.getErrorMessage(error)
                     errorAlert(message, 4000);
 
@@ -98,7 +98,7 @@ export default class HttpService {
     }
 
     getErrorMessage(error){
-        return error.message ?? 'Произошла неизвестная ошибка'
+        return error.response.data.serverMessage ?? 'Произошла неизвестная ошибка'
 
     }
 }

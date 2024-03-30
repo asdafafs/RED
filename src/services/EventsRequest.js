@@ -24,11 +24,23 @@ export default class EventsRequest extends HTTPService {
         return this.get("practice/" + id + `?${query}`)
     }
 
+    putPractice(code){
+        return this.put("practice", code)
+    }
+
+    postPractice(code){
+        return this.post("practice", code)
+    }
+
     setStudent(code) {
         return this.put("practice/setstudent", code)
     }
 
     closePractice(code) {
         return this.put("practice/close", code)
+    }
+
+    cancelPractice(code){
+        return this.put("practice/cancel", code)
     }
 }

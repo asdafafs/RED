@@ -113,7 +113,7 @@ import UsersRequest from "@/services/UsersRequest";
 
 export default {
   components: {LectureLogo, CarLogo},
-  mounted() {
+  updated() {
     const buttonStyleReplace = [
       'v-btn',
       'v-btn--fab',
@@ -123,14 +123,19 @@ export default {
       'v-size--small',
       'transparent',
     ]
-    this.$refs.calendar.$el
-        .querySelectorAll('.v-btn.v-btn--fab.v-btn--has-bg.v-btn--round.theme--light.v-size--small.primary')
-        .forEach(item => {
-          item.classList = '';
-          buttonStyleReplace.forEach(x => {
-            item.classList.toggle(x)
-          })
-        })
+    this.$nextTick(() => {
+      this.$refs.calendar.$el
+          .querySelectorAll('.v-btn.v-btn--fab.v-btn--has-bg.v-btn--round.theme--light.v-size--default.primary')
+          .forEach(item => {
+            item.classList = '';
+            buttonStyleReplace.forEach(x => {
+              item.classList.toggle(x)
+            })
+          });
+    });
+  },
+
+  mounted() {
     this.test = true
     window.addEventListener('resize', this.handleResize);
     this.handleResize();
@@ -155,7 +160,7 @@ export default {
       'column'
     ],
     weekday: [1, 2, 3, 4, 5, 6, 0],
-    value: new Date().toISOString().substr(0, 7) + '-01',
+    value: moment().locale('ru').format('YYYY-MM-DD'),
     selectedEvent: {},
     selectedElement: null,
     selectedOpen: false,
@@ -202,6 +207,7 @@ export default {
 
     async confirmOnChangeMonthAndYear(newValue) {
       const currentMonthAndYear = this.getMonthAndYear(newValue);
+      console.log(currentMonthAndYear)
       if (currentMonthAndYear !== this.prevMonthAndYear) {
         const groupId = this.groupId
         await this.getAllEvents(groupId);
@@ -221,7 +227,6 @@ export default {
             const id = this.$store.state.user.userId;
             const students = response.data.students;
             const foundStudent = students.find(student => student.id === id);
-            console.log('foundStudent', foundStudent)
             if (foundStudent) {
               console.log('Этого студента не найдено в списке свободных');
             } else {

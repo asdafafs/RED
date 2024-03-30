@@ -56,7 +56,7 @@ export default {
   },
   computed: {
     needAdminPanel() {
-      return !this.student
+      return this.$store.state.user.isAdmin
     },
     appButtons() {
       return [
@@ -76,7 +76,7 @@ export default {
           id: 2,
           title:'Личный кабинет',
           router: 'plan-main-day',
-          visible: true,
+          visible: this.student,
         },
       ].filter(x => x.visible)
     },

@@ -21,12 +21,6 @@
             :height="100"
             :width="168"
           />
-          <v-alert 
-            v-if="message" 
-            type="success"
-          >
-            {{ message }}
-          </v-alert>
           <v-card-actions class="authorization-card__actions">
             <v-btn
               color="#4E7AEC"

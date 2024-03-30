@@ -110,7 +110,7 @@ export default {
   name: "ExampleDay.vue",
   components: {LectureLogo, CarLogo},
   data: () => ({
-    value: new Date().toISOString().substr(0, 7) + '-01',
+    value: moment().locale('ru').format('YYYY-MM-DD'),
     all_events: [],
     today_events: [],
     test: false,
@@ -137,14 +137,17 @@ export default {
     }
   },
 
-  mounted() {
+  updated() {
     this.classesSelectorsToRemove.forEach(item => {
       this.$refs.cal.$el.querySelectorAll(item).forEach(item => {
         item.remove();
       })
     })
-    this.test = true
     this.$refs.cal.checkChange()
+  },
+
+  mounted() {
+    this.test = true
     this.prevMonthAndYear = this.getMonthAndYear(this.value);
   },
 
@@ -175,6 +178,7 @@ export default {
   methods: {
     async confirmOnChangeMonthAndYear(newValue) {
       const currentMonthAndYear = this.getMonthAndYear(newValue);
+      console.log(currentMonthAndYear)
       if (currentMonthAndYear !== this.prevMonthAndYear) {
         const groupId = this.groupId
         await this.getAllEvents(groupId);
@@ -306,7 +310,6 @@ export default {
 
     updateDateRange() {
       this.dateDay = this.currentDate.clone().locale('ru').format('Do MMMM');
-      console.log(this.all_events)
     },
 
   },

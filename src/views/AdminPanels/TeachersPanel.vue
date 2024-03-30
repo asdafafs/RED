@@ -41,23 +41,28 @@
     >
       <template v-slot:top>
         <v-toolbar flat>
-          <v-dialog v-model="dialog" max-width="500px">
-            <v-card class="rounded-xl">
-              <v-card-title>
-                <span class="text-h5">{{ formTitle }}</span>
+          <v-dialog v-model="dialog" width="auto">
+            <v-card class="card-edit-student">
+              <v-card-title class="pa-3 pb-0 ">
+                <span class="card-edit-student__type_edit">{{ formTitle }}</span>
+                <span class="card-edit-student__title">Общая информация</span>
               </v-card-title>
-              <v-card-text class="">
-                <v-container class="pa-0">
+              <v-card-text class="pa-3 pt-0">
+                <v-container class="">
                   <v-row class="pa-0">
-                    <v-col cols="12" sm="12" md="12" class="pb-0">
+                    <v-col class="flex-column pa-0 flex-wrap">
                       <v-text-field v-model="editedTeacher.name" label="Имя" :rules="[nameRule.required]" outlined
-                                    class="rounded-xl"></v-text-field>
+                                    height="32px" dense hide-details
+                                    class="v-text-field-custom-admin"></v-text-field>
                       <v-text-field v-model="editedTeacher.surname" label="Фамилия" :rules="[surnameRule.required]"
-                                    outlined class="rounded-xl"></v-text-field>
-                      <v-text-field v-model="editedTeacher.middleName" label="Отчество"
-                                    :rules="[middleNameRule.required]" outlined class="rounded-xl"></v-text-field>
+                                    height="32px" dense hide-details
+                                    outlined class="v-text-field-custom-admin"></v-text-field>
+                      <v-text-field v-model="editedTeacher.middleName" label="Отчество" height="32px" dense hide-details
+                                    :rules="[middleNameRule.required]" outlined
+                                    class="v-text-field-custom-admin"></v-text-field>
                       <v-text-field v-model="editedTeacher.email" label="email" :rules="[emailRule.required]"
-                                    class="rounded-xl" outlined></v-text-field>
+                                    height="32px" dense hide-details
+                                    class="v-text-field-custom-admin" outlined></v-text-field>
                       <vue-text-mask class="phone-field" v-model="editedTeacher.phoneNumber" :mask="mask"
                                      placeholderChar="#" :rules="[phoneRule.required]"></vue-text-mask>
                     </v-col>
@@ -65,12 +70,12 @@
                 </v-container>
               </v-card-text>
               <v-card-actions>
-                <v-container style="display: flex; justify-content: space-between;" class="py-0">
-                  <v-btn color="blue darken-1" text @click="close">
-                    Отмена
+                <v-container class="pa-0" style="display: flex; justify-content: space-between; margin-bottom: auto">
+                  <v-btn text @click="close" style="text-transform: none !important;">
+                    <span style="color: black">Отмена</span>
                   </v-btn>
-                  <v-btn color="blue darken-1" text @click="save" :disabled="isSaveButtonDisabled">
-                    OK
+                  <v-btn class="close-button" @click="save" :disabled="isSaveButtonDisabled">
+                    <span style="color: white">Изменить</span>
                   </v-btn>
                 </v-container>
               </v-card-actions>
@@ -101,7 +106,6 @@
             >
               <span class="white--text">Определить план</span>
             </v-btn>
-
           </td>
           <td class="text-xs-right grid-actions">
             <v-icon class="mr-2 blue--text" @click="editItem(item)">mdi-pencil</v-icon>
@@ -149,7 +153,7 @@ export default {
 
   computed: {
     formTitle() {
-      return this.editedIndex === -1 ? 'Новый инструктор' : 'Редактировать инструктора';
+      return this.editedIndex === -1 ? 'НОВЫЙ ИНСТРУКТОР' : 'РЕДАКТИРОВАТЬ ИНСТРУКТОРА';
     },
 
     isSaveButtonDisabled() {
@@ -335,11 +339,6 @@ export default {
   }
 }
 
-.v-text-field {
-  padding: 0 !important;
-  margin: 0 !important;
-}
-
 .v-text-field--outlined .v-label {
   top: 7px !important;
 }
@@ -360,13 +359,11 @@ export default {
   }
 }
 
-.v-btn {
-  letter-spacing: unset !important;
-}
-
 .big-title {
   font-weight: 700 !important;
   font-size: 40px !important;
   line-height: 46px !important;
 }
+
+
 </style>
