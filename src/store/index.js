@@ -45,7 +45,7 @@ export default new Vuex.Store({
                 surname: '',
                 middleName: '',
                 discriminator: '',
-                groupNumber: 0,
+                groupId: 0,
                 vkUserId: 0,
                 isAdmin: false,
             }

@@ -73,7 +73,7 @@
               </div>
             </template>
           </v-calendar>
-          <v-dialog v-model="selectedOpen" max-width="407px" persistent >
+          <v-dialog v-model="selectedOpen" max-width="407px" persistent>
             <v-card class="" style="border-radius: 12px"
                     :style="{ border: (selectedEvent.studentId === null && userID !== selectedEvent.studentId) ? '1px solid #4E7AEC' : '1px solid grey' }"
                     flat>
@@ -81,7 +81,7 @@
                 <v-row>
                   <v-col class="flex-column">
                     <div class="text-caption text-medium-emphasis grey--text">СВЕДЕНИЯ О ЗАПИСИ</div>
-                    <div class="edit-buttons-div" v-if="!openEditMode && !openDeleteMode">
+                    <div class="edit-buttons-div" v-if="!openEditMode && !openDeleteMode && discriminatorUser ">
                       <v-btn class="edit-buttons-div__edit-button" @click="openEditMode = true; openDeleteMode = false">
                         <span class="edit-buttons-div__edit-button__text">Изменить</span>
                       </v-btn>
@@ -99,7 +99,7 @@
                   <v-row class="">
                     <v-col class="flex-column pa-0 flex-wrap">
                       <div style="color: #4E7AEC">
-                        {{ selectedEvent && selectedEvent.startTime ? selectedEvent.startTime.split('T')[0] : '' }}
+                        {{ selectedEvent && selectedEvent.startTime ? formatDate(selectedEvent.startTime) :'' }}
                       </div>
                       <div class="text-lg-h5 font-weight-bold black--text">{{ formatTime(selectedEvent.startTime) }}
                         {{ ' - ' }} {{ formatTime(selectedEvent.endTime) }}
@@ -232,6 +232,7 @@ export default {
     lastSelectedJoinType: 0,
     selectedStudent: 0,
     selectedReason: 1,
+    selectedActiveUser: 0,
     reasonsRefusal: ['Ремонт', 'Семейные обстоятельства', 'Экзамен ', 'Здоровье', 'Задачи офиса'],
     listTeachers: [],
     listStudents: [],
@@ -249,7 +250,12 @@ export default {
   },
   created() {
     if (this.userID) {
+
       this.getAllEvents()
+
+      if (this.discriminatorUser){
+        this.selectedActiveUser = this.userID
+      }
     }
     this.getAllTeachers()
     this.getAllStudents()
@@ -320,20 +326,21 @@ export default {
 
       if (this.newEvent) {
         const body = {
-          id: this.selectedEvent.id,
           "startTime": startTime,
           "endTime": endTime,
-          "studentId": this.selectedStudent
+          "studentId": this.selectedStudent,
+          "activeUserId": this.selectedActiveUser
         }
         await this.postNewEvent(body).catch(x => console.log(x)).finally(async () => {
           await this.getAllEvents()
         })
       } else {
         const body = {
-          id: this.selectedEvent.id,
+          'id': this.selectedEvent.id,
           "startTime": startTime,
           "endTime": endTime,
-          "studentId": this.selectedStudent
+          "studentId": this.selectedStudent,
+          // "activeUserId": this.selectedActiveUser
         }
         await this.confirmChanges(body).catch(x => console.log(x)).finally(async () => {
           await this.getAllEvents()
@@ -355,6 +362,8 @@ export default {
             end: moment(item.end).format("YYYY-MM-DD HH:mm"),
           }
         })
+
+        this.selectedActiveUser = selectedId
       }
     },
 
@@ -509,8 +518,7 @@ export default {
           }));
         })
         return lessonsData
-      }
-      else {
+      } else {
         return []
       }
     },
@@ -548,6 +556,10 @@ export default {
 
     async testPractices() {
       this.events = await this.getPractices(this.userID);
+    },
+
+    formatDate(startTime) {
+      return moment(startTime).format("DD-MM-YY");
     },
 
     formatTime(startTime) {

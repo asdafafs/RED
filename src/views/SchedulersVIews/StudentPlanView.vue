@@ -41,9 +41,21 @@ export default {
     groupTitle: ''
   }),
   watch: {
-    // groupId(){
-    //   this.getGroupNumber()
-    // }
+  },
+
+  computed: {
+    ...mapState(['user']),
+    userName() {
+      return `${this.user.name} ${this.user.middleName} ${this.user.surname}`
+    },
+
+    userId() {
+      return this.user.userId
+    },
+
+    groupId() {
+      return this.$store.state.user.groupId
+    },
   },
 
   methods: {
@@ -60,40 +72,29 @@ export default {
 
     async getGroupNumber() {
       const group = new GroupsRequest();
-      this.groupTitle = await group.getGroup(this.groupId)
-          .then(group => {
-            return group.data[0].groupNumber;
-          })
-          .catch(error => {
-            console.log("Error fetching group:", error);
-            return null;
-          });
-      if (this.groupTitle){
-       return this.groupTitle = `Вы зачислены в группу №${this.groupTitle}`
+
+      if(this.groupId !== 0 && this.groupId !== null)
+      {
+        console.log('this.groupId',this.groupId)
+        this.groupTitle = await group.getGroup(this.groupId)
+            .then(group => {
+              return group.data[0].groupNumber;
+            })
+            .catch(error => {
+              console.log("Error fetching group:", error);
+              return null;
+            });
+        return this.groupTitle = `Вы зачислены в группу №${this.groupTitle}`
       }
-      else this.groupTitle = 'Вы пока не зачислены в группу'
-      return this.groupTitle;
+      else return this.groupTitle = 'Вы пока не зачислены в группу'
     },
 
     async initialize() {
       await this.getGroupNumber()
+      this.openProgressBar()
     },
   },
-  computed: {
-    ...mapState(['user']),
-    userName() {
-      return `${this.user.name} ${this.user.middleName} ${this.user.surname}`
-    },
 
-    userId() {
-      return this.user.userId
-    },
-
-    groupId() {
-      return this.user.groupId
-    },
-
-  },
   created() {
     this.checkWindowWidth();
     window.addEventListener('resize', this.checkWindowWidth);

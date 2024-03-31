@@ -88,8 +88,8 @@
           >
             <template v-slot:event="{event}">
               <v-container class="pa-1 mx-0 d-flex ">
-                <v-row class="ma-0">
-                  <v-col cols="4" class="black--text pa-0 align-self-center">
+                <v-row class = "ma-0"  style="height: inherit; width: inherit">
+                  <v-col class="black--text pa-0 align-self-center">
                     <div class="text-subtitle-2 d-flex justify-center">{{ formatTime(event.startTime) }}</div>
                   </v-col>
                   <v-col class="black--text pa-0 align-self-center">
@@ -117,7 +117,7 @@
                   <v-row class="">
                     <v-col class="flex-column pa-0 flex-wrap">
                       <div style="color: #4E7AEC">
-                        {{ selectedEvent && selectedEvent.startTime ? selectedEvent.startTime.split('T')[0] : '' }}
+                        {{ selectedEvent && selectedEvent.startTime ? formatDate(selectedEvent.startTime) : '' }}
                       </div>
                       <div class="text-lg-h5 font-weight-bold black--text">{{ formatTime(selectedEvent.startTime) }}
                         {{ ' - ' }} {{ formatTime(selectedEvent.endTime) }}
@@ -147,7 +147,8 @@
                   <div>
                     <v-btn text color="primary"
                            v-if="selectedEvent.studentId === null && discriminatorUser && userID !== selectedEvent.studentId"
-                           @click="addEventStudent">
+                           @click="addEventStudent"
+                           :disabled="studentHours[1] <= 0">
                       Записаться
                     </v-btn>
                     <v-btn text color="secondary"
@@ -465,14 +466,11 @@ export default {
     async getEventsSelectedTeacher(teacherId) {
       if (this.type === 'week') {
         const practice = new EventsRequest()
-        console.log(this.currentDate)
         const monday = this.currentDate.clone().startOf('isoWeek').format('YYYY-MM-DD')
         const sunday = this.currentDate.clone().endOf('isoWeek').format('YYYY-MM-DD')
-        console.log(monday, sunday)
         const interval = `Date=${monday}&Date2=${sunday}`
         return practice.getPracticeId(teacherId, interval);
       }
-      console.log('huy')
       const practice = new EventsRequest()
       const monthTime = `Date=${this.value}`
       return practice.getPracticeId(teacherId, monthTime);
@@ -488,7 +486,6 @@ export default {
     },
 
     showEvent({nativeEvent, event}) {
-      console.log(event)
       const open = () => {
         this.selectedEvent = event
         this.selectedElement = nativeEvent.target
@@ -503,6 +500,10 @@ export default {
       }
 
       nativeEvent.stopPropagation()
+    },
+
+    formatDate(startTime) {
+      return moment(startTime).format("DD-MM-YY");
     },
 
     formatTime(startTime) {
