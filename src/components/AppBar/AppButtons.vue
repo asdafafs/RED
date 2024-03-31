@@ -47,6 +47,14 @@ export default {
       showAdminPanelText: true
     }
   },
+  watch: {
+    currentRoute: {
+      handler(newVal) {
+        if (newVal === 'schedule-lessons') this.selectedButton = 0
+      },
+      immediate: true
+    }
+  },
   created() {
     this.checkWindowWidth();
     window.addEventListener('resize', this.checkWindowWidth);
@@ -55,6 +63,9 @@ export default {
     window.removeEventListener('resize', this.checkWindowWidth);
   },
   computed: {
+    currentRoute() {
+      return this.$route.name
+    },
     currentRouteIsAdmin() {
       return this.$route.path.indexOf('admin') === 1
     },
