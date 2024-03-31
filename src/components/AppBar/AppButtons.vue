@@ -3,7 +3,7 @@
     <div style="flex: 1; height: 100%;" v-if="needAdminPanel && showAdminPanelText"/>
     <v-btn-toggle
         v-model="selectedButton"
-        mandatory
+        :mandatory="getToggleValue"
         group
     >
       <v-btn
@@ -25,7 +25,7 @@
     >
       <v-btn
         :class="currentRouteIsAdmin ? 'admin-panel-selected_button': 'admin-panel_button'"
-        @click="goRoute('admin-students')"
+        @click="onBtnClick"
       >
         <v-icon color="white" class="mr-2">mdi-vector-arrange-above</v-icon>
         <span class="admin-panel_text">
@@ -63,6 +63,10 @@ export default {
     window.removeEventListener('resize', this.checkWindowWidth);
   },
   computed: {
+    getToggleValue() {
+      if (this.needAdminPanel) return false
+      return true
+    },
     currentRoute() {
       return this.$route.name
     },
@@ -96,6 +100,10 @@ export default {
     },
   },
   methods: {
+    onBtnClick() {
+      this.selectedButton = null; 
+      this.goRoute('admin-students')
+    },
     checkWindowWidth() {
       this.showAdminPanelText = window.innerWidth >= 1200;
     },
