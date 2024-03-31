@@ -73,7 +73,7 @@
               </div>
             </template>
           </v-calendar>
-          <v-dialog v-model="selectedOpen" max-width="407px" persistent>
+          <v-dialog v-model="selectedOpen" max-width="407px" persistent >
             <v-card class="" style="border-radius: 12px"
                     :style="{ border: (selectedEvent.studentId === null && userID !== selectedEvent.studentId) ? '1px solid #4E7AEC' : '1px solid grey' }"
                     flat>
