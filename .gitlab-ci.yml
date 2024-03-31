@@ -78,6 +78,6 @@ deploy-prod-app:
     - apk add curl --no-cache
   script:
     - curl --location --request POST \
-      "https://gitlab.nochicorp.com/api/v4/projects/$DEVOPS_REPOSITORY/trigger/pipeline?token=$TOKEN&ref=$DEVOPS_BRANCH"
+      "https://gitlab.nochicorp.com/api/v4/projects/${DEVOPS_REPOSITORY}/trigger/pipeline?token=${TOKEN}&ref=${DEVOPS_BRANCH}"
   needs:
     - build-prod-app
