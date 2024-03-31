@@ -435,7 +435,9 @@ export default {
     },
 
     showEvent({nativeEvent, event}) {
-      console.log(event)
+      this.selectedStudent = event.studentId
+      this.newDateEvent = moment(event.startTime).format('YYYY-MM-DD')
+
       const open = () => {
         this.selectedEvent = event
         this.selectedElement = nativeEvent.target
@@ -480,17 +482,64 @@ export default {
       return cal
     },
 
-    async getAllEvents() {
-      const lessons = await this.getLessons(this.userID);
-      const practices = await this.getPractices(this.userID);
-      this.events = [...lessons, ...practices];
-      this.events = this.events.map(item => {
-        return {
-          ...item,
-          start: moment(item.start).format("YYYY-MM-DD HH:mm"),
-          end: moment(item.end).format("YYYY-MM-DD HH:mm"),
-        }
+    async getPracticeStudent() {
+      const practices = new EventsRequest()
+      let cal
+      const monthTime = `Date=${this.value}`
+      await practices.getPracticeAssigned(monthTime).catch(x => console.log(x)).then(x => {
+        cal = x.data.practice.map(event => ({
+          ...event,
+          start: new Date(event.startTime),
+          end: new Date(event.endTime)
+        }));
       })
+      return cal
+    },
+
+    async getLessonsStudent() {
+      if (this.$store.state.user.groupId) {
+        const lessons = new EventsRequest()
+        let lessonsData = []
+        const monthTime = `Date=${this.value}`
+        await lessons.getLectureActiveUser(monthTime).catch(x => console.log(x)).then(x => {
+          lessonsData = x.data.lecture.map(event => ({
+            ...event,
+            start: new Date(event.startTime),
+            end: new Date(event.endTime)
+          }));
+        })
+        return lessonsData
+      }
+      else {
+        return []
+      }
+    },
+
+    async getAllEvents() {
+      if (this.discriminatorUser) {
+        const lessons = await this.getLessons(this.userID);
+        const practices = await this.getPractices(this.userID);
+        this.events = [...lessons, ...practices];
+        this.events = this.events.map(item => {
+          return {
+            ...item,
+            start: moment(item.start).format("YYYY-MM-DD HH:mm"),
+            end: moment(item.end).format("YYYY-MM-DD HH:mm"),
+          }
+        })
+      } else {
+        const lessons = await this.getLessonsStudent();
+        const practices = await this.getPracticeStudent();
+        this.events = [...lessons, ...practices];
+        this.events = this.events.map(item => {
+          return {
+            ...item,
+            start: moment(item.start).format("YYYY-MM-DD HH:mm"),
+            end: moment(item.end).format("YYYY-MM-DD HH:mm"),
+          }
+        })
+      }
+
     },
 
     async testLessons() {
@@ -509,13 +558,10 @@ export default {
     },
 
     getEventColor(event) {
-      if (event.lectureType === 3) {
+      if (event.studentId === null)
         return '#9DB9FF';
-      } else if (event.lectureType === 2) {
+      else
         return '#E9E9E8';
-      } else {
-        return '#E9E9E8'
-      }
     },
 
     handleResize() {
