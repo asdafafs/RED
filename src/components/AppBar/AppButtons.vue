@@ -21,10 +21,10 @@
     </v-btn-toggle>
     <div 
       v-if="needAdminPanel"
-      class="admin-panel_section"
+      :class="currentRouteIsAdmin ? 'admin-panel-selected_section': 'admin-panel_section'"
     >
       <v-btn
-        class="admin-panel_button"
+        :class="currentRouteIsAdmin ? 'admin-panel-selected_button': 'admin-panel_button'"
         @click="goRoute('admin-students')"
       >
         <v-icon color="white" class="mr-2">mdi-vector-arrange-above</v-icon>
@@ -55,6 +55,9 @@ export default {
     window.removeEventListener('resize', this.checkWindowWidth);
   },
   computed: {
+    currentRouteIsAdmin() {
+      return this.$route.path.indexOf('admin') === 1
+    },
     needAdminPanel() {
       return this.$store.state.user.isAdmin
     },
@@ -116,12 +119,24 @@ export default {
     flex: 1
   }
   &_button {
-    background-color: #4E7AEC !important;
+    background-color: unset !important;
+    box-shadow: none !important;
   }
   &_text {
     color: white !important;
     text-transform: none !important;
     font-size: 16px !important;
+  }
+}
+.admin-panel-selected {
+  &_section {
+    display: flex;
+    align-items: center;
+    justify-content: end;
+    flex: 1
+  }
+  &_button {
+    background-color: #4E7AEC !important;
   }
 }
 </style>
