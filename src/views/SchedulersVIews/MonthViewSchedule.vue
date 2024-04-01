@@ -377,15 +377,15 @@ export default {
       if (this.newSelectedReason === 1) {
         const body = {
           "id": this.selectedEvent.id,
-          "stateEnum": this.newSelectedReason
-        }
-        await this.closePractice(body)
-      } else {
-        const body = {
-          "id": this.selectedEvent.id,
           "deleteReasonEnum": this.selectedReasonId
         }
         await this.cancelPractice(body)
+      } else {
+        const body = {
+          "id": this.selectedEvent.id,
+          "stateEnum": this.newSelectedReason
+        }
+        await this.closePractice(body)
       }
 
     },
