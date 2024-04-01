@@ -82,9 +82,6 @@
               :hide-header=false
               @change="updateRange"
               event-more-text="+ {0}"
-              :first-interval=6
-              :interval-minutes=60
-              :interval-count=18
           >
             <template v-slot:event="{event}">
               <v-container class="pa-1 mx-0 d-flex ">
@@ -259,7 +256,7 @@ export default {
     },
 
     month() {
-      return this.$refs.calendar.title.split(' ')[0]
+      return this.$refs.calendar.title
     },
   },
   beforeDestroy() {
@@ -291,8 +288,6 @@ export default {
       if (this.type !== 'week') {
         const currentMonthAndYear = this.getMonthAndYear(newValue);
         if (currentMonthAndYear !== this.prevMonthAndYear) {
-
-          console.log(this.lastSelectedJoinType)
           this.onToggleClick(this.lastSelectedJoinType);
           this.prevMonthAndYear = currentMonthAndYear;
         }
@@ -459,7 +454,6 @@ export default {
         });
 
       this.events = cal
-      console.log(this.events)
       this.close();
     },
 

@@ -63,14 +63,17 @@
               event-more-text="+ {0}"
           >
             <template v-slot:event="{event}">
-              <div class="d-flex flex-row" style="width: 100%">
-                <div class="d-flex align-center justify-center event-time" style="width: 30%">
-                  {{ formatTime(event.startTime) }}
-                </div>
-                <div class="d-flex align-center justify-center event-type" style="width: 70%">
-                  {{ event.title }}
-                </div>
-              </div>
+              <v-container class="pa-1 mx-0 d-flex ">
+                <v-row class = "ma-0"  style="height: inherit; width: inherit">
+                  <v-col class="black--text pa-0 align-self-center" style="height: inherit;">
+                    <div class="text-subtitle-2 d-flex justify-center">{{ formatTime(event.startTime) }}</div>
+                  </v-col>
+                  <v-col class="black--text pa-0 align-self-center"  v-if="$vuetify.breakpoint.lgAndUp">
+                    <div class="font-weight-bold text-format" style="width: inherit">{{ event.title }}
+                    </div>
+                  </v-col>
+                </v-row>
+              </v-container>
             </template>
           </v-calendar>
           <v-dialog v-model="selectedOpen" max-width="407px" persistent>
@@ -279,7 +282,7 @@ export default {
       ]
     },
     month() {
-      return this.$refs.calendar.title.split(' ')[0]
+      return this.$refs.calendar.title
     },
     userID() {
       return this.user.userId
