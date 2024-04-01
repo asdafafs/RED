@@ -42,9 +42,6 @@
               @click:event="showEvent"
               :event-ripple="false"
               :hide-header=false
-              :first-interval=6
-              :interval-minutes=60
-              :interval-count=18
           >
             <template v-slot:event="{event}">
               <v-container class="pa-0 mx-0 d-flex fill-height" fluid :class="getTableRowClass(event)"

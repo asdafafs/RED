@@ -77,6 +77,17 @@
                                 hide-details
                                 dense
                       ></v-select>
+                      <div class="card-edit-student__title" style="">Часы</div>
+                      <v-select outlined class="v-text-field-custom-admin " style="border-radius: 12px"
+                                v-model="editedStudent.extraHours"
+                                :items="availableHoursOptions"
+                                label="Количество дополнительных часов"
+                                no-data-text="Нет данных для отображения"
+                                height="32px"
+                                hide-details
+                                dense
+                                @change="testClick(editedStudent.extraHours)"
+                      ></v-select>
                     </v-col>
                   </v-row>
                 </v-container>
@@ -159,8 +170,9 @@ export default {
       generalHoursSpent: 0,
       additinalHours: 0,
       additinalHoursSpent: 0,
+      extraHours : 0,
     },
-
+    availableHoursOptions: [0, 1, 2, 3, 4, 5, 20],
     nameRule: {required: value => !!value},
     surnameRule: {required: value => !!value},
     middleNameRule: {required: value => !!value},
@@ -197,6 +209,10 @@ export default {
   },
 
   methods: {
+    testClick(hours){
+      console.log(hours)
+    },
+
     async getGroups() {
       const groups = new GroupsRequest();
       let groupsData
@@ -382,7 +398,7 @@ export default {
 
 .card-edit-student {
   width: 392px !important;
-  height: 464px !important;
+  height: 554px !important;
   border-radius: 12px !important;
   flex-direction: column !important;
   align-items: flex-start !important;

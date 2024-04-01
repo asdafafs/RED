@@ -23,10 +23,7 @@
               event-color="white"
               mode="stack"
               class="day-calendar"
-              @click:event="showEvent"
-              :first-interval=6
-              :interval-minutes=60
-              :interval-count=18>
+              @click:event="showEvent">
             <template v-slot:event="{event}">
               <div class="day-event " :class="getTableRowClass(event)">
                 <div class="day  ">

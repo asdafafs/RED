@@ -1,9 +1,9 @@
 <template>
   <v-container class="px-0 pa-0 ma-0 " fluid>
-    <v-row class="flex-wrap py-2" no-gutters>
+    <v-row class="flex-wrap py-2" no-gutters style="border-radius: 12px !important; border:1px solid #AAA7A6;">
       <v-col v-for="(item, index) in items" :key="index">
         <div class="d-flex flex-column justify-center">
-          <div class="text-center" style="font-weight: 700 !important; font-size: 24px !important;">{{ item.title }}</div>
+          <div class="text-center custom-text-circular">{{item.title}}</div>
           <div class="d-flex justify-center">
             <v-progress-circular
                 :rotate="360"
@@ -13,11 +13,12 @@
                 color="#8CED7C"
                 class="ma-2 pa-2"
             >
-              <div class="text-center">
-                <div class="text-center text-h3 black--text">
-                  <span class="text-lg-h2" style="color: #4E7AEC">{{ item.hoursSpent }}</span> из {{ item.totalHours }}
+              <div>
+                <div class="custom-text-circular-title">
+                  <span >{{item.hoursSpent}}</span>{{ " " }}
+                  <span class="custom-text-circular">из {{item.totalHours}}</span>
                 </div>
-                <div class="black--text">часов</div>
+                <div class="custom-text-circular">часов</div>
               </div>
             </v-progress-circular>
           </div>
@@ -91,7 +92,7 @@ export default {
             hoursSpent: studentInfo.additinalHoursSpent,
             totalHours: studentInfo.additinalHours,
           }
-          ]
+        ]
       }
     }
     ,
@@ -106,3 +107,18 @@ export default {
   }
 }
 </script>
+<style>
+.custom-text-circular {
+  color: #000000;
+  font-weight: 700 !important;
+  font-size: 24px !important;
+  line-height: 28px !important;
+}
+
+.custom-text-circular-title {
+  color: #4E7AEC;
+  font-weight: 700 !important;
+  font-size: 40px !important;
+  line-height: 28px !important;
+}
+</style>
