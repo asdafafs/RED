@@ -77,7 +77,7 @@
                                 hide-details
                                 dense
                       ></v-select>
-                      <div class="card-edit-student__title" style="">Часы</div>
+                      <div class="card-edit-student__title" style="margin-top: 12px !important;">Часы</div>
                       <v-select outlined class="v-text-field-custom-admin " style="border-radius: 12px"
                                 v-model="editedStudent.extraHours"
                                 :items="availableHoursOptions"
