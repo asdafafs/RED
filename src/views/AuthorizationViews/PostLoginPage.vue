@@ -13,7 +13,7 @@ export default {
   },
   async created() {
     const code = this.$route.query.code
-    const redirectUri = `${process.env.REDIRECT_URI}/schedule/lessons`
+    const redirectUri = `${process.env.FRONT_PAGE_URL}/schedule/lessons`
     await this.identityService.postBindVk(code, process.env.REDIRECT_URI)
         .then(async () => {
           window.location.replace(redirectUri)

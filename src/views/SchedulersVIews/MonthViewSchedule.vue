@@ -1,6 +1,6 @@
 <template>
   <div style="width: 100%; height:100%; padding: 0 12px 12px 12px">
-    <div class="flex-row" style="margin-bottom: 12px !important;">
+    <div class="flex-row" style="margin-bottom: 12px !important; flex-wrap: wrap">
       <v-btn-toggle mandatory v-model="selectedLessonType" group color="black">
         <v-btn
             v-for="item in calendarButtons"
