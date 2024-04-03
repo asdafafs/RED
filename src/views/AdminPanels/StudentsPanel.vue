@@ -78,16 +78,42 @@
                                 dense
                       ></v-select>
                       <div class="card-edit-student__title" style="margin-top: 12px !important;">Часы</div>
-                      <v-select outlined class="v-text-field-custom-admin " style="border-radius: 12px"
-                                v-model="editedStudent.extraHours"
-                                :items="availableHoursOptions"
-                                label="Количество дополнительных часов"
-                                no-data-text="Нет данных для отображения"
-                                height="32px"
-                                hide-details
-                                dense
-                                @change="testClick(editedStudent.extraHours)"
-                      ></v-select>
+                      <!--                      <v-select outlined class="v-text-field-custom-admin " style="border-radius: 12px"-->
+                      <!--                                v-model="editedStudent.generalHours"-->
+                      <!--                                :items="availableHoursOptions"-->
+                      <!--                                label="Количество основных часов"-->
+                      <!--                                no-data-text="Нет данных для отображения"-->
+                      <!--                                height="32px"-->
+                      <!--                                hide-details-->
+                      <!--                                dense-->
+                      <!--                                @change="testClick(editedStudent.generalHours)"-->
+                      <!--                      ></v-select>-->
+                      <!--                      <v-select outlined class="v-text-field-custom-admin " style="border-radius: 12px"-->
+                      <!--                                v-model="editedStudent.additinalHours"-->
+                      <!--                                :items="availableHoursOptions"-->
+                      <!--                                label="Количество дополнительных часов"-->
+                      <!--                                no-data-text="Нет данных для отображения"-->
+                      <!--                                height="32px"-->
+                      <!--                                hide-details-->
+                      <!--                                dense-->
+                      <!--                                @change="testClick(editedStudent.additinalHours)"-->
+                      <!--                      ></v-select>-->
+                      <v-text-field outlined class="v-text-field-custom-admin " style="border-radius: 12px"
+                                    v-model="editedStudent.generalHours"
+                                    label="Количество основных часов"
+                                    height="32px"
+                                    hide-details
+                                    dense
+                                    @change="testClick(editedStudent.generalHours)"
+                      ></v-text-field>
+                      <v-text-field outlined class="v-text-field-custom-admin " style="border-radius: 12px"
+                                    v-model="editedStudent.additinalHours"
+                                    label="Количество дополнительных часов"
+                                    height="32px"
+                                    hide-details
+                                    dense
+                                    @change="testClick(editedStudent.additinalHours)"
+                      ></v-text-field>
                     </v-col>
                   </v-row>
                 </v-container>
@@ -170,7 +196,6 @@ export default {
       generalHoursSpent: 0,
       additinalHours: 0,
       additinalHoursSpent: 0,
-      extraHours : 0,
     },
     availableHoursOptions: [0, 1, 2, 3, 4, 5, 20],
     nameRule: {required: value => !!value},
@@ -209,7 +234,7 @@ export default {
   },
 
   methods: {
-    testClick(hours){
+    testClick(hours) {
       console.log(hours)
     },
 
@@ -270,6 +295,8 @@ export default {
         surname: item.surname,
         middleName: item.middleName,
         groupId: item.groupId,
+        generalHours: item.generalHours,
+        additinalHours: item.additinalHours
       };
       this.dialog = true;
     },
@@ -314,7 +341,9 @@ export default {
           middleName: '',
           groupId: '',
           email: '',
-          phoneNumber: '7'
+          phoneNumber: '7',
+          generalHours: 0,
+          additinalHours: 0,
         };
         this.editedIndex = -1;
       });
@@ -335,6 +364,8 @@ export default {
           "surname": this.editedStudent.surname,
           "middleName": this.editedStudent.middleName,
           "groupId": this.editedStudent.groupId,
+          "generalHours": this.editedStudent.generalHours,
+          "additinalHours": this.editedStudent.additinalHours,
         }
         await this.postUser(body).finally(() => {
           this.persons = this.getStudents();
@@ -398,7 +429,7 @@ export default {
 
 .card-edit-student {
   width: 392px !important;
-  height: 554px !important;
+  height: 614px !important;
   border-radius: 12px !important;
   flex-direction: column !important;
   align-items: flex-start !important;
