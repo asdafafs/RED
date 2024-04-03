@@ -14,7 +14,6 @@
     </div>
   </div>  
 </template>
-
 <script>
 import {mapState} from "vuex";
 import loginIcon from "@/components/Icons/LoginIcon.vue";
@@ -27,7 +26,7 @@ export default {
   computed: {
     ...mapState(['user']),
     userName() {
-      return `${this.user.middleName} ${this.user.name[0]}. ${this.user.surname[0]}.`
+      return `${this.user.surname} ${this.user.name[0]}. ${this.user.middleName[0]}. `
     },
     userRole() {
       return this.user.discriminator

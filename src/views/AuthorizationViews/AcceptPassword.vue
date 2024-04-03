@@ -3,23 +3,25 @@
     <v-row align="center" justify="center" class=" ">
       <v-col cols="4" class=" pa-0" align="center">
         <v-dialog v-model="overlay" persistent width="auto" content-class="elevation-0">
-          <v-card class="d-flex flex-column white rounded-lg ma-2 width" style="height: 290px !important;">
+          <v-card class="d-flex flex-column white rounded-lg ma-2 width" style="height: 230px !important;">
             <v-card-title class="black--text"> Создание пароля</v-card-title>
             <v-card-subtitle class="black--text">
               Введите  пароль
             </v-card-subtitle>
             <v-card-text class="pb-0 ">
               <v-text-field
-                  solo
+                  solo dense outlined hide-details
                   v-model="password"
                   :rules="[rulesPassword.required, rulesPassword.min]"
                   name="input-10-1"
                   label="Пароль"
                   hint="Минимум 8 символов"
                   counter
+                  autocomplete="new-password"
+                  style="border-radius: 12px !important; max-height: 32px !important; margin-top: 12px !important;"
               ></v-text-field>
               <v-text-field
-                  solo
+                  solo dense outlined hide-details
                   v-model="passwordRepeat"
                   :append-icon="show ? 'mdi-eye ' : 'mdi-eye-off '"
                   :rules="[rulesPassword.required, rulesPassword.min, checkPasswordMatch]"
@@ -28,10 +30,12 @@
                   label="Повторите пароль"
                   hint="Минимум 8 символов"
                   counter
+                  autocomplete="new-password"
                   @click:append="show = !show"
+                  style="border-radius: 12px !important; max-height: 32px !important; margin-top: 12px !important;"
               ></v-text-field>
             </v-card-text>
-            <v-card-actions>
+            <v-card-actions style="margin-top: 12px !important;">
               <v-btn color="#4E7AEC" @click="validatePassword" class="rounded-lg pa-0 white--text" block :disabled="loginButtonDisabled || !passwordsMatch">
                 Добавить пароль
               </v-btn>

@@ -10,9 +10,11 @@
         </div>
       </v-col>
       <v-col class="text-right col-auto  mr-4">
-        <v-btn class="tab-button pa-0 rounded-lg app-bar-button-color" color="#4E7AEC" outlined @click="save"
-               :disabled="isSaveButtonDisabled" style="min-width: 196px;">
-          <span class="tab-button-text">Сохранить изменения</span>
+        <v-btn class="template-course-button" @click="save" color="#4E7AEC"
+               :disabled="isSaveButtonDisabled">
+          <section class="d-flex flex-row align-center" style="padding: 8px 12px 8px 12px !important;">
+            <span class="template-course-button-text white--text">Сохранить изменения</span>
+          </section>
         </v-btn>
       </v-col>
       <v-col class="text-right col-auto">
@@ -61,7 +63,8 @@
                       type="date" :rules="[startDateRules.required]"
                       class="text-field-group-template"
                       style="border-radius: 12px !important; max-height: 32px !important;"
-                      @input="updateGlobalStartDate" :min="getTodayDate()" @change="newGroupTitle" outlined hide-details></v-text-field>
+                      @input="updateGlobalStartDate" :min="getTodayDate()" @change="newGroupTitle" outlined
+                      hide-details></v-text-field>
       </v-col>
       <v-col cols="lg-1 md-2">
         <v-text-field dense
@@ -553,6 +556,20 @@ export default {
 
   .v-input__icon {
     height: 32px !important;
+  }
+}
+
+.template-course-button {
+  text-transform: none !important;
+  border-radius: 12px !important;
+  height: 32px !important;
+  min-width: 196px;
+
+  &-text {
+    font-size: 16px !important;
+    font-weight: 500 !important;
+    margin-left: 8px !important;
+    line-height: 18.75px !important;
   }
 }
 </style>
