@@ -52,7 +52,7 @@ export default {
         },
         {
           id: 1,
-          title: 'Расписание',
+          title: 'Мое расписание',
           routerName: 'schedule-lessons',
           visible: true,
         },
@@ -64,7 +64,7 @@ export default {
         },
         {
           id: 4,
-          title: 'Мой план',
+          title: 'Личный кабинет',
           routerName: 'plan',
           visible: this.student,
         },

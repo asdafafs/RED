@@ -105,11 +105,6 @@ export default {
       const {selectedUserID} = this.$route.params;
       return selectedUserID;
     },
-
-    savePlanDisabled() {
-      return !(this.startDateRules.required(this.practiceCourseStart) && this.endTimeRules.required(this.practiceCourseEnd))
-    },
-
   },
 
   methods: {
@@ -138,7 +133,7 @@ export default {
 
     async save() {
       if (this.startDateRules.required(this.practiceCourseStart) && this.endTimeRules.required(this.practiceCourseEnd)) {
-        const hasUnsavedTime = this.eventsTemplate.some(event => event.savedTime === undefined);
+        const hasUnsavedTime = this.eventsTemplate.some(event => event.savedTime === undefined || event.startTime !== event.savedTime);
         if (hasUnsavedTime) {
           const body = {
             "practiceCourseId": this.selectedTemplate,
@@ -148,20 +143,21 @@ export default {
             'duration': this.selectedDuration,
             "practices": this.eventsTemplate
           };
-          await this.postPracticeCourseTemplate(body);
-          await this.getPracticeCourseTemplate()
-          successAlert('Изменения сохранены успешно', 5000);
+          await this.postPracticeCourseTemplate(body).then(() => {
+            successAlert('Изменения сохранены успешно', 5000);
+          })
+          this.initialize()
+
+
         } else {
           warningAlert('Не обнаружено доступных изменений', 5000)
         }
       } else {
         if (!this.startDateRules.required(this.practiceCourseStart)) {
           this.$refs.startDateField.$el.classList.add('error--text');
-          console.log(this.$refs.startDateField.$el.classList)
         }
         if (!this.endTimeRules.required(this.practiceCourseEnd)) {
           this.$refs.endDateField.$el.classList.add('error--text');
-          console.log(this.$refs.endDateField.$el.classList)
         }
       }
     },
@@ -193,6 +189,7 @@ export default {
 
     async getPracticeCourseTemplate() {
       if (this.selectedTemplate === null) {
+        console.log('ничего не будет')
         return this.eventsTemplate = []
       }
       const practiceCourseTemplate = new PracticeCourseRequest()

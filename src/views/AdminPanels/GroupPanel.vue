@@ -196,22 +196,7 @@ export default {
   padding-right: 30px !important;
 }
 
-.add-instructor {
-  &-btn {
-    border-radius: 12px !important;
-    height: 32px !important;
-    width: 225px !important;
-    text-transform: none !important;
-  }
 
-  &-text {
-    font-size: 16px !important;
-    font-weight: 500 !important;
-    color: white !important;
-    margin-left: 8px !important;
-    line-height: 18.75px !important;
-  }
-}
 
 
 .v-text-field--outlined .v-label {

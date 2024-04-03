@@ -15,24 +15,27 @@
         </span>
         </v-btn>
       </v-btn-toggle>
+    </div>
+    <div class="flex-row">
+      <v-btn
+          v-if="discriminatorUser"
+          color="#4E7AEC"
+          class="add-instructor-btn"
+          @click="selectedOpen = true; openEditMode = true; openNewEvent()"
+          :disabled="this.selectedTeacher === null"
+      >
+        <section class="d-flex flex-row align-center" style="padding: 8px 12px 8px 12px !important;">
+          <v-icon color="white">mdi-plus-circle-outline</v-icon>
+          <span class="add-instructor-text">Добавить практику</span>
+        </section>
+      </v-btn>
       <v-select v-model="selectedTeacher" class="select-practice-template " outlined dense hide-details
-                style=" max-width: 367px !important;  border-radius: 12px !important; max-height: 32px !important;"
+                style=" max-width: 367px !important;  border-radius: 12px !important; max-height: 32px !important; margin-left: 8px !important;"
                 no-data-text="Нет данных для отображения" label="Выберите инструктора для редактирования"
                 :items="[...listTeachers, { id: null, name: 'Преподаватель не назначен' }]"
                 :item-text="item => item ? `${item.surname || ''} ${item.name || ''} ${item.middleName || ''}` : 'Преподаватель не назначен'"
                 item-value="id" @change="acceptEditableTeacher()" v-if="this.$store.state.user.isAdmin"></v-select>
     </div>
-    <v-btn
-        v-if="discriminatorUser"
-        color="#4E7AEC"
-        class="add-instructor-btn"
-        @click="selectedOpen = true; openEditMode = true; openNewEvent()"
-    >
-      <section class="d-flex flex-row align-center" style="padding: 8px 12px 8px 12px !important;">
-        <v-icon color="white">mdi-plus-circle-outline</v-icon>
-        <span class="add-instructor-text">Добавить практику</span>
-      </section>
-    </v-btn>
     <div>
       <div>
         <v-sheet tile height="54" class="d-flex justify-center"
@@ -243,9 +246,6 @@ export default {
     titleNewEvent: '',
   }),
   watch: {
-    // userID(value) {
-    // },
-
     value(newValue) {
       this.confirmOnChangeMonthAndYear(newValue);
     },
@@ -263,13 +263,8 @@ export default {
     },
   },
   created() {
-    // this.onToggleClick(0)
-    // this.getAllEvents()
-    // if (this.discriminatorUser) {
-    //   this.selectedActiveUser = this.userID
-    // }
-    // this.getAllTeachers()
-    // this.getAllStudents()
+    this.getAllTeachers()
+    this.getAllStudents()
   },
   computed: {
     ...mapState(['user']),
@@ -289,6 +284,7 @@ export default {
         },
       ]
     },
+
     month() {
       return this.$refs.calendar.title
     },
@@ -399,12 +395,12 @@ export default {
 
     async closePractice(body) {
       const event = new EventsRequest()
-      await event.closePractice(body).catch(x => console.log(x))
+      await event.closePractice(body).catch(x => console.log(x)).finally(this.onToggleClick(0))
     },
 
     async cancelPractice(body) {
       const event = new EventsRequest()
-      await event.cancelPractice(body).catch(x => console.log(x))
+      await event.cancelPractice(body).catch(x => console.log(x)).finally(this.onToggleClick(0))
     },
 
     cancelChanges() {
@@ -537,8 +533,8 @@ export default {
 
     async getAllEvents() {
       if (this.discriminatorUser) {
-        const lessons = await this.getLessons(this.userID);
-        const practices = await this.getPractices(this.userID);
+        const lessons = await this.getLessons(this.selectedActiveUser);
+        const practices = await this.getPractices(this.selectedActiveUser);
         this.events = [...lessons, ...practices];
         this.events = this.events.map(item => {
           return {
@@ -624,8 +620,6 @@ export default {
       return this.listStudents = studentList
     }
   },
-
-
 }
 </script>
 
