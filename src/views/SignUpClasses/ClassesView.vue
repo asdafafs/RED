@@ -1,6 +1,6 @@
 <template>
   <div style="width: 100%; height:100%; padding: 0 12px 12px 12px">
-    <div class="d-flex justify-space-between mb-1 flex-wrap" style="width: 100%">
+    <div class="d-flex justify-space-between flex-wrap" style="width: 100%">
       <v-btn-toggle
           mandatory
           v-model="selectedJoinType"
@@ -50,7 +50,7 @@
           hide-details
           outlined
           height="36px"
-          style="width: 350px;"
+          style="width: 350px;  margin-top: 12px !important;"
           dense
       />
     </div>
@@ -85,7 +85,7 @@
           >
             <template v-slot:event="{event}">
               <v-container class="pa-1 mx-0 d-flex ">
-                <v-row class = "ma-0"  style="height: inherit; width: inherit">
+                <v-row class="ma-0" style="height: inherit; width: inherit">
                   <v-col class="black--text pa-0 align-self-center">
                     <div class="text-subtitle-2 d-flex justify-center">{{ formatTime(event.startTime) }}</div>
                   </v-col>
@@ -444,7 +444,7 @@ export default {
             }));
           });
         }
-      } else
+      } else {
         await this.getEventsSelectedTeacher(this.userID).catch(x => console.log(x)).then(x => {
           cal = x.data.practice.map(event => ({
             ...event,
@@ -452,6 +452,8 @@ export default {
             end: new Date(event.endTime)
           }));
         });
+        cal = cal.filter(event => event.studentId === null || event.studentId === this.userID);
+      }
 
       this.events = cal
       this.close();

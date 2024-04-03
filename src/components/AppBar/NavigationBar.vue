@@ -1,25 +1,26 @@
 <template>
-  <v-navigation-drawer 
-    v-if="!showDrawer" 
-    :value="drawer" 
-    app 
-    clipped 
-    color="#1e1f22"
+  <v-navigation-drawer
+      v-if="!showDrawer"
+      :value="drawer"
+      app
+      clipped
+      color="#1e1f22"
+      :style="{ height: '94vh' }"
   >
-    <v-list 
-      height="inherit" 
-      class="d-flex flex-column"
+    <v-list
+        height="inherit"
+        class="d-flex flex-column"
     >
       <v-list-item
-        v-for="item in navigationItems"
-        :key="item.id"
-        class="white--text align-center list-item"
-        @click.stop="onClick(item)"
-        :class="{'align-end mt-auto': item.routerName === 'main'}"
-        v-if="item.id !== 5 || !student"
+          v-for="item in navigationItems"
+          :key="item.id"
+          class="white--text align-center list-item"
+          @click.stop="onClick(item)"
+          :class="{'align-end mt-auto': item.routerName === 'main'}"
+          v-if="item.id !== 5 || !student"
       >
         <template #default>
-          {{item.title }} 
+          {{ item.title }}
           <v-icon color="white">{{ item.icon }}</v-icon>
           <logoutButton v-if="item.routerName === 'main'"/>
         </template>
@@ -65,7 +66,7 @@ export default {
           id: 4,
           title: 'Мой план',
           routerName: 'plan',
-          visible: true,
+          visible: this.student,
         },
         {
           id: 5,
@@ -98,7 +99,8 @@ export default {
             {
               name: item.routerName
             }
-        ).catch(() => {}
+        ).catch(() => {
+            }
         );
       }
       this.$emit('update:drawer', false)
@@ -120,8 +122,6 @@ export default {
 .rotate {
   transform: rotate(45deg) scale(1.8);
 }
-
-
 
 .list-item {
   max-height: 4em;

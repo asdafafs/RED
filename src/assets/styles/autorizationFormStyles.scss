@@ -69,7 +69,8 @@
             border-radius: 8px !important;
             padding: 0 !important;
             margin: 4px 0 4px 0 !important;
-            width: 350px !important;
+            width: 100% !important;
+            max-width: 355px !important;
 
             &__email{
                 text-transform: none !important;

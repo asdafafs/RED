@@ -64,11 +64,11 @@
           >
             <template v-slot:event="{event}">
               <v-container class="pa-1 mx-0 d-flex ">
-                <v-row class = "ma-0"  style="height: inherit; width: inherit">
+                <v-row class="ma-0" style="height: inherit; width: inherit">
                   <v-col class="black--text pa-0 align-self-center" style="height: inherit;">
                     <div class="text-subtitle-2 d-flex justify-center">{{ formatTime(event.startTime) }}</div>
                   </v-col>
-                  <v-col class="black--text pa-0 align-self-center"  v-if="$vuetify.breakpoint.lgAndUp">
+                  <v-col class="black--text pa-0 align-self-center" v-if="$vuetify.breakpoint.lgAndUp">
                     <div class="font-weight-bold text-format" style="width: inherit">{{ event.title }}
                     </div>
                   </v-col>
@@ -102,7 +102,7 @@
                   <v-row class="">
                     <v-col class="flex-column pa-0 flex-wrap">
                       <div style="color: #4E7AEC">
-                        {{ selectedEvent && selectedEvent.startTime ? formatDate(selectedEvent.startTime) :'' }}
+                        {{ selectedEvent && selectedEvent.startTime ? formatDate(selectedEvent.startTime) : '' }}
                       </div>
                       <div class="text-lg-h5 font-weight-bold black--text">{{ formatTime(selectedEvent.startTime) }}
                         {{ ' - ' }} {{ formatTime(selectedEvent.endTime) }}
@@ -243,25 +243,33 @@ export default {
     titleNewEvent: '',
   }),
   watch: {
-    userID(value) {
-      if (value) this.getAllEvents()
-    },
+    // userID(value) {
+    // },
 
     value(newValue) {
       this.confirmOnChangeMonthAndYear(newValue);
-    }
+    },
+
+    discriminatorUser(newValue) {
+      if (newValue !== '') {
+        this.onToggleClick(0)
+        this.getAllTeachers()
+        this.getAllStudents()
+        if (this.discriminatorUser) {
+          this.selectedActiveUser = this.userID
+        }
+      }
+      console.log(this.events)
+    },
   },
   created() {
-    if (this.userID) {
-
-      this.getAllEvents()
-
-      if (this.discriminatorUser){
-        this.selectedActiveUser = this.userID
-      }
-    }
-    this.getAllTeachers()
-    this.getAllStudents()
+    // this.onToggleClick(0)
+    // this.getAllEvents()
+    // if (this.discriminatorUser) {
+    //   this.selectedActiveUser = this.userID
+    // }
+    // this.getAllTeachers()
+    // this.getAllStudents()
   },
   computed: {
     ...mapState(['user']),
@@ -343,7 +351,6 @@ export default {
           "startTime": startTime,
           "endTime": endTime,
           "studentId": this.selectedStudent,
-          // "activeUserId": this.selectedActiveUser
         }
         await this.confirmChanges(body).catch(x => console.log(x)).finally(async () => {
           await this.getAllEvents()
@@ -505,15 +512,17 @@ export default {
           end: new Date(event.endTime)
         }));
       })
+      cal = cal.filter(event => event.studentId === null || event.studentId === this.userID);
       return cal
     },
 
     async getLessonsStudent() {
-      if (this.$store.state.user.groupId) {
+      const groupId = this.$store.state.user.groupId
+      if (groupId) {
         const lessons = new EventsRequest()
         let lessonsData = []
         const monthTime = `Date=${this.value}`
-        await lessons.getLectureActiveUser(monthTime).catch(x => console.log(x)).then(x => {
+        await lessons.getLectureGroupId(groupId, monthTime).catch(x => console.log(x)).then(x => {
           lessonsData = x.data.lecture.map(event => ({
             ...event,
             start: new Date(event.startTime),
@@ -554,11 +563,21 @@ export default {
     },
 
     async testLessons() {
-      this.events = await this.getLessons(this.userID);
+      if (this.discriminatorUser) {
+        this.events = await this.getLessons(this.userID);
+      } else {
+        this.events = await this.getLessonsStudent();
+      }
+
     },
 
     async testPractices() {
-      this.events = await this.getPractices(this.userID);
+      if (this.discriminatorUser) {
+        this.events = await this.getPractices(this.userID);
+      } else {
+        this.events = await this.getPracticeStudent();
+      }
+
     },
 
     formatDate(startTime) {

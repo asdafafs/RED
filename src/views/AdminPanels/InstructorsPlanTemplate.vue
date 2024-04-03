@@ -12,7 +12,8 @@
     </v-row>
     <hr style="margin: 1em 0 2em 0 !important;">
     <v-row class="flex-wrap">
-      <v-col cols="lg-1 md-1 py-0" class="flex-column align-center bg-surface-variant d-flex">
+      <v-col class="flex-column align-center bg-surface-variant d-flex lg-2 md-2 sm-2 py-0"
+             style="min-width: 109px !important;">
         <v-radio-group class="px-0 py-0 align-center ma-0" v-model="selectedDuration" hide-details
                        :disabled="blockEditableTemplate">
           <v-radio label="1 час" :value="1"></v-radio>
@@ -20,20 +21,20 @@
         </v-radio-group>
       </v-col>
       <v-col cols="lg-2 md-2 py-0" class="align-center bg-surface-variant d-flex">
-        <v-text-field v-model="practiceCourseStart" label="Дата начала" type="date"
+        <v-text-field v-model="practiceCourseStart" label="Дата начала" type="date" ref="startDateField"
                       :rules="[startDateRules.required]" :min="getTodayDate()" outlined
                       class="select-practice-template" hide-details :disabled="blockEditableTemplate"
                       style="border-radius: 12px !important; max-height: 32px !important;"
         ></v-text-field>
       </v-col>
       <v-col cols="lg-2 md-2 py-0" class="align-center bg-surface-variant d-flex">
-        <v-text-field v-model="practiceCourseEnd" label="Дата окончания" type="date"
+        <v-text-field v-model="practiceCourseEnd" label="Дата окончания" type="date" ref="endDateField"
                       :rules="[endTimeRules.required]" :min="getTodayDate()" outlined
                       class="select-practice-template"
                       style="border-radius: 12px !important; max-height: 32px !important;"
                       hide-details :disabled="blockEditableTemplate"></v-text-field>
       </v-col>
-      <v-col cols="lg-2 md-2 py-0" class="align-center bg-surface-variant d-flex">
+      <v-col cols="" class="align-center bg-surface-variant d-flex lg-2 md-2 sm-0 py-0">
         <v-select v-model="selectedTemplate" label="Выберите шаблон практик" :items="listTemplates"
                   no-data-text="Нет данных для отображения"
                   :item-text="item => item.practiceCourseId ? `${new Date(item.practiceCourseStart).
@@ -49,7 +50,7 @@ blockEditableTemplate = selectedTemplate ? !!selectedTemplate.practiceCourseId :
       </v-col>
       <v-col cols="lg-2 md-0 sm-0 pa-0"></v-col>
       <v-col cols=" px-0">
-        <v-btn class="tab-button pa-0 rounded-lg" color="#2B2A29" outlined @click="save" :disabled="savePlanDisabled">
+        <v-btn class="tab-button pa-0 rounded-lg" color="#2B2A29" outlined @click="save">
           <span class="black--text">Сохранить изменения</span>
         </v-btn>
       </v-col>
@@ -136,24 +137,32 @@ export default {
     },
 
     async save() {
-      const hasUnsavedTime = this.eventsTemplate.some(event => event.savedTime === undefined);
-      if (hasUnsavedTime) {
-        const body = {
-          "practiceCourseId": this.selectedTemplate,
-          "practiceCourseStart": this.practiceCourseStart,
-          "practiceCourseEnd": this.practiceCourseEnd,
-          "activeUserId": this.getIdUser,
-          'duration': this.selectedDuration,
-          "practices": this.eventsTemplate
-        };
-
-        await this.postPracticeCourseTemplate(body);
-        await this.getPracticeCourseTemplate()
-        successAlert('Изменения сохранены успешно', 5000);
-
-
+      if (this.startDateRules.required(this.practiceCourseStart) && this.endTimeRules.required(this.practiceCourseEnd)) {
+        const hasUnsavedTime = this.eventsTemplate.some(event => event.savedTime === undefined);
+        if (hasUnsavedTime) {
+          const body = {
+            "practiceCourseId": this.selectedTemplate,
+            "practiceCourseStart": this.practiceCourseStart,
+            "practiceCourseEnd": this.practiceCourseEnd,
+            "activeUserId": this.getIdUser,
+            'duration': this.selectedDuration,
+            "practices": this.eventsTemplate
+          };
+          await this.postPracticeCourseTemplate(body);
+          await this.getPracticeCourseTemplate()
+          successAlert('Изменения сохранены успешно', 5000);
+        } else {
+          warningAlert('Не обнаружено доступных изменений', 5000)
+        }
       } else {
-        warningAlert('Не обнаружено доступных изменений', 5000)
+        if (!this.startDateRules.required(this.practiceCourseStart)) {
+          this.$refs.startDateField.$el.classList.add('error--text');
+          console.log(this.$refs.startDateField.$el.classList)
+        }
+        if (!this.endTimeRules.required(this.practiceCourseEnd)) {
+          this.$refs.endDateField.$el.classList.add('error--text');
+          console.log(this.$refs.endDateField.$el.classList)
+        }
       }
     },
 
@@ -256,7 +265,7 @@ export default {
       return `${year}-${month}-${day}`;
     },
 
-    checkInitialValidity(){
+    checkInitialValidity() {
       return !(this.startDateRules.required(this.practiceCourseStart) && this.endTimeRules.required(this.practiceCourseEnd))
     },
 
@@ -278,6 +287,7 @@ export default {
     display: flex !important;
     align-items: center !important;
     min-height: 32px !important;
+
   }
 
   .v-input__prepend-inner {
@@ -288,11 +298,29 @@ export default {
     max-height: 32px !important;
   }
 
+  .v-label {
+    color: currentColor;
+  }
+
+  .v-input {
+    color: currentColor;
+  }
+
   .v-input__control {
     max-height: 32px !important;
+
     .v-input__slot {
       max-height: 32px !important;
+
     }
   }
+}
+
+.theme--light.v-text-field--outlined:not(.v-input--is-focused):not(.v-input--has-state) > .v-input__control > .v-input__slot fieldset {
+  color: currentColor;
+}
+
+.theme--light.v-input input, .theme--light.v-input textarea {
+  color: currentColor;
 }
 </style>
