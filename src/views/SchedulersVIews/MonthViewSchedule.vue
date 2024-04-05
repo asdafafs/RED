@@ -236,7 +236,7 @@ export default {
     newSelectedDuration: 1,
     newSelectedReason: 1,
     lastSelectedJoinType: 0,
-    selectedStudent: 0,
+    selectedStudent: null,
     selectedReason: 1,
     selectedActiveUser: 0,
     reasonsRefusal: ['Ремонт', 'Семейные обстоятельства', 'Экзамен ', 'Здоровье', 'Задачи офиса'],
@@ -382,14 +382,19 @@ export default {
           "id": this.selectedEvent.id,
           "deleteReasonEnum": this.selectedReasonId
         }
-        await this.cancelPractice(body)
+        await this.cancelPractice(body).catch(x => console.log(x)).finally(async () => {
+          await this.getAllEvents()
+        })
       } else {
         const body = {
           "id": this.selectedEvent.id,
           "stateEnum": this.newSelectedReason
         }
-        await this.closePractice(body)
+        await this.closePractice(body).catch(x => console.log(x)).finally(async () => {
+          await this.getAllEvents()
+        })
       }
+
 
     },
 

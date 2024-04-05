@@ -34,6 +34,7 @@
             class="select-period"
             :item-text="displayText"
             :item-value="valueText"
+            @change="testMethod"
         />
       </div>
     </div>
@@ -80,7 +81,6 @@
               :event-ripple="false"
               :event-height="num"
               :hide-header=false
-              @change="updateRange"
               event-more-text="+ {0}"
           >
             <template v-slot:event="{event}">
@@ -152,11 +152,6 @@
                            v-else-if="discriminatorUser && userID === selectedEvent.studentId"
                            @click="removeEventStudent">
                       Отписаться
-                    </v-btn>
-                    <v-btn text color="secondary"
-                           v-else-if="!discriminatorUser"
-                           @click="openRefusalModal()">
-                      Удалить
                     </v-btn>
                   </div>
                 </v-container>
@@ -234,7 +229,7 @@ export default {
   watch: {
     value(newValue) {
       this.confirmOnChangeMonthAndYear(newValue);
-    }
+    },
   },
 
   computed: {
@@ -314,39 +309,8 @@ export default {
       }
     },
 
-    async confirmClosePractice() {
-      const body = {
-        "id": this.selectedEvent.id,
-        "stateEnum": this.selectedStateId,
-      }
-      await this.closePractice(body).catch(x => console.log(x)).finally(this.closeModal)
-    },
-
-    async confirmDeletePractice() {
-      const body = {
-        "id": this.selectedEvent.id,
-        "stateEnum": this.selectedStateId,
-        "deleteReasonEnum": this.selectedReasonId
-      }
-      await this.closePractice(body).catch(x => console.log(x)).finally(this.closeModal)
-      await this.confirm(this.discriminatorUser)
-
-    },
-
-    closeModal() {
-      this.selectedOpen = false;
-    },
-
-    openRefusalModal() {
-      this.refusalModal = true
-    },
-
-    confirmReason(selectedReason) {
-      return this.selectedReasonId = this.reasonsRefusal.indexOf(selectedReason) + 1
-    },
-
-    confirmState(selectedState) {
-      return this.selectedStateId = this.stateRefusal.indexOf(selectedState) + 1
+    testMethod(){
+      this.confirm(this.discriminatorUser)
     },
 
     async getStudent() {
@@ -362,13 +326,6 @@ export default {
           console.log('Пользователь с ID', this.userID, 'не найден.');
         }
       })
-
-    },
-
-    async closePractice(body) {
-      const practice = new EventsRequest()
-
-      await practice.closePractice(body).catch(x => console.log(x))
     },
 
     async signPractice(body) {
@@ -434,6 +391,7 @@ export default {
 
     async confirm(discriminator) {
       let cal
+      this.currentDate = moment(this.value)
       if (discriminator === true) {
         if (this.selectedTeacher) {
           await this.getEventsSelectedTeacher(this.selectedTeacher).catch(x => console.log(x)).then(x => {
@@ -443,6 +401,7 @@ export default {
               end: new Date(event.endTime)
             }));
           });
+          cal = cal.filter(event => event.studentId === null || event.studentId === this.userID);
         }
       } else {
         await this.getEventsSelectedTeacher(this.userID).catch(x => console.log(x)).then(x => {
@@ -452,9 +411,7 @@ export default {
             end: new Date(event.endTime)
           }));
         });
-        cal = cal.filter(event => event.studentId === null || event.studentId === this.userID);
       }
-
       this.events = cal
       this.close();
     },
@@ -508,10 +465,6 @@ export default {
       const minutes = date.getMinutes().toString().padStart(2, '0');
       return `${hours}:${minutes}`;
     },
-
-    updateRange() {
-    },
-
     getEventColor(event) {
       if (this.discriminatorUser && event.studentId === null && this.userID !== event.studentId) {
         return '#9DB9FF';
