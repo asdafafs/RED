@@ -1,16 +1,19 @@
 .v-calendar-weekly__week {
     min-height: 20em;
+    max-height: 20em;
 }
 
 @media screen and (max-width: 1260px) {
     .v-calendar-weekly__week {
         min-height: 10em;
+        max-height: 10em;
     }
 }
 
 @media screen and (max-width: 600px) {
     .v-calendar-weekly__week {
         min-height: 5em;
+        max-height: 10em;
     }
 }
 

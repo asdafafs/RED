@@ -16,7 +16,7 @@
         </v-btn>
       </v-btn-toggle>
     </div>
-    <div class="flex-row">
+    <div class="flex-row flex-wrap">
       <v-btn
           v-if="discriminatorUser"
           color="#4E7AEC"
@@ -30,7 +30,7 @@
         </section>
       </v-btn>
       <v-select v-model="selectedTeacher" class="select-practice-template " outlined dense hide-details
-                style=" max-width: 367px !important;  border-radius: 12px !important; max-height: 32px !important; margin-left: 8px !important;"
+                style=" max-width: 367px !important;  border-radius: 12px !important; max-height: 32px !important; margin-left: 8px !important; margin-top: 12px!important;"
                 no-data-text="Нет данных для отображения" label="Выберите инструктора для редактирования"
                 :items="[...listTeachers, { id: null, name: 'Преподаватель не назначен' }]"
                 :item-text="item => item ? `${item.surname || ''} ${item.name || ''} ${item.middleName || ''}` : 'Преподаватель не назначен'"
@@ -63,6 +63,7 @@
               :event-ripple="false"
               :event-height="num"
               :hide-header=false
+              event-more
               event-more-text="+ {0}"
           >
             <template v-slot:event="{event}">
@@ -250,8 +251,9 @@ export default {
       this.confirmOnChangeMonthAndYear(newValue);
     },
 
-    discriminatorUser(newValue) {
-      if (newValue !== '') {
+    userID(newValue){
+      if (newValue !==''){
+        console.log(this.discriminatorUser)
         this.onToggleClick(0)
         this.getAllTeachers()
         this.getAllStudents()
@@ -259,10 +261,13 @@ export default {
           this.selectedActiveUser = this.userID
         }
       }
-      console.log(this.events)
+
     },
   },
   created() {
+    if (this.userID !== 0){
+      this.onToggleClick(0)
+    }
     this.getAllTeachers()
     this.getAllStudents()
   },
@@ -289,6 +294,7 @@ export default {
       return this.$refs.calendar.title
     },
     userID() {
+      console.log('huy')
       return this.user.userId
     },
 
@@ -506,14 +512,13 @@ export default {
       const practices = new EventsRequest()
       let cal
       const monthTime = `Date=${this.value}`
-      await practices.getPracticeAssigned(monthTime).catch(x => console.log(x)).then(x => {
+      await practices.getOnlyAssigned(monthTime).catch(x => console.log(x)).then(x => {
         cal = x.data.practice.map(event => ({
           ...event,
           start: new Date(event.startTime),
           end: new Date(event.endTime)
         }));
       })
-      cal = cal.filter(event => event.studentId === null || event.studentId === this.userID);
       return cal
     },
 
