@@ -20,6 +20,14 @@ export default class EventsRequest extends HTTPService {
         return this.get("practice/assigned" + `?${query}` )
     }
 
+    getOnlyAssigned(query){
+        return this.get("practice/assignedOnly" + `?${query}`)
+    }
+
+    getPracticeFreeOrAssigned(query){
+        return this.get("practice/freeOrAssigned" + `?${query}`)
+    }
+
     getPracticeId(id, query) {
         return this.get("practice/" + id + `?${query}`)
     }

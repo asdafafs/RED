@@ -394,14 +394,13 @@ export default {
       this.currentDate = moment(this.value)
       if (discriminator === true) {
         if (this.selectedTeacher) {
-          await this.getEventsSelectedTeacher(this.selectedTeacher).catch(x => console.log(x)).then(x => {
+          await this.getEventsForStudent(this.selectedTeacher).catch(x => console.log(x)).then(x => {
             cal = x.data.practice.map(event => ({
               ...event,
               start: new Date(event.startTime),
               end: new Date(event.endTime)
             }));
           });
-          cal = cal.filter(event => event.studentId === null || event.studentId === this.userID);
         }
       } else {
         await this.getEventsSelectedTeacher(this.userID).catch(x => console.log(x)).then(x => {
@@ -414,6 +413,19 @@ export default {
       }
       this.events = cal
       this.close();
+    },
+
+    getEventsForStudent(){
+      if (this.type === 'week') {
+        const practice = new EventsRequest()
+        const monday = this.currentDate.clone().startOf('isoWeek').format('YYYY-MM-DD')
+        const sunday = this.currentDate.clone().endOf('isoWeek').format('YYYY-MM-DD')
+        const query = `Id=${this.selectedTeacher}&Date=${monday}&Date2=${sunday}`
+        return practice.getPracticeFreeOrAssigned(query);
+      }
+      const practice = new EventsRequest()
+      const query = `Id=${this.selectedTeacher}&Date=${this.value}`
+      return practice.getPracticeFreeOrAssigned(query);
     },
 
     async getEventsSelectedTeacher(teacherId) {
