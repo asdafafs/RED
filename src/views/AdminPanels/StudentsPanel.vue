@@ -78,26 +78,6 @@
                                 dense
                       ></v-select>
                       <div class="card-edit-student__title" style="margin-top: 12px !important;">Часы</div>
-                      <!--                      <v-select outlined class="v-text-field-custom-admin " style="border-radius: 12px"-->
-                      <!--                                v-model="editedStudent.generalHours"-->
-                      <!--                                :items="availableHoursOptions"-->
-                      <!--                                label="Количество основных часов"-->
-                      <!--                                no-data-text="Нет данных для отображения"-->
-                      <!--                                height="32px"-->
-                      <!--                                hide-details-->
-                      <!--                                dense-->
-                      <!--                                @change="testClick(editedStudent.generalHours)"-->
-                      <!--                      ></v-select>-->
-                      <!--                      <v-select outlined class="v-text-field-custom-admin " style="border-radius: 12px"-->
-                      <!--                                v-model="editedStudent.additinalHours"-->
-                      <!--                                :items="availableHoursOptions"-->
-                      <!--                                label="Количество дополнительных часов"-->
-                      <!--                                no-data-text="Нет данных для отображения"-->
-                      <!--                                height="32px"-->
-                      <!--                                hide-details-->
-                      <!--                                dense-->
-                      <!--                                @change="testClick(editedStudent.additinalHours)"-->
-                      <!--                      ></v-select>-->
                       <v-text-field outlined class="v-text-field-custom-admin " style="border-radius: 12px"
                                     v-model="editedStudent.generalHours"
                                     label="Количество основных часов"
