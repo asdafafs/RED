@@ -252,12 +252,11 @@ export default {
     },
 
     userID(newValue){
-      if (newValue !==''){
-        console.log(this.discriminatorUser)
+      if (newValue !== null){
         this.onToggleClick(0)
         this.getAllTeachers()
         this.getAllStudents()
-        if (this.discriminatorUser) {
+        if (this.user.discriminator && this.discriminatorUser ) {
           this.selectedActiveUser = this.userID
         }
       }
@@ -265,7 +264,7 @@ export default {
     },
   },
   created() {
-    if (this.userID !== 0){
+    if (this.userID !== null){
       this.onToggleClick(0)
     }
     this.getAllTeachers()
@@ -294,7 +293,6 @@ export default {
       return this.$refs.calendar.title
     },
     userID() {
-      console.log('huy')
       return this.user.userId
     },
 

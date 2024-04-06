@@ -343,8 +343,32 @@ export default {
           studentId: item.student,
           groupNumber: item.groupNumber,
         };
+        this.selectedDays()
         this.updateSelectedStudentsIds()
       }
+    },
+
+    selectedDays(){
+      const dayOfWeekMap = {
+        'Monday': 'Пн',
+        'Tuesday': 'Вт',
+        'Wednesday': 'Ср',
+        'Thursday': 'Чт',
+        'Friday': 'Пт',
+        'Saturday': 'Сб',
+        'Sunday': 'Вс'
+      };
+      let daysOfWeekArray = [];
+      if (this.lessons && this.lessons.length > 0) {
+        this.lessons.forEach(event => {
+          const dayOfWeekEnglish = moment(event.startTime).format('dddd');
+          const dayOfWeekRussian = dayOfWeekMap[dayOfWeekEnglish];
+          if (dayOfWeekRussian) {
+            daysOfWeekArray.push(dayOfWeekRussian);
+          }
+        });
+      }
+      daysOfWeekArray = daysOfWeekArray.filter((x, i, a) => a.indexOf(x) === i)
     },
 
     cancelChanges() {
