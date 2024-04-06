@@ -376,7 +376,6 @@ export default {
     async initialize() {
       await this.getEventsTeacher();
       await this.getStudent()
-
       if (this.discriminatorUser === false) {
         await this.confirm(this.discriminatorUser)
       }

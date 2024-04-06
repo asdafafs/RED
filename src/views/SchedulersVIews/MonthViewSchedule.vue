@@ -1,6 +1,6 @@
 <template>
   <div style="width: 100%; height:100%; padding: 0 12px 12px 12px">
-    <div class="flex-row" style="margin-bottom: 12px !important; flex-wrap: wrap">
+    <div class="flex-row d-flex justify-space-between" style="margin-bottom: 12px !important; flex-wrap: wrap">
       <v-btn-toggle mandatory v-model="selectedLessonType" group color="black">
         <v-btn
             v-for="item in calendarButtons"
@@ -15,6 +15,23 @@
         </span>
         </v-btn>
       </v-btn-toggle>
+      <div class="d-flex align-center flex-row">
+        <span class="mr-3">Показать</span>
+        <v-select
+            no-data-text="Нет данных для отображения"
+            style="max-width: 130px"
+            height="32"
+            v-model="type"
+            :items="types"
+            dense
+            outlined
+            hide-details
+            class="select-period"
+            :item-text="displayText"
+            :item-value="valueText"
+            @change="testMethod"
+        />
+      </div>
     </div>
     <div class="flex-row flex-wrap">
       <v-btn
@@ -40,13 +57,13 @@
       <div>
         <v-sheet tile height="54" class="d-flex justify-center"
         >
-          <v-btn icon class="ma-0 align-self-center" @click="$refs.calendar.prev()">
+          <v-btn icon class="ma-0 align-self-center"  @click="prev()">
             <v-icon>mdi-chevron-left</v-icon>
           </v-btn>
           <v-toolbar-title v-if="test" class="month-name">
             {{ month }}
           </v-toolbar-title>
-          <v-btn icon class="ma-0 align-self-center" @click="$refs.calendar.next()">
+          <v-btn icon class="ma-0 align-self-center" @click="next()">
             <v-icon>mdi-chevron-right</v-icon>
           </v-btn>
         </v-sheet>
@@ -225,6 +242,7 @@ export default {
     modes: ['column'],
     weekday: [1, 2, 3, 4, 5, 6, 0],
     value: moment().locale('ru').format('YYYY-MM-DD'),
+    currentDate: moment(),
     selectedEvent: {},
     selectedElement: null,
     selectedOpen: false,
@@ -241,6 +259,7 @@ export default {
     selectedReason: 1,
     selectedActiveUser: 0,
     reasonsRefusal: ['Ремонт', 'Семейные обстоятельства', 'Экзамен ', 'Здоровье', 'Задачи офиса'],
+    types: [['month', 'месяц'], ['week', 'неделя'], ['day', 'день']],
     listTeachers: [],
     listStudents: [],
     selectedTeacher: null,
@@ -302,6 +321,18 @@ export default {
   },
 
   methods: {
+    displayText(item) {
+      return item[1];
+    },
+
+    valueText(item) {
+      return item[0];
+    },
+
+    testMethod(){
+      this.getAllEvents()
+    },
+
     openNewEvent() {
       this.newEvent = true
       const [hours, minutes] = this.newTimeEvent.split(':');
@@ -398,8 +429,6 @@ export default {
           await this.getAllEvents()
         })
       }
-
-
     },
 
     async closePractice(body) {
@@ -445,11 +474,29 @@ export default {
       await event.postPractice(body).catch(x => console.log(x))
     },
 
+    async prev() {
+      this.$refs.calendar.prev()
+      if (this.type === 'week') {
+        this.currentDate = this.currentDate.clone().subtract(1, 'week');
+        await this.getAllEvents()
+      }
+    },
+
+    async next() {
+      this.$refs.calendar.next()
+      if (this.type === 'week') {
+        this.currentDate = this.currentDate.clone().add(1, 'week');
+        await this.getAllEvents()
+      }
+    },
+
     async confirmOnChangeMonthAndYear(newValue) {
-      const currentMonthAndYear = this.getMonthAndYear(newValue);
-      if (currentMonthAndYear !== this.prevMonthAndYear) {
-        this.onToggleClick(this.lastSelectedJoinType)
-        this.prevMonthAndYear = currentMonthAndYear;
+      if (this.type !== 'week') {
+        const currentMonthAndYear = this.getMonthAndYear(newValue);
+        if (currentMonthAndYear !== this.prevMonthAndYear) {
+          this.onToggleClick(this.lastSelectedJoinType);
+          this.prevMonthAndYear = currentMonthAndYear;
+        }
       }
     },
 
@@ -495,28 +542,57 @@ export default {
     async getPractices(userId) {
       const practices = new EventsRequest()
       let cal
-      const monthTime = `Date=${this.value}`
-      await practices.getPracticeActiveUser(userId, monthTime).catch(x => console.log(x)).then(x => {
-        cal = x.data.practice.map(event => ({
-          ...event,
-          start: new Date(event.startTime),
-          end: new Date(event.endTime)
-        }));
-      })
+      if (this.type === 'week'){
+        const monday = this.currentDate.clone().startOf('isoWeek').format('YYYY-MM-DD')
+        const sunday = this.currentDate.clone().endOf('isoWeek').format('YYYY-MM-DD')
+        const query = `Id=${this.selectedTeacher}&Date=${monday}&Date2=${sunday}`
+        await practices.getPracticeActiveUser(userId, query).catch(x => console.log(x)).then(x => {
+          cal = x.data.practice.map(event => ({
+            ...event,
+            start: new Date(event.startTime),
+            end: new Date(event.endTime)
+          }));
+        })
+      }
+      else{
+        const query = `Date=${this.value}`
+        await practices.getPracticeActiveUser(userId, query).catch(x => console.log(x)).then(x => {
+          cal = x.data.practice.map(event => ({
+            ...event,
+            start: new Date(event.startTime),
+            end: new Date(event.endTime)
+          }));
+        })
+      }
       return cal
     },
 
     async getPracticeStudent() {
       const practices = new EventsRequest()
       let cal
-      const monthTime = `Date=${this.value}`
-      await practices.getOnlyAssigned(monthTime).catch(x => console.log(x)).then(x => {
-        cal = x.data.practice.map(event => ({
-          ...event,
-          start: new Date(event.startTime),
-          end: new Date(event.endTime)
-        }));
-      })
+      if (this.type === 'week'){
+        const monday = this.currentDate.clone().startOf('isoWeek').format('YYYY-MM-DD')
+        const sunday = this.currentDate.clone().endOf('isoWeek').format('YYYY-MM-DD')
+        const query = `Date=${monday}&Date2=${sunday}`
+        await practices.getOnlyAssigned(query).catch(x => console.log(x)).then(x => {
+          cal = x.data.practice.map(event => ({
+            ...event,
+            start: new Date(event.startTime),
+            end: new Date(event.endTime)
+          }));
+        })
+      }
+      else{
+        const query = `Date=${this.value}`
+        await practices.getOnlyAssigned(query).catch(x => console.log(x)).then(x => {
+          cal = x.data.practice.map(event => ({
+            ...event,
+            start: new Date(event.startTime),
+            end: new Date(event.endTime)
+          }));
+        })
+      }
+
       return cal
     },
 
@@ -540,6 +616,7 @@ export default {
     },
 
     async getAllEvents() {
+      this.currentDate = moment(this.value)
       if (this.discriminatorUser) {
         const lessons = await this.getLessons(this.selectedActiveUser);
         const practices = await this.getPractices(this.selectedActiveUser);
@@ -563,7 +640,6 @@ export default {
           }
         })
       }
-
     },
 
     async testLessons() {
