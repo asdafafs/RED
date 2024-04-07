@@ -1,18 +1,17 @@
 <template>
-  <div  >
-    <v-container class="px-4 pa-0 ma-0" fluid v-if="showDrawer && groupId !==0" >
-      <v-row no-gutters align="center" class="spacer">
-        <v-col lg="">
-          <div class="text-h4 font-weight-bold">Здравствуйте, {{ userName }}!</div>
-        </v-col>
-        <v-col lg="3" class="align-self-end text-start justify-start">
-          <div class="text-subtitle-1 uno">{{ groupTitle }}</div>
-        </v-col>
-        <v-col cols="">
-        </v-col>
-      </v-row>
-      <hr>
-      <router-view></router-view>
+  <div>
+    <div class="d-flex flex-row justify-space-between full-width  px-3 mb-3 align-center">
+      <div class="text-h3 font-weight-medium px-0">
+        Личный кабинет 
+      </div>
+      <div style="font-weight: 700; font-size: 28px; color: #4E7AEC">
+        Удачи на дорогах, {{ userName }}
+      </div>
+    </div>
+    <v-container class="px-4 pa-0 ma-0" fluid v-if="showDrawer && groupId !== 0" >
+      <hr class="mb-2">
+      <div class="d-flex align-center mb-2">  {{ groupTitle }} </div>
+      <router-view/>
     </v-container>
     <v-container class="px-4 pa-0 ma-0" fluid v-if="!showDrawer">
       <v-row>
@@ -24,7 +23,7 @@
         </v-col>
       </v-row>
       <hr>
-      <router-view></router-view>
+      <router-view/>
     </v-container>
   </div>
 </template>

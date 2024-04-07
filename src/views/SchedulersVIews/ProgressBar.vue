@@ -3,25 +3,23 @@
     <v-row class="flex-wrap py-2" no-gutters style="border-radius: 12px !important; border:1px solid #AAA7A6;">
       <v-col v-for="(item, index) in items" :key="index">
         <div class="d-flex flex-column justify-center">
-          <div class="text-center custom-text-circular">{{ item.title }}</div>
+          <div class="text-center custom-text-circular">{{item.title}}</div>
           <div class="d-flex justify-center">
             <v-progress-circular
                 :rotate="360"
                 :size="240"
                 :width="35"
-                :value="item.hoursSpent/item.totalHours * 100"
+                :value="item.hoursSpentPercent"
                 color="#8CED7C"
                 class="ma-2 pa-2"
             >
-              <template v-slot:default>
-                <div>
-                  <div class="custom-text-circular-title">
-                    <span>{{ item.hoursSpent }}</span>{{ " " }}
-                    <span class="custom-text-circular">из {{ item.totalHours }}</span>
-                  </div>
-                  <div class="custom-text-circular">часов</div>
+              <div>
+                <div class="custom-text-circular-title">
+                  <span >{{item.hoursSpent}}</span>{{ " " }}
+                  <span class="custom-text-circular">из {{item.totalHours}}</span>
                 </div>
-              </template>
+                <div class="custom-text-circular">часов</div>
+              </div>
             </v-progress-circular>
           </div>
         </div>
@@ -39,16 +37,19 @@ export default {
       {
         title: 'Пройдено теории',
         hoursSpent: 0,
+        hoursSpentPercent: 0,
         totalHours: 0,
       },
       {
         title: 'Осталось практик',
         hoursSpent: 0,
+        hoursSpentPercent: 0,
         totalHours: 0,
       },
       {
         title: 'Осталось доппрактик',
         hoursSpent: 0,
+        hoursSpentPercent: 0,
         totalHours: 0,
       }
     ],
@@ -59,10 +60,6 @@ export default {
       additinalHoursSpent: 0
     }
   }),
-
-  beforeUnmount() {
-    clearInterval(this.interval)
-  },
 
   computed: {
     getIdUser() {
@@ -86,16 +83,19 @@ export default {
           {
             title: 'Осталось лекций',
             hoursSpent: studentInfo.generalHoursSpent,
+            hoursSpentPercent: (studentInfo.generalHoursSpent/20) * 100,
             totalHours: studentInfo.generalHours
           },
           {
             title: 'Осталось практик',
             hoursSpent: studentInfo.generalHoursSpent,
+            hoursSpentPercent: (studentInfo.generalHoursSpent/20) * 100,
             totalHours: studentInfo.generalHours,
           },
           {
             title: 'Осталось доппрактик',
             hoursSpent: studentInfo.additinalHoursSpent,
+            hoursSpentPercent: (studentInfo.generalHoursSpent/15) * 100,
             totalHours: studentInfo.additinalHours,
           }
         ]
