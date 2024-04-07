@@ -226,6 +226,9 @@ export default {
     window.addEventListener('resize', this.handleResize);
     this.handleResize();
     this.prevMonthAndYear = this.getMonthAndYear(this.value);
+    if (!this.$vuetify.breakpoint.lgAndUp){
+      this.types= [['month', 'месяц'], ['day', 'день']]
+    }
   },
 
   beforeDestroy() {

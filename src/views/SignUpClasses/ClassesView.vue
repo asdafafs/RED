@@ -224,6 +224,9 @@ export default {
     window.addEventListener('resize', this.handleResize);
     this.handleResize();
     this.prevMonthAndYear = this.getMonthAndYear(this.value);
+    if (!this.$vuetify.breakpoint.lgAndUp){
+      this.types= [['month', 'месяц'], ['day', 'день']]
+    }
   },
 
   watch: {
@@ -342,7 +345,7 @@ export default {
       }
       await this.signPractice(body)
 
-      await this.loadUpdatedEvents();
+      await this.confirm(this.discriminatorUser);
 
       this.selectedOpen = false
     },
@@ -356,7 +359,7 @@ export default {
       }
       await this.signPractice(body)
 
-      await this.loadUpdatedEvents();
+      await this.confirm(this.discriminatorUser);
 
       this.selectedOpen = false
     },

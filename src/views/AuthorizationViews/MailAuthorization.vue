@@ -17,14 +17,14 @@
           >
             <div class="logo-container">
               <LogoRed
-                  v-if="!message"
                   class="mail-authorization-card__logo"
                   :height="50"
                   :width="84"
               />
             </div>
             <v-card-title class="mail-authorization-card__title">
-              Авторизация</v-card-title>
+              Авторизация
+            </v-card-title>
             <v-card-subtitle class="mail-authorization-card__subtitle">
               Для продолжения работы в RED: Расписание, пожалуйста, авторизуйтесь.
             </v-card-subtitle>
@@ -42,7 +42,7 @@
                 <template v-slot:append>
                   <span class="material-icons" @click="email=''">close</span>
                 </template>
-                </v-text-field>
+              </v-text-field>
               <v-text-field
                   color="black"
                   v-model="password"
@@ -120,7 +120,6 @@ export default {
     async login(body) {
       const login = new IdentityRequest()
       await login.postLogin(body).catch(() => {
-            this.message = "Неверный пользователь или пароль";
             this.password = ''
             this.wrongAuth = true;
           }
@@ -148,13 +147,18 @@ export default {
         "password": this.password
       }
       const identity = new IdentityRequest()
-      await this.login(body)
-      await identity.getIdentity()
-          .then((x) => {
-            this.$store.dispatch('GET_CURRENT_USER', x)
-          }).finally(() => {
-            this.loginButtonDisabled = false
-          })
+      await this.login(body).then(async (response) => {
+        if (response.status === 200) {
+          await identity.getIdentity()
+              .then((x) => {
+                this.$store.dispatch('GET_CURRENT_USER', x);
+              });
+        } else {
+          this.wrongAuth = true;
+        }
+      }).finally(() => {
+        this.loginButtonDisabled = false
+      })
       if (!this.wrongAuth) {
         await this.$router.push({name: 'schedule-lessons'}).catch(err => {
           console.log(err)
@@ -173,12 +177,12 @@ export default {
 </script>
 <style lang="scss">
 @import "@/assets/styles/autorizationFormStyles.scss";
+
 .material-symbols-outlined {
-  font-variation-settings:
-      'FILL' 0,
-      'wght' 400,
-      'GRAD' 0,
-      'opsz' 24
+  font-variation-settings: 'FILL' 0,
+  'wght' 400,
+  'GRAD' 0,
+  'opsz' 24
 }
 
 .no-scroll {
