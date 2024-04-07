@@ -65,7 +65,7 @@
                                     hide-details
                                     :rules="[emailRule.required]" class="v-text-field-custom-admin "></v-text-field>
                       <vue-text-mask class="phone-field" v-model="editedStudent.phoneNumber" :mask="mask"
-                                     placeholderChar="#" :rules="[phoneRule.required]"></vue-text-mask>
+                                    :rules="[phoneRule.required]"></vue-text-mask>
                       <v-select outlined class="v-text-field-custom-admin " style="border-radius: 12px"
                                 v-model="editedStudent.groupId"
                                 :items="groups"
@@ -84,7 +84,6 @@
                                     height="32px"
                                     hide-details
                                     dense
-                                    @change="testClick(editedStudent.generalHours)"
                       ></v-text-field>
                       <v-text-field outlined class="v-text-field-custom-admin " style="border-radius: 12px"
                                     v-model="editedStudent.additinalHours"
@@ -92,7 +91,6 @@
                                     height="32px"
                                     hide-details
                                     dense
-                                    @change="testClick(editedStudent.additinalHours)"
                       ></v-text-field>
                     </v-col>
                   </v-row>
@@ -215,7 +213,6 @@ export default {
 
   methods: {
     testClick(hours) {
-      console.log(hours)
     },
 
     async getGroups() {
@@ -265,7 +262,6 @@ export default {
     },
 
     editItem(item) {
-      console.log(item)
       this.editedIndex = this.persons.indexOf(item);
       this.editedStudent = {
         id: item.id,

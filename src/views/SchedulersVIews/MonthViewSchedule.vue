@@ -114,7 +114,8 @@
                         <span class="edit-buttons-div__edit-button__text">Удалить</span>
                       </v-btn>
                     </div>
-                    <div class="text-lg-h4 font-weight-bold">Вождение</div>
+                    <div class="text-lg-h4 font-weight-bold" v-if="!selectedEvent.lectureType">Вождение</div>
+                    <div class="text-lg-h4 font-weight-bold" v-if="selectedEvent.lectureType">Лекция</div>
                   </v-col>
                 </v-row>
               </v-toolbar-title>
@@ -128,7 +129,8 @@
                       <div class="text-lg-h5 font-weight-bold black--text">{{ formatTime(selectedEvent.startTime) }}
                         {{ ' - ' }} {{ formatTime(selectedEvent.endTime) }}
                       </div>
-                      <div class="text-subtitle-1 text-medium-emphasis ">Преподаватель</div>
+                      <div class="text-subtitle-1 text-medium-emphasis" v-if="!selectedEvent.lectureType">Преподаватель</div>
+                      <div class="text-subtitle-1 text-medium-emphasis" v-if="selectedEvent.lectureType">Тема лекции</div>
                       <div class="text-subtitle-2 font-weight-regular black--text">{{ selectedEvent.title }}</div>
                       <div v-if="openEditMode">
                         <v-text-field v-model="newDateEvent" height="32px" hide-details label="Дата" type="date"
@@ -171,7 +173,7 @@
                   </v-btn>
                 </v-container>
                 <v-container class="pa-0" style="display: flex; justify-content: space-between;" v-if="openEditMode">
-                  <v-btn @click="cancelChanges()" class="" text style="text-transform: none !important;">
+                  <v-btn @click="cancelChanges()" class="" text style="text-transform: none !important;" >
                     <span style="color: black">Отмена</span>
                   </v-btn>
                   <v-btn @click="saveChanges()" class="close-button">
@@ -244,7 +246,7 @@ export default {
     mode: 'stack',
     modes: ['column'],
     weekday: [1, 2, 3, 4, 5, 6, 0],
-    value: moment().locale('ru').format('YYYY-MM-DD'),
+    value: moment().format('YYYY-MM-DD'),
     currentDate: moment(),
     selectedEvent: {},
     selectedElement: null,
@@ -253,13 +255,13 @@ export default {
     openDeleteMode: false,
     newEvent: false,
     minDate: moment().locale('ru').format('YYYY-MM-DD'),
-    newDateEvent: moment().locale('ru').format('YYYY-MM-DD'),
+    newDateEvent: moment().format('YYYY-MM-DD'),
     newTimeEvent: '06:00',
     newSelectedDuration: 1,
     newSelectedReason: 1,
     lastSelectedJoinType: 0,
     selectedStudent: null,
-    selectedReason: 1,
+    selectedReason: 'Ремонт',
     selectedActiveUser: 0,
     reasonsRefusal: ['Ремонт', 'Семейные обстоятельства', 'Экзамен ', 'Здоровье', 'Задачи офиса'],
     types: [['month', 'месяц'], ['week', 'неделя'], ['day', 'день']],
@@ -366,13 +368,12 @@ export default {
       const cal = moment(this.newDateEvent).format('YYYY-MM-DD');
       const [hours, minutes] = this.newTimeEvent.split(':');
 
-      const startTime = moment(cal).hour(parseInt(hours)).minute(parseInt(minutes));
+      const startTime = moment.utc(cal).hour(parseInt(hours)).minute(parseInt(minutes));
       const endTime = startTime.clone().add(this.newSelectedDuration, 'hours');
-
       if (this.newEvent) {
         const body = {
-          "startTime": startTime,
-          "endTime": endTime,
+          "startTime": startTime.toISOString(),
+          "endTime": endTime.toISOString(),
           "studentId": this.selectedStudent,
           "activeUserId": this.selectedActiveUser
         }
@@ -382,8 +383,8 @@ export default {
       } else {
         const body = {
           'id': this.selectedEvent.id,
-          "startTime": startTime,
-          "endTime": endTime,
+          "startTime": startTime.toISOString(),
+          "endTime": endTime.toISOString(),
           "studentId": this.selectedStudent,
         }
         await this.confirmChanges(body).catch(x => console.log(x)).finally(async () => {
@@ -548,7 +549,7 @@ export default {
       if (this.type === 'week'){
         const monday = this.currentDate.clone().startOf('isoWeek').format('YYYY-MM-DD')
         const sunday = this.currentDate.clone().endOf('isoWeek').format('YYYY-MM-DD')
-        const query = `Id=${this.selectedTeacher}&Date=${monday}&Date2=${sunday}`
+        const query = `Date=${monday}&Date2=${sunday}`
         await practices.getPracticeActiveUser(userId, query).catch(x => console.log(x)).then(x => {
           cal = x.data.practice.map(event => ({
             ...event,

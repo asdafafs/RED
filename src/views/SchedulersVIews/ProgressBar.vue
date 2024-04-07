@@ -3,23 +3,25 @@
     <v-row class="flex-wrap py-2" no-gutters style="border-radius: 12px !important; border:1px solid #AAA7A6;">
       <v-col v-for="(item, index) in items" :key="index">
         <div class="d-flex flex-column justify-center">
-          <div class="text-center custom-text-circular">{{item.title}}</div>
+          <div class="text-center custom-text-circular">{{ item.title }}</div>
           <div class="d-flex justify-center">
             <v-progress-circular
                 :rotate="360"
                 :size="240"
                 :width="35"
-                :model-value="item.hoursSpent"
+                :value="item.hoursSpent/item.totalHours * 100"
                 color="#8CED7C"
                 class="ma-2 pa-2"
             >
-              <div>
-                <div class="custom-text-circular-title">
-                  <span >{{item.hoursSpent}}</span>{{ " " }}
-                  <span class="custom-text-circular">из {{item.totalHours}}</span>
+              <template v-slot:default>
+                <div>
+                  <div class="custom-text-circular-title">
+                    <span>{{ item.hoursSpent }}</span>{{ " " }}
+                    <span class="custom-text-circular">из {{ item.totalHours }}</span>
+                  </div>
+                  <div class="custom-text-circular">часов</div>
                 </div>
-                <div class="custom-text-circular">часов</div>
-              </div>
+              </template>
             </v-progress-circular>
           </div>
         </div>
@@ -57,6 +59,10 @@ export default {
       additinalHoursSpent: 0
     }
   }),
+
+  beforeUnmount() {
+    clearInterval(this.interval)
+  },
 
   computed: {
     getIdUser() {

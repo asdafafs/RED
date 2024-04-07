@@ -368,7 +368,9 @@ export default {
           }
         });
       }
+
       daysOfWeekArray = daysOfWeekArray.filter((x, i, a) => a.indexOf(x) === i)
+      this.selectedChips = daysOfWeekArray
     },
 
     cancelChanges() {
