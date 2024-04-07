@@ -64,7 +64,7 @@
                                     height="32px" dense hide-details
                                     class="v-text-field-custom-admin" outlined></v-text-field>
                       <vue-text-mask class="phone-field" v-model="editedTeacher.phoneNumber" :mask="mask"
-                                     placeholderChar="#" :rules="[phoneRule.required]"></vue-text-mask>
+                                     :rules="[phoneRule.required]"></vue-text-mask>
                     </v-col>
                   </v-row>
                 </v-container>
@@ -198,7 +198,6 @@ export default {
           .catch(error => {
             console.error(error);
           });
-      console.log(teachersData);
       return teachersData;
     },
 
@@ -224,7 +223,6 @@ export default {
     },
 
     editItem(item) {
-      console.log(item)
       this.editedIndex = this.persons.indexOf(item);
       this.editedTeacher = {
         id: item.id,
@@ -363,12 +361,12 @@ export default {
     gap: 12px !important;
   }
 
-    &-btn {
-      border-radius: 12px !important;
-      height: 32px !important;
-      width: 225px !important;
-      text-transform: none !important;
-    }
+  &-btn {
+    border-radius: 12px !important;
+    height: 32px !important;
+    width: 225px !important;
+    text-transform: none !important;
+  }
 }
 
 .add-instructor {

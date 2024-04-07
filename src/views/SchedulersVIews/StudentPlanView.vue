@@ -41,6 +41,9 @@ export default {
     groupTitle: ''
   }),
   watch: {
+    groupId(newValue){
+      this.getGroupNumber()
+    }
   },
 
   computed: {
@@ -65,8 +68,7 @@ export default {
 
     openProgressBar() {
       const currentStudentID = this.userId;
-      this.$router.push({name: 'progressBar', params: {currentStudentID}}).catch((err) => {
-        throw new Error(`Problem handling something: ${err}.`);
+      this.$router.push({name: 'progressBar', params: {currentStudentID}}).catch(() => {
       });
     },
 
@@ -75,7 +77,6 @@ export default {
 
       if(this.groupId !== 0 && this.groupId !== null)
       {
-        console.log('this.groupId',this.groupId)
         this.groupTitle = await group.getGroup(this.groupId)
             .then(group => {
               return group.data[0].groupNumber;

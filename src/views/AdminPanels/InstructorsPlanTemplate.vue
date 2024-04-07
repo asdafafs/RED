@@ -143,12 +143,9 @@ export default {
             'duration': this.selectedDuration,
             "practices": this.eventsTemplate
           };
-          await this.postPracticeCourseTemplate(body).then(() => {
-            successAlert('Изменения сохранены успешно', 5000);
-          })
+          await this.postPracticeCourseTemplate(body)
+
           this.initialize()
-
-
         } else {
           warningAlert('Не обнаружено доступных изменений', 5000)
         }
@@ -224,8 +221,14 @@ export default {
 
     async postPracticeCourseTemplate(body) {
       const practiceCourse = new PracticeCourseRequest()
-      await practiceCourse.postPracticeCourse(body).catch(x => console.log(x))
+      await practiceCourse.postPracticeCourse(body).then(response => {
+            if (response.status && response.status === 200) {
+              successAlert('Изменения сохранены успешно', 5000);
+            }
+          }
+      ).catch(x => console.log(x))
     },
+
 
     confirmCancelChanges() {
       this.$router.push({name: 'admin-teachers'}).finally(() => {

@@ -150,7 +150,8 @@ export default {
           }
       )
     },
-    async validateForm() {
+    async validateForm()
+    {
       if (!this.isPasswordValid) return
       this.loginButtonDisabled = true
       const body = {
@@ -161,7 +162,6 @@ export default {
       await this.login(body).finally(() => {
         this.loginButtonDisabled = false
       })
-      console.log(this.wrongAuth)
       if (!this.wrongAuth) {
         await this.$router.push({name: 'schedule-lessons'}).catch(err => {
           console.log(err)
@@ -170,6 +170,7 @@ export default {
         })
       }
     }
+
   },
   computed: {
     isPasswordValid() {

@@ -170,6 +170,7 @@ import EventsRequest from "@/services/EventsRequest";
 import UsersRequest from "@/services/UsersRequest";
 import {mapState} from "vuex";
 import moment from "moment/moment";
+import IdentityRequest from "@/services/IdentityRequest";
 
 export default {
   components: {LectureLogo, CarLogo},
@@ -346,7 +347,7 @@ export default {
       await this.signPractice(body)
 
       await this.confirm(this.discriminatorUser);
-
+      await this.getStudent()
       this.selectedOpen = false
     },
 
@@ -360,7 +361,7 @@ export default {
       await this.signPractice(body)
 
       await this.confirm(this.discriminatorUser);
-
+      await this.getStudent()
       this.selectedOpen = false
     },
 
@@ -479,6 +480,7 @@ export default {
       const minutes = date.getMinutes().toString().padStart(2, '0');
       return `${hours}:${minutes}`;
     },
+
     getEventColor(event) {
       if (this.discriminatorUser && event.studentId === null && this.userID !== event.studentId) {
         return '#9DB9FF';
