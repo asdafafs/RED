@@ -118,12 +118,23 @@ export default {
   }),
   methods: {
     async login(body) {
+      this.wrongAuth = false;
       const login = new IdentityRequest()
-      await login.postLogin(body).catch(() => {
+      const identity = new IdentityRequest()
+      const response =  await login.postLogin(body).catch(() => {
             this.password = ''
             this.wrongAuth = true;
           }
       )
+      console.log(response.status)
+      if (response.status === 200) {
+        await identity.getIdentity()
+            .then((x) => {
+              this.$store.dispatch('GET_CURRENT_USER', x);
+            });
+      } else {
+        this.wrongAuth = true;
+      }
     },
     logout() {
       this.$router.push(
@@ -147,18 +158,10 @@ export default {
         "password": this.password
       }
       const identity = new IdentityRequest()
-      await this.login(body).then(async (response) => {
-        if (response.status === 200) {
-          await identity.getIdentity()
-              .then((x) => {
-                this.$store.dispatch('GET_CURRENT_USER', x);
-              });
-        } else {
-          this.wrongAuth = true;
-        }
-      }).finally(() => {
+      await this.login(body).finally(() => {
         this.loginButtonDisabled = false
       })
+      console.log(this.wrongAuth)
       if (!this.wrongAuth) {
         await this.$router.push({name: 'schedule-lessons'}).catch(err => {
           console.log(err)
