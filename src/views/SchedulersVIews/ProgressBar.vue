@@ -9,7 +9,7 @@
                 :rotate="360"
                 :size="240"
                 :width="35"
-                :model-value="item.hoursSpent"
+                :value="item.hoursSpentPercent"
                 color="#8CED7C"
                 class="ma-2 pa-2"
             >
@@ -37,16 +37,19 @@ export default {
       {
         title: 'Пройдено теории',
         hoursSpent: 0,
+        hoursSpentPercent: 0,
         totalHours: 0,
       },
       {
         title: 'Осталось практик',
         hoursSpent: 0,
+        hoursSpentPercent: 0,
         totalHours: 0,
       },
       {
         title: 'Осталось доппрактик',
         hoursSpent: 0,
+        hoursSpentPercent: 0,
         totalHours: 0,
       }
     ],
@@ -80,16 +83,19 @@ export default {
           {
             title: 'Осталось лекций',
             hoursSpent: studentInfo.generalHoursSpent,
+            hoursSpentPercent: (studentInfo.generalHoursSpent/20) * 100,
             totalHours: studentInfo.generalHours
           },
           {
             title: 'Осталось практик',
             hoursSpent: studentInfo.generalHoursSpent,
+            hoursSpentPercent: (studentInfo.generalHoursSpent/20) * 100,
             totalHours: studentInfo.generalHours,
           },
           {
             title: 'Осталось доппрактик',
             hoursSpent: studentInfo.additinalHoursSpent,
+            hoursSpentPercent: (studentInfo.generalHoursSpent/15) * 100,
             totalHours: studentInfo.additinalHours,
           }
         ]
