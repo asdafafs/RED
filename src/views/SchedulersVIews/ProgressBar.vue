@@ -83,19 +83,19 @@ export default {
           {
             title: 'Осталось лекций',
             hoursSpent: studentInfo.generalHoursSpent,
-            hoursSpentPercent: (studentInfo.generalHoursSpent/20) * 100,
+            hoursSpentPercent: (studentInfo.generalHoursSpent/studentInfo.generalHours) * 100,
             totalHours: studentInfo.generalHours
           },
           {
             title: 'Осталось практик',
             hoursSpent: studentInfo.generalHoursSpent,
-            hoursSpentPercent: (studentInfo.generalHoursSpent/20) * 100,
+            hoursSpentPercent: (studentInfo.generalHoursSpent/studentInfo.generalHours) * 100,
             totalHours: studentInfo.generalHours,
           },
           {
             title: 'Осталось доппрактик',
             hoursSpent: studentInfo.additinalHoursSpent,
-            hoursSpentPercent: (studentInfo.generalHoursSpent/15) * 100,
+            hoursSpentPercent: (studentInfo.additinalHoursSpent/studentInfo.additinalHours) * 100,
             totalHours: studentInfo.additinalHours,
           }
         ]
