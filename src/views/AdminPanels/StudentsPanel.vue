@@ -1,6 +1,6 @@
 <template>
   <div style="width: 100%">
-    <div class="big-title">
+    <div class="font-weight-medium px-0 mb-3" :class="!showDrawer ? 'mobile-title' : 'desk-title'">
       Студенты и планы
     </div>
     <hr>
@@ -175,6 +175,7 @@ export default {
     middleNameRule: {required: value => !!value},
     emailRule: {required: value => !!value},
     phoneRule: {required: value => !!value},
+    showDrawer: true,
   }),
 
   computed: {
@@ -202,9 +203,18 @@ export default {
 
   created() {
     this.initialize();
+    this.checkWindowWidth();
+    window.addEventListener('resize', this.checkWindowWidth);
   },
-
+  
+  
+  beforeDestroy() {
+    window.removeEventListener('resize', this.checkWindowWidth);
+  },
   methods: {
+    checkWindowWidth() {
+      this.showDrawer = window.innerWidth >= 1260;
+    },
     async getGroups() {
       const groups = new GroupsRequest();
       let groupsData
