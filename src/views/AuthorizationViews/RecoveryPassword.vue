@@ -20,7 +20,7 @@
               />
             </div>
             <v-card-title class="forget-password-card__title">
-              Восстановление пароля
+              Восстановить пароль
             </v-card-title>
             <v-card-subtitle class="forget-password-card__subtitle">
               Введите электронный адрес аккаунта, для которого нужно восстановить пароль,
@@ -51,7 +51,7 @@
               <v-btn
                   color="##E9E9E8"
                   @click="logout"
-                  class="forget-password-card__actions__btn"
+                  class="forget-password-card__actions__btn mt-2"
                   text
               >
                 Отмена
@@ -115,7 +115,7 @@ export default {
 </script>
 <style lang="scss">
 .v-dialog > .v-card > .v-card__actions {
-  padding: 0px 16px;
+  padding: 0 24px;
 }
 
 .logo-container-recovery-password {
@@ -159,26 +159,12 @@ export default {
     border-radius: 12px !important;
     margin-bottom: 16px !important;;
     max-height: 32px !important;
-
-    .v-input__slot {
-      display: flex !important;
-      align-items: center !important;
-      min-height: 32px !important;
-    }
-
-    .v-input__prepend-inner {
-      margin: 0 !important;
-    }
-
-    .v-input__icon {
-      height: 32px !important;
-    }
   }
 
   &__actions {
     display: flex;
     flex-direction: column;
-    margin-top: 16px !important;
+    margin-top: 8px !important;
 
     &__btn {
       border-radius: 8px;
