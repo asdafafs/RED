@@ -76,7 +76,7 @@ export default {
         },
         {
           id: 6,
-          title: 'Привязать аккуант к вк',
+          title: 'Привязать аккаунт к вк',
           link: 'linkVk',
           visible: true,
         },

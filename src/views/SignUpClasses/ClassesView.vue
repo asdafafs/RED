@@ -170,7 +170,6 @@ import EventsRequest from "@/services/EventsRequest";
 import UsersRequest from "@/services/UsersRequest";
 import {mapState} from "vuex";
 import moment from "moment/moment";
-import IdentityRequest from "@/services/IdentityRequest";
 
 export default {
   components: {LectureLogo, CarLogo},
@@ -187,7 +186,8 @@ export default {
     weekday: [1, 2, 3, 4, 5, 6, 0],
     selectedEvent: {},
     type: 'month',
-    types: [['month', 'месяц'], ['week', 'неделя'], ['day', 'день']],
+    // types: [['month', 'месяц'], ['week', 'неделя'], ['day', 'день']],
+    types: [['month', 'месяц'], ['day', 'день']],
     mode: 'stack',
     value: moment().locale('ru').format('YYYY-MM-DD'),
     currentDate: moment(),
