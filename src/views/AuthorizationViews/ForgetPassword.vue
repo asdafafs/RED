@@ -17,6 +17,7 @@
                   label="Пароль"
                   hint="Минимум 8 символов"
                   counter
+                  autocomplete="new-password"
               ></v-text-field>
               <v-text-field
                   solo
@@ -29,10 +30,10 @@
                   hint="Минимум 8 символов"
                   counter
                   @click:append="show = !show"
+                  autocomplete="new-password"
               ></v-text-field>
-              <v-alert v-if="!passwordsMatch" type="error">Пароли не совпадают</v-alert>
             </v-card-text>
-            <v-card-actions v-if="passwordsMatch">
+            <v-card-actions class="pb-3">
               <v-btn color="#4E7AEC" @click="validatePassword" class="rounded-lg pa-0 white--text" block :disabled="loginButtonDisabled">
                 Обновить пароль
               </v-btn>
@@ -72,9 +73,6 @@ export default {
     },
   },
   async mounted() {
-    const userId = this.$route.query.userId
-    const code = this.$route.query.code
-    await this.confirmEmail(userId, code)
   },
   methods: {
     async confirmEmail(userId, code) {
@@ -88,25 +86,28 @@ export default {
 
     async newPassword(body) {
       const password = new IdentityRequest()
-      await password.postNewPassword(body)
+      const response = await password.postNewPassword(body)
+      console.log(response.status)
+      if (response.status === 200){
+        this.$router.push({name: 'main'}).catch(err => {
+          console.log(err)
+        })
+      }
     },
 
     validatePassword() {
       if (!(this.rulesPassword.required(this.password) === true && this.rulesPassword.min(this.password) === true)) {
         return;
       }
+      const userId = this.$route.query.userId
+      const code = this.$route.query.code
       this.loginButtonDisabled = true
       const body = {
-        "userId": 0,
+        "userId": userId,
         "newPassword": this.password,
-        "code": "string"
+        "code": code
       }
-      this.newPassword(body)
-      alert('пароль сменен')
-      this.$router.push({name: 'main'}).catch(err => {
-        console.log(err)
-      })
-      this.overlay = false;
+      this.newPassword(body).finally(() => this.loginButtonDisabled = false)
     }
   }
 }

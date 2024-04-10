@@ -23,6 +23,7 @@ export default {
         || this.$route.path === '/post-vkLogin'
         || this.$route.path === '/accept-password'
         || this.$route.path === '/mail'
+        || this.$route.path === '/forget-password'
         || isRetry
         || isConfirmRequired
         || this.$route.path === '/confirm-email'

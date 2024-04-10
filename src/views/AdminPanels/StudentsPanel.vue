@@ -79,15 +79,8 @@
                       ></v-select>
                       <div class="card-edit-student__title" style="margin-top: 12px !important;">Часы</div>
                       <v-text-field outlined class="v-text-field-custom-admin " style="border-radius: 12px"
-                                    v-model="editedStudent.generalHours"
-                                    label="Количество основных часов"
-                                    height="32px"
-                                    hide-details
-                                    dense
-                      ></v-text-field>
-                      <v-text-field outlined class="v-text-field-custom-admin " style="border-radius: 12px"
-                                    v-model="editedStudent.additinalHours"
-                                    label="Количество дополнительных часов"
+                                    v-model="addHour"
+                                    label="Текущий остаток"
                                     height="32px"
                                     hide-details
                                     dense
@@ -163,6 +156,7 @@ export default {
     persons: [],
     editedIndex: -1,
     deletedIndex: -1,
+    addHour: 0,
     editedStudent: {
       name: '',
       surname: '',
@@ -194,7 +188,6 @@ export default {
           && this.middleNameRule.required(this.editedStudent.middleName)
           && this.emailRule.required(this.editedStudent.email)
           && this.phoneRule.required(this.editedStudent.phoneNumber))
-
     }
   },
 
@@ -212,9 +205,6 @@ export default {
   },
 
   methods: {
-    testClick(hours) {
-    },
-
     async getGroups() {
       const groups = new GroupsRequest();
       let groupsData
@@ -274,6 +264,11 @@ export default {
         generalHours: item.generalHours,
         additinalHours: item.additinalHours
       };
+      const defaultHours = 56
+      this.addHour = this.editedStudent.generalHours - defaultHours
+      if (this.editedStudent.generalHours - defaultHours < 0){
+        this.addHour = 0
+      }
       this.dialog = true;
     },
 
@@ -303,7 +298,6 @@ export default {
           email: '',
           phoneNumber: '7'
         };
-
       })
       this.editedIndex = -1;
     },
@@ -327,12 +321,14 @@ export default {
 
     async save() {
       if (this.editedIndex > -1) {
+        this.editedStudent.generalHours += parseInt(this.addHour)
         const body = this.editedStudent
+        console.log("generalHours", this.editedStudent.generalHours , 'добавка' ,parseInt(this.addHour))
+        console.log("Сумма", this.editedStudent.generalHours + parseInt(this.addHour))
         await this.putUser(body).finally(async () => {
           this.persons = await this.getStudents();
         })
       } else {
-        this.persons.push(this.editedStudent);
         const body = {
           "email": this.editedStudent.email,
           "phoneNumber": this.editedStudent.phoneNumber,
@@ -340,7 +336,7 @@ export default {
           "surname": this.editedStudent.surname,
           "middleName": this.editedStudent.middleName,
           "groupId": this.editedStudent.groupId,
-          "generalHours": this.editedStudent.generalHours,
+          "generalHours": this.editedStudent.generalHours + parseInt(this.addHour),
           "additinalHours": this.editedStudent.additinalHours,
         }
         await this.postUser(body).finally(() => {
@@ -405,7 +401,7 @@ export default {
 
 .card-edit-student {
   width: 392px !important;
-  height: 614px !important;
+  height: 560px !important;
   border-radius: 12px !important;
   flex-direction: column !important;
   align-items: flex-start !important;
