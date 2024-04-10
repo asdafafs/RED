@@ -18,8 +18,7 @@
                   hint="Минимум 8 символов"
                   counter
                   autocomplete="new-password"
-                  class="password-fields"
-                  style="border-radius: 12px !important;margin-bottom: 8px"
+                  style="border-radius: 12px !important; margin-bottom: 8px"
               />
               <v-text-field
                   solo dense outlined hide-details
@@ -29,7 +28,6 @@
                   label="Повторите пароль"
                   hint="Минимум 8 символов"
                   counter
-                  class="password-fields"
                   autocomplete="new-password"
                   @click:append="show = !show"
                   style="border-radius: 12px !important;"
@@ -113,27 +111,5 @@ export default {
 .width {
   width: 20em;
 }
-.password-fields {
-  .v-input__slot {
-    display: flex !important;
-    align-items: center !important;
-    min-height: 32px !important;
-  }
 
-  .v-input__prepend-inner {
-    margin: 0 !important;
-  }
-
-  .v-input__icon {
-    max-height: 32px !important;
-  }
-
-  .v-input__control {
-    max-height: 32px !important;
-
-    .v-input__slot {
-      max-height: 32px !important;
-    }
-  }
-}
 </style>
