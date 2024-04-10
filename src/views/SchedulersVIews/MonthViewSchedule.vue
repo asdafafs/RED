@@ -282,6 +282,7 @@ export default {
         this.getAllTeachers()
         this.getAllStudents()
         if (this.user.discriminator && this.discriminatorUser ) {
+          this.selectedTeacher = this.userID
           this.selectedActiveUser = this.userID
         }
       }

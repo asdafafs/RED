@@ -99,7 +99,7 @@ export default class HttpService {
 
     getErrorMessage(error){
         if(error.response.request.status === 500){
-            return error.response.data.message
+            return error.response.data.serverMessage
         }
         return error.response.data.serverMessage ?? 'Произошла неизвестная ошибка'
 

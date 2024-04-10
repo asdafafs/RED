@@ -23,15 +23,12 @@
               <v-text-field
                   solo dense outlined hide-details
                   v-model="passwordRepeat"
-                  :append-icon="show ? 'mdi-eye ' : 'mdi-eye-off '"
                   :rules="[rulesPassword.required, rulesPassword.min, checkPasswordMatch]"
-                  :type="show ? 'text' : 'password'"
                   name="input-10-2"
                   label="Повторите пароль"
                   hint="Минимум 8 символов"
                   counter
                   autocomplete="new-password"
-                  @click:append="show = !show"
                   style="border-radius: 12px !important; max-height: 32px !important; margin-top: 12px !important;"
               ></v-text-field>
             </v-card-text>

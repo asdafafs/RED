@@ -79,7 +79,7 @@
                       ></v-select>
                       <div class="card-edit-student__title" style="margin-top: 12px !important;">Часы</div>
                       <v-text-field outlined class="v-text-field-custom-admin " style="border-radius: 12px"
-                                    v-model="addHour"
+                                    v-model="editedStudent.generalHoursSpent"
                                     label="Текущий остаток"
                                     height="32px"
                                     hide-details
@@ -162,7 +162,7 @@ export default {
       surname: '',
       middleName: '',
       email: '',
-      groupId: '',
+      groupId: null,
       phoneNumber: '7',
       generalHours: 0,
       generalHoursSpent: 0,
@@ -261,14 +261,14 @@ export default {
         surname: item.surname,
         middleName: item.middleName,
         groupId: item.groupId,
-        generalHours: item.generalHours,
+        generalHoursSpent: item.generalHoursSpent,
         additinalHours: item.additinalHours
       };
-      const defaultHours = 56
-      this.addHour = this.editedStudent.generalHours - defaultHours
-      if (this.editedStudent.generalHours - defaultHours < 0){
-        this.addHour = 0
-      }
+      // const defaultHours = 56
+      // this.addHour = this.editedStudent.generalHours - defaultHours
+      // if (this.editedStudent.generalHours - defaultHours < 0){
+      //   this.addHour = 0
+      // }
       this.dialog = true;
     },
 
@@ -294,11 +294,12 @@ export default {
           name: '',
           surname: '',
           middleName: '',
-          groupId: '',
+          groupId: 0,
           email: '',
           phoneNumber: '7'
         };
       })
+      this.addHour = 0
       this.editedIndex = -1;
     },
 
@@ -309,7 +310,7 @@ export default {
           name: '',
           surname: '',
           middleName: '',
-          groupId: '',
+          groupId: null,
           email: '',
           phoneNumber: '7',
           generalHours: 0,
@@ -321,12 +322,11 @@ export default {
 
     async save() {
       if (this.editedIndex > -1) {
-        this.editedStudent.generalHours += parseInt(this.addHour)
         const body = this.editedStudent
-        console.log("generalHours", this.editedStudent.generalHours , 'добавка' ,parseInt(this.addHour))
-        console.log("Сумма", this.editedStudent.generalHours + parseInt(this.addHour))
-        await this.putUser(body).finally(async () => {
-          this.persons = await this.getStudents();
+        console.log("generalHoursSpent", this.editedStudent.generalHoursSpent )
+        await this.putUser(body).catch(() => {this.dialogDelete = false;}).finally( () => {
+          this.close();
+          this.initialize()
         })
       } else {
         const body = {
@@ -339,11 +339,13 @@ export default {
           "generalHours": this.editedStudent.generalHours + parseInt(this.addHour),
           "additinalHours": this.editedStudent.additinalHours,
         }
-        await this.postUser(body).finally(() => {
-          this.persons = this.getStudents();
+        await this.postUser(body).catch(() => {this.dialogDelete = false;}).finally(() => {
+          this.close();
+          this.initialize()
         })
       }
-      this.close();
+
+
     },
   },
 };
