@@ -165,7 +165,7 @@ export default {
       groupId: null,
       phoneNumber: '7',
       generalHours: 0,
-      generalHoursSpent: 0,
+      generalHoursSpent: 56,
       additinalHours: 0,
       additinalHoursSpent: 0,
     },
@@ -261,14 +261,9 @@ export default {
         surname: item.surname,
         middleName: item.middleName,
         groupId: item.groupId,
-        generalHoursSpent: item.generalHoursSpent,
+        generalHoursSpent: parseInt(item.generalHoursSpent),
         additinalHours: item.additinalHours
       };
-      // const defaultHours = 56
-      // this.addHour = this.editedStudent.generalHours - defaultHours
-      // if (this.editedStudent.generalHours - defaultHours < 0){
-      //   this.addHour = 0
-      // }
       this.dialog = true;
     },
 
@@ -322,8 +317,16 @@ export default {
 
     async save() {
       if (this.editedIndex > -1) {
-        const body = this.editedStudent
-        console.log("generalHoursSpent", this.editedStudent.generalHoursSpent )
+        const body = {
+          "id": this.editedStudent.id,
+          "email": this.editedStudent.email,
+          "phoneNumber": this.editedStudent.phoneNumber,
+          "name": this.editedStudent.name,
+          "surname": this.editedStudent.surname,
+          "middleName": this.editedStudent.middleName,
+          "groupId": this.editedStudent.groupId,
+          "generalHours": this.editedStudent.generalHoursSpent,
+        }
         await this.putUser(body).catch(() => {this.dialogDelete = false;}).finally( () => {
           this.close();
           this.initialize()
