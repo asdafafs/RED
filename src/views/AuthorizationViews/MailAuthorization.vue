@@ -13,7 +13,7 @@
         >
           <v-card
               v-if="overlay"
-              class="mail-authorization-card height"
+              class="mail-authorization-card"
           >
             <div class="logo-container">
               <LogoRed
