@@ -5,13 +5,12 @@
         <v-container class="pa-0 height-container" fluid>
           <v-row no-gutters align="center" class="height-container">
             <v-col cols="2" class="d-flex justify-center align-center">
-              <v-app-bar-nav-icon color="white" variant="text" @click="$emit('update:drawer',  !drawer);">
-              </v-app-bar-nav-icon>
+              <v-app-bar-nav-icon color="white" variant="text" @click="$emit('update:drawer',  !drawer);"/>
             </v-col>
             <v-col cols=8 class="d-flex justify-center align-center">
-              <LogoRed></LogoRed>
+              <LogoRed/>
             </v-col>
-            <v-col cols="2"></v-col>
+            <v-col cols="2"/>
           </v-row>
         </v-container>
       </v-col>

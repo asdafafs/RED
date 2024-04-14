@@ -53,18 +53,18 @@
                     <v-col class="flex-column pa-0 flex-wrap">
                       <v-text-field v-model="editedTeacher.name" label="Имя" :rules="[nameRule.required]" outlined
                                     height="32px" dense hide-details
-                                    class="v-text-field-custom-admin"></v-text-field>
+                                    class="v-text-field-custom-admin"/>
                       <v-text-field v-model="editedTeacher.surname" label="Фамилия" :rules="[surnameRule.required]"
                                     height="32px" dense hide-details
-                                    outlined class="v-text-field-custom-admin"></v-text-field>
+                                    outlined class="v-text-field-custom-admin"/>
                       <v-text-field v-model="editedTeacher.middleName" label="Отчество" height="32px" dense hide-details
                                     :rules="[middleNameRule.required]" outlined
-                                    class="v-text-field-custom-admin"></v-text-field>
+                                    class="v-text-field-custom-admin"/>
                       <v-text-field v-model="editedTeacher.email" label="email" :rules="[emailRule.required]"
                                     height="32px" dense hide-details
-                                    class="v-text-field-custom-admin" outlined></v-text-field>
+                                    class="v-text-field-custom-admin" outlined/>
                       <vue-text-mask class="phone-field" v-model="editedTeacher.phoneNumber" :mask="mask"
-                                     :rules="[phoneRule.required]"></vue-text-mask>
+                                     :rules="[phoneRule.required]"/>
                     </v-col>
                   </v-row>
                 </v-container>
@@ -74,7 +74,7 @@
                   <v-btn text @click="close" style="text-transform: none !important;">
                     <span style="color: black">Отмена</span>
                   </v-btn>
-                  <v-btn class="close-button" @click="save" :disabled="isSaveButtonDisabled">
+                  <v-btn class="close-button" @click="save" :disabled="isSaveButtonDisabled && blockButtonWhenRequest">
                     <span style="color: white">Изменить</span>
                   </v-btn>
                 </v-container>
@@ -83,12 +83,12 @@
           </v-dialog>
           <v-dialog v-model="dialogDelete" max-width="500px">
             <v-card>
-              <v-card-title class="text-h5">Сносим?</v-card-title>
+              <v-card-title class="text-h5">Вы действительно хотите удалить инструктора?</v-card-title>
               <v-card-actions>
-                <v-spacer></v-spacer>
+                <v-spacer/>
                 <v-btn color="blue darken-1" text @click="closeDelete">Отмена</v-btn>
-                <v-btn color="blue darken-1" text @click="deleteItemConfirm">OK</v-btn>
-                <v-spacer></v-spacer>
+                <v-btn color="blue darken-1" text @click="deleteItemConfirm" :disabled="blockButtonWhenRequest">OK</v-btn>
+                <v-spacer/>
               </v-card-actions>
             </v-card>
           </v-dialog>
@@ -127,6 +127,7 @@ export default {
     search: '',
     dialog: false,
     dialogDelete: false,
+    blockButtonWhenRequest: false,
     mask: ['+', /\d/, '(', /[1-9]/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, '-', /\d/, /\d/],
     headers: [
       {text: 'ФИО', align: 'start', sortable: false, value: 'fullName'},
@@ -243,13 +244,17 @@ export default {
     },
 
     async deleteItemConfirm() {
-      this.persons.activeUsers.splice(this.editedIndex, 1);
-      await this.deleteUser()
-      this.closeDelete();
+      this.blockButtonWhenRequest = true
+      await this.deleteUser().finally(() => {
+        this.initialize()
+        this.closeDelete();
+      })
+
     },
 
     close() {
       this.dialog = false;
+      this.blockButtonWhenRequest = false;
       this.$nextTick(() => {
         this.editedTeacher = {
           name: '',
@@ -263,6 +268,7 @@ export default {
     },
 
     closeDelete() {
+      this.blockButtonWhenRequest = false
       this.dialogDelete = false;
       this.$nextTick(() => {
         this.editedTeacher = {
@@ -277,10 +283,12 @@ export default {
     },
 
     async save() {
+      this.blockButtonWhenRequest = true
       if (this.editedIndex > -1) {
         const body = this.editedTeacher
         await this.putActiveUser(body).finally(async () => {
           this.persons = await this.getActiveUsers();
+          this.close();
         })
       } else {
         const body = {
@@ -291,9 +299,10 @@ export default {
           "middleName": this.editedTeacher.middleName,
         }
         await this.postActiveUser(body).finally(async () => {
+
           this.persons = await this.getActiveUsers();
+          this.close();
         })
-        this.close();
       }
     },
   },

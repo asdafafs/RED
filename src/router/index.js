@@ -14,12 +14,10 @@ import ForgetPassword from "@/views/AuthorizationViews/ForgetPassword.vue";
 import StudentsPanel from "@/views/AdminPanels/StudentsPanel.vue";
 import TeachersPanel from "@/views/AdminPanels/TeachersPanel.vue";
 import MainPanel from "@/views/AdminPanels/MainPanel.vue";
-import TestTest from "@/views/SchedulersVIews/TestTest.vue";
 import MonthViewSchedule from "@/views/SchedulersVIews/MonthViewSchedule.vue";
 import GroupPanel from "@/views/AdminPanels/GroupPanel.vue";
 import ScheduleClasses from "@/views/SignUpClasses/ScheduleClasses.vue";
 import ClassesView from "@/views/SignUpClasses/ClassesView.vue";
-import Test from "@/views/Test";
 import InstructorsPlanTemplate from "@/views/AdminPanels/InstructorsPlanTemplate.vue";
 import Item from "@/views/AdminPanels/GroupTemplate.vue";
 import AcceptPassword from "@/views/AuthorizationViews/AcceptPassword.vue";
@@ -147,16 +145,6 @@ const routes = [
 
             },
         ]
-    },
-    {
-        path: "/test",
-        name: "test",
-        component: TestTest
-    },
-    {
-        path: '/test-kal',
-        name: 'test-kal',
-        component: Test
     },
     {
         path: '*',

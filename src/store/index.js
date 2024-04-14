@@ -1,12 +1,10 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import {AlertStore} from "@/store/Alert/AlertStore";
 import IdentityRequest from "@/services/IdentityRequest";
 
 Vue.use(Vuex)
 
 export default new Vuex.Store({
-    modules: {AlertStore},
     state: {
         user: {
             userId: null,

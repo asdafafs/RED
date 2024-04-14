@@ -11,7 +11,7 @@
       </v-col>
       <v-col class="text-right col-auto  mr-4">
         <v-btn class="template-course-button" @click="save" color="#4E7AEC"
-               :disabled="isSaveButtonDisabled">
+               :disabled="isSaveButtonDisabled && blockButtonWhenRequest">
           <section class="d-flex flex-row align-center" style="padding: 8px 12px 8px 12px !important;">
             <span class="template-course-button-text white--text">Сохранить изменения</span>
           </section>
@@ -31,13 +31,13 @@
                       class="text-field-group-template"
                       :rules="[groupNumberRules.required, groupNumberRules.integer]" outlined hide-details
                       @change="newGroupTitle"
-                      style="border-radius: 12px !important; max-height: 32px !important;"></v-text-field>
+                      style="border-radius: 12px !important; max-height: 32px !important;"/>
       </v-col>
       <v-col cols="lg-2 md-3">
         <v-text-field v-model="editedItem.groups.title" label="Название группы" dense
                       class="text-field-group-template"
                       style="border-radius: 12px !important; max-height: 32px !important;"
-                      :rules="[titleRules.required]" outlined hide-details disabled></v-text-field>
+                      :rules="[titleRules.required]" outlined hide-details disabled/>
       </v-col>
     </v-row>
     <v-row class="flex-wrap">
@@ -53,8 +53,7 @@
             persistent-hint
             no-data-text="Нет данных для отображения"
             item-value="id"
-            @change="updateSelectedStudentsIds" dense height="32px"
-        ></v-select>
+            @change="updateSelectedStudentsIds" dense height="32px"/>
       </v-col>
     </v-row>
     <v-row class="flex-wrap">
@@ -64,7 +63,7 @@
                       class="text-field-group-template"
                       style="border-radius: 12px !important; max-height: 32px !important;"
                       @input="updateGlobalStartDate" :min="getTodayDate()" @change="newGroupTitle" outlined
-                      hide-details></v-text-field>
+                      hide-details/>
       </v-col>
       <v-col cols="lg-1 md-2">
         <v-text-field dense
@@ -76,8 +75,7 @@
                       outlined
                       hide-details
                       class="text-field-group-template"
-                      style="border-radius: 12px !important; max-height: 32px !important;"
-        ></v-text-field>
+                      style="border-radius: 12px !important; max-height: 32px !important;"/>
       </v-col>
       <v-col cols="lg-4 md-4 sm-8" class="d-flex justify-space-around">
         <template>
@@ -98,7 +96,7 @@
     <v-row>
       <v-col class="py-0">
         <CoursesList :coursesData="lessons" :lectors="teachers" :initialData="initialData"
-                     @courses-updated="handleCoursesUpdated"></CoursesList>
+                     @courses-updated="handleCoursesUpdated"/>
       </v-col>
     </v-row>
   </v-container>
@@ -127,6 +125,7 @@ export default {
     selectedStudents: [],
     selectedStudentsIds: [],
     teachers: [],
+    blockButtonWhenRequest: false,
     groupDisabled: false,
     cancelSaveChanges: false,
     chips: ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'],
@@ -379,6 +378,7 @@ export default {
     },
 
     close() {
+      this.blockButtonWhenRequest = false
       const nextGroupNumber = this.groups.length + 1;
       this.$nextTick(() => {
         this.editedItem = {
@@ -405,6 +405,7 @@ export default {
     },
 
     save: async function () {
+      this.blockButtonWhenRequest = true
       if (this.editedIndex > -1) {
         const body = {
           "title": this.editedItem.groups.title,
@@ -417,6 +418,7 @@ export default {
         }
         await this.postCourse(body).then(() => {
           successAlert('Изменения сохранены успешно', 5000);
+          this.close();
         })
       } else {
         const body = {
@@ -430,9 +432,9 @@ export default {
         }
         await this.postCourse(body).then(() => {
           successAlert('Группа успешно создана', 5000);
+          this.close();
         })
       }
-      this.close();
     },
 
     formatDatetime(timestamp) {

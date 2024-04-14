@@ -53,19 +53,19 @@
                     <v-col class="flex-column pa-0 flex-wrap">
                       <v-text-field v-model="editedStudent.name" label="Имя" height="32px" dense hide-details
                                     :rules="[nameRule.required]" outlined
-                                    class="v-text-field-custom-admin"></v-text-field>
+                                    class="v-text-field-custom-admin"/>
                       <v-text-field v-model="editedStudent.surname" outlined label="Фамилия" height="32px" dense
                                     hide-details
-                                    :rules="[surnameRule.required]" class="v-text-field-custom-admin "></v-text-field>
+                                    :rules="[surnameRule.required]" class="v-text-field-custom-admin "/>
                       <v-text-field v-model="editedStudent.middleName" outlined label="Отчество" height="32px" dense
                                     hide-details
                                     :rules="[middleNameRule.required]"
-                                    class="v-text-field-custom-admin "></v-text-field>
+                                    class="v-text-field-custom-admin "/>
                       <v-text-field v-model="editedStudent.email" outlined label="email" height="32px" dense
                                     hide-details
                                     :rules="[emailRule.required]" class="v-text-field-custom-admin "></v-text-field>
                       <vue-text-mask class="phone-field" v-model="editedStudent.phoneNumber" :mask="mask"
-                                    :rules="[phoneRule.required]"></vue-text-mask>
+                                    :rules="[phoneRule.required]"/>
                       <v-select outlined class="v-text-field-custom-admin " style="border-radius: 12px"
                                 v-model="editedStudent.groupId"
                                 :items="groups"
@@ -75,16 +75,14 @@
                                 no-data-text="Нет данных для отображения"
                                 height="32px"
                                 hide-details
-                                dense
-                      ></v-select>
+                                dense/>
                       <div class="card-edit-student__title" style="margin-top: 12px !important;">Часы</div>
                       <v-text-field outlined class="v-text-field-custom-admin " style="border-radius: 12px"
                                     v-model="editedStudent.generalHoursSpent"
                                     label="Текущий остаток"
                                     height="32px"
                                     hide-details
-                                    dense
-                      ></v-text-field>
+                                    dense/>
                     </v-col>
                   </v-row>
                 </v-container>
@@ -94,7 +92,7 @@
                   <v-btn text @click="close" style="text-transform: none !important;">
                     <span style="color: black">Отмена</span>
                   </v-btn>
-                  <v-btn class="close-button" @click="save" :disabled="isSaveButtonDisabled">
+                  <v-btn class="close-button" @click="save" :disabled="isSaveButtonDisabled && blockButtonWhenRequest ">
                     <span style="color: white">Изменить</span>
                   </v-btn>
                 </v-container>
@@ -105,10 +103,10 @@
             <v-card>
               <v-card-title class="text-h5">Вы действительно хотите удалить ученика</v-card-title>
               <v-card-actions>
-                <v-spacer></v-spacer>
+                <v-spacer/>
                 <v-btn color="blue darken-1" text @click="closeDelete">Отмена</v-btn>
-                <v-btn color="blue darken-1" text @click="deleteItemConfirm">OK</v-btn>
-                <v-spacer></v-spacer>
+                <v-btn color="blue darken-1" text @click="deleteItemConfirm"  :disabled="blockButtonWhenRequest">OK</v-btn>
+                <v-spacer/>
               </v-card-actions>
             </v-card>
           </v-dialog>
@@ -142,6 +140,7 @@ export default {
     search: '',
     dialog: false,
     dialogDelete: false,
+    blockButtonWhenRequest: false,
     mask: ['+', /\d/, '(', /[1-9]/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, '-', /\d/, /\d/],
     headers: [
       {text: 'ФИО', align: 'start', sortable: false, value: 'fullName'},
@@ -294,6 +293,7 @@ export default {
 
     close() {
       this.dialog = false;
+      this.blockButtonWhenRequest = false
       this.$nextTick(() => {
         this.editedStudent = {
           name: '',
@@ -326,6 +326,7 @@ export default {
     },
 
     async save() {
+      this.blockButtonWhenRequest = true
       if (this.editedIndex > -1) {
         const body = {
           "id": this.editedStudent.id,
