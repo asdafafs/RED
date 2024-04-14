@@ -6,13 +6,11 @@
     >
       <v-col cols="4" class="pa-0 overflow-x-hidden">
         <v-dialog
-            v-model="overlay"
             persistent
             width="auto"
             content-class="elevation-0"
         >
           <v-card
-              v-if="overlay"
               class="mail-authorization-card"
           >
             <div class="logo-container">
@@ -32,7 +30,7 @@
               <v-text-field
                   color="black"
                   v-model="email"
-                  :readonly="loading"
+                  :readonly="false"
                   :rules="[rulesEmail.required]"
                   class="mb-2 mail-authorization-card__field "
                   label="E-mail"
@@ -98,17 +96,12 @@ export default {
   name: 'MailAuthorization',
   components: {LogoRed},
   data: () => ({
-    message: null,
-    overlay: true,
-    form: true,
     show: false,
     email: null,
-    loading: false,
     loginButtonDisabled: false,
-    value: '',
     password: '',
     rulesEmail: {
-      required: v => !!v || 'Введите email'
+      required: value => !!value || 'Введите email'
     },
     rulesPassword: {
       required: value => !!value || 'Введите пароль',
@@ -116,6 +109,13 @@ export default {
     },
     wrongAuth: false,
   }),
+
+  computed: {
+    isPasswordValid() {
+      return this.rulesPassword.required(this.password) === true && this.rulesPassword.min(this.password) === true;
+    },
+  },
+
   methods: {
     async login(body) {
       this.wrongAuth = false;
@@ -158,7 +158,7 @@ export default {
         "email": this.email,
         "password": this.password
       }
-      const identity = new IdentityRequest()
+      new IdentityRequest();
       await this.login(body).finally(() => {
         this.loginButtonDisabled = false
       })
@@ -170,13 +170,8 @@ export default {
         })
       }
     }
+  },
 
-  },
-  computed: {
-    isPasswordValid() {
-      return this.rulesPassword.required(this.password) === true && this.rulesPassword.min(this.password) === true;
-    },
-  },
 };
 </script>
 <style lang="scss">

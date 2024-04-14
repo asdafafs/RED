@@ -16,23 +16,22 @@
              style="min-width: 109px !important;">
         <v-radio-group class="px-0 py-0 align-center ma-0" v-model="selectedDuration" hide-details
                        :disabled="blockEditableTemplate">
-          <v-radio label="1 час" :value="1"></v-radio>
-          <v-radio label="2 часа" :value="2"></v-radio>
+          <v-radio label="1 час" :value="1"/>
+          <v-radio label="2 часа" :value="2"/>
         </v-radio-group>
       </v-col>
       <v-col cols="lg-2 md-2 py-0" class="align-center bg-surface-variant d-flex">
         <v-text-field v-model="practiceCourseStart" label="Дата начала" type="date" ref="startDateField"
                       :rules="[startDateRules.required]" :min="getTodayDate()" outlined
                       class="select-practice-template" hide-details :disabled="blockEditableTemplate"
-                      style="border-radius: 12px !important; max-height: 32px !important;"
-        ></v-text-field>
+                      style="border-radius: 12px !important; max-height: 32px !important;"/>
       </v-col>
       <v-col cols="lg-2 md-2 py-0" class="align-center bg-surface-variant d-flex">
         <v-text-field v-model="practiceCourseEnd" label="Дата окончания" type="date" ref="endDateField"
                       :rules="[endTimeRules.required]" :min="getTodayDate()" outlined
                       class="select-practice-template"
                       style="border-radius: 12px !important; max-height: 32px !important;"
-                      hide-details :disabled="blockEditableTemplate"></v-text-field>
+                      hide-details :disabled="blockEditableTemplate"/>
       </v-col>
       <v-col cols="" class="align-center bg-surface-variant d-flex lg-2 md-2 sm-0 py-0">
         <v-select v-model="selectedTemplate" label="Выберите шаблон практик" :items="listTemplates"
@@ -45,12 +44,12 @@
 blockEditableTemplate = selectedTemplate ? !!selectedTemplate.practiceCourseId : false"
                   outlined hide-details
                   class="select-practice-template"
-                  style="border-radius: 12px !important; max-height: 32px !important; min-width: 256px !important;">
-        </v-select>
+                  style="border-radius: 12px !important; max-height: 32px !important; min-width: 256px !important;"/>
       </v-col>
-      <v-col cols="lg-2 md-0 sm-0 pa-0"></v-col>
+      <v-col cols="lg-2 md-0 sm-0 pa-0"/>
       <v-col cols=" px-0">
-        <v-btn class="tab-button pa-0 rounded-lg" color="#2B2A29" outlined @click="save">
+        <v-btn class="tab-button pa-0 rounded-lg" color="#2B2A29" outlined @click="save"
+               :disabled="isSaveButtonDisabled">
           <span class="black--text">Сохранить изменения</span>
         </v-btn>
       </v-col>
@@ -63,7 +62,7 @@ blockEditableTemplate = selectedTemplate ? !!selectedTemplate.practiceCourseId :
     <v-row>
       <TemplateSchedule @plan-updated="handleEvents" :selectedDuration="selectedDuration"
                         :fullNameActiveUser="fullName" :events="eventsTemplate"
-                        :practiceCourseStart="dateFirstPractice"></TemplateSchedule>
+                        :practiceCourseStart="dateFirstPractice"/>
     </v-row>
   </v-container>
 </template>
@@ -77,6 +76,7 @@ export default {
   name: 'PlanTemplate',
   components: {TemplateSchedule},
   data: () => ({
+    isSaveButtonDisabled: false,
     fullName: '',
     eventsTemplate: [],
     selectedDuration: 1,
@@ -132,6 +132,7 @@ export default {
     },
 
     async save() {
+      this.isSaveButtonDisabled = true
       if (this.startDateRules.required(this.practiceCourseStart) && this.endTimeRules.required(this.practiceCourseEnd)) {
         const hasUnsavedTime = this.eventsTemplate.some(event => event.savedTime === undefined || event.startTime !== event.savedTime);
         if (hasUnsavedTime) {
@@ -143,9 +144,10 @@ export default {
             'duration': this.selectedDuration,
             "practices": this.eventsTemplate
           };
-          await this.postPracticeCourseTemplate(body)
-
-          this.initialize()
+          await this.postPracticeCourseTemplate(body).finally(() => {
+            this.isSaveButtonDisabled = false
+            this.initialize()
+          })
         } else {
           warningAlert('Не обнаружено доступных изменений', 5000)
         }
@@ -186,7 +188,6 @@ export default {
 
     async getPracticeCourseTemplate() {
       if (this.selectedTemplate === null) {
-        console.log('ничего не будет')
         return this.eventsTemplate = []
       }
       const practiceCourseTemplate = new PracticeCourseRequest()

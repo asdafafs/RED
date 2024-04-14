@@ -27,18 +27,16 @@
                     <v-col class="flex-column pa-0 flex-wrap">
                       <v-text-field v-model="editedItem.title" label="Название" height="32px" dense hide-details
                                     :rules="[titleRules.required]" outlined
-                                    class="v-text-field-custom-course"></v-text-field>
+                                    class="v-text-field-custom-course"/>
                       <v-text-field v-model="editedItem.startTime" label="Начало занятия" type="datetime-local"
                                     :rules="[startDateTimeRules.required]" :min="getTodayDate" outlined height="32px"
                                     dense hide-details
-                                    class="v-text-field-custom-course">
-                      </v-text-field>
+                                    class="v-text-field-custom-course"/>
                       <v-text-field v-model="editedItem.endTime" label="Конец занятия" type="datetime-local"
                                     height="32px"
                                     dense hide-details
                                     :rules="[endDateTimeRules.required]" :min="getTodayDate" outlined
-                                    class="v-text-field-custom-course">
-                      </v-text-field>
+                                    class="v-text-field-custom-course"/>
                       <v-select height="32px" dense hide-details
                                 ref="selectItem"
                                 v-model="discriminator[editedItem.lectureType]"
@@ -68,8 +66,7 @@
                           item-value="id"
                           outlined
                           class="v-text-field-custom-course"
-                          no-data-text="Нет данных для отображения"
-                      ></v-select>
+                          no-data-text="Нет данных для отображения"/>
                     </v-col>
                   </v-row>
                 </v-container>
@@ -101,7 +98,6 @@
       </template>
       <template v-slot:item="{ item  }">
         <tr :class="selectedRows.indexOf(item.id)>-1?'selected-row':''">
-
           <td>{{ item.title }}</td>
           <td>{{ getTitleTeacher(item.activeUser) }}</td>
           <td>{{ discriminator[item.lectureType] }}</td>

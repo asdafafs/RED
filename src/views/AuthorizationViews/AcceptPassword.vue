@@ -34,7 +34,7 @@
               />
             </v-card-text>
             <v-card-actions>
-              <v-btn color="#4E7AEC" @click="validatePassword" class="rounded-lg pa-0 white--text" block :disabled="loginButtonDisabled || !passwordsMatch">
+              <v-btn color="#4E7AEC" @click="validatePassword" class="rounded-lg pa-0 white--text" block :disabled="loginButtonDisabled || passwordsMatch">
                 Добавить пароль
               </v-btn>
             </v-card-actions>
@@ -53,6 +53,7 @@ export default {
   data: () => ({
     overlay: true,
     loginButtonDisabled: false,
+    blockButtonWhenRequest: false,
     show: false,
     loading: false,
     value: '',
@@ -66,7 +67,7 @@ export default {
   }),
   computed: {
     passwordsMatch() {
-      return this.password === this.passwordRepeat;
+      return !(this.password === this.passwordRepeat);
     },
     checkPasswordMatch() {
       return value => (value === this.password ? true : 'Пароли не совпадают');
@@ -75,24 +76,17 @@ export default {
   async mounted() {
   },
   methods: {
-    async confirmPassword(userId, code) {
-      const identity = new IdentityRequest()
-      await identity.postNewPassword({userId, code}).then(() => {
-        identity.getIdentity();
-        this.$router.push({name: 'main'})
-      })
-    },
-
     async newPassword(body) {
+      this.loginButtonDisabled = true
       const password = new IdentityRequest()
-      await password.postPasswordNewUser(body)
+      await password.postPasswordNewUser(body).finally(() => {this.loginButtonDisabled = false})
     },
 
     validatePassword() {
       if (!(this.rulesPassword.required(this.password) === true && this.rulesPassword.min(this.password) === true)) {
         return;
       }
-      this.loginButtonDisabled = true
+
       const body = {
         "userId": parseInt(this.$route.query.userId),
         "password": this.password,

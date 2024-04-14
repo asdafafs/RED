@@ -66,7 +66,7 @@
 <script>
 import IdentityRequest from "@/services/IdentityRequest";
 import LogoRed from "@/components/logos/LogoRed.vue";
-import {successAlert, warningAlert} from "@/components/Alerts/alert";
+import {successAlert} from "@/components/Alerts/alert";
 
 export default {
   name: 'RecoveryPassword',
@@ -96,7 +96,7 @@ export default {
     async checkEmail(body) {
       this.loginButtonDisabled = true
       const email = new IdentityRequest()
-      await email.postForgetPassword({"email": body})
+      await email.postForgetPassword({"email": body}).finally(() => {this.loginButtonDisabled = false})
     },
 
     validateEmail() {
