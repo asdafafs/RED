@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="d-flex flex-row justify-space-between full-width  px-3 mb-3 align-center">
-      <div class="text-h3 font-weight-medium px-0">
+      <div class="font-weight-medium px-0 mb-3" :class="!showDrawer ? 'mobile-title' : 'desk-title'">
         Личный кабинет 
       </div>
       <div style="font-weight: 700; font-size: 28px; color: #4E7AEC">

@@ -3,12 +3,12 @@
     <v-row align="center" justify="center" class=" ">
       <v-col cols="4" class=" pa-0" align="center">
         <v-dialog v-model="overlay" persistent width="auto" content-class="elevation-0">
-          <v-card class="d-flex flex-column white rounded-lg ma-2 width" style="height: 230px !important;">
-            <v-card-title class="black--text"> Создание пароля</v-card-title>
-            <v-card-subtitle class="black--text">
-              Введите  пароль
+          <v-card class="d-flex flex-column white rounded-lg ma-2 width" style="height: 260px !important;">
+            <v-card-title class="black--text pl-4 pr-4" style="font-size: 32px; font-weight: 700; padding-bottom: 0"> Создание пароля</v-card-title>
+            <v-card-subtitle class="black--text mt-4 pl-4 pr-4" style="font-size: 16px; font-weight: 400;padding-bottom: 0">
+              Придумайте пароль для входа
             </v-card-subtitle>
-            <v-card-text class="pb-0 ">
+            <v-card-text class="d-flex flex-column mt-4 mb-4 pb-0 pl-4 pr-4">
               <v-text-field
                   solo dense outlined hide-details
                   v-model="password"
@@ -18,8 +18,8 @@
                   hint="Минимум 8 символов"
                   counter
                   autocomplete="new-password"
-                  style="border-radius: 12px !important; max-height: 32px !important; margin-top: 12px !important;"
-              ></v-text-field>
+                  style="border-radius: 12px !important; margin-bottom: 8px"
+              />
               <v-text-field
                   solo dense outlined hide-details
                   v-model="passwordRepeat"
@@ -29,10 +29,11 @@
                   hint="Минимум 8 символов"
                   counter
                   autocomplete="new-password"
-                  style="border-radius: 12px !important; max-height: 32px !important; margin-top: 12px !important;"
-              ></v-text-field>
+                  @click:append="show = !show"
+                  style="border-radius: 12px !important;"
+              />
             </v-card-text>
-            <v-card-actions style="margin-top: 12px !important;">
+            <v-card-actions>
               <v-btn color="#4E7AEC" @click="validatePassword" class="rounded-lg pa-0 white--text" block :disabled="loginButtonDisabled || !passwordsMatch">
                 Добавить пароль
               </v-btn>
@@ -106,8 +107,9 @@ export default {
   }
 }
 </script>
-<style>
+<style lang="scss">
 .width {
   width: 20em;
 }
+
 </style>
