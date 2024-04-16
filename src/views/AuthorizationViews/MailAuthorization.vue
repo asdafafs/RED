@@ -6,6 +6,7 @@
     >
       <v-col cols="4" class="pa-0 overflow-x-hidden">
         <v-dialog
+            v-model="overlay"
             persistent
             width="auto"
             content-class="elevation-0"
@@ -96,6 +97,7 @@ export default {
   name: 'MailAuthorization',
   components: {LogoRed},
   data: () => ({
+    overlay: true,
     show: false,
     email: null,
     loginButtonDisabled: false,
