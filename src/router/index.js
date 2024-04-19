@@ -7,7 +7,6 @@ import scheduleView from "@/views/SchedulersVIews/ScheduleView.vue";
 import ProgressBar from "@/views/SchedulersVIews/ProgressBar.vue";
 import RecoveryPassword from "@/views/AuthorizationViews/RecoveryPassword.vue";
 import MailAuthorization from "@/views/AuthorizationViews/MailAuthorization.vue";
-import VkAuthorization from "@/views/AuthorizationViews/SelectAuthorization.vue";
 import PostLoginPage from "@/views/AuthorizationViews/PostLoginPage.vue";
 import ConfirmEmail from "@/views/AuthorizationViews/ConfirmEmail.vue";
 import ForgetPassword from "@/views/AuthorizationViews/ForgetPassword.vue";
@@ -31,17 +30,11 @@ const routes = [
         path: '/',
         name: 'main',
         component: AuthorizationView,
-        children: []
     },
     {
         path: '/mail',
         name: 'mail',
         component: MailAuthorization,
-    },
-    {
-        path: '/vkAuthorization',
-        name: 'vk',
-        component: VkAuthorization,
     },
     {
         path: '/recoveryPassWord',
@@ -142,7 +135,6 @@ const routes = [
                 path: "schedule-lessons",
                 name: 'singUpClasses-month',
                 component: ClassesView,
-
             },
         ]
     },

@@ -46,6 +46,13 @@ blockEditableTemplate = selectedTemplate ? !!selectedTemplate.practiceCourseId :
                   class="select-practice-template"
                   style="border-radius: 12px !important; max-height: 32px !important; min-width: 256px !important;"/>
       </v-col>
+      <v-col cols="" class="align-center bg-surface-variant d-flex lg-2 md-2 sm-0 py-0">
+        <v-select v-model="selectedCity" label="Выберите шаблон практик" :items="listCities"
+                  no-data-text="Нет данных для отображения"
+                  outlined hide-details
+                  class="select-practice-template"
+                  style="border-radius: 12px !important; max-height: 32px !important; min-width: 256px !important;"/>
+      </v-col>
       <v-col cols="lg-2 md-0 sm-0 pa-0"/>
       <v-col cols=" px-0">
         <v-btn class="tab-button pa-0 rounded-lg" color="#2B2A29" outlined @click="save"
@@ -83,6 +90,8 @@ export default {
     practiceCourseStart: null,
     practiceCourseEnd: null,
     dateFirstPractice: null,
+    selectedCity: null,
+    listCities: ['Новодвинск', 'Северодвинск'],
     listTemplates: [{
       "practiceCourseId": null,
       "practiceCourseStart": null,

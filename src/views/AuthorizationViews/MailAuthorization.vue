@@ -61,7 +61,7 @@
                 </template>
               </v-text-field>
               <span @click="forgetPassword" class="authorization-card__actions__btn" style="color: #4E7AEC">
-                Забыли пароль?
+                Восстановить пароль
               </span>
             </v-card-text>
             <v-card-actions class="mail-authorization-card__actions py-0">
@@ -178,21 +178,4 @@ export default {
 </script>
 <style lang="scss">
 @import "@/assets/styles/autorizationFormStyles.scss";
-
-.material-symbols-outlined {
-  font-variation-settings: 'FILL' 0,
-  'wght' 400,
-  'GRAD' 0,
-  'opsz' 24
-}
-
-.no-scroll {
-  overflow: hidden;
-}
-
-.logo-container {
-  display: flex;
-  align-items: center;
-  margin-left: 16px;
-}
 </style>

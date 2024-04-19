@@ -97,6 +97,7 @@
       <template v-slot:item="{ item }">
         <tr>
           <td>{{ item.fullName }}</td>
+          <td></td>
           <td>{{ item.email }}</td>
           <td>
             <v-btn
@@ -107,6 +108,9 @@
               <span class="white--text">Определить план</span>
             </v-btn>
           </td>
+          <td>
+            <v-checkbox v-model="item.isAdmin"/>
+          </td>
           <td class="text-xs-right grid-actions">
             <v-icon class="mr-2 blue--text" @click="editItem(item)">mdi-pencil</v-icon>
             <v-icon class="red--text" @click="deleteItem(item)">mdi-delete</v-icon>
@@ -114,7 +118,7 @@
         </tr>
       </template>
     </v-data-table>
-    <router-view></router-view>
+    <router-view/>
   </div>
 </template>
 <script>
@@ -130,10 +134,12 @@ export default {
     blockButtonWhenRequest: false,
     mask: ['+', /\d/, '(', /[1-9]/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, '-', /\d/, /\d/],
     headers: [
-      {text: 'ФИО', align: 'start', sortable: false, value: 'fullName'},
-      {text: 'E-mail', align: 'start', sortable: false, value: 'email'},
-      {text: 'Практики', align: 'start', sortable: false,},
-      {text: 'Действия', align: 'end', value: 'actions', sortable: false},
+      {text: 'ФИО', align: 'start', sortable: false, value: 'fullName', width: '30%'},
+      {text: 'Коробка передач', align: 'start', sortable: false, value: 'gearboxType', width: '15%'},
+      {text: 'E-mail', align: 'start', sortable: false, value: 'email', width: '15%'},
+      {text: 'Практики', align: 'start', sortable: false, width: '15%'},
+      {text: 'Права оператора', align: 'start', sortable: false, value: 'rulesAdmin', width: '15%'},
+      {text: 'Действия', align: 'end', value: 'actions', sortable: false, width: '10%'},
     ],
     persons: [],
     editedIndex: -1,
@@ -143,7 +149,9 @@ export default {
       surname: '',
       middleName: '',
       email: '',
-      phoneNumber: '7'
+      phoneNumber: '7',
+      gearboxType: 1,
+      isAdmin: false,
     },
     nameRule: {required: value => !!value},
     surnameRule: {required: value => !!value},
@@ -276,7 +284,9 @@ export default {
           surname: '',
           middleName: '',
           email: '',
-          phoneNumber: '7'
+          phoneNumber: '7',
+          gearboxType: 1,
+          isAdmin: false,
         };
         this.editedIndex = -1;
       });
@@ -394,32 +404,4 @@ export default {
     line-height: 18.75px !important;
   }
 }
-
-.v-text-field--outlined .v-label {
-  top: 7px !important;
-}
-
-.search-field {
-  .v-input__slot {
-    display: flex !important;
-    align-items: center !important;
-    min-height: 32px !important;
-  }
-
-  .v-input__prepend-inner {
-    margin: 0 !important;
-  }
-
-  .v-input__icon {
-    height: 32px !important;
-  }
-}
-
-.big-title {
-  font-weight: 700 !important;
-  font-size: 40px !important;
-  line-height: 46px !important;
-}
-
-
 </style>

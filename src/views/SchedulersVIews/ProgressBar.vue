@@ -53,12 +53,6 @@ export default {
         totalHours: 0,
       }
     ],
-    value: {
-      generalHours: 0,
-      generalHoursSpent: 0,
-      additinalHours: 0,
-      additinalHoursSpent: 0
-    }
   }),
 
   computed: {

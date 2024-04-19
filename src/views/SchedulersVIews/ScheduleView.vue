@@ -17,11 +17,7 @@
 <script>
 export default {
   components: {},
-  mounted() {
-    this.test = true
-  },
   data: () => ({
-    test: false,
     showDrawer: true,
   }),
   methods: {
