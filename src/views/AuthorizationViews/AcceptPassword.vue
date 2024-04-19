@@ -1,14 +1,23 @@
 <template>
-  <div >
+  <div>
     <v-row align="center" justify="center" class=" ">
       <v-col cols="4" class=" pa-0" align="center">
         <v-dialog v-model="overlay" persistent width="auto" content-class="elevation-0">
-          <v-card class="d-flex flex-column white rounded-lg ma-2 width" style="height: 260px !important;">
-            <v-card-title class="black--text pl-4 pr-4" style="font-size: 32px; font-weight: 700; padding-bottom: 0"> Создание пароля</v-card-title>
-            <v-card-subtitle class="black--text mt-4 pl-4 pr-4" style="font-size: 16px; font-weight: 400;padding-bottom: 0">
+          <v-card class="accept-password-card ">
+            <div class="logo-container">
+              <LogoRed
+                  class="logo-container__image"
+                  :height="50"
+                  :width="84"
+              />
+            </div>
+            <v-card-title class="accept-password-card__title">
+              Создание пароля
+            </v-card-title>
+            <v-card-subtitle class="accept-password-card__subtitle">
               Придумайте пароль для входа
             </v-card-subtitle>
-            <v-card-text class="d-flex flex-column mt-4 mb-4 pb-0 pl-4 pr-4">
+            <v-card-text class="pb-0">
               <v-text-field
                   solo dense outlined hide-details
                   v-model="password"
@@ -18,8 +27,14 @@
                   hint="Минимум 8 символов"
                   counter
                   autocomplete="new-password"
-                  style="border-radius: 12px !important; margin-bottom: 8px"
-              />
+                  class="mb-2 accept-password-card__field"
+                  :type="show ? 'text' : 'password'"
+              >
+                <template v-slot:append>
+                  <span class="material-icons" v-if="show" @click="show = false">visibility</span>
+                  <span class="material-icons" v-else @click="show = true">visibility_off</span>
+                </template>
+              </v-text-field>
               <v-text-field
                   solo dense outlined hide-details
                   v-model="passwordRepeat"
@@ -29,13 +44,22 @@
                   hint="Минимум 8 символов"
                   counter
                   autocomplete="new-password"
-                  @click:append="show = !show"
-                  style="border-radius: 12px !important;"
-              />
+                  @click:append="showPasswordRepeat = !showPasswordRepeat"
+                  class="accept-password-card__field"
+                  :type="showPasswordRepeat ? 'text' : 'password'"
+              >
+                <template v-slot:append>
+                  <span class="material-icons" v-if="showPasswordRepeat"
+                        @click="showPasswordRepeat = false">visibility</span>
+                  <span class="material-icons" v-else @click="showPasswordRepeat = true">visibility_off</span>
+                </template>
+              </v-text-field>
             </v-card-text>
-            <v-card-actions>
-              <v-btn color="#4E7AEC" @click="validatePassword" class="rounded-lg pa-0 white--text" block :disabled="loginButtonDisabled || passwordsMatch">
-                Добавить пароль
+            <v-card-actions class="accept-password-card__actions">
+              <v-btn color="#4E7AEC" @click="validatePassword" class="accept-password-card__actions__btn white--text"
+                     block
+                     :disabled="loginButtonDisabled || passwordsMatch">
+                Сохранить и войти
               </v-btn>
             </v-card-actions>
           </v-card>
@@ -46,16 +70,16 @@
 </template>
 <script>
 import IdentityRequest from "@/services/IdentityRequest";
+import LogoRed from "@/components/logos/LogoRed.vue";
 
 export default {
   name: 'AcceptPassword',
-  components: {},
+  components: {LogoRed},
   data: () => ({
     overlay: true,
     loginButtonDisabled: false,
-    blockButtonWhenRequest: false,
     show: false,
-    loading: false,
+    showPasswordRepeat: false,
     value: '',
     password: '',
     passwordRepeat: '',
@@ -73,13 +97,14 @@ export default {
       return value => (value === this.password ? true : 'Пароли не совпадают');
     },
   },
-  async mounted() {
-  },
+
   methods: {
     async newPassword(body) {
       this.loginButtonDisabled = true
       const password = new IdentityRequest()
-      await password.postPasswordNewUser(body).finally(() => {this.loginButtonDisabled = false})
+      await password.postPasswordNewUser(body).finally(() => {
+        this.loginButtonDisabled = false
+      })
     },
 
     validatePassword() {
@@ -102,8 +127,7 @@ export default {
 }
 </script>
 <style lang="scss">
-.width {
-  width: 20em;
-}
+@import "@/assets/styles/autorizationFormStyles.scss";
+
 
 </style>

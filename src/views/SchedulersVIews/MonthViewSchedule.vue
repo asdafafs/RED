@@ -51,7 +51,7 @@
                 no-data-text="Нет данных для отображения" label="Выберите инструктора для редактирования"
                 :items="[...listTeachers, { id: null, name: 'Преподаватель не назначен' }]"
                 :item-text="item => item ? `${item.surname || ''} ${item.name || ''} ${item.middleName || ''}` : 'Преподаватель не назначен'"
-                item-value="id" @change="acceptEditableTeacher()" v-if="this.$store.state.user.isAdmin"></v-select>
+                item-value="id" @change="acceptEditableTeacher()" v-if="this.$store.state.user.isAdmin"/>
     </div>
     <div>
       <div>
@@ -136,23 +136,23 @@
                       <div v-if="openEditMode">
                         <v-text-field v-model="newDateEvent" height="32px" hide-details label="Дата" type="date"
                                       class="v-text-field-custom "
-                                      outlined dense :min="minDate"></v-text-field>
+                                      outlined dense :min="minDate"/>
                         <v-text-field v-model="newTimeEvent" height="32px" hide-details label="Время начала" type="time"
-                                      class="v-text-field-custom " outlined dense></v-text-field>
+                                      class="v-text-field-custom " outlined dense/>
                         <v-radio-group class="flex-row" row hide-details v-model="newSelectedDuration">
-                          <v-radio label="1 Час" :value="1"></v-radio>
-                          <v-radio label="2 Часа" :value="2"></v-radio>
+                          <v-radio label="1 Час" :value="1"/>
+                          <v-radio label="2 Часа" :value="2"/>
                         </v-radio-group>
                         <v-select height="32px" class="v-text-field-custom " outlined dense hide-details
                                   v-model="selectedStudent"
                                   no-data-text="Нет данных для отображения" label="Ученик" item-value="id"
                                   :items="[...listStudents, { id: null, name: 'Студент не назначен' }]"
-                                  :item-text="item => item ? `${item.surname || ''} ${item.name || ''} ${item.middleName || ''} ` : 'Студент не назначен'"></v-select>
+                                  :item-text="item => item ? `${item.surname || ''} ${item.name || ''} ${item.middleName || ''} ` : 'Студент не назначен'"/>
                       </div>
                       <div v-if="openDeleteMode">
                         <v-radio-group class="flex-row" row hide-details v-model="newSelectedReason">
-                          <v-radio label="Отменена" :value="1"></v-radio>
-                          <v-radio label="Сгорела" :value="2"></v-radio>
+                          <v-radio label="Отменена" :value="1"/>
+                          <v-radio label="Сгорела" :value="2"/>
                         </v-radio-group>
                         <v-select no-data-text="Нет данных для отображения" :disabled="newSelectedReason !== 1"
                                   v-model="selectedReason"
@@ -160,7 +160,7 @@
                                   item-value="id"
                                   @change="confirmReason(selectedReason)"
                                   class="v-text-field-custom " outlined dense hide-details
-                        ></v-select>
+                        />
                       </div>
                     </v-col>
                   </v-row>

@@ -11,7 +11,7 @@
             width="auto"
             content-class="elevation-0"
         >
-          <v-card class="forget-password-card white">
+          <v-card class="recovery-password-card white">
             <div class="logo-container-recovery-password">
               <LogoRed
                   class="logo-container-recovery-password__image"
@@ -19,10 +19,10 @@
                   :width="84"
               />
             </div>
-            <v-card-title class="forget-password-card__title">
+            <v-card-title class="recovery-password-card__title">
               Восстановить пароль
             </v-card-title>
-            <v-card-subtitle class="forget-password-card__subtitle">
+            <v-card-subtitle class="recovery-password-card__subtitle">
               Введите электронный адрес аккаунта, для которого нужно восстановить пароль,
               и отправьте запрос. На указанный e-mail придет ссылка для создания нового пароля.
             </v-card-subtitle>
@@ -32,18 +32,18 @@
                   v-model=email
                   :readonly="loading"
                   :rules="[rulesEmail.required]"
-                  class="forget-password-card__text-field"
+                  class="recovery-password-card__text-field"
                   clearable
                   label="E-mail"
                   hide-details
                   dense outlined
               />
             </v-card-text>
-            <v-card-actions class="forget-password-card__actions">
+            <v-card-actions class="recovery-password-card__actions">
               <v-btn
                   color="#4E7AEC"
                   @click="validateEmail"
-                  class="forget-password-card__actions__btn white--text"
+                  class="recovery-password-card__actions__btn white--text"
                   :disabled="loginButtonDisabled"
               >
                 Отправить запрос
@@ -51,7 +51,7 @@
               <v-btn
                   color="##E9E9E8"
                   @click="logout"
-                  class="forget-password-card__actions__btn mt-2"
+                  class="recovery-password-card__actions__btn mt-2"
                   text
               >
                 Отмена
@@ -96,7 +96,9 @@ export default {
     async checkEmail(body) {
       this.loginButtonDisabled = true
       const email = new IdentityRequest()
-      await email.postForgetPassword({"email": body}).finally(() => {this.loginButtonDisabled = false})
+      await email.postForgetPassword({"email": body}).finally(() => {
+        this.loginButtonDisabled = false
+      })
     },
 
     validateEmail() {
@@ -104,10 +106,10 @@ export default {
         return;
       }
 
-      this.checkEmail(this.email);
-      successAlert('проверьте почтовый ящик');
-      this.$router.push({name: 'main'}).catch(err => {
-        console.log(err)
+      this.checkEmail(this.email).then(() => {
+        this.$router.push({name: 'forget-password'}).catch(err => {
+          console.log(err)
+        })
       })
     },
   },
@@ -130,9 +132,8 @@ export default {
   }
 }
 
-.forget-password-card {
+.recovery-password-card {
   display: flex !important;
-  //gap: 16px !important;
   flex-direction: column !important;
   width: 400px !important;
   height: 372px !important;
@@ -167,9 +168,9 @@ export default {
     margin-top: 8px !important;
 
     &__btn {
+      text-transform: none !important;
       border-radius: 8px;
       padding: 0;
-      //margin: 4px 0 4px 0 !important;
       margin: 0 0 0 0 !important;
       width: 350px;
 

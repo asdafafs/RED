@@ -1,6 +1,6 @@
 <template>
   <div style="width: 100%">
-    <div class="font-weight-medium px-0 mb-3" :class="!showDrawer ? 'mobile-title' : 'desk-title'">
+    <div class="big-title">
       Студенты и планы
     </div>
     <hr>
@@ -76,12 +76,29 @@
                                 height="32px"
                                 hide-details
                                 dense/>
-                      <div class="card-edit-student__title" style="margin-top: 12px !important;">Часы</div>
+                      <v-checkbox v-model="editedStudent.block_student" label="Заблокировать студента" hide-details/>
+                      <div class="card-edit-student__title" style="margin-top: 16px !important;">Параметры обучения</div>
+                      <v-radio-group class="px-0 py-0 align-center ma-0 mt-3" v-model="editedStudent.gearboxType" hide-details>
+                        <v-radio label="АКП" :value="1"/>
+                        <v-radio label="МКП" :value="2"/>
+                      </v-radio-group>
+                      <v-select outlined class="v-text-field-custom-admin " style="border-radius: 12px"
+                                v-model="editedStudent.city"
+                                :items="availableCity"
+                                multiple
+                                label="Город"
+                                no-data-text="Нет данных для отображения"
+                                height="32px"
+                                hide-details
+                                dense/>
+                      <div class="card-edit-student__title" style="margin-top: 16px !important;">Часы</div>
+                      <v-checkbox v-model="editedStudent.can_signUp" label="Может записываться на практики" hide-details/>
                       <v-text-field outlined class="v-text-field-custom-admin " style="border-radius: 12px"
                                     v-model="editedStudent.generalHoursSpent"
                                     label="Текущий остаток"
                                     height="32px"
-                                    hide-details
+                                    :hint="`Из них дополнительных: ${editedStudent.additinalHours}`"
+                                    persistent-hint
                                     dense/>
                     </v-col>
                   </v-row>
@@ -119,10 +136,8 @@
           <td>{{ item.generalHours }}</td>
           <td>{{ item.generalHoursSpent }}</td>
           <td>{{ item.additinalHours }}</td>
-          <td>{{ item.additinalHoursSpent }}</td>
           <td class="text-xs-right grid-actions">
             <v-icon class="mr-2 blue--text" @click="editItem(item)">mdi-pencil</v-icon>
-            <v-icon class="red--text" @click="deleteItem(item)">mdi-delete</v-icon>
           </td>
         </tr>
       </template>
@@ -143,14 +158,14 @@ export default {
     blockButtonWhenRequest: false,
     mask: ['+', /\d/, '(', /[1-9]/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, '-', /\d/, /\d/],
     headers: [
-      {text: 'ФИО', align: 'start', sortable: false, value: 'fullName'},
-      {text: 'E-mail', align: 'start', sortable: false, value: 'email'},
-      {text: 'Общие практики всего', align: 'start', sortable: false, value: 'generalHours'},
-      {text: 'Общие практики остаток', sortable: false, value: 'generalHoursSpent'},
-      {text: 'Доппрактики всего', sortable: false, value: 'additinalHours'},
-      {text: 'Доппрактики остаток', sortable: false, value: 'additinalHoursSpent'},
-      {text: 'Действия', align: 'end', value: 'actions', sortable: false},
+      {text: 'ФИО', align: 'start', sortable: false, value: 'fullName', width: '30%'},
+      {text: 'E-mail', align: 'start', sortable: false, value: 'email',  width: '15%'},
+      {text: 'Оплаченные Всего', align: 'start', sortable: false, value: 'generalHours',  width: '15%'},
+      {text: 'Оплаченные Остаток', sortable: false, value: 'generalHoursSpent',  width: '15%'},
+      {text: 'Неоплаченные Всего', sortable: false, value: 'additinalHours',  width: '15%'},
+      {text: 'Действия', align: 'end', value: 'actions', sortable: false, width: '10%'},
     ],
+    availableCity: ['Северодвинск', 'Новодвинск'],
     groups: [],
     persons: [],
     editedIndex: -1,
@@ -167,14 +182,16 @@ export default {
       generalHoursSpent: 56,
       additinalHours: 0,
       additinalHoursSpent: 0,
+      gearboxType: 1,
+      city: '',
+      block_student: false,
+      can_signUp: true,
     },
-    availableHoursOptions: [0, 1, 2, 3, 4, 5, 20],
     nameRule: {required: value => !!value},
     surnameRule: {required: value => !!value},
     middleNameRule: {required: value => !!value},
     emailRule: {required: value => !!value},
     phoneRule: {required: value => !!value},
-    showDrawer: true,
   }),
 
   computed: {
@@ -202,18 +219,9 @@ export default {
 
   created() {
     this.initialize();
-    this.checkWindowWidth();
-    window.addEventListener('resize', this.checkWindowWidth);
   },
-  
-  
-  beforeDestroy() {
-    window.removeEventListener('resize', this.checkWindowWidth);
-  },
+
   methods: {
-    checkWindowWidth() {
-      this.showDrawer = window.innerWidth >= 1260;
-    },
     async getGroups() {
       const groups = new GroupsRequest();
       let groupsData
