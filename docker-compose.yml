@@ -1,0 +1,10 @@
+version: '3.9'
+
+services:
+  frontend-red:
+    container_name: "frontend-red"
+    build: 
+      context: .
+      dockerfile: DockerfileVlad
+    ports:
+      - "3000:80"
