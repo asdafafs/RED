@@ -1,15 +1,65 @@
 ﻿<template>
   <v-dialog max-width="407px" v-model="localVisible" persistent>
     <v-card
-      style="border-radius: 12px; border: 1px solid grey"
+      class="open-practice-dialog"
       flat
     >
       <v-card-title class="pa-3 d-flex flex-column justify-start">
-        <span class="open-practice-dialog_first-title">Изменение записи</span>
+        <span class="open-practice-dialog_first-title">Добавление записи</span>
         <span class="open-practice-dialog_second-title">Вождение</span>
       </v-card-title>
       <v-card-text class="pa-3 pt-0 pb-0">
-      
+        <div class="open-practice-dialog_text">
+          <div>
+            <span class="open-practice-dialog_text_title">Преподаватель</span>
+            <span></span>
+          </div>
+          <div>
+            <span class="open-practice-dialog_text_title">Коробка передач</span>
+            <span></span>
+          </div>
+          <div>
+            <span class="open-practice-dialog_text_title">Город</span>
+            <span></span>
+          </div>
+          <v-text-field
+            class="v-text-field-custom-h-32 mt-2"
+            v-model="eventDate"
+            hide-details 
+            label="Дата" 
+            type="date"
+            outlined dense 
+            
+          />
+          <v-text-field
+            class="v-text-field-custom-h-32 mt-2"
+            v-model="eventStartTime"
+            hide-details 
+            label="Время начала" 
+            type="time"
+            outlined 
+            dense
+          />
+          <div>
+            <span class="duration-text">Продолжительность</span>
+            <v-radio-group
+                class="flex-row mt-2 pt-0"
+                v-model="selectedDuration"
+                row
+                hide-details
+            >
+              <v-radio label="1 час" :value="1"/>
+              <v-radio label="2 часа" :value="2"/>
+            </v-radio-group>
+          </div>
+          <v-select
+              class="v-text-field-custom-h-32 mt-2" 
+              outlined 
+              dense 
+              hide-details
+              no-data-text="Нет данных для отображения" label="Ученик" item-value="id"
+          />
+        </div>
       </v-card-text>
       <v-card-actions class="pa-3">
         <div class="open-practice-dialog_actions">
@@ -35,14 +85,15 @@
 <script>
 
 export default {
-  name: "OpenNewPracticeDialog",
-  data: ()=>({
-    localVisible: true
+  name: "openNewPracticeDialog",
+  data: () => ({
+    localVisible: true,
+    eventDate: null,
+    eventStartTime: null,
+    selectedDuration: 1,
   }),
   computed: {
-    saveButtonTitle() {
-      if (this.openEditMode) return 'Сохранить'
-    }
+   
   },
   methods: {
     onCancelClick() {
@@ -79,6 +130,21 @@ export default {
 </script>
 <style  lang="scss">
 .open-practice-dialog {
+  border-radius: 12px; 
+  border: 1px solid grey;
+  
+  &_text {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    
+    &_title {
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 14.06px;
+      text-transform: none;
+    }
+  }
   &_first-title {
     font-size: 12px;
     font-weight: 400;
@@ -129,4 +195,39 @@ export default {
   }
 }
 
+.v-text-field-custom-h-32 {
+  .v-input__slot {
+    display: flex !important;
+    align-items: center !important;
+    min-height: 32px !important;
+  }
+
+  .v-input__prepend-inner {
+    margin: 0 !important;
+  }
+  .v-input__append-inner {
+    margin-top: 4px !important;
+  }
+  
+  .v-input__icon {
+    max-height: 32px !important;
+  }
+
+  .v-input__control {
+    max-height: 32px !important;
+
+    .v-input__slot {
+      max-height: 32px !important;
+    }
+  }
+  .v-select__selections {
+    max-height: 32px !important;
+  }
+}
+.duration-text {
+  font-size: 12px;
+  line-height: 14px;
+  font-weight: 400;
+  color:black !important;
+}
 </style>
