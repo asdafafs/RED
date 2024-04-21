@@ -3,9 +3,12 @@ import App from './App.vue'
 import store from './store'
 import router from './router'
 import vuetify from './plugins/vuetify'
+import openNewPracticeDialogPlugin from "@/plugins/openNewPracticeDialogPlugin";
+
 
 Vue.config.productionTip = false
 
+Vue.use(openNewPracticeDialogPlugin);
 new Vue({
   store,
   router,
