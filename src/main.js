@@ -9,6 +9,7 @@ import openNewPracticeDialogPlugin from "@/plugins/openNewPracticeDialogPlugin";
 Vue.config.productionTip = false
 
 Vue.use(openNewPracticeDialogPlugin);
+
 new Vue({
   store,
   router,
