@@ -6,7 +6,6 @@
           <v-calendar
               ref="calendar"
               :events="eventsItems"
-              color="primary"
               type="week"
               :event-height="50"
               :weekdays="weekday"
@@ -64,10 +63,6 @@ export default {
         });
       },
       deep: true
-    },
-
-    selectedDuration() {
-      this.createEventsWithNewDuration();
     },
 
     events: {
@@ -165,35 +160,6 @@ export default {
   },
 
   methods: {
-    createEventsWithNewDuration() {
-      this.eventsTemplate.forEach(event => {
-        const newEndTime = moment(event.start).add(this.selectedDuration, 'hours');
-        event.end = newEndTime.valueOf();
-      });
-
-      this.eventsTemplate.sort((a, b) => new Date(a.start) - new Date(b.start));
-
-      for (let i = 0; i < this.eventsTemplate.length; i++) {
-        const currentEvent = this.eventsTemplate[i];
-        const nextEvent = this.eventsTemplate[i + 1];
-
-        if (nextEvent) {
-          const currentEnd = new Date(currentEvent.end).getTime();
-          const nextStart = new Date(nextEvent.start).getTime();
-
-          if (currentEnd > nextStart) {
-            // Пересечение событий, переносим более позднее событие
-            const overlap = currentEnd - nextStart;
-            nextEvent.start = new Date(nextEvent.start).getTime() + overlap;
-            nextEvent.end = new Date(nextEvent.end).getTime() + overlap;
-          }
-        }
-      }
-
-      this.$emit('plan-updated', this.eventsTemplate);
-    }
-    ,
-
     deleteEvent(event) {
       const index = this.eventsTemplate.indexOf(event);
       if (index !== -1) {
@@ -214,7 +180,6 @@ export default {
         this.dragEvent = event
         this.testTime = event.savedTime
         this.dragTime = null
-        this.extendOriginal = null
       }
     },
 
@@ -245,7 +210,6 @@ export default {
       }
     },
 
-
     endDrag() {
       if (this.dragEvent) {
         const isIntersect = this.eventsTemplate.some(event => {
@@ -261,7 +225,7 @@ export default {
           this.dragEvent.end = this.testTime + (new Date(this.dragEvent.end).getTime() - new Date(this.dragEvent.start).getTime());
         }
         if (this.testTime !== this.dragEvent.start) {
-          this.dragEvent.color = '#E9E9E8';
+          this.dragEvent.color = '#FFFFFF';
         } else {
           this.dragEvent.color = '#9DB9FF';
         }
@@ -274,7 +238,6 @@ export default {
           color: '',
         };
         this.createStart = null;
-        this.extendOriginal = null;
         this.$emit('plan-updated', this.eventsTemplate);
       }
     },
@@ -315,7 +278,7 @@ export default {
             start: start,
             end: end,
             dayOfWeek: dayOfWeek,
-            color: '#E9E9E8',
+            color: '#FFFFFF',
             timed: true,
           });
           this.$emit('plan-updated', this.eventsTemplate);
@@ -335,14 +298,7 @@ export default {
     toTime(tms) {
       return new Date(tms.year, tms.month - 1, tms.day, tms.hour, tms.minute).getTime()
     },
-
-    initialize() {
-    },
-
   },
-  created() {
-    this.initialize()
-  }
 }
 </script>
 <style lang="scss">

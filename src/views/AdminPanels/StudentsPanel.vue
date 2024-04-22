@@ -65,7 +65,7 @@
                                     hide-details
                                     :rules="[emailRule.required]" class="v-text-field-custom-admin "></v-text-field>
                       <vue-text-mask class="phone-field" v-model="editedStudent.phoneNumber" :mask="mask"
-                                    :rules="[phoneRule.required]"/>
+                                     :rules="[phoneRule.required]"/>
                       <v-select outlined class="v-text-field-custom-admin " style="border-radius: 12px"
                                 v-model="editedStudent.groupId"
                                 :items="groups"
@@ -77,10 +77,20 @@
                                 hide-details
                                 dense/>
                       <v-checkbox v-model="editedStudent.block_student" label="Заблокировать студента" hide-details/>
-                      <div class="card-edit-student__title" style="margin-top: 16px !important;">Параметры обучения</div>
-                      <v-radio-group class="px-0 py-0 align-center ma-0 mt-3" v-model="editedStudent.gearboxType" hide-details>
-                        <v-radio label="АКП" :value="1"/>
-                        <v-radio label="МКП" :value="2"/>
+                      <div class="card-edit-student__title" style="margin-top: 16px !important;">Параметры обучения
+                      </div>
+                      <v-radio-group class="px-0 py-0 align-center ma-0 mt-3" v-model="editedStudent.gearboxType"
+                                     hide-details>
+                        <v-radio label="АКП" :value="1">
+                          <template v-slot:label>
+                            <strong style="color:#2B2A29; font-weight: 400">АКП</strong>
+                          </template>
+                        </v-radio>
+                        <v-radio label="МКП" :value="2">
+                          <template v-slot:label>
+                            <strong style="color:#2B2A29; font-weight: 400">МКП</strong>
+                          </template>
+                        </v-radio>
                       </v-radio-group>
                       <v-select outlined class="v-text-field-custom-admin " style="border-radius: 12px"
                                 v-model="editedStudent.city"
@@ -92,12 +102,13 @@
                                 hide-details
                                 dense/>
                       <div class="card-edit-student__title" style="margin-top: 16px !important;">Часы</div>
-                      <v-checkbox v-model="editedStudent.can_signUp" label="Может записываться на практики" hide-details/>
+                      <v-checkbox v-model="editedStudent.can_signUp" label="Может записываться на практики"
+                                  hide-details/>
                       <v-text-field outlined class="v-text-field-custom-admin " style="border-radius: 12px"
                                     v-model="editedStudent.generalHoursSpent"
                                     label="Текущий остаток"
                                     height="32px"
-                                    :hint="`Из них дополнительных: ${editedStudent.additinalHours}`"
+                                    :hint="`Из них дополнительных: ${editedStudent.generalHoursSpent - 56}`"
                                     persistent-hint
                                     dense/>
                     </v-col>
@@ -122,7 +133,8 @@
               <v-card-actions>
                 <v-spacer/>
                 <v-btn color="blue darken-1" text @click="closeDelete">Отмена</v-btn>
-                <v-btn color="blue darken-1" text @click="deleteItemConfirm"  :disabled="blockButtonWhenRequest">OK</v-btn>
+                <v-btn color="blue darken-1" text @click="deleteItemConfirm" :disabled="blockButtonWhenRequest">OK
+                </v-btn>
                 <v-spacer/>
               </v-card-actions>
             </v-card>
@@ -131,7 +143,14 @@
       </template>
       <template v-slot:item="{ item }">
         <tr>
-          <td>{{ item.fullName }}</td>
+          <td>{{ item.fullName }}
+            <v-chip color="#E31E24" label v-if="false"
+                    style="height: 20px; width: 36px; border-radius: 4px; padding: 4px !important;">
+              <span class="white--text" style="font-weight: 600; font-size: 12px; line-height: 14px;">
+                Долг
+              </span>
+            </v-chip>
+          </td>
           <td>{{ item.email }}</td>
           <td>{{ item.generalHours }}</td>
           <td>{{ item.generalHoursSpent }}</td>
@@ -159,10 +178,10 @@ export default {
     mask: ['+', /\d/, '(', /[1-9]/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, '-', /\d/, /\d/],
     headers: [
       {text: 'ФИО', align: 'start', sortable: false, value: 'fullName', width: '30%'},
-      {text: 'E-mail', align: 'start', sortable: false, value: 'email',  width: '15%'},
-      {text: 'Оплаченные Всего', align: 'start', sortable: false, value: 'generalHours',  width: '15%'},
-      {text: 'Оплаченные Остаток', sortable: false, value: 'generalHoursSpent',  width: '15%'},
-      {text: 'Неоплаченные Всего', sortable: false, value: 'additinalHours',  width: '15%'},
+      {text: 'E-mail', align: 'start', sortable: false, value: 'email', width: '15%'},
+      {text: 'Оплаченные Всего', align: 'start', sortable: false, value: 'generalHours', width: '15%'},
+      {text: 'Оплаченные Остаток', sortable: false, value: 'generalHoursSpent', width: '15%'},
+      {text: 'Неоплаченные Всего', sortable: false, value: 'additinalHours', width: '15%'},
       {text: 'Действия', align: 'end', value: 'actions', sortable: false, width: '10%'},
     ],
     availableCity: ['Северодвинск', 'Новодвинск'],
@@ -186,6 +205,7 @@ export default {
       city: '',
       block_student: false,
       can_signUp: true,
+      hasDebt: true,
     },
     nameRule: {required: value => !!value},
     surnameRule: {required: value => !!value},
@@ -284,13 +304,6 @@ export default {
       this.dialog = true;
     },
 
-    deleteItem(item) {
-      this.editedIndex = this.persons.indexOf(item);
-      this.editedStudent = {name: item.name};
-      this.deletedIndex = item.id
-      this.dialogDelete = true;
-    },
-
     async deleteItemConfirm() {
       await this.deleteUser().finally(async () => {
         this.persons = await this.getStudents();
@@ -346,7 +359,9 @@ export default {
           "groupId": this.editedStudent.groupId,
           "generalHours": this.editedStudent.generalHoursSpent,
         }
-        await this.putUser(body).catch(() => {this.dialogDelete = false;}).finally( () => {
+        await this.putUser(body).catch(() => {
+          this.dialogDelete = false;
+        }).finally(() => {
           this.close();
           this.initialize()
         })
@@ -361,7 +376,9 @@ export default {
           "generalHours": this.editedStudent.generalHours + parseInt(this.addHour),
           "additinalHours": this.editedStudent.additinalHours,
         }
-        await this.postUser(body).catch(() => {this.dialogDelete = false;}).finally(() => {
+        await this.postUser(body).catch(() => {
+          this.dialogDelete = false;
+        }).finally(() => {
           this.close();
           this.initialize()
         })
@@ -425,7 +442,7 @@ export default {
 
 .card-edit-student {
   width: 392px !important;
-  height: 560px !important;
+  height: 847px !important;
   border-radius: 12px !important;
   flex-direction: column !important;
   align-items: flex-start !important;

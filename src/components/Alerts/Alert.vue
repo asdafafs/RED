@@ -1,7 +1,7 @@
 <template>
   <div class="alert" ref="snackbar" id="snackbar">
     <success-icon style="width: 18px; height: 18px" v-if="type === 'success'" class="icon"/>
-    <warning-icon style="width: 18px; height: 18px" v-else-if="type === 'warning'" class="icon"/>
+    <warning-icon style="width: 18px; height: 18px" v-else-if="type === 'warning' || type ==='error'" class="icon"/>
     <span>{{ message }}</span>
   </div>
 </template>
