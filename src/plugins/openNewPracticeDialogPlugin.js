@@ -4,12 +4,12 @@ import router from '@/router';
 import openNewPracticeDialog from '../dialogs/openNewPracticeDialog.vue'
 export default {
     install(Vue) {
-        Vue.prototype.$openNewPracticeDialogPlugin = (listStudents) => {
+        Vue.prototype.$openNewPracticeDialogPlugin = (data) => {
             return new Promise(((resolve) => {
                 const on = {
                     destroy: undefined
                 };
-                const props = {listStudents};
+                const props = {data};
                 const component = new LocalVue({
                     vuetify,
                     router,

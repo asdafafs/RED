@@ -243,6 +243,9 @@ export default {
     userID() {
       return this.user.userId
     },
+    userName() {
+      return `${this.user.surname} ${this.user.name[0]}. ${this.user.middleName[0]}. `
+    },
     isUserTeacher() {
       return this.user.discriminator === 'Учитель'
     },
@@ -250,9 +253,12 @@ export default {
 
   methods: {
     async openNewPractice() {
-      await this.$openNewPracticeDialogPlugin(this.listStudents)
-      /*this.selectedOpen = true;
-      this.openEditMode = true;*/
+      const data = {
+        listStudents: this.listStudents,
+        userName: this.userName,
+        userId: this.userID
+      }
+      await this.$openNewPracticeDialogPlugin(data)
     },
     viewDay({ date }) {
       this.selectedMoreElement = nativeEvent.target
@@ -272,7 +278,7 @@ export default {
     },
     
 
-    async saveChanges() {
+    /*async saveChanges() {
       this.openEditMode = false
       this.openDeleteMode = false
       this.selectedOpen = false
@@ -303,7 +309,7 @@ export default {
         })
       }
       this.newEvent = false
-    },
+    },*/
 
     async acceptEditableTeacher() {
       const selectedId = this.selectedTeacher;
@@ -383,12 +389,7 @@ export default {
       const event = new EventsRequest()
       await event.putPractice(body).catch(x => console.log(x))
     },
-
-    async postNewEvent(body) {
-      const event = new EventsRequest()
-      await event.postPractice(body).catch(x => console.log(x))
-    },
-
+    
     async previousMonth() {
       this.$refs.calendar.prev()
       if (this.type === 'week') {

@@ -10,9 +10,9 @@
       </v-card-title>
       <v-card-text class="pa-3 pt-0 pb-0">
         <div class="open-practice-dialog_text">
-          <div>
+          <div class="d-flex flex-column">
             <span class="open-practice-dialog_text_title">Преподаватель</span>
-            <span></span>
+            <span class="teacher-text">{{ data.userName }}</span>
           </div>
           <div>
             <span class="open-practice-dialog_text_title">Коробка передач</span>
@@ -70,7 +70,7 @@
               no-data-text="Нет данных для отображения" 
               label="Ученик" 
               item-value="id"
-              :items="[...listStudents, { id: null, name: 'Студент не назначен' }]"
+              :items="[...data.listStudents, { id: null, name: 'Студент не назначен' }]"
               :item-text="item => item ? `${item.surname || ''} ${item.name || ''} ${item.middleName || ''} ` : 'Студент не назначен'"
           />
         </div>
@@ -98,6 +98,8 @@
 
 <script>
 import moment from "moment/moment";
+import EventsRequest from "@/services/EventsRequest";
+
 export default {
   name: "openNewPracticeDialog",
   data: () => ({
@@ -106,13 +108,14 @@ export default {
     eventStartTime: '06:00',
     selectedDuration: 1,
     selectedTransmission: 1,
-    selectedStudent: null
+    selectedStudent: null,
+    selectedEvent: {},
   }),
   props: {
-    listStudents: {
-      type: [],
+    data: {
+      type: {},
       required: true
-    }
+    },
   },
   computed: {
     minDate() {
@@ -125,29 +128,22 @@ export default {
     },
     onSaveClick() {
       this.openNewEvent()
-      this.$emit('destroy',false)
     },
-    openNewEvent() {
-      this.newEvent = true
-      const [hours, minutes] = this.newTimeEvent.split(':');
-      this.selectedEvent.startTime = moment(this.selectedEvent.startTime)
-          .set({hour: parseInt(hours), minute: parseInt(minutes)})
-          .format('YYYY-MM-DD HH:mm');
-      this.selectedEvent.endTime = moment(this.selectedEvent.startTime)
-          .add(this.newSelectedDuration, 'hours')
-          .format('YYYY-MM-DD HH:mm');
-      if (this.selectedTeacher === null) {
-        const selectedTeacherObj = this.listTeachers.find(teacher => teacher.id === this.userID);
-        if (selectedTeacherObj) {
-          this.titleNewEvent = `${selectedTeacherObj.surname || ''} ${selectedTeacherObj.name || ''} ${selectedTeacherObj.middleName || ''}`;
-        }
-      } else {
-        const selectedTeacherObj = this.listTeachers.find(teacher => teacher.id === this.selectedTeacher);
-        if (selectedTeacherObj) {
-          this.titleNewEvent = `${selectedTeacherObj.surname || ''} ${selectedTeacherObj.name || ''} ${selectedTeacherObj.middleName || ''}`;
-        }
+    async openNewEvent() {
+      const [hours, minutes] = this.eventStartTime.split(':');
+      const startTime = moment.utc(this.eventDate).hour(parseInt(hours)).minute(parseInt(minutes));
+      const endTime = startTime.clone().add(this.selectedDuration, 'hours');
+      
+      const body = {
+        "startTime": startTime,
+        "endTime": endTime,
+        "studentId": this.selectedStudent,
+        "activeUserId": this.data.userId
       }
-      this.selectedEvent.title = this.titleNewEvent
+      const event = new EventsRequest()
+      await event.postPractice(body).then(() => {
+        this.$emit('destroy',false)
+      }).catch(x => console.log(x))
     },
   }
 }
@@ -254,6 +250,12 @@ export default {
 .duration-text {
   font-size: 12px;
   line-height: 14px;
+  font-weight: 400;
+  color:black !important;
+}
+.teacher-text {
+  font-size: 16px;
+  line-height: 18.75px;
   font-weight: 400;
   color:black !important;
 }
