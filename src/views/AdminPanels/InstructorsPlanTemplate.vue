@@ -12,64 +12,95 @@
     </v-row>
     <hr style="margin: 1em 0 2em 0 !important;">
     <v-row class="flex-wrap">
-      <v-col class="flex-column align-center bg-surface-variant d-flex lg-2 md-2 sm-2 py-0"
-             style="min-width: 109px !important;">
-        <v-radio-group class="px-0 py-0 align-center ma-0" v-model="selectedDuration" hide-details
-                       :disabled="blockEditableTemplate">
-          <v-radio label="1 час" :value="1"/>
-          <v-radio label="2 часа" :value="2"/>
-        </v-radio-group>
-      </v-col>
       <v-col cols="lg-2 md-2 py-0" class="align-center bg-surface-variant d-flex">
         <v-text-field v-model="practiceCourseStart" label="Дата начала" type="date" ref="startDateField"
                       :rules="[startDateRules.required]" :min="getTodayDate()" outlined
-                      class="select-practice-template" hide-details :disabled="blockEditableTemplate"
+                      class="select-date-practice-template" hide-details :disabled="blockEditableTemplate"
                       style="border-radius: 12px !important; max-height: 32px !important;"/>
       </v-col>
       <v-col cols="lg-2 md-2 py-0" class="align-center bg-surface-variant d-flex">
         <v-text-field v-model="practiceCourseEnd" label="Дата окончания" type="date" ref="endDateField"
                       :rules="[endTimeRules.required]" :min="getTodayDate()" outlined
-                      class="select-practice-template"
+                      class="select-date-practice-template"
                       style="border-radius: 12px !important; max-height: 32px !important;"
                       hide-details :disabled="blockEditableTemplate"/>
+      </v-col>
+      <v-col class="flex-column align-center bg-surface-variant d-flex lg-2 md-2 sm-2 py-0"
+             style="min-width: 109px !important;">
+        <v-radio-group class="px-0 py-0 align-center ma-0" v-model="selectedDuration" hide-details>
+          <v-radio :value="1">
+            <template v-slot:label>
+              <strong style="color:#2B2A29; font-weight: 400">1 час</strong>
+            </template>
+          </v-radio>
+          <v-radio :value="2">
+            <template v-slot:label>
+              <strong style="color:#2B2A29; font-weight: 400">2 часа</strong>
+            </template>
+          </v-radio>
+        </v-radio-group>
       </v-col>
       <v-col cols="" class="align-center bg-surface-variant d-flex lg-2 md-2 sm-0 py-0">
         <v-select v-model="selectedTemplate" label="Выберите шаблон практик" :items="listTemplates"
                   no-data-text="Нет данных для отображения"
-                  :item-text="item => item.practiceCourseId ? `${new Date(item.practiceCourseStart).
-                  toLocaleDateString().replace(/\./g, '-')} ${new Date(item.practiceCourseEnd)
-                  .toLocaleDateString().replace(/\./g, '-')}` : 'Добавить новый шаблон'"
                   item-value="practiceCourseId"
-                  @change="getPracticeCourseTemplate();
-blockEditableTemplate = selectedTemplate ? !!selectedTemplate.practiceCourseId : false"
+                  @change="getPracticeCourseTemplate(); blockEditableTemplate = selectedTemplate ? !!selectedTemplate.practiceCourseId : false"
                   outlined hide-details
                   class="select-practice-template"
-                  style="border-radius: 12px !important; max-height: 32px !important; min-width: 256px !important;"/>
+                  style="border-radius: 12px !important; max-height: 41px !important; min-width: 256px !important;">
+          <template #selection="{ item }">
+            <div v-if="item.practiceCourseId">
+              <span style="font-size: 16px; line-height: 18.75px; font-weight: 400; color: #2B2A29">
+                {{ new Date(item.practiceCourseStart).toLocaleDateString().replace(/\./g, '.') }}
+                {{ new Date(item.practiceCourseEnd).toLocaleDateString().replace(/\./g, '.') }}
+              </span>
+              <br>
+              <span style="font-size: 12px; line-height: 14px; font-weight: 400; color: #A6A8AA">{{
+                  selectedCity
+                }}</span>
+            </div>
+            <span v-else>
+              Добавить новый шаблон
+            </span>
+          </template>
+          <template #item="{ item }">
+            <div v-if="item.practiceCourseId">
+              <span style="font-size: 16px; line-height: 18.75px; font-weight: 400; color: #2B2A29">
+                {{ new Date(item.practiceCourseStart).toLocaleDateString().replace(/\./g, '.') }}
+                {{ new Date(item.practiceCourseEnd).toLocaleDateString().replace(/\./g, '.') }}
+              </span><br>
+              <span style="font-size: 12px; line-height: 14px; font-weight: 400; color: #A6A8AA">{{
+                  selectedCity
+                }}</span>
+            </div>
+            <span v-else>
+              Добавить новый шаблон
+            </span>
+          </template>
+        </v-select>
       </v-col>
-      <v-col cols="" class="align-center bg-surface-variant d-flex lg-2 md-2 sm-0 py-0">
-        <v-select v-model="selectedCity" label="Выберите шаблон практик" :items="listCities"
+      <v-col cols="" class="align-center bg-surface-variant d-flex lg-1 md-1 sm-0 py-0">
+        <v-select v-model="selectedCity" label="Город" :items="listCities"
                   no-data-text="Нет данных для отображения"
                   outlined hide-details
-                  class="select-practice-template"
+                  class="select-date-practice-template"
                   style="border-radius: 12px !important; max-height: 32px !important; min-width: 256px !important;"/>
       </v-col>
-      <v-col cols="lg-2 md-0 sm-0 pa-0"/>
-      <v-col cols=" px-0">
-        <v-btn class="tab-button pa-0 rounded-lg" color="#2B2A29" outlined @click="save"
+      <v-col cols="2" class="d-flex flex-row">
+        <v-btn class="tab-button pa-0 rounded-lg" color="#4E7AEC" @click="save"
+               style="min-width: 132px !important; max-height: 32px !important;"
                :disabled="isSaveButtonDisabled">
-          <span class="black--text">Сохранить изменения</span>
+          <span class="white--text">Добавить</span>
         </v-btn>
-      </v-col>
-      <v-col cols=" px-0">
-        <v-btn class="tab-button pa-0 rounded-lg" color="#2B2A29" text @click="cancelChanges">
-          <span class="black--text">Выйти без изменений</span>
+        <v-btn class="tab-button pa-0 rounded-lg ml-3" color="#2B2A29" outlined @click="cancelChanges"
+               style="min-width: 132px !important; max-height: 32px !important;">
+          <span class="black--text">Отмена</span>
         </v-btn>
       </v-col>
     </v-row>
     <v-row>
-      <TemplateSchedule @plan-updated="handleEvents" :selectedDuration="selectedDuration"
-                        :fullNameActiveUser="fullName" :events="eventsTemplate"
-                        :practiceCourseStart="dateFirstPractice"/>
+      <TemplateSchedule @plan-updated="handleEvents" :selectedDuration="selectedDuration" :fullNameActiveUser="fullName"
+                        :events="eventsTemplate" :practiceCourseStart="dateFirstPractice"/>
     </v-row>
   </v-container>
 </template>
@@ -77,7 +108,7 @@ blockEditableTemplate = selectedTemplate ? !!selectedTemplate.practiceCourseId :
 import TemplateSchedule from "@/views/AdminPanels/TemplateSchedule.vue";
 import UsersRequest from "@/services/UsersRequest";
 import PracticeCourseRequest from "@/services/PracticeCourseRequest";
-import {successAlert, warningAlert} from "@/components/Alerts/alert";
+import {errorAlert, successAlert, warningAlert} from "@/components/Alerts/alert";
 
 export default {
   name: 'PlanTemplate',
@@ -99,7 +130,6 @@ export default {
       "test": 'TEST'
     }],
     selectedTemplate: null,
-    cancelSaveChanges: false,
     blockEditableTemplate: false,
     startDateRules: {
       required: value => !!value
@@ -159,14 +189,17 @@ export default {
           })
         } else {
           warningAlert('Не обнаружено доступных изменений', 5000)
+          this.isSaveButtonDisabled = false
         }
       } else {
+        errorAlert('Заполните все поля', 5000)
         if (!this.startDateRules.required(this.practiceCourseStart)) {
           this.$refs.startDateField.$el.classList.add('error--text');
         }
         if (!this.endTimeRules.required(this.practiceCourseEnd)) {
           this.$refs.endDateField.$el.classList.add('error--text');
         }
+        this.isSaveButtonDisabled = false
       }
     },
 
@@ -291,8 +324,41 @@ export default {
 }
 </script>
 <style>
-
 .select-practice-template {
+  .v-input__slot {
+    display: flex !important;
+    align-items: center !important;
+    min-height: 41px !important;
+
+  }
+
+  .v-input__prepend-inner {
+    margin: 0 !important;
+  }
+
+  .v-input__icon {
+    max-height: 41px !important;
+  }
+
+  .v-label {
+    color: currentColor;
+  }
+
+  .v-input {
+    color: currentColor;
+  }
+
+  .v-input__control {
+    max-height: 41px !important;
+
+    .v-input__slot {
+      max-height: 41px !important;
+
+    }
+  }
+}
+
+.select-date-practice-template {
   .v-input__slot {
     display: flex !important;
     align-items: center !important;
@@ -322,6 +388,18 @@ export default {
     .v-input__slot {
       max-height: 32px !important;
 
+      .v-select__slot {
+        max-height: inherit !important;
+
+        .v-select__selections {
+          max-height: inherit !important;
+          padding: 0 !important;
+        }
+
+        .v-input__append-inner {
+          margin-top: 5px !important;
+        }
+      }
     }
   }
 }

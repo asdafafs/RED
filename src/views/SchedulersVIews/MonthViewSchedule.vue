@@ -46,8 +46,8 @@
           <span class="add-instructor-text">Добавить практику</span>
         </section>
       </v-btn>
-      <v-select v-model="selectedTeacher" class="select-practice-template " outlined dense hide-details
-                style=" max-width: 367px !important;  border-radius: 12px !important; max-height: 32px !important; margin-left: 8px !important; margin-top: 12px!important;"
+      <v-select v-model="selectedTeacher" class="select-teacher " outlined dense hide-details
+                style=" max-width: 367px !important;  border-radius: 12px !important;margin-left: 8px !important;"
                 no-data-text="Нет данных для отображения" label="Выберите инструктора для редактирования"
                 :items="[...listTeachers, { id: null, name: 'Преподаватель не назначен' }]"
                 :item-text="item => item ? `${item.surname || ''} ${item.name || ''} ${item.middleName || ''}` : 'Преподаватель не назначен'"
@@ -55,9 +55,8 @@
     </div>
     <div>
       <div>
-        <v-sheet tile height="54" class="d-flex justify-center"
-        >
-          <v-btn icon class="ma-0 align-self-center"  @click="prev()">
+        <v-sheet tile height="54" class="d-flex justify-center">
+          <v-btn icon class="ma-0 align-self-center" @click="prev()">
             <v-icon>mdi-chevron-left</v-icon>
           </v-btn>
           <v-toolbar-title v-if="test" class="month-name">
@@ -130,8 +129,11 @@
                       <div class="text-lg-h5 font-weight-bold black--text">{{ formatTime(selectedEvent.startTime) }}
                         {{ ' - ' }} {{ formatTime(selectedEvent.endTime) }}
                       </div>
-                      <div class="text-subtitle-1 text-medium-emphasis" v-if="!selectedEvent.lectureType">Преподаватель</div>
-                      <div class="text-subtitle-1 text-medium-emphasis" v-if="selectedEvent.lectureType">Тема лекции</div>
+                      <div class="text-subtitle-1 text-medium-emphasis" v-if="!selectedEvent.lectureType">
+                        Преподаватель
+                      </div>
+                      <div class="text-subtitle-1 text-medium-emphasis" v-if="selectedEvent.lectureType">Тема лекции
+                      </div>
                       <div class="text-subtitle-2 font-weight-regular black--text">{{ selectedEvent.title }}</div>
                       <div v-if="openEditMode">
                         <v-text-field v-model="newDateEvent" height="32px" hide-details label="Дата" type="date"
@@ -174,7 +176,7 @@
                   </v-btn>
                 </v-container>
                 <v-container class="pa-0" style="display: flex; justify-content: space-between;" v-if="openEditMode">
-                  <v-btn @click="cancelChanges()" class="" text style="text-transform: none !important;" >
+                  <v-btn @click="cancelChanges()" class="" text style="text-transform: none !important;">
                     <span style="color: black">Отмена</span>
                   </v-btn>
                   <v-btn @click="saveChanges()" class="close-button">
@@ -192,96 +194,96 @@
               </v-card-actions>
             </v-card>
           </v-dialog>
-<!--          <v-menu
-              :close-on-content-click="false"
-              :activator="selectedMoreElement"
-              offset-y
-          >
-            <v-card v-for="item in moreEvents"
-                    class="" style="border-radius: 12px"
-                    :style="{ border: (selectedEvent.studentId === null && userID !== selectedEvent.studentId) ? '1px solid #4E7AEC' : '1px solid grey' }"
-                    flat>
-              <v-toolbar-title class="pa-3">
-                <v-row>
-                  <v-col class="flex-column">
-                    <div class="text-caption text-medium-emphasis grey&#45;&#45;text">СВЕДЕНИЯ О ЗАПИСЯХ</div>
-                    <div class="text-lg-h4 font-weight-bold" v-if="!selectedEvent.lectureType">Вождение</div>
-                    <div class="text-lg-h4 font-weight-bold" v-if="selectedEvent.lectureType">Лекция</div>
-                  </v-col>
-                </v-row>
-              </v-toolbar-title>
-              <v-card-text class="pa-3 pt-0 pb-0">
-                <v-container class="">
-                  <v-row class="">
-                    <v-col class="flex-column pa-0 flex-wrap">
-                      <div style="color: #4E7AEC">
-                        {{ selectedEvent && selectedEvent.startTime ? formatDate(selectedEvent.startTime) : '' }}
-                      </div>
-                      <div class="text-lg-h5 font-weight-bold black&#45;&#45;text">{{ formatTime(selectedEvent.startTime) }}
-                        {{ ' - ' }} {{ formatTime(selectedEvent.endTime) }}
-                      </div>
-                      <div class="text-subtitle-1 text-medium-emphasis" v-if="!selectedEvent.lectureType">Преподаватель</div>
-                      <div class="text-subtitle-1 text-medium-emphasis" v-if="selectedEvent.lectureType">Тема лекции</div>
-                      <div class="text-subtitle-2 font-weight-regular black&#45;&#45;text">{{ selectedEvent.title }}</div>
-                      <div v-if="openEditMode">
-                        <v-text-field v-model="newDateEvent" height="32px" hide-details label="Дата" type="date"
-                                      class="v-text-field-custom "
-                                      outlined dense :min="minDate"></v-text-field>
-                        <v-text-field v-model="newTimeEvent" height="32px" hide-details label="Время начала" type="time"
-                                      class="v-text-field-custom " outlined dense></v-text-field>
-                        <v-radio-group class="flex-row" row hide-details v-model="newSelectedDuration">
-                          <v-radio label="1 Час" :value="1"></v-radio>
-                          <v-radio label="2 Часа" :value="2"></v-radio>
-                        </v-radio-group>
-                        <v-select height="32px" class="v-text-field-custom " outlined dense hide-details
-                                  v-model="selectedStudent"
-                                  no-data-text="Нет данных для отображения" label="Ученик" item-value="id"
-                                  :items="[...listStudents, { id: null, name: 'Студент не назначен' }]"
-                                  :item-text="item => item ? `${item.surname || ''} ${item.name || ''} ${item.middleName || ''} ` : 'Студент не назначен'"></v-select>
-                      </div>
-                      <div v-if="openDeleteMode">
-                        <v-radio-group class="flex-row" row hide-details v-model="newSelectedReason">
-                          <v-radio label="Отменена" :value="1"></v-radio>
-                          <v-radio label="Сгорела" :value="2"></v-radio>
-                        </v-radio-group>
-                        <v-select no-data-text="Нет данных для отображения" :disabled="newSelectedReason !== 1"
-                                  v-model="selectedReason"
-                                  :items="reasonsRefusal"
-                                  item-value="id"
-                                  @change="confirmReason(selectedReason)"
-                                  class="v-text-field-custom " outlined dense hide-details
-                        ></v-select>
-                      </div>
-                    </v-col>
-                  </v-row>
-                </v-container>
-              </v-card-text>
-              <v-card-actions class="pa-0">
-                <v-container class="pa-0" style="display: flex; justify-content: flex-end;"
-                             v-if="!openEditMode && !openDeleteMode">
-                  <v-btn @click="selectedOpen = false; selectedEvent = {};" class="close-button">
-                    <span style="color: white">Понятно</span>
-                  </v-btn>
-                </v-container>
-                <v-container class="pa-0" style="display: flex; justify-content: space-between;" v-if="openEditMode">
-                  <v-btn @click="cancelChanges()" class="" text style="text-transform: none !important;" >
-                    <span style="color: black">Отмена</span>
-                  </v-btn>
-                  <v-btn @click="saveChanges()" class="close-button">
-                    <span style="color: white">Сохранить</span>
-                  </v-btn>
-                </v-container>
-                <v-container class="pa-0" style="display: flex; justify-content: space-between;" v-if="openDeleteMode">
-                  <v-btn @click="cancelChanges()" class="" text style="text-transform: none !important;">
-                    <span style="color: black">Отмена</span>
-                  </v-btn>
-                  <v-btn @click="saveDelete()" class="close-button">
-                    <span style="color: white">Сохранить</span>
-                  </v-btn>
-                </v-container>
-              </v-card-actions>
-            </v-card>
-          </v-menu>-->
+          <!--          <v-menu
+                        :close-on-content-click="false"
+                        :activator="selectedMoreElement"
+                        offset-y
+                    >
+                      <v-card v-for="item in moreEvents"
+                              class="" style="border-radius: 12px"
+                              :style="{ border: (selectedEvent.studentId === null && userID !== selectedEvent.studentId) ? '1px solid #4E7AEC' : '1px solid grey' }"
+                              flat>
+                        <v-toolbar-title class="pa-3">
+                          <v-row>
+                            <v-col class="flex-column">
+                              <div class="text-caption text-medium-emphasis grey&#45;&#45;text">СВЕДЕНИЯ О ЗАПИСЯХ</div>
+                              <div class="text-lg-h4 font-weight-bold" v-if="!selectedEvent.lectureType">Вождение</div>
+                              <div class="text-lg-h4 font-weight-bold" v-if="selectedEvent.lectureType">Лекция</div>
+                            </v-col>
+                          </v-row>
+                        </v-toolbar-title>
+                        <v-card-text class="pa-3 pt-0 pb-0">
+                          <v-container class="">
+                            <v-row class="">
+                              <v-col class="flex-column pa-0 flex-wrap">
+                                <div style="color: #4E7AEC">
+                                  {{ selectedEvent && selectedEvent.startTime ? formatDate(selectedEvent.startTime) : '' }}
+                                </div>
+                                <div class="text-lg-h5 font-weight-bold black&#45;&#45;text">{{ formatTime(selectedEvent.startTime) }}
+                                  {{ ' - ' }} {{ formatTime(selectedEvent.endTime) }}
+                                </div>
+                                <div class="text-subtitle-1 text-medium-emphasis" v-if="!selectedEvent.lectureType">Преподаватель</div>
+                                <div class="text-subtitle-1 text-medium-emphasis" v-if="selectedEvent.lectureType">Тема лекции</div>
+                                <div class="text-subtitle-2 font-weight-regular black&#45;&#45;text">{{ selectedEvent.title }}</div>
+                                <div v-if="openEditMode">
+                                  <v-text-field v-model="newDateEvent" height="32px" hide-details label="Дата" type="date"
+                                                class="v-text-field-custom "
+                                                outlined dense :min="minDate"></v-text-field>
+                                  <v-text-field v-model="newTimeEvent" height="32px" hide-details label="Время начала" type="time"
+                                                class="v-text-field-custom " outlined dense></v-text-field>
+                                  <v-radio-group class="flex-row" row hide-details v-model="newSelectedDuration">
+                                    <v-radio label="1 Час" :value="1"></v-radio>
+                                    <v-radio label="2 Часа" :value="2"></v-radio>
+                                  </v-radio-group>
+                                  <v-select height="32px" class="v-text-field-custom " outlined dense hide-details
+                                            v-model="selectedStudent"
+                                            no-data-text="Нет данных для отображения" label="Ученик" item-value="id"
+                                            :items="[...listStudents, { id: null, name: 'Студент не назначен' }]"
+                                            :item-text="item => item ? `${item.surname || ''} ${item.name || ''} ${item.middleName || ''} ` : 'Студент не назначен'"></v-select>
+                                </div>
+                                <div v-if="openDeleteMode">
+                                  <v-radio-group class="flex-row" row hide-details v-model="newSelectedReason">
+                                    <v-radio label="Отменена" :value="1"></v-radio>
+                                    <v-radio label="Сгорела" :value="2"></v-radio>
+                                  </v-radio-group>
+                                  <v-select no-data-text="Нет данных для отображения" :disabled="newSelectedReason !== 1"
+                                            v-model="selectedReason"
+                                            :items="reasonsRefusal"
+                                            item-value="id"
+                                            @change="confirmReason(selectedReason)"
+                                            class="v-text-field-custom " outlined dense hide-details
+                                  ></v-select>
+                                </div>
+                              </v-col>
+                            </v-row>
+                          </v-container>
+                        </v-card-text>
+                        <v-card-actions class="pa-0">
+                          <v-container class="pa-0" style="display: flex; justify-content: flex-end;"
+                                       v-if="!openEditMode && !openDeleteMode">
+                            <v-btn @click="selectedOpen = false; selectedEvent = {};" class="close-button">
+                              <span style="color: white">Понятно</span>
+                            </v-btn>
+                          </v-container>
+                          <v-container class="pa-0" style="display: flex; justify-content: space-between;" v-if="openEditMode">
+                            <v-btn @click="cancelChanges()" class="" text style="text-transform: none !important;" >
+                              <span style="color: black">Отмена</span>
+                            </v-btn>
+                            <v-btn @click="saveChanges()" class="close-button">
+                              <span style="color: white">Сохранить</span>
+                            </v-btn>
+                          </v-container>
+                          <v-container class="pa-0" style="display: flex; justify-content: space-between;" v-if="openDeleteMode">
+                            <v-btn @click="cancelChanges()" class="" text style="text-transform: none !important;">
+                              <span style="color: black">Отмена</span>
+                            </v-btn>
+                            <v-btn @click="saveDelete()" class="close-button">
+                              <span style="color: white">Сохранить</span>
+                            </v-btn>
+                          </v-container>
+                        </v-card-actions>
+                      </v-card>
+                    </v-menu>-->
         </v-sheet>
       </div>
     </div>
@@ -319,8 +321,8 @@ export default {
     window.addEventListener('resize', this.handleResize);
     this.handleResize();
     this.prevMonthAndYear = this.getMonthAndYear(this.value);
-    if (!this.$vuetify.breakpoint.lgAndUp){
-      this.types= [['month', 'месяц'], ['day', 'день']]
+    if (!this.$vuetify.breakpoint.lgAndUp) {
+      this.types = [['month', 'месяц'], ['day', 'день']]
     }
   },
 
@@ -369,12 +371,12 @@ export default {
       this.confirmOnChangeMonthAndYear(newValue);
     },
 
-    userID(newValue){
-      if (newValue !== null){
+    userID(newValue) {
+      if (newValue !== null) {
         this.onToggleClick(0)
         this.getAllTeachers()
         this.getAllStudents()
-        if (this.user.discriminator && this.discriminatorUser ) {
+        if (this.user.discriminator && this.discriminatorUser) {
           this.selectedTeacher = this.userID
           this.selectedActiveUser = this.userID
         }
@@ -383,7 +385,7 @@ export default {
     },
   },
   created() {
-    if (this.userID !== null){
+    if (this.userID !== null) {
       this.onToggleClick(0)
     }
     this.getAllTeachers()
@@ -421,7 +423,7 @@ export default {
   },
 
   methods: {
-    viewDay({ date }) {
+    viewDay({date}) {
       /*this.selectedMoreElement = nativeEvent.target*/
       this.value = date
       this.type = 'day'
@@ -434,7 +436,7 @@ export default {
       return item[0];
     },
 
-    testMethod(){
+    testMethod() {
       this.getAllEvents()
     },
 
@@ -646,7 +648,7 @@ export default {
     async getPractices(userId) {
       const practices = new EventsRequest()
       let cal
-      if (this.type === 'week'){
+      if (this.type === 'week') {
         const monday = this.currentDate.clone().startOf('isoWeek').format('YYYY-MM-DD')
         const sunday = this.currentDate.clone().endOf('isoWeek').format('YYYY-MM-DD')
         const query = `Date=${monday}&Date2=${sunday}`
@@ -657,8 +659,7 @@ export default {
             end: new Date(event.endTime)
           }));
         })
-      }
-      else{
+      } else {
         const query = `Date=${this.value}`
         await practices.getPracticeActiveUser(userId, query).catch(x => console.log(x)).then(x => {
           cal = x.data.practice.map(event => ({
@@ -674,7 +675,7 @@ export default {
     async getPracticeStudent() {
       const practices = new EventsRequest()
       let cal
-      if (this.type === 'week'){
+      if (this.type === 'week') {
         const monday = this.currentDate.clone().startOf('isoWeek').format('YYYY-MM-DD')
         const sunday = this.currentDate.clone().endOf('isoWeek').format('YYYY-MM-DD')
         const query = `Date=${monday}&Date2=${sunday}`
@@ -685,8 +686,7 @@ export default {
             end: new Date(event.endTime)
           }));
         })
-      }
-      else{
+      } else {
         const query = `Date=${this.value}`
         await practices.getOnlyAssigned(query).catch(x => console.log(x)).then(x => {
           cal = x.data.practice.map(event => ({
@@ -916,11 +916,23 @@ export default {
   align-items: center;
 }
 
-.select-practice-template {
+.select-instructor-template {
+  max-height: 32px !important;
+  min-height: 32px !important;
+
+  .v-input__control {
+    max-height: 32px !important;
+    min-height: 32px !important;
+
+    .v-input__slot {
+      min-height: 32px !important;
+    }
+  }
+
   .v-input__slot {
     display: flex !important;
     align-items: center !important;
-    min-height: 32px !important;
+    max-height: 32px !important;
   }
 
   .v-input__prepend-inner {
@@ -931,12 +943,6 @@ export default {
     max-height: 32px !important;
   }
 
-  .v-input__control {
-    max-height: 32px !important;
 
-    .v-input__slot {
-      max-height: 32px !important;
-    }
-  }
 }
 </style>

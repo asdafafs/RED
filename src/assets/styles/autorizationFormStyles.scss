@@ -83,16 +83,17 @@
 
         &__btn {
             text-transform: none !important;
-            border-radius: 8px !important;
+            border-radius: 12px !important;
             padding: 0 !important;
             margin: 4px 0 4px 0 !important;
             width: 100% !important;
             max-width: 355px !important;
+            max-height: 32px !important;
 
             &__email{
                 text-transform: none !important;
                 color: white !important;
-                border-radius: 8px !important;
+                border-radius: 12px !important;
                 padding: 0 !important;
                 margin: 4px 0 4px 0 !important;
                 width: 350px !important;
@@ -101,7 +102,7 @@
             &__vk{
                 text-transform: none !important;
                 color: black !important;
-                border-radius: 8px !important;
+                border-radius: 12px !important;
                 padding: 0 !important;
                 margin: 4px 0 4px 0 !important;
                 width: 350px !important;
@@ -215,7 +216,7 @@
             padding: 0 !important;
             margin: 16px 0 0 0 !important;
             width: 262px !important;
-
+            height: 32px !important;
         }
     }
 }
@@ -264,7 +265,7 @@
             padding: 0 !important;
             margin: 16px 0 0 0 !important;
             width: 262px !important;
-
+            height: 32px !important;
         }
     }
 }

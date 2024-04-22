@@ -65,6 +65,26 @@
                                     class="v-text-field-custom-admin" outlined/>
                       <vue-text-mask class="phone-field" v-model="editedTeacher.phoneNumber" :mask="mask"
                                      :rules="[phoneRule.required]"/>
+                      <div class="card-edit-student__title" style="margin-top: 16px !important;">Параметры обучения
+                      </div>
+                      <v-select outlined class="v-text-field-custom-admin " style="border-radius: 12px"
+                                v-model="editedTeacher.gearboxType"
+                                :items="availableGearboxType"
+                                multiple
+                                label="Коробка передач"
+                                no-data-text="Нет данных для отображения"
+                                height="32px"
+                                hide-details
+                                dense/>
+                      <v-select outlined class="v-text-field-custom-admin " style="border-radius: 12px"
+                                v-model="editedTeacher.city"
+                                :items="availableCity"
+                                multiple
+                                label="Город"
+                                no-data-text="Нет данных для отображения"
+                                height="32px"
+                                hide-details
+                                dense/>
                     </v-col>
                   </v-row>
                 </v-container>
@@ -132,6 +152,8 @@ export default {
     dialog: false,
     dialogDelete: false,
     blockButtonWhenRequest: false,
+    availableCity: ['Северодвинск', 'Новодвинск'],
+    availableGearboxType: ['АКП', 'МКП'],
     mask: ['+', /\d/, '(', /[1-9]/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, '-', /\d/, /\d/],
     headers: [
       {text: 'ФИО', align: 'start', sortable: false, value: 'fullName', width: '30%'},
@@ -150,7 +172,6 @@ export default {
       middleName: '',
       email: '',
       phoneNumber: '7',
-      gearboxType: 1,
       isAdmin: false,
     },
     nameRule: {required: value => !!value},
@@ -341,7 +362,7 @@ export default {
 
 .add-instructor-card {
   width: 392px !important;
-  height: 410px !important;
+  height: 581px !important;
   border-radius: 12px !important;
   flex-direction: column !important;
   align-items: flex-start !important;

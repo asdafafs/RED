@@ -51,4 +51,24 @@ export default class EventsRequest extends HTTPService {
     cancelPractice(code){
         return this.put("practice/cancel", code)
     }
+
+    postAdminPractice(code){
+        return this.post("admin/practice",code)
+    }
+
+    putAdminPractice(code){
+        return this.put("admin/practice",code)
+    }
+
+    setAdminStudent(code){
+        return this.post("admin/practice/setstudent",code)
+    }
+
+    closeAdminStudent(code){
+        return this.post("admin/practice/close",code)
+    }
+
+    canselAdminStudent(code){
+        return this.post("admin/practice/cansel",code)
+    }
 }
