@@ -437,9 +437,10 @@ export default {
     },*/
     async reviewEvent() {
       const data = {
-        listStudents: this.listStudents,
-        userName: this.userName,
-        userId: this.userID
+        teacher: 'fff',
+        transmission: 'fff',
+        city: 'fff',
+        student: 'fff'
       }
       await this.$reviewPracticeDialogPlugin(data)
     },

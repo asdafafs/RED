@@ -65,22 +65,22 @@ export default {
         {
           id: 0,
           title: 'Преподаватель',
-          value: 'fff'
+          value: this.data.teacher
         },
         {
           id: 1,
           title: 'Коробка передач',
-          value: 'fff'
+          value: this.data.transmission
         },
         {
           id: 2,
           title: 'Город',
-          value: 'fff'
+          value: this.data.city
         },
         {
           id: 3,
           title: 'Текущий студент',
-          value: 'fff'
+          value: this.data.student
         },
       ]
     }
@@ -229,6 +229,7 @@ export default {
     background-color: #FEFEFE !important;
     text-transform: none !important;
     margin: 0 16px 0 0 !important;
+    box-shadow: none;
 
     &__text {
       color: #2B2A29 !important;

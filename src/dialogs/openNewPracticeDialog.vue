@@ -157,7 +157,7 @@ export default {
   &_text {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 12px;
     
     &_title {
       font-size: 12px;
