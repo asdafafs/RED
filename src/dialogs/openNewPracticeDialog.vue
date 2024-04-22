@@ -4,11 +4,11 @@
       class="open-practice-dialog"
       flat
     >
-      <v-card-title class="pa-3 d-flex flex-column justify-start">
+      <v-card-title class="pa-5 d-flex flex-column justify-start">
         <span class="open-practice-dialog_first-title">Новая запись</span>
         <span class="open-practice-dialog_second-title">Вождение</span>
       </v-card-title>
-      <v-card-text class="pa-3 pt-0 pb-0">
+      <v-card-text class="pa-5 pt-0 pb-0">
         <div class="open-practice-dialog_text">
           <div class="d-flex flex-column">
             <span class="open-practice-dialog_text_title">Преподаватель</span>
@@ -75,7 +75,7 @@
           />
         </div>
       </v-card-text>
-      <v-card-actions class="pa-3">
+      <v-card-actions class="pa-5">
         <div class="open-practice-dialog_actions">
           <v-btn
             class="open-practice-dialog_actions_cancel-button"

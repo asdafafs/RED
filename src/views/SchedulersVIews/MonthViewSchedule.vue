@@ -35,7 +35,7 @@
             class="select-period"
             :item-text="displayText"
             :item-value="valueText"
-            @change="testMethod"
+            @change="getAllEvents"
           />
         </div>
       </div>
@@ -90,7 +90,7 @@
           :type="type"
           :events="events"
           :event-color="getEventColor"
-          @click:event="showEvent"
+          @click:event="reviewEvent"
           :event-ripple="false"
           :event-height="num" 
           :hide-header=false
@@ -272,12 +272,7 @@ export default {
     valueText(item) {
       return item[0];
     },
-
-    testMethod(){
-      this.getAllEvents()
-    },
     
-
     /*async saveChanges() {
       this.openEditMode = false
       this.openDeleteMode = false
@@ -421,7 +416,7 @@ export default {
       return `${year}-${month}`;
     },
 
-    showEvent({nativeEvent, event}) {
+    /*showEvent({nativeEvent, event}) {
       this.selectedStudent = event.studentId
       this.newDateEvent = moment(event.startTime).format('YYYY-MM-DD')
 
@@ -439,8 +434,15 @@ export default {
       }
 
       nativeEvent.stopPropagation()
+    },*/
+    async reviewEvent() {
+      const data = {
+        listStudents: this.listStudents,
+        userName: this.userName,
+        userId: this.userID
+      }
+      await this.$reviewPracticeDialogPlugin(data)
     },
-
     async getLessons(userId) {
       const lessons = new EventsRequest()
       let lessonsData
@@ -699,29 +701,6 @@ export default {
   font-weight: 400 !important;
   font-size: 12px !important;
   color: black !important;
-}
-
-.edit-buttons-div {
-  margin-bottom: 12px !important;
-  margin-top: 12px !important;
-
-  &__edit-button {
-    border-radius: 12px !important;
-    border: 1px solid rgba(0, 0, 0, 0.53) !important;
-    height: 32px !important;
-    width: 100px !important;
-    background-color: #FEFEFE !important;
-    text-transform: none !important;
-    margin: 0 16px 0 0 !important;
-
-    &__text {
-      color: #2B2A29 !important;
-      text-transform: none !important;
-      font-weight: 600 !important;
-      font-size: 16px !important;
-      line-height: 18.75px !important;
-    }
-  }
 }
 
 .close-button {
