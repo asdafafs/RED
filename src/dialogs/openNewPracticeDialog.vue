@@ -5,7 +5,7 @@
       flat
     >
       <v-card-title class="pa-3 d-flex flex-column justify-start">
-        <span class="open-practice-dialog_first-title">Добавление записи</span>
+        <span class="open-practice-dialog_first-title">Новая запись</span>
         <span class="open-practice-dialog_second-title">Вождение</span>
       </v-card-title>
       <v-card-text class="pa-3 pt-0 pb-0">
@@ -16,7 +16,15 @@
           </div>
           <div>
             <span class="open-practice-dialog_text_title">Коробка передач</span>
-            <span></span>
+            <v-radio-group
+                class="flex-row mt-2 pt-0"
+                v-model="selectedTransmission"
+                row
+                hide-details
+            >
+              <v-radio label="АКП" :value="1"/>
+              <v-radio label="МКП" :value="2"/>
+            </v-radio-group>
           </div>
           <div>
             <span class="open-practice-dialog_text_title">Город</span>
@@ -28,8 +36,9 @@
             hide-details 
             label="Дата" 
             type="date"
-            outlined dense 
-            
+            outlined 
+            dense
+            :min="minDate"
           />
           <v-text-field
             class="v-text-field-custom-h-32 mt-2"
@@ -53,11 +62,16 @@
             </v-radio-group>
           </div>
           <v-select
-              class="v-text-field-custom-h-32 mt-2" 
+              class="v-text-field-custom-h-32 mt-2"
+              v-model="selectedStudent"
               outlined 
               dense 
               hide-details
-              no-data-text="Нет данных для отображения" label="Ученик" item-value="id"
+              no-data-text="Нет данных для отображения" 
+              label="Ученик" 
+              item-value="id"
+              :items="[...listStudents, { id: null, name: 'Студент не назначен' }]"
+              :item-text="item => item ? `${item.surname || ''} ${item.name || ''} ${item.middleName || ''} ` : 'Студент не назначен'"
           />
         </div>
       </v-card-text>
@@ -83,24 +97,35 @@
 </template>
 
 <script>
-
+import moment from "moment/moment";
 export default {
   name: "openNewPracticeDialog",
   data: () => ({
     localVisible: true,
-    eventDate: null,
-    eventStartTime: null,
+    eventDate: moment().format('YYYY-MM-DD'),
+    eventStartTime: '06:00',
     selectedDuration: 1,
+    selectedTransmission: 1,
+    selectedStudent: null
   }),
+  props: {
+    listStudents: {
+      type: [],
+      required: true
+    }
+  },
   computed: {
-   
+    minDate() {
+      return moment().locale('ru').format('DD-MM-YYYY')
+    }
   },
   methods: {
     onCancelClick() {
-      this.$emit('destroy')
+      this.$emit('destroy',true)
     },
     onSaveClick() {
-      
+      this.openNewEvent()
+      this.$emit('destroy',false)
     },
     openNewEvent() {
       this.newEvent = true
@@ -128,7 +153,7 @@ export default {
 }
 
 </script>
-<style  lang="scss">
+<style lang="scss">
 .open-practice-dialog {
   border-radius: 12px; 
   border: 1px solid grey;
@@ -222,6 +247,8 @@ export default {
   }
   .v-select__selections {
     max-height: 32px !important;
+    display: flex !important;
+    align-content: center !important;
   }
 }
 .duration-text {

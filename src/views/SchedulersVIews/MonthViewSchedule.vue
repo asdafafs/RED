@@ -250,7 +250,7 @@ export default {
 
   methods: {
     async openNewPractice() {
-      await this.$openNewPracticeDialogPlugin(this.selectedEvent)
+      await this.$openNewPracticeDialogPlugin(this.listStudents)
       /*this.selectedOpen = true;
       this.openEditMode = true;*/
     },
