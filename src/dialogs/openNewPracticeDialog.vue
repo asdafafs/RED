@@ -52,26 +52,26 @@
           <div>
             <span class="duration-text">Продолжительность</span>
             <v-radio-group
-                class="flex-row mt-2 pt-0"
-                v-model="selectedDuration"
-                row
-                hide-details
+              class="flex-row mt-2 pt-0"
+              v-model="selectedDuration"
+              row
+              hide-details
             >
               <v-radio label="1 час" :value="1"/>
               <v-radio label="2 часа" :value="2"/>
             </v-radio-group>
           </div>
           <v-select
-              class="v-text-field-custom-h-32 mt-2"
-              v-model="selectedStudent"
-              outlined 
-              dense 
-              hide-details
-              no-data-text="Нет данных для отображения" 
-              label="Ученик" 
-              item-value="id"
-              :items="[...data.listStudents, { id: null, name: 'Студент не назначен' }]"
-              :item-text="item => item ? `${item.surname || ''} ${item.name || ''} ${item.middleName || ''} ` : 'Студент не назначен'"
+            class="v-text-field-custom-h-32 mt-2"
+            v-model="selectedStudent"
+            outlined 
+            dense 
+            hide-details
+            no-data-text="Нет данных для отображения" 
+            label="Ученик" 
+            item-value="id"
+            :items="[...data.listStudents, { id: null, name: 'Студент не назначен' }]"
+            :item-text="item => item ? `${item.surname || ''} ${item.name || ''} ${item.middleName || ''} ` : 'Студент не назначен'"
           />
         </div>
       </v-card-text>
