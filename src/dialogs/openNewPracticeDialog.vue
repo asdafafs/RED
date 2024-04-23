@@ -5,14 +5,14 @@
       flat
     >
       <v-card-title class="pa-5 d-flex flex-column justify-start">
-        <span class="open-practice-dialog_first-title">Новая запись</span>
+        <span class="open-practice-dialog_first-title">{{ isNew ? 'Новая запись' : 'Изменение записи'}}</span>
         <span class="open-practice-dialog_second-title">Вождение</span>
       </v-card-title>
       <v-card-text class="pa-5 pt-0 pb-0">
         <div class="open-practice-dialog_text">
           <div class="d-flex flex-column">
             <span class="open-practice-dialog_text_title">Преподаватель</span>
-            <span class="teacher-text">{{ data.userName }}</span>
+            <span class="teacher-text">{{ isNew ? data.userName : data.teacher }}</span>
           </div>
           <div>
             <span class="open-practice-dialog_text_title">Коробка передач</span>
@@ -26,9 +26,9 @@
               <v-radio label="МКП" :value="2"/>
             </v-radio-group>
           </div>
-          <div>
+          <div class="d-flex flex-column">
             <span class="open-practice-dialog_text_title">Город</span>
-            <span></span>
+            <span class="teacher-text">Северодвинск</span>
           </div>
           <v-text-field
             class="v-text-field-custom-h-32 mt-2"
@@ -61,18 +61,7 @@
               <v-radio label="2 часа" :value="2"/>
             </v-radio-group>
           </div>
-          <v-select
-            class="v-text-field-custom-h-32 mt-2"
-            v-model="selectedStudent"
-            outlined 
-            dense 
-            hide-details
-            no-data-text="Нет данных для отображения" 
-            label="Ученик" 
-            item-value="id"
-            :items="[...data.listStudents, { id: null, name: 'Студент не назначен' }]"
-            :item-text="item => item ? `${item.surname || ''} ${item.name || ''} ${item.middleName || ''} ` : 'Студент не назначен'"
-          />
+          
         </div>
       </v-card-text>
       <v-card-actions class="pa-5">
@@ -109,13 +98,26 @@ export default {
     selectedDuration: 1,
     selectedTransmission: 1,
     selectedStudent: null,
-    selectedEvent: {},
   }),
   props: {
     data: {
       type: Object,
       default: {}
     },
+    isNew: {
+      type: Boolean,
+      default: true
+    }
+  },
+  mounted() {
+    if (!this.isNew) {
+      /*console.log(this.data)
+      this.eventDate = this.data.e.event.eventDate
+      this.eventStartTime = this.data.e.event.eventStartTime
+      this.selectedDuration = this.data.e.event.selectedDuration
+      this.selectedTransmission = this.data.e.event.selectedTransmission
+      this.selectedStudent = this.data.e.event.selectedStudent*/
+    }
   },
   computed: {
     minDate() {

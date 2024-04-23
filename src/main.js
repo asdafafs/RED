@@ -14,7 +14,6 @@ Vue.config.productionTip = false
 
 Vue.use(openNewPracticeDialogPlugin);
 Vue.use(reviewPracticeDialogPlugin);
-Vue.use(editPracticeDialogPlugin);
 Vue.use(deletePracticeDialogPlugin);
 Vue.use(openNewStudentDialogPlugin)
 Vue.use(openNewTeacherDialogPlugin)
