@@ -17,10 +17,10 @@
           <div>
             <span class="open-practice-dialog_text_title">Коробка передач</span>
             <v-radio-group
-                class="flex-row mt-2 pt-0"
-                v-model="selectedTransmission"
-                row
-                hide-details
+              class="flex-row mt-2 pt-0"
+              v-model="selectedTransmission"
+              row
+              hide-details
             >
               <v-radio label="АКП" :value="1"/>
               <v-radio label="МКП" :value="2"/>
