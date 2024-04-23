@@ -103,7 +103,7 @@ export default {
   },
   methods: {
     async openEditDialog() {
-      await this.$editPracticeDialogPlugin()
+      await this.$openNewPracticeDialogPlugin(this.data,false)
     },
     async openDeleteDialog() {
       await this.$deletePracticeDialogPlugin(this.data)

@@ -258,7 +258,7 @@ export default {
         userName: this.userName,
         userId: this.userID
       }
-      await this.$openNewPracticeDialogPlugin(data)
+      await this.$openNewPracticeDialogPlugin(data,true)
     },
     viewDay({ date }) {
       this.selectedMoreElement = nativeEvent.target
@@ -444,6 +444,7 @@ export default {
         student: '---',
         startTime: e.event.startTime,
         endTime: e.event.endTime,
+        e: e
       }
       await this.$reviewPracticeDialogPlugin(data)
     },
