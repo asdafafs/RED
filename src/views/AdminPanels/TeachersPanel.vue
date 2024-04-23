@@ -143,7 +143,11 @@ export default {
         editedIndex: this.editedIndex,
         editedTeacher: this.editedTeacher,
       }
-      await this.$openNewTeacherDialogPlugin(data)
+      await this.$openNewTeacherDialogPlugin(data).then((result) => {
+        if (!result) {
+          this.initialize();
+        }
+      });
     },
 
     openPlanTemplate(item) {
@@ -192,7 +196,11 @@ export default {
         editedIndex: this.editedIndex,
         editedTeacher: this.editedTeacher,
       }
-      await this.$openNewTeacherDialogPlugin(data)
+      await this.$openNewTeacherDialogPlugin(data).then((result) => {
+        if (!result) {
+          this.initialize();
+        }
+      });
     },
 
     deleteItem(item) {
