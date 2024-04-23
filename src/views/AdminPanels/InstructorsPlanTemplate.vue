@@ -1,6 +1,6 @@
 <template>
   <v-container fluid>
-    <v-row no-gutters align="center" class="spacer">
+    <v-row no-gutters align="center">
       <v-col lg="">
         <div class="text-h4 font-weight-bold">
           <v-btn icon class="ma-0  align-self-center" @click="prev">
@@ -11,22 +11,22 @@
       </v-col>
     </v-row>
     <hr style="margin: 1em 0 2em 0 !important;">
-    <v-row class="flex-wrap">
-      <v-col cols="lg-2 md-2 py-0" class="align-center bg-surface-variant d-flex">
+    <v-row class="flex-wrap" style="column-gap: 32px !important;">
+      <v-col cols="lg-2 md-2 py-0 pr-0" class="align-center bg-surface-variant d-flex">
         <v-text-field v-model="practiceCourseStart" label="Дата начала" type="date" ref="startDateField"
                       :rules="[startDateRules.required]" :min="getTodayDate()" outlined
                       class="select-date-practice-template" hide-details :disabled="blockEditableTemplate"
                       style="border-radius: 12px !important; max-height: 32px !important;"/>
       </v-col>
-      <v-col cols="lg-2 md-2 py-0" class="align-center bg-surface-variant d-flex">
+      <v-col cols="lg-2 md-2 py-0" class="align-center bg-surface-variant d-flex py-0 px-0">
         <v-text-field v-model="practiceCourseEnd" label="Дата окончания" type="date" ref="endDateField"
                       :rules="[endTimeRules.required]" :min="getTodayDate()" outlined
                       class="select-date-practice-template"
                       style="border-radius: 12px !important; max-height: 32px !important;"
                       hide-details :disabled="blockEditableTemplate"/>
       </v-col>
-      <v-col class="flex-column align-center bg-surface-variant d-flex lg-2 md-2 sm-2 py-0"
-             style="min-width: 109px !important;">
+      <v-col class="flex-column align-center bg-surface-variant d-flex lg-2 md-2 sm-2 py-0 px-0"
+             style="min-width: 109px !important; max-width: min-content">
         <v-radio-group class="px-0 py-0 align-center ma-0" v-model="selectedDuration" hide-details>
           <v-radio :value="1">
             <template v-slot:label>
@@ -40,14 +40,14 @@
           </v-radio>
         </v-radio-group>
       </v-col>
-      <v-col cols="" class="align-center bg-surface-variant d-flex lg-2 md-2 sm-0 py-0">
+      <v-col cols="" class="align-center bg-surface-variant d-flex lg-2 md-2 sm-0 py-0 px-0" style="max-width: min-content">
         <v-select v-model="selectedTemplate" label="Выберите шаблон практик" :items="listTemplates"
                   no-data-text="Нет данных для отображения"
                   item-value="practiceCourseId"
                   @change="getPracticeCourseTemplate(); blockEditableTemplate = selectedTemplate ? !!selectedTemplate.practiceCourseId : false"
                   outlined hide-details
                   class="select-practice-template"
-                  style="border-radius: 12px !important; max-height: 41px !important; min-width: 256px !important;">
+                  style="border-radius: 12px !important; max-height: 41px !important; min-width: 256px !important; max-width: 256px !important; ">
           <template #selection="{ item }">
             <div v-if="item.practiceCourseId">
               <span style="font-size: 16px; line-height: 18.75px; font-weight: 400; color: #2B2A29">
@@ -79,14 +79,14 @@
           </template>
         </v-select>
       </v-col>
-      <v-col cols="" class="align-center bg-surface-variant d-flex lg-1 md-1 sm-0 py-0">
+      <v-col cols="" class="align-center bg-surface-variant d-flex lg-1 md-1 sm-0 py-0 px-0" style="max-width: min-content">
         <v-select v-model="selectedCity" label="Город" :items="listCities"
                   no-data-text="Нет данных для отображения"
                   outlined hide-details
                   class="select-date-practice-template"
-                  style="border-radius: 12px !important; max-height: 32px !important; min-width: 256px !important;"/>
+                  style="border-radius: 12px !important; max-height: 32px !important; min-width: 256px !important; max-width: 256px !important;"/>
       </v-col>
-      <v-col cols="2" class="d-flex flex-row">
+      <v-col class="d-flex flex-row" style="width: min-content" v-if="hasChanges">
         <v-btn class="tab-button pa-0 rounded-lg" color="#4E7AEC" @click="save"
                style="min-width: 132px !important; max-height: 32px !important;"
                :disabled="isSaveButtonDisabled">
@@ -117,6 +117,7 @@ export default {
     isSaveButtonDisabled: false,
     fullName: '',
     eventsTemplate: [],
+    originalEventsTemplate: [],
     selectedDuration: 1,
     practiceCourseStart: null,
     practiceCourseEnd: null,
@@ -144,6 +145,10 @@ export default {
       const {selectedUserID} = this.$route.params;
       return selectedUserID;
     },
+
+    hasChanges() {
+      return JSON.stringify(this.eventsTemplate) !== JSON.stringify(this.originalEventsTemplate);
+    }
   },
 
   methods: {
@@ -229,6 +234,7 @@ export default {
     },
 
     async getPracticeCourseTemplate() {
+      this.originalEventsTemplate = []
       if (this.selectedTemplate === null) {
         return this.eventsTemplate = []
       }
@@ -258,7 +264,7 @@ export default {
         });
         this.dateFirstPractice = earliestEvent.start;
       }
-
+      this.originalEventsTemplate = JSON.parse(JSON.stringify(events))
       return this.eventsTemplate = events
     },
 
@@ -315,11 +321,14 @@ export default {
     initialize() {
       this.getListTemplates()
       this.checkInitialValidity();
+      this.originalEventsTemplate = JSON.parse(JSON.stringify(this.eventsTemplate))
     }
   },
   created() {
-    this.getActiveUser().then(response => this.fullName = `${response.surname} ${response.name} ${response.middleName}`)
-    this.initialize()
+    this.getActiveUser().then(response => this.fullName = `${response.surname} ${response.name} ${response.middleName}`).finally(() => {
+      this.initialize()
+    })
+
   }
 }
 </script>

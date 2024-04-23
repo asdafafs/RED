@@ -67,7 +67,6 @@ export default {
 
     events: {
       handler() {
-        this.initialize();
       },
       deep: true
     }
@@ -147,12 +146,12 @@ export default {
     eventsItems() {
       this.eventsTemplate = this.events.map(item => {
         return {
+          dayOfWeek: item.dayOfWeek,
           start: moment(item.start).format("YYYY-MM-DDTHH:mm:ss"),
           end: moment(item.end).format("YYYY-MM-DDTHH:mm:ss"),
+          timed: item.timed,
           color: item.color,
-          dayOfWeek: item.dayOfWeek,
           savedTime: item.savedTime,
-          timed: item.timed
         }
       });
       return this.eventsTemplate;
