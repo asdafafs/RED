@@ -70,7 +70,7 @@
             <span style="color: black">Отмена</span>
           </v-btn>
           <v-btn class="close-button" @click="save" :disabled="isSaveButtonDisabled && blockButtonWhenRequest ">
-            <span style="color: white">{{formAction}}</span>
+            <span style="color: white">{{ formAction }}</span>
           </v-btn>
         </v-container>
       </v-card-actions>
@@ -105,7 +105,7 @@ export default {
   },
 
   computed: {
-    formAction(){
+    formAction() {
       return this.data.editedIndex === -1 ? 'Создать' : 'Изменить';
     },
 
@@ -125,17 +125,9 @@ export default {
   methods: {
     async save() {
       this.blockButtonWhenRequest = true
+
       if (this.data.editedIndex > -1) {
-        const body = {
-          "id": this.editedStudent.id,
-          "email": this.editedStudent.email,
-          "phoneNumber": this.editedStudent.phoneNumber,
-          "name": this.editedStudent.name,
-          "surname": this.editedStudent.surname,
-          "middleName": this.editedStudent.middleName,
-          "groupId": this.editedStudent.groupId,
-          "generalHours": this.editedStudent.generalHoursSpent,
-        }
+        const body = this.data.editedStudent
         await this.putUser(body).catch(() => {
         }).finally(() => {
           this.close();
@@ -156,7 +148,7 @@ export default {
           this.close();
         })
       }
-
+      this.close();
     },
 
     async postUser(body) {

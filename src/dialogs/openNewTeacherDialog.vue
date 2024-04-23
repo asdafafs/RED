@@ -121,7 +121,6 @@ export default {
       if (this.data.editedIndex > -1) {
         const body = this.data.editedTeacher
         await this.putActiveUser(body).finally(async () => {
-          this.persons = await this.getActiveUsers();
           this.close();
         })
       } else {
@@ -133,8 +132,6 @@ export default {
           "middleName": this.data.editedTeacher.middleName,
         }
         await this.postActiveUser(body).finally(async () => {
-
-          this.persons = await this.getActiveUsers();
           this.close();
         })
       }

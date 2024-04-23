@@ -91,7 +91,6 @@ export default {
       can_signUp: true,
     },
   }),
-
   created() {
     this.initialize();
   },
@@ -120,7 +119,11 @@ export default {
         editedStudent: this.editedStudent,
         editedIndex: this.editedIndex,
       }
-      await this.$openNewStudentDialogPlugin(data)
+      await this.$openNewStudentDialogPlugin(data).then((result) => {
+        if (!result) {
+          this.initialize();
+        }
+      });
     },
 
     async getGroups() {
@@ -171,7 +174,11 @@ export default {
         editedStudent: this.editedStudent,
         editedIndex: this.editedIndex,
       }
-      await this.$openNewStudentDialogPlugin(data)
+      await this.$openNewStudentDialogPlugin(data).then((result) => {
+        if (!result) {
+          this.initialize();
+        }
+      });
     },
 
     close() {
