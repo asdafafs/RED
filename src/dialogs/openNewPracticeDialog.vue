@@ -113,8 +113,8 @@ export default {
   }),
   props: {
     data: {
-      type: {},
-      required: true
+      type: Object,
+      default: {}
     },
   },
   computed: {

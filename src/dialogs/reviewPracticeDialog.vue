@@ -106,7 +106,7 @@ export default {
       await this.$editPracticeDialogPlugin()
     },
     async openDeleteDialog() {
-      await this.$deletePracticeDialogPlugin()
+      await this.$deletePracticeDialogPlugin(this.data)
     },
     onSaveClick() {
       this.$emit('destroy',false)
