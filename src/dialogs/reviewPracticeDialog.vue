@@ -9,7 +9,7 @@
         <div class="review-practice-dialog_top-buttons">
           <v-btn 
             class="edit-buttons-div__edit-button" 
-            @click="openChangeDialog"
+            @click="openEditDialog"
           >
             <span class="edit-buttons-div__edit-button__text">Изменить</span>
           </v-btn>
@@ -21,6 +21,15 @@
           </v-btn>
         </div>
         <span class="review-practice-dialog_second-title">Вождение</span>
+        <div class="d-flex flex-row w-full">
+          <div class="d-flex align-center justify-center">
+            <v-icon class="time-of-practice-icon">mdi-clock-time-four-outline</v-icon>
+          </div>
+          <div class="d-flex flex-column justify-start">
+            <div class="date-of-practice">{{ dateOfPractice }}</div>
+            <div class="time-of-practice">{{ timeOfPractice }}</div>
+          </div>
+        </div>
       </v-card-title>
       <v-card-text class="pa-5 pt-0 pb-0">
         <div class="open-practice-dialog_text">
@@ -48,6 +57,7 @@
 </template>
 
 <script>
+import moment from "moment/moment";
 export default {
   name: "reviewPracticeDialog",
   data: () => ({
@@ -55,11 +65,17 @@ export default {
   }),
   props: {
     data: {
-      type: {},
-      required: true
+      type: Object,
+      default: {}
     },
   },
   computed: {
+    dateOfPractice() {
+      return `${moment(this.data.startTime).format('DD.MM.YYYY')} (${moment(this.data.startTime).locale('ru').format('dd')})`;
+    },
+    timeOfPractice() {
+      return `${moment(this.data.startTime).format('HH:mm')} - ${moment(this.data.endTime).format('HH:mm')}`
+    },
     items() {
       return [
         {
@@ -86,11 +102,11 @@ export default {
     }
   },
   methods: {
-    openChangeDialog() {
-      
+    async openEditDialog() {
+      await this.$editPracticeDialogPlugin()
     },
-    openDeleteDialog() {
-      
+    async openDeleteDialog() {
+      await this.$deletePracticeDialogPlugin()
     },
     onSaveClick() {
       this.$emit('destroy',false)
@@ -100,6 +116,9 @@ export default {
 
 </script>
 <style scoped lang="scss">
+.w-full {
+  width: 100%;
+}
 .review-practice-dialog {
   border-radius: 12px;
   border: 1px solid grey;
@@ -133,6 +152,7 @@ export default {
     line-height: 37.5px;
     width: 100%;
     margin-top: 12px;
+    margin-bottom: 12px;
   }
   &_top-buttons{
     display: flex;
@@ -239,5 +259,21 @@ export default {
       line-height: 18.75px !important;
     }
   }
+}
+.time-of-practice-icon {
+  color: #4E7AEC;
+  margin-right: 8px;
+}
+.date-of-practice {
+  color: #4E7AEC;
+  font-weight: 600;
+  font-size: 12px;
+  line-height: 14px;
+}
+.time-of-practice {
+  color: #2B2A29;
+  font-weight: 700;
+  font-size: 24px;
+  line-height: 28px;
 }
 </style>

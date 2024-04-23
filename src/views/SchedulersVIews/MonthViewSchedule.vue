@@ -435,12 +435,15 @@ export default {
 
       nativeEvent.stopPropagation()
     },*/
-    async reviewEvent() {
+    async reviewEvent(e) {
+      //TODO: Доработать дату
       const data = {
-        teacher: 'fff',
-        transmission: 'fff',
-        city: 'fff',
-        student: 'fff'
+        teacher: this.userName,
+        transmission: '---',
+        city: 'Северодвинск',
+        student: '---',
+        startTime: e.event.startTime,
+        endTime: e.event.endTime,
       }
       await this.$reviewPracticeDialogPlugin(data)
     },
