@@ -232,16 +232,21 @@ export default {
     },
 
     isEditedItemEqualInitialItem() {
-      if (!this.editedItem || !this.initialCourses.length) {
-        return false;
-      }
+      console.log('0')
+      // if (!this.editedItem || !this.initialCourses.length) {
+      //   return false;
+      // }
+      console.log('1')
       const editedItem = this.courses.find(course => course.id === this.editedItem.id);
       const initialItem = this.initialCourses.find(course => course.id === this.editedItem.id);
       if (initialItem && editedItem) {
         const sortedEditedItem = this.sortObjectKeys(editedItem);
         const sortedInitialItem = this.sortObjectKeys(initialItem);
-        return JSON.stringify(sortedEditedItem) === JSON.stringify(sortedInitialItem);
+        console.log(JSON.stringify(sortedEditedItem))
+        console.log(JSON.stringify(sortedInitialItem))
+        return JSON.stringify(sortedEditedItem) !== JSON.stringify(sortedInitialItem);
       }
+      console.log('2')
       return false;
     },
   },
@@ -260,15 +265,15 @@ export default {
     },
 
     toggleSelection() {
+      console.log(this.isEditedItemEqualInitialItem)
       if (this.isEditedItemEqualInitialItem) {
+        if (!this.selectedRows.includes(this.editedItem.id)) {
+          this.selectedRows.push(this.editedItem.id);
+        }
+      } else {
         const index = this.selectedRows.indexOf(this.editedItem.id);
         if (index !== -1) {
           this.selectedRows.splice(index, 1);
-        }
-      } else {
-
-        if (!this.selectedRows.includes(this.editedItem.id)) {
-          this.selectedRows.push(this.editedItem.id);
         }
       }
     },
@@ -311,8 +316,8 @@ export default {
         title: item.title,
         startTime: item.startTime,
         endTime: item.endTime,
-        activeUser: item.activeUser,
         lectureType: parseInt(item.lectureType),
+        activeUser: item.activeUser,
       };
       this.dialog = true;
     },
@@ -500,7 +505,7 @@ export default {
     font-size: 16px !important;
     font-weight: 500 !important;
     color: white !important;
-    margin-left: 8px !important;
+    margin-left: 0px !important;
     line-height: 18.75px !important;
   }
 }

@@ -184,30 +184,13 @@ export default {
   background: rgba(255, 255, 255, 0.7);
 }
 
-.grid-button {
-  width: 155px !important;
-  height: 28px !important;
-  border-radius: 12px !important;
-  text-transform: none !important;
-}
-
-.header-grid-text {
-  font-weight: 600 !important;
-  font-size: 16px !important;
-}
-
 .grid-actions {
   text-align: end !important;
   padding-right: 30px !important;
 }
 
-
 .v-text-field--outlined .v-label {
   top: 7px !important;
-}
-
-.v-btn {
-  letter-spacing: unset !important;
 }
 
 .big-title {
