@@ -7,7 +7,8 @@ import openNewPracticeDialogPlugin from "@/plugins/openNewPracticeDialogPlugin";
 import reviewPracticeDialogPlugin from "@/plugins/reviewPracticeDialogPlugin";
 import editPracticeDialogPlugin from "@/plugins/editPracticeDialogPlugin";
 import deletePracticeDialogPlugin from "@/plugins/deletePracticeDialogPlugin";
-
+import openNewStudentDialogPlugin from "@/plugins/openNewStudentDialogPlugin";
+import openNewTeacherDialogPlugin from "@/plugins/openNewTeacherDialogPlugin";
 
 Vue.config.productionTip = false
 
@@ -15,6 +16,8 @@ Vue.use(openNewPracticeDialogPlugin);
 Vue.use(reviewPracticeDialogPlugin);
 Vue.use(editPracticeDialogPlugin);
 Vue.use(deletePracticeDialogPlugin);
+Vue.use(openNewStudentDialogPlugin)
+Vue.use(openNewTeacherDialogPlugin)
 
 new Vue({
   store,

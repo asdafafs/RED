@@ -8,7 +8,7 @@
       <v-btn
           color="#4E7AEC"
           class="add-instructor-btn"
-          @click="dialog = true"
+          @click="openNewStudent"
       >
         <section class="d-flex flex-row align-center" style="padding: 8px 12px 8px 12px !important;">
           <v-icon color="white">mdi-plus-circle-outline</v-icon>
@@ -39,96 +39,6 @@
         :header-props="{ class: 'blue--text text--darken-2 header-grid-text' }"
         mobile-breakpoint="0"
     >
-      <template v-slot:top>
-        <v-toolbar flat>
-          <v-dialog v-model="dialog" width="auto" persistent>
-            <v-card class="card-edit-student">
-              <v-card-title class="pa-3 pb-0 ">
-                <span class="card-edit-student__type_edit">{{ formTitle }}</span>
-                <span class="card-edit-student__title">Общая информация</span>
-              </v-card-title>
-              <v-card-text class="pa-3 pt-0">
-                <v-container class="">
-                  <v-row class="pa-0">
-                    <v-col class="flex-column pa-0 flex-wrap">
-                      <v-text-field v-model="editedStudent.name" label="Имя" height="32px" dense hide-details
-                                    :rules="[nameRule.required]" outlined
-                                    class="v-text-field-custom-admin"/>
-                      <v-text-field v-model="editedStudent.surname" outlined label="Фамилия" height="32px" dense
-                                    hide-details
-                                    :rules="[surnameRule.required]" class="v-text-field-custom-admin "/>
-                      <v-text-field v-model="editedStudent.middleName" outlined label="Отчество" height="32px" dense
-                                    hide-details
-                                    :rules="[middleNameRule.required]"
-                                    class="v-text-field-custom-admin "/>
-                      <v-text-field v-model="editedStudent.email" outlined label="email" height="32px" dense
-                                    hide-details
-                                    :rules="[emailRule.required]" class="v-text-field-custom-admin "></v-text-field>
-                      <vue-text-mask class="phone-field" v-model="editedStudent.phoneNumber" :mask="mask"
-                                    :rules="[phoneRule.required]"/>
-                      <v-select outlined class="v-text-field-custom-admin " style="border-radius: 12px"
-                                v-model="editedStudent.groupId"
-                                :items="groups"
-                                :item-value="item => item.groupId"
-                                :item-text="item => `${item.title}`"
-                                label="Группа"
-                                no-data-text="Нет данных для отображения"
-                                height="32px"
-                                hide-details
-                                dense/>
-                      <v-checkbox v-model="editedStudent.block_student" label="Заблокировать студента" hide-details/>
-                      <div class="card-edit-student__title" style="margin-top: 16px !important;">Параметры обучения</div>
-                      <v-radio-group class="px-0 py-0 align-center ma-0 mt-3" v-model="editedStudent.gearboxType" hide-details>
-                        <v-radio label="АКП" :value="1"/>
-                        <v-radio label="МКП" :value="2"/>
-                      </v-radio-group>
-                      <v-select outlined class="v-text-field-custom-admin " style="border-radius: 12px"
-                                v-model="editedStudent.city"
-                                :items="availableCity"
-                                multiple
-                                label="Город"
-                                no-data-text="Нет данных для отображения"
-                                height="32px"
-                                hide-details
-                                dense/>
-                      <div class="card-edit-student__title" style="margin-top: 16px !important;">Часы</div>
-                      <v-checkbox v-model="editedStudent.can_signUp" label="Может записываться на практики" hide-details/>
-                      <v-text-field outlined class="v-text-field-custom-admin " style="border-radius: 12px"
-                                    v-model="editedStudent.generalHoursSpent"
-                                    label="Текущий остаток"
-                                    height="32px"
-                                    :hint="`Из них дополнительных: ${editedStudent.additinalHours}`"
-                                    persistent-hint
-                                    dense/>
-                    </v-col>
-                  </v-row>
-                </v-container>
-              </v-card-text>
-              <v-card-actions class="px-3">
-                <v-container class="pa-0" style="display: flex; justify-content: space-between; margin-bottom: auto">
-                  <v-btn text @click="close" style="text-transform: none !important;">
-                    <span style="color: black">Отмена</span>
-                  </v-btn>
-                  <v-btn class="close-button" @click="save" :disabled="isSaveButtonDisabled && blockButtonWhenRequest ">
-                    <span style="color: white">Изменить</span>
-                  </v-btn>
-                </v-container>
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
-          <v-dialog v-model="dialogDelete" max-width="500px">
-            <v-card>
-              <v-card-title class="text-h5">Вы действительно хотите удалить ученика</v-card-title>
-              <v-card-actions>
-                <v-spacer/>
-                <v-btn color="blue darken-1" text @click="closeDelete">Отмена</v-btn>
-                <v-btn color="blue darken-1" text @click="deleteItemConfirm"  :disabled="blockButtonWhenRequest">OK</v-btn>
-                <v-spacer/>
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
-        </v-toolbar>
-      </template>
       <template v-slot:item="{ item }">
         <tr>
           <td>{{ item.fullName }}</td>
@@ -153,24 +63,17 @@ export default {
   components: {VueTextMask},
   data: () => ({
     search: '',
-    dialog: false,
-    dialogDelete: false,
-    blockButtonWhenRequest: false,
-    mask: ['+', /\d/, '(', /[1-9]/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, '-', /\d/, /\d/],
     headers: [
       {text: 'ФИО', align: 'start', sortable: false, value: 'fullName', width: '30%'},
-      {text: 'E-mail', align: 'start', sortable: false, value: 'email',  width: '15%'},
-      {text: 'Оплаченные Всего', align: 'start', sortable: false, value: 'generalHours',  width: '15%'},
-      {text: 'Оплаченные Остаток', sortable: false, value: 'generalHoursSpent',  width: '15%'},
-      {text: 'Неоплаченные Всего', sortable: false, value: 'additinalHours',  width: '15%'},
+      {text: 'E-mail', align: 'start', sortable: false, value: 'email', width: '15%'},
+      {text: 'Оплаченные Всего', align: 'start', sortable: false, value: 'generalHours', width: '15%'},
+      {text: 'Оплаченные Остаток', sortable: false, value: 'generalHoursSpent', width: '15%'},
+      {text: 'Неоплаченные Всего', sortable: false, value: 'additinalHours', width: '15%'},
       {text: 'Действия', align: 'end', value: 'actions', sortable: false, width: '10%'},
     ],
-    availableCity: ['Северодвинск', 'Новодвинск'],
     groups: [],
     persons: [],
     editedIndex: -1,
-    deletedIndex: -1,
-    addHour: 0,
     editedStudent: {
       name: '',
       surname: '',
@@ -187,41 +90,39 @@ export default {
       block_student: false,
       can_signUp: true,
     },
-    nameRule: {required: value => !!value},
-    surnameRule: {required: value => !!value},
-    middleNameRule: {required: value => !!value},
-    emailRule: {required: value => !!value},
-    phoneRule: {required: value => !!value},
   }),
-
-  computed: {
-    formTitle() {
-      return this.editedIndex === -1 ? 'НОВЫЙ СТУДЕНТ' : 'РЕДАКТИРОВАТЬ СТУДЕНТА';
-    },
-
-    isSaveButtonDisabled() {
-      return !(this.nameRule.required(this.editedStudent.name)
-          && this.surnameRule.required(this.editedStudent.surname)
-          && this.middleNameRule.required(this.editedStudent.middleName)
-          && this.emailRule.required(this.editedStudent.email)
-          && this.phoneRule.required(this.editedStudent.phoneNumber))
-    }
-  },
-
-  watch: {
-    dialog(val) {
-      val || this.close();
-    },
-    dialogDelete(val) {
-      val || this.closeDelete();
-    },
-  },
 
   created() {
     this.initialize();
   },
 
   methods: {
+    async openNewStudent() {
+      this.editedIndex = -1
+      this.editedStudent = {
+        name: '',
+        surname: '',
+        middleName: '',
+        email: '',
+        groupId: null,
+        phoneNumber: '7',
+        generalHours: 0,
+        generalHoursSpent: 56,
+        additinalHours: 0,
+        additinalHoursSpent: 0,
+        gearboxType: 1,
+        city: '',
+        block_student: false,
+        can_signUp: true,
+      }
+      const data = {
+        groups: this.groups,
+        editedStudent: this.editedStudent,
+        editedIndex: this.editedIndex,
+      }
+      await this.$openNewStudentDialogPlugin(data)
+    },
+
     async getGroups() {
       const groups = new GroupsRequest();
       let groupsData
@@ -247,28 +148,12 @@ export default {
       return studentsData;
     },
 
-    async postUser(body) {
-      const user = new UsersRequest();
-      await user.postUser(body).catch(x => console.log(x))
-    },
-
-    async putUser(body) {
-      const user = new UsersRequest();
-      await user.putUser(body).catch(x => console.log(x))
-    },
-
-    async deleteUser() {
-      const user = new UsersRequest();
-      const deletedItem = {"id": this.deletedIndex}
-      await user.deleteUser(deletedItem.id).catch(x => console.log(x))
-    },
-
     async initialize() {
       this.persons = await this.getStudents()
       this.groups = await this.getGroups()
     },
 
-    editItem(item) {
+    async editItem(item) {
       this.editedIndex = this.persons.indexOf(item);
       this.editedStudent = {
         id: item.id,
@@ -281,27 +166,16 @@ export default {
         generalHoursSpent: parseInt(item.generalHoursSpent),
         additinalHours: item.additinalHours
       };
-      this.dialog = true;
-    },
-
-    deleteItem(item) {
-      this.editedIndex = this.persons.indexOf(item);
-      this.editedStudent = {name: item.name};
-      this.deletedIndex = item.id
-      this.dialogDelete = true;
-    },
-
-    async deleteItemConfirm() {
-      await this.deleteUser().finally(async () => {
-        this.persons = await this.getStudents();
-        this.closeDelete();
-      })
-
+      const data = {
+        groups: this.groups,
+        editedStudent: this.editedStudent,
+        editedIndex: this.editedIndex,
+      }
+      await this.$openNewStudentDialogPlugin(data)
     },
 
     close() {
       this.dialog = false;
-      this.blockButtonWhenRequest = false
       this.$nextTick(() => {
         this.editedStudent = {
           name: '',
@@ -312,62 +186,7 @@ export default {
           phoneNumber: '7'
         };
       })
-      this.addHour = 0
       this.editedIndex = -1;
-    },
-
-    closeDelete() {
-      this.dialogDelete = false;
-      this.$nextTick(() => {
-        this.editedStudent = {
-          name: '',
-          surname: '',
-          middleName: '',
-          groupId: null,
-          email: '',
-          phoneNumber: '7',
-          generalHours: 0,
-          additinalHours: 0,
-        };
-        this.editedIndex = -1;
-      });
-    },
-
-    async save() {
-      this.blockButtonWhenRequest = true
-      if (this.editedIndex > -1) {
-        const body = {
-          "id": this.editedStudent.id,
-          "email": this.editedStudent.email,
-          "phoneNumber": this.editedStudent.phoneNumber,
-          "name": this.editedStudent.name,
-          "surname": this.editedStudent.surname,
-          "middleName": this.editedStudent.middleName,
-          "groupId": this.editedStudent.groupId,
-          "generalHours": this.editedStudent.generalHoursSpent,
-        }
-        await this.putUser(body).catch(() => {this.dialogDelete = false;}).finally( () => {
-          this.close();
-          this.initialize()
-        })
-      } else {
-        const body = {
-          "email": this.editedStudent.email,
-          "phoneNumber": this.editedStudent.phoneNumber,
-          "name": this.editedStudent.name,
-          "surname": this.editedStudent.surname,
-          "middleName": this.editedStudent.middleName,
-          "groupId": this.editedStudent.groupId,
-          "generalHours": this.editedStudent.generalHours + parseInt(this.addHour),
-          "additinalHours": this.editedStudent.additinalHours,
-        }
-        await this.postUser(body).catch(() => {this.dialogDelete = false;}).finally(() => {
-          this.close();
-          this.initialize()
-        })
-      }
-
-
     },
   },
 };
@@ -425,7 +244,7 @@ export default {
 
 .card-edit-student {
   width: 392px !important;
-  height: 560px !important;
+  height: 847px !important;
   border-radius: 12px !important;
   flex-direction: column !important;
   align-items: flex-start !important;

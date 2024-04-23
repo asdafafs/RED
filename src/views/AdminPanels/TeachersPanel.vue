@@ -8,7 +8,7 @@
       <v-btn
           color="#4E7AEC"
           class="add-instructor-card-btn"
-          @click="dialog=true"
+          @click="openNewTeacher"
       >
         <section class="d-flex flex-row align-center" style="padding: 8px 12px 8px 12px !important;">
           <v-icon color="white">mdi-plus-circle-outline</v-icon>
@@ -41,53 +41,14 @@
     >
       <template v-slot:top>
         <v-toolbar flat>
-          <v-dialog v-model="dialog" width="auto">
-            <v-card class="add-instructor-card">
-              <v-card-title class="pa-3 pb-0 ">
-                <span class="add-instructor-card__type_edit">{{ formTitle }}</span>
-                <span class="add-instructor-card__title">Общая информация</span>
-              </v-card-title>
-              <v-card-text class="pa-3 pt-0">
-                <v-container class="">
-                  <v-row class="pa-0">
-                    <v-col class="flex-column pa-0 flex-wrap">
-                      <v-text-field v-model="editedTeacher.name" label="Имя" :rules="[nameRule.required]" outlined
-                                    height="32px" dense hide-details
-                                    class="v-text-field-custom-admin"/>
-                      <v-text-field v-model="editedTeacher.surname" label="Фамилия" :rules="[surnameRule.required]"
-                                    height="32px" dense hide-details
-                                    outlined class="v-text-field-custom-admin"/>
-                      <v-text-field v-model="editedTeacher.middleName" label="Отчество" height="32px" dense hide-details
-                                    :rules="[middleNameRule.required]" outlined
-                                    class="v-text-field-custom-admin"/>
-                      <v-text-field v-model="editedTeacher.email" label="email" :rules="[emailRule.required]"
-                                    height="32px" dense hide-details
-                                    class="v-text-field-custom-admin" outlined/>
-                      <vue-text-mask class="phone-field" v-model="editedTeacher.phoneNumber" :mask="mask"
-                                     :rules="[phoneRule.required]"/>
-                    </v-col>
-                  </v-row>
-                </v-container>
-              </v-card-text>
-              <v-card-actions class="px-3 ">
-                <v-container class="pa-0" style="display: flex; justify-content: space-between; margin-bottom: auto">
-                  <v-btn text @click="close" style="text-transform: none !important;">
-                    <span style="color: black">Отмена</span>
-                  </v-btn>
-                  <v-btn class="close-button" @click="save" :disabled="isSaveButtonDisabled && blockButtonWhenRequest">
-                    <span style="color: white">Изменить</span>
-                  </v-btn>
-                </v-container>
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
           <v-dialog v-model="dialogDelete" max-width="500px">
             <v-card>
               <v-card-title class="text-h5">Вы действительно хотите удалить инструктора?</v-card-title>
               <v-card-actions>
                 <v-spacer/>
                 <v-btn color="blue darken-1" text @click="closeDelete">Отмена</v-btn>
-                <v-btn color="blue darken-1" text @click="deleteItemConfirm" :disabled="blockButtonWhenRequest">OK</v-btn>
+                <v-btn color="blue darken-1" text @click="deleteItemConfirm" :disabled="blockButtonWhenRequest">OK
+                </v-btn>
                 <v-spacer/>
               </v-card-actions>
             </v-card>
@@ -129,7 +90,6 @@ export default {
   components: {VueTextMask},
   data: () => ({
     search: '',
-    dialog: false,
     dialogDelete: false,
     blockButtonWhenRequest: false,
     mask: ['+', /\d/, '(', /[1-9]/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, '-', /\d/, /\d/],
@@ -152,32 +112,11 @@ export default {
       phoneNumber: '7',
       gearboxType: 1,
       isAdmin: false,
+      cities: [],
     },
-    nameRule: {required: value => !!value},
-    surnameRule: {required: value => !!value},
-    middleNameRule: {required: value => !!value},
-    emailRule: {required: value => !!value},
-    phoneRule: {required: value => !!value},
   }),
 
-  computed: {
-    formTitle() {
-      return this.editedIndex === -1 ? 'НОВЫЙ ИНСТРУКТОР' : 'РЕДАКТИРОВАТЬ ИНСТРУКТОРА';
-    },
-
-    isSaveButtonDisabled() {
-      return !(this.nameRule.required(this.editedTeacher.name)
-          && this.surnameRule.required(this.editedTeacher.surname)
-          && this.middleNameRule.required(this.editedTeacher.middleName)
-          && this.emailRule.required(this.editedTeacher.email)
-          && this.phoneRule.required(this.editedTeacher.phoneNumber))
-    }
-  },
-
   watch: {
-    dialog(val) {
-      val || this.close();
-    },
     dialogDelete(val) {
       val || this.closeDelete();
     },
@@ -188,6 +127,25 @@ export default {
   },
 
   methods: {
+    async openNewTeacher() {
+      this.editedIndex = -1
+      this.editedTeacher = {
+        name: '',
+        surname: '',
+        middleName: '',
+        email: '',
+        phoneNumber: '7',
+        gearboxType: 1,
+        isAdmin: false,
+        cities: [],
+      }
+      const data = {
+        editedIndex: this.editedIndex,
+        editedTeacher: this.editedTeacher,
+      }
+      await this.$openNewTeacherDialogPlugin(data)
+    },
+
     openPlanTemplate(item) {
       const selectedUserID = item.id;
       this.$router.push({name: 'plan-template', params: {selectedUserID}}).catch(() => {
@@ -210,17 +168,6 @@ export default {
       return teachersData;
     },
 
-
-    async postActiveUser(body) {
-      const user = new UsersRequest();
-      await user.postActiveUser(body).catch(x => console.log(x))
-    },
-
-    async putActiveUser(body) {
-      const user = new UsersRequest();
-      await user.putActiveUser(body).catch(x => console.log(x))
-    },
-
     async deleteUser() {
       const user = new UsersRequest();
       const deletedItem = {"id": this.deletedIndex}
@@ -231,7 +178,7 @@ export default {
       this.persons = await this.getActiveUsers()
     },
 
-    editItem(item) {
+    async editItem(item) {
       this.editedIndex = this.persons.indexOf(item);
       this.editedTeacher = {
         id: item.id,
@@ -241,7 +188,11 @@ export default {
         surname: item.surname,
         middleName: item.middleName,
       };
-      this.dialog = true;
+      const data = {
+        editedIndex: this.editedIndex,
+        editedTeacher: this.editedTeacher,
+      }
+      await this.$openNewTeacherDialogPlugin(data)
     },
 
     deleteItem(item) {
@@ -257,11 +208,9 @@ export default {
         this.initialize()
         this.closeDelete();
       })
-
     },
 
     close() {
-      this.dialog = false;
       this.blockButtonWhenRequest = false;
       this.$nextTick(() => {
         this.editedTeacher = {
@@ -291,30 +240,6 @@ export default {
         this.editedIndex = -1;
       });
     },
-
-    async save() {
-      this.blockButtonWhenRequest = true
-      if (this.editedIndex > -1) {
-        const body = this.editedTeacher
-        await this.putActiveUser(body).finally(async () => {
-          this.persons = await this.getActiveUsers();
-          this.close();
-        })
-      } else {
-        const body = {
-          "email": this.editedTeacher.email,
-          "phoneNumber": this.editedTeacher.phoneNumber,
-          "name": this.editedTeacher.name,
-          "surname": this.editedTeacher.surname,
-          "middleName": this.editedTeacher.middleName,
-        }
-        await this.postActiveUser(body).finally(async () => {
-
-          this.persons = await this.getActiveUsers();
-          this.close();
-        })
-      }
-    },
   },
 };
 </script>
@@ -341,7 +266,7 @@ export default {
 
 .add-instructor-card {
   width: 392px !important;
-  height: 410px !important;
+  height: 581px !important;
   border-radius: 12px !important;
   flex-direction: column !important;
   align-items: flex-start !important;
