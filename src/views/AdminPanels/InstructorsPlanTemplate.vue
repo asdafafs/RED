@@ -12,35 +12,36 @@
     </v-row>
     <hr style="margin: 1em 0 2em 0 !important;">
     <v-row class="flex-wrap" style="column-gap: 32px !important;">
-      <v-col cols="lg-2 md-2 py-0 pr-0" class="align-center bg-surface-variant d-flex">
+      <v-col style="max-width: min-content" class="align-center bg-surface-variant d-flex py-0 pr-0">
         <v-text-field v-model="practiceCourseStart" label="Дата начала" type="date" ref="startDateField"
                       :rules="[startDateRules.required]" :min="getTodayDate()" outlined
                       class="select-date-practice-template" hide-details :disabled="blockEditableTemplate"
-                      style="border-radius: 12px !important; max-height: 32px !important;"/>
+                      style="border-radius: 12px !important; max-height: 32px !important; max-width: 156px !important;"/>
       </v-col>
-      <v-col cols="lg-2 md-2 py-0" class="align-center bg-surface-variant d-flex py-0 px-0">
+      <v-col class="align-center bg-surface-variant d-flex py-0 px-0" style="max-width: min-content">
         <v-text-field v-model="practiceCourseEnd" label="Дата окончания" type="date" ref="endDateField"
                       :rules="[endTimeRules.required]" :min="getTodayDate()" outlined
                       class="select-date-practice-template"
-                      style="border-radius: 12px !important; max-height: 32px !important;"
+                      style="border-radius: 12px !important; max-height: 32px !important; max-width: 156px !important;"
                       hide-details :disabled="blockEditableTemplate"/>
       </v-col>
-      <v-col class="flex-column align-center bg-surface-variant d-flex lg-2 md-2 sm-2 py-0 px-0"
-             style="min-width: 109px !important; max-width: min-content">
+      <v-col class="flex-column align-center bg-surface-variant d-flex py-0 px-0"
+             style="min-width: 80px !important; max-width: min-content">
         <v-radio-group class="px-0 py-0 align-center ma-0" v-model="selectedDuration" hide-details>
           <v-radio :value="1">
             <template v-slot:label>
-              <strong style="color:#2B2A29; font-weight: 400">1 час</strong>
+              <strong style="color:#2B2A29; font-weight: 400; font-size: 16px !important; line-height: 18.75px !important;">1 час</strong>
             </template>
           </v-radio>
           <v-radio :value="2">
             <template v-slot:label>
-              <strong style="color:#2B2A29; font-weight: 400">2 часа</strong>
+              <strong style="color:#2B2A29; font-weight: 400 !important; font-size: 16px !important; line-height: 18.75px !important;">2 часа</strong>
             </template>
           </v-radio>
         </v-radio-group>
       </v-col>
-      <v-col cols="" class="align-center bg-surface-variant d-flex lg-2 md-2 sm-0 py-0 px-0" style="max-width: min-content">
+      <v-col cols="" class="align-center bg-surface-variant d-flex py-0 px-0"
+             style="max-width: min-content">
         <v-select v-model="selectedTemplate" label="Выберите шаблон практик" :items="listTemplates"
                   no-data-text="Нет данных для отображения"
                   item-value="practiceCourseId"
@@ -59,9 +60,11 @@
                   selectedCity
                 }}</span>
             </div>
-            <span v-else>
-              Добавить новый шаблон
-            </span>
+            <div v-else>
+              <span>Период</span>
+              <br>
+              <span style="font-size: 12px; line-height: 14px; font-weight: 400; color: #A6A8AA">Город</span>
+            </div>
           </template>
           <template #item="{ item }">
             <div v-if="item.practiceCourseId">
@@ -79,14 +82,14 @@
           </template>
         </v-select>
       </v-col>
-      <v-col cols="" class="align-center bg-surface-variant d-flex lg-1 md-1 sm-0 py-0 px-0" style="max-width: min-content">
+      <v-col cols="" class="align-center bg-surface-variant d-flex py-0 px-0" style="max-width: min-content">
         <v-select v-model="selectedCity" label="Город" :items="listCities"
                   no-data-text="Нет данных для отображения"
                   outlined hide-details
                   class="select-date-practice-template"
                   style="border-radius: 12px !important; max-height: 32px !important; min-width: 256px !important; max-width: 256px !important;"/>
       </v-col>
-      <v-col class="d-flex flex-row" style="width: min-content" v-if="hasChanges">
+      <v-col class="align-center d-flex flex-row pa-0" style="width: min-content" v-if="hasChanges">
         <v-btn class="tab-button pa-0 rounded-lg" color="#4E7AEC" @click="save"
                style="min-width: 132px !important; max-height: 32px !important;"
                :disabled="isSaveButtonDisabled">
@@ -98,7 +101,7 @@
         </v-btn>
       </v-col>
     </v-row>
-    <v-row>
+    <v-row class="pt-5">
       <TemplateSchedule @plan-updated="handleEvents" :selectedDuration="selectedDuration" :fullNameActiveUser="fullName"
                         :events="eventsTemplate" :practiceCourseStart="dateFirstPractice"/>
     </v-row>
@@ -245,7 +248,7 @@ export default {
           .then(response => {
             events = response.data.practices.map(practice => ({
               ...practice,
-              color: '#9DB9FF',
+              color: '#FFFFFF',
               savedTime: practice.start
             }));
             this.selectedDuration = response.data.duration;

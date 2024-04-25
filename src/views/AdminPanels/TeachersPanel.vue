@@ -58,7 +58,7 @@
       <template v-slot:item="{ item }">
         <tr>
           <td>{{ item.fullName }}</td>
-          <td></td>
+          <td>{{formatTransmissions(item.transmissionTypeEnum)}}</td>
           <td>{{ item.email }}</td>
           <td>
             <v-btn
@@ -70,7 +70,7 @@
             </v-btn>
           </td>
           <td>
-            <v-checkbox v-model="item.isAdmin"/>
+            <v-checkbox v-model="item.isAdmin" @click="acceptNewRole(item)"/>
           </td>
           <td class="text-xs-right grid-actions">
             <v-icon class="mr-2 blue--text" @click="editItem(item)">mdi-pencil</v-icon>
@@ -113,6 +113,7 @@ export default {
       gearboxType: 1,
       isAdmin: false,
       cities: [],
+      transmissionTypeEnum: [],
     },
   }),
 
@@ -127,6 +128,31 @@ export default {
   },
 
   methods: {
+    async putActiveUser(body) {
+      const user = new UsersRequest();
+      await user.putActiveUser(body).catch(x => console.log(x))
+    },
+
+    async acceptNewRole(item){
+      await this.putActiveUser(item).finally(async () => {
+        this.close();
+      })
+    },
+
+    formatTransmissions(item) {
+      const includes1 = item.includes(1);
+      const includes2 = item.includes(2);
+      if (includes1 && includes2) {
+        return 'АКП, МКП';
+      } else if (includes1) {
+        return 'АКП';
+      } else if (includes2) {
+        return 'МКП';
+      } else {
+        return '';
+      }
+    },
+
     async openNewTeacher() {
       this.editedIndex = -1
       this.editedTeacher = {
@@ -135,7 +161,7 @@ export default {
         middleName: '',
         email: '',
         phoneNumber: '7',
-        gearboxType: 1,
+        transmissionTypeEnum: [],
         isAdmin: false,
         cities: [],
       }
@@ -159,7 +185,7 @@ export default {
     async getActiveUsers() {
       const user = new UsersRequest();
       let teachersData;
-      await user.getActiveUser()
+      await user.getAllActiveUsers()
           .then(response => {
             teachersData = response.data.activeUsers.map(user => ({
               ...user,
@@ -191,11 +217,15 @@ export default {
         name: item.name,
         surname: item.surname,
         middleName: item.middleName,
+        transmissionTypeEnum: item.transmissionTypeEnum,
+        isAdmin: item.isAdmin,
+        cities: [],
       };
       const data = {
         editedIndex: this.editedIndex,
         editedTeacher: this.editedTeacher,
       }
+      console.log('huy2', this.editedTeacher)
       await this.$openNewTeacherDialogPlugin(data).then((result) => {
         if (!result) {
           this.initialize();

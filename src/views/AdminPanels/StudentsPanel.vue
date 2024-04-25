@@ -298,7 +298,6 @@ export default {
   width: 89px !important;
   text-transform: none !important;
   margin-bottom: 12px !important;
-  margin-right: 12px !important;
 
   &__text {
     text-transform: none !important;
