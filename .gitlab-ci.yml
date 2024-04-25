@@ -3,13 +3,15 @@ stages:
   - deploy-dev
   - build-prod
   - deploy-prod
-  
+  - build-vlad
+
+
 variables:
   FRONTEND_VERSION: 0.0.${CI_PIPELINE_ID}
   GITLAB_API_URL: https://gitlab.nochicorp.com/api/v4
   TOKEN: glptt-ae8a6645d801a56bf72f70c20f239cb71ca3b37c
   DEVOPS_REPOSITORY: 13
-  DEVOPS_BRANCH: main
+  DEVOPS_BRANCH: main  
     
 build-dev-app:
   stage: build-dev
@@ -80,3 +82,22 @@ deploy-prod-app:
     - curl --location --request POST "https://gitlab.nochicorp.com/api/v4/projects/${DEVOPS_REPOSITORY}/trigger/pipeline?token=${TOKEN}&ref=${DEVOPS_BRANCH}"
   needs:
     - build-prod-app
+      
+build-vlad:
+  stage: build-vlad
+  when: manual
+  retry: 2
+  variables:
+    DOCKER_HOST: tcp://docker:2375
+    DOCKER_DRIVER: overlay2
+    DOCKER_TLS_CERTDIR: ""
+  services:
+    - name: docker:20-dind
+      alias: docker
+      command: [ "--tls=false" ]
+  before_script:
+    - until docker info; do sleep 1; done
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+  script:
+    - docker build --tag $CI_REGISTRY_IMAGE/red/red-frontend-vlad:$FRONTEND_VERSION . -f DockerfileVlad
+    - docker push $CI_REGISTRY_IMAGE/red/red-frontend-vlad:$FRONTEND_VERSION

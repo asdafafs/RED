@@ -69,7 +69,7 @@
                   color="#4E7AEC"
                   @click="validateForm"
                   class="authorization-card__actions__btn white--text"
-                  :disabled="loginButtonDisabled"
+                  :disabled="loginButtonDisabled || !isPasswordValid"
               >
                 Войти
               </v-btn>
