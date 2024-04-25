@@ -6,7 +6,7 @@
     >
       <v-card-title class="pa-5 d-flex flex-column justify-start">
         <span class="review-practice-dialog_first-title">Сведения о записи</span>
-        <div class="review-practice-dialog_top-buttons">
+        <div class="review-practice-dialog_top-buttons" v-if="data.userTeacher">
           <v-btn 
             class="edit-buttons-div__edit-button" 
             @click="openEditDialog"
@@ -72,10 +72,10 @@ export default {
   },
   computed: {
     dateOfPractice() {
-      return `${moment(this.data.startTime).format('DD.MM.YYYY')} (${moment(this.data.startTime).locale('ru').format('dd')})`;
+      return `${moment(this.data.e.event.startTime).format('DD.MM.YYYY')} (${moment(this.data.e.event.startTime).locale('ru').format('dd')})`;
     },
     timeOfPractice() {
-      return `${moment(this.data.startTime).format('HH:mm')} - ${moment(this.data.endTime).format('HH:mm')}`
+      return `${moment(this.data.e.event.startTime).format('HH:mm')} - ${moment(this.data.e.event.endTime).format('HH:mm')}`
     },
     items() {
       return [
@@ -152,7 +152,6 @@ export default {
     color: #A6A8AA;
     line-height: 14.06px;
     width: 100%;
-    margin-bottom: 12px;
   }
   &_second-title {
     font-size: 32px;
@@ -165,6 +164,7 @@ export default {
     margin-bottom: 12px;
   }
   &_top-buttons{
+    margin-top: 12px;
     display: flex;
     flex-direction: row;
     width: 100%;
