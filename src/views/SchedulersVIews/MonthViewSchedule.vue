@@ -436,6 +436,7 @@ export default {
       nativeEvent.stopPropagation()
     },*/
     async reviewEvent(e) {
+      console.log('e',e)
       //TODO: Доработать дату
       const data = {
         teacher: this.userName,
@@ -444,9 +445,12 @@ export default {
         student: '---',
         startTime: e.event.startTime,
         endTime: e.event.endTime,
-        e: e
+        e: e,
+        listStudents: this.listStudents
       }
-      await this.$reviewPracticeDialogPlugin(data)
+      await this.$reviewPracticeDialogPlugin(data).then((isCancel) => {
+        if (!isCancel) this.getAllEvents()
+      })
     },
     async getLessons(userId) {
       const lessons = new EventsRequest()

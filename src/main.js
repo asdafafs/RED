@@ -5,7 +5,6 @@ import router from './router'
 import vuetify from './plugins/vuetify'
 import openNewPracticeDialogPlugin from "@/plugins/openNewPracticeDialogPlugin";
 import reviewPracticeDialogPlugin from "@/plugins/reviewPracticeDialogPlugin";
-import editPracticeDialogPlugin from "@/plugins/editPracticeDialogPlugin";
 import deletePracticeDialogPlugin from "@/plugins/deletePracticeDialogPlugin";
 import openNewStudentDialogPlugin from "@/plugins/openNewStudentDialogPlugin";
 import openNewTeacherDialogPlugin from "@/plugins/openNewTeacherDialogPlugin";
