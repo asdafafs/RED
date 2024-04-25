@@ -273,39 +273,6 @@ export default {
       return item[0];
     },
     
-    /*async saveChanges() {
-      this.openEditMode = false
-      this.openDeleteMode = false
-      this.selectedOpen = false
-      const cal = moment(this.newDateEvent).format('YYYY-MM-DD');
-      const [hours, minutes] = this.newTimeEvent.split(':');
-
-      const startTime = moment.utc(cal).hour(parseInt(hours)).minute(parseInt(minutes));
-      const endTime = startTime.clone().add(this.newSelectedDuration, 'hours');
-      if (this.newEvent) {
-        const body = {
-          "startTime": startTime.toISOString(),
-          "endTime": endTime.toISOString(),
-          "studentId": this.selectedStudent,
-          "activeUserId": this.selectedActiveUser
-        }
-        await this.postNewEvent(body).catch(x => console.log(x)).finally(async () => {
-          await this.getAllEvents()
-        })
-      } else {
-        const body = {
-          'id': this.selectedEvent.id,
-          "startTime": startTime.toISOString(),
-          "endTime": endTime.toISOString(),
-          "studentId": this.selectedStudent,
-        }
-        await this.confirmChanges(body).catch(x => console.log(x)).finally(async () => {
-          await this.getAllEvents()
-        })
-      }
-      this.newEvent = false
-    },*/
-
     async acceptEditableTeacher() {
       const selectedId = this.selectedTeacher;
       if (selectedId !== null) {
@@ -323,51 +290,7 @@ export default {
         this.selectedActiveUser = selectedId
       }
     },
-
-    async saveDelete() {
-      this.openEditMode = false
-      this.openDeleteMode = false
-      this.selectedOpen = false
-      if (this.newSelectedReason === 1) {
-        const body = {
-          "id": this.selectedEvent.id,
-          "deleteReasonEnum": this.selectedReasonId
-        }
-        await this.cancelPractice(body).catch(x => console.log(x)).finally(async () => {
-          await this.getAllEvents()
-        })
-      } else {
-        const body = {
-          "id": this.selectedEvent.id,
-          "stateEnum": this.newSelectedReason
-        }
-        await this.closePractice(body).catch(x => console.log(x)).finally(async () => {
-          await this.getAllEvents()
-        })
-      }
-    },
-
-    async closePractice(body) {
-      const event = new EventsRequest()
-      await event.closePractice(body).catch(x => console.log(x)).finally(this.onToggleClick(0))
-    },
-
-    async cancelPractice(body) {
-      const event = new EventsRequest()
-      await event.cancelPractice(body).catch(x => console.log(x)).finally(this.onToggleClick(0))
-    },
-
-    cancelChanges() {
-      this.selectedEvent = {};
-      this.openEditMode = false
-      this.openDeleteMode = false
-      this.selectedOpen = false
-    },
-
-    confirmReason(selectedReason) {
-      return this.selectedReasonId = this.reasonsRefusal.indexOf(selectedReason) + 1
-    },
-
+    
     onToggleClick(id) {
       this.lastSelectedJoinType = id;
       switch (id) {
@@ -378,11 +301,6 @@ export default {
         case 2:
           return this.testPractices()
       }
-    },
-
-    async confirmChanges(body) {
-      const event = new EventsRequest()
-      await event.putPractice(body).catch(x => console.log(x))
     },
     
     async previousMonth() {
@@ -415,38 +333,17 @@ export default {
       const [year, month] = dateString.split('-');
       return `${year}-${month}`;
     },
-
-    /*showEvent({nativeEvent, event}) {
-      this.selectedStudent = event.studentId
-      this.newDateEvent = moment(event.startTime).format('YYYY-MM-DD')
-
-      const open = () => {
-        this.selectedEvent = event
-        this.selectedElement = nativeEvent.target
-        requestAnimationFrame(() => requestAnimationFrame(() => this.selectedOpen = true))
-      }
-
-      if (this.selectedOpen) {
-        this.selectedOpen = false
-        requestAnimationFrame(() => requestAnimationFrame(() => open()))
-      } else {
-        open()
-      }
-
-      nativeEvent.stopPropagation()
-    },*/
+    
     async reviewEvent(e) {
-      console.log('e',e)
       //TODO: Доработать дату
       const data = {
         teacher: this.userName,
         transmission: '---',
         city: 'Северодвинск',
         student: '---',
-        startTime: e.event.startTime,
-        endTime: e.event.endTime,
         e: e,
-        listStudents: this.listStudents
+        listStudents: this.listStudents,
+        userTeacher: this.isUserTeacher
       }
       await this.$reviewPracticeDialogPlugin(data).then((isCancel) => {
         if (!isCancel) this.getAllEvents()

@@ -149,22 +149,24 @@ export default {
     },
     async onDeleteClick() {
       let body = {}
+      const event = new EventsRequest()
       if (this.typeOfReasonId === 1) {
         body = {
           "id": this.data.e.event.id,
           "deleteReasonEnum": this.selectedReasonId
         }
+        await event.closePractice(body).catch(x => console.log(x)).then(
+            this.$emit('destroy',false)
+        )
       } else {
         body = {
           "id": this.data.e.event.id,
           "stateEnum": this.typeOfReasonId
         }
+        await event.closePractice(body).catch(x => console.log(x)).then(
+            this.$emit('destroy',false)
+        )
       }
-      const event = new EventsRequest()
-      await event.closePractice(body).catch(x => console.log(x)).then(
-          this.$emit('destroy',false)
-      )
-      
     },
   }
 }
