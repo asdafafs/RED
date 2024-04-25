@@ -9,16 +9,14 @@
           {{ formTitle }}
         </div>
       </v-col>
-      <v-col class="text-right col-auto  mr-4">
+      <v-col class="text-right col-auto" v-if="hasChanges">
         <v-btn class="template-course-button" @click="save" color="#4E7AEC"
                :disabled="isSaveButtonDisabled && blockButtonWhenRequest">
           <section class="d-flex flex-row align-center" style="padding: 8px 12px 8px 12px !important;">
             <span class="template-course-button-text white--text">Сохранить изменения</span>
           </section>
         </v-btn>
-      </v-col>
-      <v-col class="text-right col-auto">
-        <v-btn class="tab-button pa-0 rounded-lg" color="#2B2A29" @click="cancelChanges" style="min-width: 196px"
+        <v-btn class="tab-button pa-0 rounded-lg ml-4" color="#2B2A29" @click="cancelChanges" style="min-width: 196px"
                outlined>
           <span class="black--text">Выйти без изменений</span>
         </v-btn>
@@ -119,6 +117,7 @@ export default {
     coursesData: null,
     studentList: null,
     globalStartDate: null,
+    originalLessons: [],
     lessons: [],
     initialData: [],
     selectedChips: [],
@@ -202,6 +201,10 @@ export default {
     formTitle() {
       return this.editedItem.groups.title
     },
+
+    hasChanges() {
+      return JSON.stringify(this.lessons) !== JSON.stringify(this.originalLessons);
+    }
   },
 
   created() {
@@ -342,9 +345,20 @@ export default {
           studentId: item.student,
           groupNumber: item.groupNumber,
         };
+        this.initialData = this.coursesData.map(item => {
+          return {
+            id: item.id,
+            title: item.title,
+            startTime: item.startTime,
+            endTime: item.endTime,
+            lectureType: item.lectureType,
+            activeUser: item.activeUser,
+          };
+        });
         this.selectedDays()
         this.updateSelectedStudentsIds()
       }
+      this.originalLessons = JSON.parse(JSON.stringify(this.lessons))
     },
 
     selectedDays(){

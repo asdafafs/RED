@@ -169,10 +169,11 @@ export default {
 
     &__btn {
       text-transform: none !important;
-      border-radius: 8px;
+      border-radius: 12px !important;
       padding: 0;
       margin: 0 0 0 0 !important;
       width: 350px;
+      height: 32px !important;
 
     }
   }

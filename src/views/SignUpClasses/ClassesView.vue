@@ -129,6 +129,24 @@
                           selectedEvent.studentId
                         }}
                       </div>
+                      <div class="text-subtitle-1 text-medium-emphasis" v-if="discriminatorUser">Город</div>
+                      <div class="text-subtitle-2 font-weight-regular black--text" v-if="discriminatorUser">Северодвинск
+                      </div>
+                      <div class="text-subtitle-1 text-medium-emphasis" v-if="discriminatorUser">Коробка передач</div>
+                      <div class="text-subtitle-2 font-weight-regular black--text" v-if="discriminatorUser">
+                        <v-radio-group class="flex-row pa-0 ma-0" row hide-details v-model="selectedEvent.gearboxType">
+                          <v-radio label="АКП" :value="1">
+                            <template v-slot:label>
+                              <strong style="color:#2B2A29; font-weight: 400  ">АКП</strong>
+                            </template>
+                          </v-radio>
+                          <v-radio label="МКП" :value="2">
+                            <template v-slot:label>
+                              <strong style="color:#2B2A29; font-weight: 400">МКП</strong>
+                            </template>
+                          </v-radio>
+                        </v-radio-group>
+                      </div>
                       <div class="text-subtitle-1 text-medium-emphasis" v-if="discriminatorUser">Лимит часов</div>
                       <div v-if="discriminatorUser" class="black--text">Основные <span
                           style="color: #4E7AEC">({{ studentHours[1] }} из {{ studentHours[0] }})</span></div>
@@ -225,8 +243,8 @@ export default {
     window.addEventListener('resize', this.handleResize);
     this.handleResize();
     this.prevMonthAndYear = this.getMonthAndYear(this.value);
-    if (!this.$vuetify.breakpoint.lgAndUp){
-      this.types= [['month', 'месяц'], ['day', 'день']]
+    if (!this.$vuetify.breakpoint.lgAndUp) {
+      this.types = [['month', 'месяц'], ['day', 'день']]
     }
   },
 
@@ -313,7 +331,7 @@ export default {
       }
     },
 
-    testMethod(){
+    testMethod() {
       this.confirm(this.discriminatorUser)
     },
 
@@ -418,7 +436,7 @@ export default {
       this.close();
     },
 
-    getEventsForStudent(){
+    getEventsForStudent() {
       if (this.type === 'week') {
         const practice = new EventsRequest()
         const monday = this.currentDate.clone().startOf('isoWeek').format('YYYY-MM-DD')

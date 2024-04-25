@@ -1,6 +1,6 @@
 <template>
   <v-container class="px-3 pa-0 ma-0" fluid v-if="true">
-    <div class="font-weight-medium px-0 mb-3" :class="!showDrawer ? 'mobile-title' : 'desk-title'">
+    <div class="big-title" >
       Мое расписание
     </div>
     <hr>
@@ -40,10 +40,5 @@ export default {
 <style lang="scss" >
 @import "@/assets/styles/buttonStyles.css";
 @import "@/assets/styles/lineStyles.css";
-.mobile-title {
-  font-size: 32px;
-}
-.desk-title {
-  font-size: 40px;
-}
+@import "@/assets/styles/weekScheduleStyles.css";
 </style>
