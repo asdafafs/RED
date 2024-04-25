@@ -11,7 +11,7 @@
           <v-list>
             <v-list-item
                 @click.stop="linkVk()">
-              Привязать аккуант к вк
+              Привязать аккаунт к вк
             </v-list-item>
             <v-list-item
                 @click.stop="logoutAndExit">

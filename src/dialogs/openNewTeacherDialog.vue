@@ -27,8 +27,9 @@
                 Параметры обучения
               </div>
               <v-select outlined class="v-text-field-custom-admin " style="border-radius: 12px"
-                        v-model="data.editedTeacher.gearboxType"
+                        v-model="data.editedTeacher.transmissionTypeEnum"
                         :items="availableGearboxType"
+                        item-value="id"
                         multiple
                         label="Коробка передач"
                         no-data-text="Нет данных для отображения"
@@ -50,11 +51,11 @@
       </v-card-text>
       <v-card-actions class="px-3 ">
         <v-container class="pa-0" style="display: flex; justify-content: space-between; margin-bottom: auto">
-          <v-btn text @click="close" style="text-transform: none !important;">
+          <v-btn text @click="close" style="text-transform: none !important; padding: 0 !important;">
             <span style="color: black">Отмена</span>
           </v-btn>
           <v-btn class="close-button" @click="save" :disabled="isSaveButtonDisabled && blockButtonWhenRequest">
-            <span style="color: white">{{formAction}}</span>
+            <span style="color: white">{{ formAction }}</span>
           </v-btn>
         </v-container>
       </v-card-actions>
@@ -73,7 +74,8 @@ export default {
     localVisible: true,
     blockButtonWhenRequest: false,
     availableCity: ['Северодвинск', 'Новодвинск'],
-    availableGearboxType: ['АКП', 'МКП'],
+    availableGearboxType: [{id: 1, text: 'АКП'},
+      {id: 2, text: 'МКП'}],
     mask: ['+', /\d/, '(', /[1-9]/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, '-', /\d/, /\d/],
     nameRule: {required: value => !!value},
     surnameRule: {required: value => !!value},
@@ -88,7 +90,7 @@ export default {
     },
   },
   computed: {
-    formAction(){
+    formAction() {
       return this.data.editedIndex === -1 ? 'Создать' : 'Изменить';
     },
 
@@ -130,6 +132,7 @@ export default {
           "name": this.data.editedTeacher.name,
           "surname": this.data.editedTeacher.surname,
           "middleName": this.data.editedTeacher.middleName,
+
         }
         await this.postActiveUser(body).finally(async () => {
           this.close();
@@ -141,6 +144,9 @@ export default {
       this.$emit('destroy', false)
     },
   },
+  created() {
+    console.log('huy', this.data.editedTeacher)
+  }
 }
 
 </script>
