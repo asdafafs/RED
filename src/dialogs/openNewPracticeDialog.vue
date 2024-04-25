@@ -61,7 +61,18 @@
               <v-radio label="2 часа" :value="2"/>
             </v-radio-group>
           </div>
-          
+          <v-select
+              class="v-text-field-custom-h-32 mt-2"
+              v-model="selectedStudentId"
+              outlined
+              dense
+              hide-details
+              no-data-text="Нет данных для отображения"
+              label="Ученик"
+              item-value="id"
+              :items="[...data.listStudents, { id: null, name: 'Студент не назначен' }]"
+              :item-text="item => item ? `${item.surname || ''} ${item.name || ''} ${item.middleName || ''} ` : 'Студент не назначен'"
+          />
         </div>
       </v-card-text>
       <v-card-actions class="pa-5">
@@ -75,7 +86,7 @@
           </v-btn>
           <v-btn 
             class="open-practice-dialog_actions_save-button"
-            @click="onSaveClick"
+            @click="saveEvent"
           >
             <span>Сохранить</span>
           </v-btn>
@@ -93,11 +104,11 @@ export default {
   name: "openNewPracticeDialog",
   data: () => ({
     localVisible: true,
-    eventDate: moment().format('YYYY-MM-DD'),
-    eventStartTime: '06:00',
+    eventDate: null,
+    eventStartTime: null,
     selectedDuration: 1,
     selectedTransmission: 1,
-    selectedStudent: null,
+    selectedStudentId: null,
   }),
   props: {
     data: {
@@ -109,14 +120,21 @@ export default {
       default: true
     }
   },
+  watch: {
+    eventDate() {
+      console.log('date',this.eventDate)
+    }
+  },
   mounted() {
     if (!this.isNew) {
-      /*console.log(this.data)
-      this.eventDate = this.data.e.event.eventDate
-      this.eventStartTime = this.data.e.event.eventStartTime
-      this.selectedDuration = this.data.e.event.selectedDuration
-      this.selectedTransmission = this.data.e.event.selectedTransmission
-      this.selectedStudent = this.data.e.event.selectedStudent*/
+      this.eventDate = moment(this.data.e.event.startTime).format('YYYY-MM-DD')
+      this.eventStartTime = moment(this.data.e.event.startTime).format('HH:mm')
+      this.selectedDuration = +moment(this.data.e.event.endTime).format('HH') - +moment(this.data.e.event.startTime).format('HH') === 1 ? 1 : 2
+      this.selectedTransmission = 1
+      this.selectedStudentId = this.data.listStudents.find(student => student.id === this.data.e.event.studentId) || null
+    } else {
+      this.eventDate = moment().format('YYYY-MM-DD')
+      this.eventStartTime = '06:00'
     }
   },
   computed: {
@@ -128,10 +146,7 @@ export default {
     onCancelClick() {
       this.$emit('destroy',true)
     },
-    onSaveClick() {
-      this.openNewEvent()
-    },
-    async openNewEvent() {
+    async saveEvent() {
       const [hours, minutes] = this.eventStartTime.split(':');
       const startTime = moment.utc(this.eventDate).hour(parseInt(hours)).minute(parseInt(minutes));
       const endTime = startTime.clone().add(this.selectedDuration, 'hours');
@@ -139,7 +154,7 @@ export default {
       const body = {
         "startTime": startTime,
         "endTime": endTime,
-        "studentId": this.selectedStudent,
+        "studentId": this.selectedStudentId,
         "activeUserId": this.data.userId
       }
       const event = new EventsRequest()

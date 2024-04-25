@@ -58,6 +58,7 @@
 
 <script>
 import moment from "moment/moment";
+import {isCancel} from "axios";
 export default {
   name: "reviewPracticeDialog",
   data: () => ({
@@ -103,13 +104,22 @@ export default {
   },
   methods: {
     async openEditDialog() {
+      this.localVisible = false
       await this.$openNewPracticeDialogPlugin(this.data,false)
+          .finally(()=> this.localVisible = true)
     },
     async openDeleteDialog() {
+      this.localVisible = false
       await this.$deletePracticeDialogPlugin(this.data)
+          .then(async (isCancel) => {
+            if (!isCancel) {
+              this.$emit('destroy',false)
+            }
+          })
+          .finally(() => this.localVisible = true)
     },
     onSaveClick() {
-      this.$emit('destroy',false)
+      this.$emit('destroy',true)
     },
   }
 }

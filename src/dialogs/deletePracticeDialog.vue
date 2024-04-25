@@ -31,7 +31,7 @@
           <div>
             <v-radio-group
               class="flex-row mt-2 pt-0"
-              v-model="typeOfReason"
+              v-model="typeOfReasonId"
               row
               hide-details
             >
@@ -49,7 +49,7 @@
             outlined 
             dense 
             hide-details
-            :disabled="typeOfReason !== 1"
+            :disabled="typeOfReasonId !== 1"
           />
         </div>
       </v-card-text>
@@ -76,13 +76,14 @@
 
 <script>
 import moment from "moment/moment";
+import EventsRequest from "@/services/EventsRequest";
 
 
 export default {
   name: "deletePracticeDialog",
   data: () => ({
     selectedReasonId: 1,
-    typeOfReason: 1,
+    typeOfReasonId: 1,
     localVisible: true,
   }),
   props: {
@@ -146,9 +147,25 @@ export default {
     onCancelClick() {
       this.$emit('destroy',true)
     },
-    onDeleteClick() {
+    async onDeleteClick() {
+      let body = {}
+      if (this.typeOfReasonId === 1) {
+        body = {
+          "id": this.data.e.event.id,
+          "deleteReasonEnum": this.selectedReasonId
+        }
+      } else {
+        body = {
+          "id": this.data.e.event.id,
+          "stateEnum": this.typeOfReasonId
+        }
+      }
+      const event = new EventsRequest()
+      await event.closePractice(body).catch(x => console.log(x)).then(
+          this.$emit('destroy',false)
+      )
       
-    }
+    },
   }
 }
 
