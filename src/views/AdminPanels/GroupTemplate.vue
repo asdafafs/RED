@@ -23,21 +23,31 @@
       </v-col>
     </v-row>
     <hr>
-    <v-row class="flex-wrap">
-      <v-col cols="lg-1 md-2">
+<!--    <v-row>-->
+<!--      <div style="font-size: 12px; font-weight: 400; line-height: 14px; color: #A6A8AA; padding: 20px 0 20px 12px">ОБЩИЕ-->
+<!--        СВЕДЕНИЯ-->
+<!--      </div>-->
+<!--    </v-row>-->
+    <v-row class="flex-wrap" style="column-gap: 14px">
+      <v-col style="max-width: min-content; padding:  0 0 0 12px">
         <v-text-field v-model="editedItem.groups.groupNumber" label="Номер группы" dense
                       class="text-field-group-template"
                       :rules="[groupNumberRules.required, groupNumberRules.integer]" outlined hide-details
                       @change="newGroupTitle"
-                      style="border-radius: 12px !important; max-height: 32px !important;"/>
+                      style="border-radius: 12px !important; max-height: 32px !important; min-width: 115px !important; max-width: 115px !important;"/>
       </v-col>
-      <v-col cols="lg-2 md-3">
+      <v-col style="max-width: min-content; padding: 0">
         <v-text-field v-model="editedItem.groups.title" label="Название группы" dense
                       class="text-field-group-template"
-                      style="border-radius: 12px !important; max-height: 32px !important;"
+                      style="border-radius: 12px !important; max-height: 32px !important;  min-width: 427px !important; max-width: 427px !important;"
                       :rules="[titleRules.required]" outlined hide-details disabled/>
       </v-col>
     </v-row>
+<!--    <v-row>-->
+<!--      <div style="font-size: 12px; font-weight: 400; line-height: 14px; color: #A6A8AA; padding: 20px 0 20px 12px">-->
+<!--        СТУДЕНТЫ-->
+<!--      </div>-->
+<!--    </v-row>-->
     <v-row class="flex-wrap">
       <v-col cols="12">
         <v-select
@@ -47,23 +57,28 @@
             :item-text="item => `${item.surname} ${item.name} ${item.middleName} `"
             label="Список свободных учеников"
             multiple
-            hint="Выберите студентов для группы"
+            hide-details
             persistent-hint
             no-data-text="Нет данных для отображения"
             item-value="id"
             @change="updateSelectedStudentsIds" dense height="32px"/>
       </v-col>
     </v-row>
+<!--    <v-row>-->
+<!--      <div style="font-size: 12px; font-weight: 400; line-height: 14px; color: #A6A8AA; padding: 20px 0 20px 12px">-->
+<!--        ПЛАН ОБУЧЕНИЯ-->
+<!--      </div>-->
+<!--    </v-row>-->
     <v-row class="flex-wrap">
-      <v-col cols="lg-2 md-3">
+      <v-col style="max-width: min-content;">
         <v-text-field v-model="editedItem.groups.startDate" label="Дата начала курса" dense
                       type="date" :rules="[startDateRules.required]"
-                      class="text-field-group-template"
-                      style="border-radius: 12px !important; max-height: 32px !important;"
+                      class="text-field-date-template"
+                      style="border-radius: 12px !important; max-height: 32px !important; min-width: 143px !important; max-width: 143px !important;"
                       @input="updateGlobalStartDate" :min="getTodayDate()" @change="newGroupTitle" outlined
                       hide-details/>
       </v-col>
-      <v-col cols="lg-1 md-2">
+      <v-col style="max-width: min-content;">
         <v-text-field dense
                       label="Выберите время начала занятий"
                       :value="globalStartTime"
@@ -72,8 +87,8 @@
                       :rules="[startTimeRules.required]"
                       outlined
                       hide-details
-                      class="text-field-group-template"
-                      style="border-radius: 12px !important; max-height: 32px !important;"/>
+                      class="text-field-date-template"
+                      style="border-radius: 12px !important; max-height: 32px !important; min-width: 75px !important; max-width: 75px !important;"/>
       </v-col>
       <v-col cols="lg-4 md-4 sm-8" class="d-flex justify-space-around">
         <template>
@@ -361,7 +376,7 @@ export default {
       this.originalLessons = JSON.parse(JSON.stringify(this.lessons))
     },
 
-    selectedDays(){
+    selectedDays() {
       const dayOfWeekMap = {
         'Monday': 'Пн',
         'Tuesday': 'Вт',
@@ -590,6 +605,25 @@ export default {
     display: flex !important;
     align-items: center !important;
     min-height: 32px !important;
+  }
+
+  .v-input__prepend-inner {
+    margin: 0 !important;
+  }
+
+  .v-input__icon {
+    height: 32px !important;
+  }
+}
+
+.text-field-date-template {
+  .v-input__control{
+    .v-input__slot {
+      display: flex !important;
+      align-items: center !important;
+      min-height: 32px !important;
+      padding: 0 !important;
+    }
   }
 
   .v-input__prepend-inner {
