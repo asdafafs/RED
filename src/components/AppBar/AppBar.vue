@@ -30,9 +30,9 @@
             />
           </v-col>
           <v-col cols="2">
-            <div class="d-flex align-center" style="height: 100%; width: 100%">
+            <div class="d-flex align-center" style="height: 100%; width: 90%">
               <UserProfile
-                class="mr-3"
+                class="mr-3 ml-3"
                 v-if="isDataLoaded"
                 :role="role"
                 :student="discriminatorUser"
