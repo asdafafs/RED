@@ -17,7 +17,7 @@
           class="white--text align-center list-item"
           @click.stop="onClick(item)"
           :class="{'align-end mt-auto': item.routerName === 'main'}"
-          v-if="item.id !== 5 || !student"
+          v-if="item.id !== 3 || !student"
       >
         <template #default>
           {{ item.title }}
@@ -58,30 +58,24 @@ export default {
         },
         {
           id: 2,
-          title: 'Запись на занятие',
-          routerName: 'singUpClasses-month',
-          visible: this.student,
-        },
-        {
-          id: 4,
           title: 'Личный кабинет',
           routerName: 'plan',
           visible: this.student,
         },
         {
-          id: 5,
+          id: 3,
           title: 'Админпанель',
           routerName: 'admin-students',
           visible: true,
         },
         {
-          id: 6,
+          id: 4,
           title: 'Привязать аккаунт к вк',
           link: 'linkVk',
           visible: true,
         },
         {
-          id: 7,
+          id: 5,
           routerName: 'main',
           visible: true,
         },

@@ -52,8 +52,7 @@ export default {
       handler(newVal) {
         console.log(newVal)
         if (newVal === 'schedule-lessons') this.selectedButton = 0
-        if (newVal === 'singUpClasses-month') this.selectedButton = 1
-        if (newVal === 'progressBar') this.selectedButton = 2
+        if (newVal === 'progressBar') this.selectedButton = 1
       },
       immediate: true
     }
@@ -89,12 +88,6 @@ export default {
         },
         {
           id: 1,
-          title:'Запись на занятие',
-          router: 'singUpClasses-month',
-          visible: this.student,
-        },
-        {
-          id: 2,
           title:'Личный кабинет',
           router: 'plan',
           visible: this.student,
