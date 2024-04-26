@@ -115,7 +115,8 @@
     display: flex !important;
     flex-direction: column !important;
     width: 396px !important;
-    height: 460px !important;
+    //height: 460px !important;
+    //min-height: 336px !important;
     
     &__title {
         font-weight: 700 !important;

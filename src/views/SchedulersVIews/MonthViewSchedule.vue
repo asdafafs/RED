@@ -21,7 +21,7 @@
         </span>
           </v-btn>
         </v-btn-toggle>
-        <div class="d-flex align-center flex-row mb-4">
+        <div class="d-flex align-center flex-row mb-4 flex-wrap">
           <span class="mr-3">Показать</span>
           <v-select
             no-data-text="Нет данных для отображения"
@@ -40,7 +40,7 @@
         </div>
       </div>
       <div>
-        <div class="flex-row flex-wrap">
+        <div class="d-flex flex-row flex-wrap">
           <v-btn
             v-if="isUserTeacher"
             color="#4E7AEC"
@@ -53,8 +53,8 @@
               <span class="add-instructor-text">Добавить практику</span>
             </section>
           </v-btn>
-          <v-select v-model="selectedTeacher" class="select-practice-template " outlined dense hide-details
-                    style=" max-width: 367px !important;  border-radius: 12px !important; max-height: 32px !important; margin-left: 8px !important; margin-top: 12px!important;"
+          <v-select v-model="selectedTeacher" class="select-period " outlined dense hide-details
+                    style=" max-width: 367px !important;  border-radius: 12px !important; max-height: 32px !important; margin-left: 8px !important; "
                     no-data-text="Нет данных для отображения" label="Выберите инструктора для редактирования"
                     :items="[...listTeachers, { id: null, name: 'Преподаватель не назначен' }]"
                     :item-text="item => item ? `${item.surname || ''} ${item.name || ''} ${item.middleName || ''}` : 'Преподаватель не назначен'"
@@ -569,6 +569,7 @@ export default {
   color: black !important;
   border-radius: 4px !important;
   text-transform: none !important;
+  padding: 0 16px !important;
 }
 
 .v-btn--active::before {
@@ -642,11 +643,16 @@ export default {
   align-items: center;
 }
 
-.select-practice-template {
-  .v-input__slot {
-    display: flex !important;
-    align-items: center !important;
-    min-height: 32px !important;
+.select-instructor-template {
+  .v-input__control {
+    max-height: 32px !important;
+
+    .v-input__slot {
+      max-height: 32px !important;
+      display: flex !important;
+      align-items: center !important;
+      min-height: 32px !important;
+    }
   }
 
   .v-input__prepend-inner {
@@ -657,12 +663,6 @@ export default {
     max-height: 32px !important;
   }
 
-  .v-input__control {
-    max-height: 32px !important;
 
-    .v-input__slot {
-      max-height: 32px !important;
-    }
-  }
 }
 </style>

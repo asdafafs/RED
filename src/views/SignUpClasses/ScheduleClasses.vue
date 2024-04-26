@@ -1,6 +1,6 @@
 <template>
   <v-container class="px-3 pa-0 ma-0" fluid v-if="true">
-    <div class="big-title">
+    <div class="font-weight-medium px-0 mb-3" :class="!showDrawer ? 'mobile-title' : 'desk-title'">
       Запись на занятие
     </div>
     <hr>
