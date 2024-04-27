@@ -34,7 +34,7 @@
                         height="32px"
                         hide-details
                         dense/>
-              <v-checkbox v-model="data.editedStudent.block_student" label="Заблокировать студента" hide-details/>
+              <v-checkbox v-model="data.editedStudent.isBlocked" label="Заблокировать студента" hide-details/>
               <div class="card-edit-student__title" style="margin-top: 16px !important;">Параметры обучения</div>
               <v-radio-group class="px-0 py-0 align-center ma-0 mt-3" v-model="data.editedStudent.transmissionTypeEnum"
                              hide-details>

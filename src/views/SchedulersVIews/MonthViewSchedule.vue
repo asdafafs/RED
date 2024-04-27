@@ -46,7 +46,7 @@
               color="#4E7AEC"
               class="add-instructor-btn"
               @click="openNewPractice"
-              :disabled="this.selectedTeacher === this.userID && isAdmin"
+              :disabled="this.selectedTeacher === this.userID && isAdmin || this.selectedTeacher === null && isAdmin"
           >
             <section class="d-flex flex-row align-center" style="padding: 8px 12px 8px 12px !important;">
               <v-icon color="white">mdi-plus-circle-outline</v-icon>
@@ -58,7 +58,7 @@
                     no-data-text="Нет данных для отображения" label="Инструктор"
                     :items="[...listTeachers, { id: null, name: 'Преподаватель не назначен' }]"
                     :item-text="item => item ? `${item.surname || ''} ${item.name || ''} ${item.middleName || ''}` : 'Преподаватель не назначен'"
-                    item-value="id" @change="acceptEditableTeacher()" v-if="this.$store.state.user.isAdmin"></v-select>
+                    item-value="id" @change="acceptEditableTeacher()"></v-select>
         </div>
       </div>
     </div>
@@ -235,7 +235,7 @@ export default {
       return this.user.discriminator === 'Учитель'
     },
 
-    isAdmin(){
+    isAdmin() {
       return this.user.isAdmin
     },
   },
@@ -285,6 +285,8 @@ export default {
 
         this.selectedActiveUser = selectedId
       }
+      console.log(this.selectedTeacher)
+      console.log(this.userID)
     },
 
     onToggleClick(id) {
@@ -331,23 +333,37 @@ export default {
     },
 
     async reviewEvent(e) {
-      //TODO: Доработать дату
-      console.log(e)
-      const student = this.listStudents.find(student => student.id === e.event.studentId);
-      console.log(student)
-      const fullName = student ? `${student.surname || ''} ${student.name || ''} ${student.middleName || ''}`.trim() : '';
-      const data = {
-        teacher: e.event.title,
-        city: 'Северодвинск',
-        student: fullName,
-        e: e,
-        listStudents: this.listStudents,
-        userTeacher: this.isUserTeacher,
-        isAdmin: this.isAdmin
+      if (e.event.lectureType) {
+        const student = this.listStudents.find(student => student.id === e.event.studentId);
+        const studentName = student ? `${student.surname || ''} ${student.name || ''} ${student.middleName || ''}`.trim() : '';
+        const teacher = this.listTeachers.find(teacher => teacher.id === this.selectedTeacher)
+        const teacherName = teacher ? `${teacher.surname || ''} ${teacher.name || ''} ${teacher.middleName || ''}`.trim() : '';
+        const data = {
+          teacher: teacherName,
+          student: studentName,
+          e: e,
+        }
+        await this.$reviewLectureDialogPlugin(data).then((isCancel) => {
+          if (!isCancel) this.getAllEvents()
+        })
+      } else {
+        //TODO: Доработать дату
+        const student = this.listStudents.find(student => student.id === e.event.studentId);
+        const fullName = student ? `${student.surname || ''} ${student.name || ''} ${student.middleName || ''}`.trim() : '';
+        const data = {
+          teacher: e.event.title,
+          city: 'Северодвинск',
+          student: fullName,
+          e: e,
+          listStudents: this.listStudents,
+          userTeacher: this.isUserTeacher,
+          isAdmin: this.isAdmin
+        }
+        await this.$reviewPracticeDialogPlugin(data).then((isCancel) => {
+          if (!isCancel) this.getAllEvents()
+        })
       }
-      await this.$reviewPracticeDialogPlugin(data).then((isCancel) => {
-        if (!isCancel) this.getAllEvents()
-      })
+
     },
 
     async getLessons(userId) {

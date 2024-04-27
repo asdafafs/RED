@@ -91,7 +91,7 @@ export default {
       additinalHoursSpent: 0,
       transmissionTypeEnum: [],
       city: [],
-      block_student: false,
+      isBlocked: false,
       can_signUp: true,
     },
   }),
@@ -143,7 +143,7 @@ export default {
         additinalHoursSpent: 0,
         transmissionTypeEnum: [],
         city: [],
-        block_student: false,
+        isBlocked: false,
         can_signUp: true,
       }
       const data = {
@@ -202,6 +202,7 @@ export default {
         additinalHours: item.additinalHours,
         transmissionTypeEnum: item.transmissionTypeEnum,
         city: item.city,
+        isBlocked: item.isBlocked,
       };
       const data = {
         groups: this.groups,

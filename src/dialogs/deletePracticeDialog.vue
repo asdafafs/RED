@@ -133,7 +133,7 @@ export default {
         {
           id: 1,
           title: 'Коробка передач',
-          value: this.data.e.event.transmissionTypeEnum === [1] ? 'АКП' : this.data.e.event.transmissionTypeEnum === [2] ? 'МКП' : '---'
+          value: this.formatTransmissions(this.data.e.event.transmissionTypeEnum)
         },
         {
           id: 2,
@@ -144,6 +144,20 @@ export default {
     }
   },
   methods: {
+    formatTransmissions(item) {
+      const includes1 = item.includes(1);
+      const includes2 = item.includes(2);
+      if (includes1 && includes2) {
+        return 'АКП, МКП';
+      } else if (includes1) {
+        return 'АКП';
+      } else if (includes2) {
+        return 'МКП';
+      } else {
+        return '';
+      }
+    },
+
     onCancelClick() {
       this.$emit('destroy', true)
     },
