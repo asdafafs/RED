@@ -23,11 +23,11 @@
       </v-col>
     </v-row>
     <hr>
-        <v-row>
-          <div style="font-size: 12px; font-weight: 400; line-height: 14px; color: #A6A8AA; padding: 20px 0 20px 12px">ОБЩИЕ
-            СВЕДЕНИЯ
-          </div>
-        </v-row>
+    <v-row>
+      <div style="font-size: 12px; font-weight: 400; line-height: 14px; color: #A6A8AA; padding: 20px 0 20px 12px">ОБЩИЕ
+        СВЕДЕНИЯ
+      </div>
+    </v-row>
     <v-row class="flex-wrap" style="column-gap: 14px">
       <v-col style="max-width: min-content; padding:  0 0 0 12px">
         <v-text-field v-model="editedItem.groups.groupNumber" label="Номер группы" dense
@@ -43,11 +43,11 @@
                       :rules="[titleRules.required]" outlined hide-details disabled/>
       </v-col>
     </v-row>
-        <v-row>
-          <div style="font-size: 12px; font-weight: 400; line-height: 14px; color: #A6A8AA; padding: 20px 0 20px 12px">
-            СТУДЕНТЫ
-          </div>
-        </v-row>
+    <v-row>
+      <div style="font-size: 12px; font-weight: 400; line-height: 14px; color: #A6A8AA; padding: 20px 0 20px 12px">
+        СТУДЕНТЫ
+      </div>
+    </v-row>
     <v-row class="flex-wrap">
       <v-col cols="12" class="py-0">
         <v-select
@@ -55,66 +55,95 @@
             :value="editedItem.lecture.activeUser"
             :items="studentList"
             :item-text="item => `${item.surname} ${item.name} ${item.middleName} `"
-
+            append-icon=""
             multiple
             hide-details
             persistent-hint
             no-data-text="Нет данных для отображения"
             item-value="id"
-            @change="updateSelectedStudentsIds" dense height="32px">
+            @change="updateSelectedStudentsIds"
+            dense
+            height="32px"
+            style="border: 0 !important;"
+            @click.stop
+        >
           <template v-slot:selection="{ item, index }">
-            <v-chip class="select-students-chips">
-              <v-icon class="white--text" style="transform: rotate(45deg);" @click.stop="removeStudent(item)">mdi-plus</v-icon>
+            <v-chip class="select-students-chips" @click.stop>
+              <v-icon class="white--text" style="transform: rotate(45deg);" @click.stop="removeStudent(item)">mdi-plus
+              </v-icon>
               <span class="pl-1 white--text">{{ `${item.surname} ${item.name} ${item.middleName} ` }}</span>
+            </v-chip>
+          </template>
+          <template v-slot:append>
+            <v-chip class="select-add-item" @click.stop>
+              <v-icon class="white--text">mdi-account</v-icon>
+              <span class="pl-1 white--text">Добавить</span>
             </v-chip>
           </template>
         </v-select>
       </v-col>
     </v-row>
-        <v-row>
-          <div style="font-size: 12px; font-weight: 400; line-height: 14px; color: #A6A8AA; padding: 20px 0 20px 12px">
-            ПЛАН ОБУЧЕНИЯ
+    <v-row>
+      <div style="font-size: 12px; font-weight: 400; line-height: 14px; color: #A6A8AA; padding: 20px 0 20px 12px">
+        ПЛАН ОБУЧЕНИЯ
+      </div>
+    </v-row>
+    <v-row class="flex-wrap" style="gap: 16px !important;">
+      <v-col style="max-width: min-content; padding: 0 0 0  12px !important;">
+        <div style="width: 143px !important;">
+          <div
+              style="font-weight: 400 !important; font-size: 12px !important; line-height: 14px !important; color: #A6A8AA; margin-bottom: 8px !important;">
+            Дата старта
           </div>
-        </v-row>
-    <v-row class="flex-wrap">
-      <v-col style="max-width: min-content;">
-        <v-text-field v-model="globalStartDate" label="Дата начала курса" dense
-                      type="date" :rules="[startDateRules.required]"
-                      class="text-field-date-template"
-                      style="border-radius: 12px !important; max-height: 32px !important; min-width: 167px !important; max-width: 167px !important;"
-                      @input="updateGlobalStartDate" :min="getTodayDate()" @change="newGroupTitle" outlined
-                      hide-details/>
+          <v-text-field v-model="globalStartDate" dense
+                        type="date" :rules="[startDateRules.required]"
+                        class="text-field-date-template"
+                        style="border-radius: 12px !important; max-height: 32px !important; min-width: 143px !important; max-width: 143px !important;"
+                        @input="updateGlobalStartDate" :min="getTodayDate()" @change="newGroupTitle" outlined
+                        hide-details/>
+        </div>
       </v-col>
-      <v-col style="max-width: min-content;">
-        <v-text-field dense
-                      label="Выберите время начала занятий"
-                      :value="globalStartTime"
-                      type="time"
-                      @input="updateGlobalStartTime"
-                      :rules="[startTimeRules.required]"
-                      outlined
-                      hide-details
-                      class="text-field-date-template"
-                      style="border-radius: 12px !important; max-height: 32px !important; min-width: 100px !important; max-width: 100px !important;"/>
+      <v-col style="max-width: min-content;  padding: 0 !important;">
+        <div style="width: 157px !important;">
+          <div
+              style="font-weight: 400 !important; font-size: 12px !important; line-height: 14px !important; color: #A6A8AA; margin-bottom: 8px !important;">
+            Время начала занятий
+          </div>
+          <v-text-field dense
+                        :value="globalStartTime"
+                        type="time"
+                        @input="updateGlobalStartTime"
+                        :rules="[startTimeRules.required]"
+                        outlined
+                        hide-details
+                        class="text-field-time-template"
+                        style="border-radius: 12px !important; max-height: 32px !important; min-width: 65px !important; max-width: 65px !important;"/>
+        </div>
       </v-col>
-      <v-col cols="lg-4 md-4 sm-8">
+      <v-col style="width: min-content;  padding: 0 !important;">
         <template>
-          <div class="chips-container" style="display: flex; justify-content: space-around; width: 100%;">
-            <v-chip
-                v-for="(chip, index) in chips"
-                :key="index"
-                :class="{'daily-chips-unselected': !selectedChips.includes(chip),
+          <div style="width: 313px !important;">
+            <div
+                style="font-weight: 400 !important; font-size: 12px !important; line-height: 14px !important; color: #A6A8AA; margin-bottom: 8px !important;">
+              Дни занятий
+            </div>
+            <div class="chips-container" style="display: flex; justify-content: space-around; width: 100%;">
+              <v-chip
+                  v-for="(chip, index) in chips"
+                  :key="index"
+                  :class="{'daily-chips-unselected': !selectedChips.includes(chip),
                 'white--text daily-chips-selected': selectedChips.includes(chip)}"
-                :color="selectedChips.includes(chip) ? '#2B2A29' : null"
-                @click="toggleSelectedChip(chip)"
-            >
-              <strong>{{ chip }}</strong>&nbsp;
-            </v-chip>
+                  :color="selectedChips.includes(chip) ? '#2B2A29' : null"
+                  @click="toggleSelectedChip(chip)"
+              >
+                <strong>{{ chip }}</strong>&nbsp;
+              </v-chip>
+            </div>
           </div>
         </template>
       </v-col>
     </v-row>
-    <v-row>
+    <v-row style="padding-top: 12px !important;">
       <v-col class="py-0">
         <CoursesList :coursesData="lessons" :lectors="teachers" :initialData="initialData"
                      @courses-updated="handleCoursesUpdated"/>
@@ -137,6 +166,7 @@ export default {
   components: {CoursesList},
   data: () => ({
     globalStartTime: null,
+    globalEndTime: null,
     coursesData: null,
     studentList: null,
     globalStartDate: null,
@@ -462,7 +492,7 @@ export default {
         }
         await this.postCourse(body).then(() => {
           successAlert('Изменения сохранены успешно', 5000);
-          this.close();
+          // this.close();
         })
       } else {
         const body = {
@@ -600,6 +630,15 @@ export default {
 <style>
 @import "@/assets/styles/dataTableStyles.css";
 
+.theme--light.v-text-field > .v-input__control > .v-input__slot:before {
+  border-color: rgba(255, 255, 255, 0.7);
+}
+
+.select-add-item {
+  border-radius: 12px !important;
+  background-color: #4E7AEC !important;
+  margin: 0 0 0 0 !important;
+}
 
 .select-students-chips {
   border-radius: 4px !important;
@@ -645,7 +684,7 @@ export default {
       display: flex !important;
       align-items: center !important;
       min-height: 32px !important;
-      //padding: 0 !important;
+      padding: 0  6px!important;
     }
   }
 
@@ -655,6 +694,29 @@ export default {
 
   .v-input__icon {
     height: 32px !important;
+  }
+}
+
+.text-field-time-template {
+  .v-input__control {
+    .v-input__slot {
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important; /* Добавленный стиль */
+      min-height: 32px !important;
+      padding: 0 24px !important;
+      .v-text-field__slot{
+
+        input::-webkit-calendar-picker-indicator {
+          opacity: 0;
+          max-width: 0;
+        }
+      }
+    }
+  }
+
+  .v-input__prepend-inner {
+    margin: 0 !important;
   }
 }
 
