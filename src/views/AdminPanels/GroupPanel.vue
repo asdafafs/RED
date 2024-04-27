@@ -179,11 +179,6 @@ export default {
 </script>
 <style>
 @import "@/assets/styles/dataTableStyles.css";
-
-.theme--light.v-chip:not(.v-chip--active) {
-  background: rgba(255, 255, 255, 0.7);
-}
-
 .grid-actions {
   text-align: end !important;
   padding-right: 30px !important;

@@ -3,18 +3,18 @@
     <div class="schedule-main-section_actions">
       <div class="d-flex width-full justify-space-between">
         <v-btn-toggle
-          v-model="selectedLessonType"
-          mandatory
-          group
-          color="black"
+            v-model="selectedLessonType"
+            mandatory
+            group
+            color="black"
         >
           <v-btn
-            v-for="item in calendarButtons"
-            :key="item.id"
-            height="32"
-            class="toggle-button"
-            :value="item.id"
-            @click="onToggleClick(item.id)"
+              v-for="item in calendarButtons"
+              :key="item.id"
+              height="32"
+              class="toggle-button"
+              :value="item.id"
+              @click="onToggleClick(item.id)"
           >
         <span :class="selectedLessonType === item.id ? 'white--text' : 'black--text'">
           {{ item.title }}
@@ -24,29 +24,29 @@
         <div class="d-flex align-center flex-row mb-4 flex-wrap">
           <span class="mr-3">Показать</span>
           <v-select
-            no-data-text="Нет данных для отображения"
-            style="max-width: 130px"
-            height="32"
-            v-model="type"
-            :items="types"
-            dense
-            outlined
-            hide-details
-            class="select-period"
-            :item-text="displayText"
-            :item-value="valueText"
-            @change="getAllEvents"
+              no-data-text="Нет данных для отображения"
+              style="max-width: 130px"
+              height="32"
+              v-model="type"
+              :items="types"
+              dense
+              outlined
+              hide-details
+              class="select-period"
+              :item-text="displayText"
+              :item-value="valueText"
+              @change="getAllEvents"
           />
         </div>
       </div>
       <div>
         <div class="d-flex flex-row flex-wrap">
           <v-btn
-            v-if="isUserTeacher"
-            color="#4E7AEC"
-            class="add-instructor-btn"
-            @click="openNewPractice"
-            :disabled="!this.selectedTeacher"
+              v-if="isUserTeacher"
+              color="#4E7AEC"
+              class="add-instructor-btn"
+              @click="openNewPractice"
+              :disabled="this.selectedTeacher === this.userID && isAdmin"
           >
             <section class="d-flex flex-row align-center" style="padding: 8px 12px 8px 12px !important;">
               <v-icon color="white">mdi-plus-circle-outline</v-icon>
@@ -54,35 +54,35 @@
             </section>
           </v-btn>
           <v-select v-model="selectedTeacher" class="select-period " outlined dense hide-details
-                    style=" max-width: 367px !important;  border-radius: 12px !important; max-height: 32px !important; margin-left: 8px !important; "
-                    no-data-text="Нет данных для отображения" label="Выберите инструктора для редактирования"
+                    style=" max-width: 312px !important;  border-radius: 12px !important; max-height: 32px !important; margin-left: 8px !important; "
+                    no-data-text="Нет данных для отображения" label="Инструктор"
                     :items="[...listTeachers, { id: null, name: 'Преподаватель не назначен' }]"
                     :item-text="item => item ? `${item.surname || ''} ${item.name || ''} ${item.middleName || ''}` : 'Преподаватель не назначен'"
                     item-value="id" @change="acceptEditableTeacher()" v-if="this.$store.state.user.isAdmin"></v-select>
         </div>
       </div>
     </div>
-      <div class="schedule-main-section_month_picker">
-          <v-btn 
-            icon 
-            class="schedule-main-section_month_picker-btn"
-            @click="previousMonth()"
-          >
-            <v-icon>mdi-chevron-left</v-icon>
-          </v-btn>
-          <v-toolbar-title v-if="test" class="month-name">
-            {{ month }}
-          </v-toolbar-title>
-          <v-btn 
-            icon 
-            class="schedule-main-section_month_picker-btn" 
-            @click="nextMonth()"
-          >
-            <v-icon>mdi-chevron-right</v-icon>
-          </v-btn>
-        </div>
-      <div class="schedule-main-section_calendar">
-        <v-calendar
+    <div class="schedule-main-section_month_picker">
+      <v-btn
+          icon
+          class="schedule-main-section_month_picker-btn"
+          @click="previousMonth()"
+      >
+        <v-icon>mdi-chevron-left</v-icon>
+      </v-btn>
+      <v-toolbar-title v-if="test" class="month-name">
+        {{ month }}
+      </v-toolbar-title>
+      <v-btn
+          icon
+          class="schedule-main-section_month_picker-btn"
+          @click="nextMonth()"
+      >
+        <v-icon>mdi-chevron-right</v-icon>
+      </v-btn>
+    </div>
+    <div class="schedule-main-section_calendar">
+      <v-calendar
           ref="calendar"
           v-model="value"
           :weekdays="weekday"
@@ -92,28 +92,28 @@
           :event-color="getEventColor"
           @click:event="reviewEvent"
           :event-ripple="false"
-          :event-height="num" 
+          :event-height="num"
           :hide-header=false
           @click:more="viewDay"
           event-more
           event-more-text="+ {0}"
-        >
-          <template v-slot:event="{event}">
-            <v-container class="pa-1 mx-0 d-flex ">
-              <v-row class="ma-0" style="height: inherit; width: inherit">
-                <v-col class="black--text pa-0 align-self-center" style="height: inherit;">
-                  <div class="text-subtitle-2 d-flex justify-center">{{ formatTime(event.startTime) }}</div>
-                </v-col>
-                <v-col class="black--text pa-0 align-self-center" v-if="$vuetify.breakpoint.lgAndUp">
-                  <div class="font-weight-bold text-format" style="width: inherit">{{ event.title }}
-                  </div>
-                </v-col>
-              </v-row>
-            </v-container>
-          </template>
-        </v-calendar>
-      </div>
+      >
+        <template v-slot:event="{event}">
+          <v-container class="pa-1 mx-0 d-flex ">
+            <v-row class="ma-0" style="height: inherit; width: inherit">
+              <v-col class="black--text pa-0 align-self-center" style="height: inherit;">
+                <div class="text-subtitle-2 d-flex justify-center">{{ formatTime(event.startTime) }}</div>
+              </v-col>
+              <v-col class="black--text pa-0 align-self-center" v-if="$vuetify.breakpoint.lgAndUp">
+                <div class="font-weight-bold text-format" style="width: inherit">{{ event.title }}
+                </div>
+              </v-col>
+            </v-row>
+          </v-container>
+        </template>
+      </v-calendar>
     </div>
+  </div>
 </template>
 <script>
 import CarLogo from "@/components/logos/CarLogo.vue";
@@ -148,8 +148,8 @@ export default {
     window.addEventListener('resize', this.handleResize);
     this.handleResize();
     this.prevMonthAndYear = this.getMonthAndYear(this.value);
-    if (!this.$vuetify.breakpoint.lgAndUp){
-      this.types= [['month', 'месяц'], ['day', 'день']]
+    if (!this.$vuetify.breakpoint.lgAndUp) {
+      this.types = [['month', 'месяц'], ['day', 'день']]
     }
   },
 
@@ -169,41 +169,26 @@ export default {
     weekday: [1, 2, 3, 4, 5, 6, 0],
     value: moment().format('YYYY-MM-DD'),
     currentDate: moment(),
-    selectedEvent: {},
-    selectedElement: null,
     selectedMoreElement: null,
-    selectedOpen: false,
-    openEditMode: false,
-    openDeleteMode: false,
-    newEvent: false,
-    minDate: moment().locale('ru').format('YYYY-MM-DD'),
-    newDateEvent: moment().format('YYYY-MM-DD'),
-    newTimeEvent: '06:00',
-    newSelectedDuration: 1,
-    newSelectedReason: 1,
     lastSelectedJoinType: 0,
-    selectedStudent: null,
-    selectedReason: 'Ремонт',
     selectedActiveUser: 0,
-    reasonsRefusal: ['Ремонт', 'Семейные обстоятельства', 'Экзамен ', 'Здоровье', 'Задачи офиса'],
     // types: [['month', 'месяц'], ['week', 'неделя'], ['day', 'день']],
     types: [['month', 'месяц'], ['day', 'день']],
     listTeachers: [],
     listStudents: [],
     selectedTeacher: null,
-    titleNewEvent: '',
   }),
   watch: {
     value(newValue) {
       this.confirmOnChangeMonthAndYear(newValue);
     },
 
-    userID(newValue){
-      if (newValue !== null){
+    userID(newValue) {
+      if (newValue !== null) {
         this.onToggleClick(0)
         this.getAllTeachers()
         this.getAllStudents()
-        if (this.user.discriminator && this.isUserTeacher ) {
+        if (this.user.discriminator && this.isUserTeacher) {
           this.selectedTeacher = this.userID
           this.selectedActiveUser = this.userID
         }
@@ -212,7 +197,7 @@ export default {
     },
   },
   created() {
-    if (this.userID !== null){
+    if (this.userID !== null) {
       this.onToggleClick(0)
     }
     this.getAllTeachers()
@@ -249,18 +234,29 @@ export default {
     isUserTeacher() {
       return this.user.discriminator === 'Учитель'
     },
+
+    isAdmin(){
+      return this.user.isAdmin
+    },
   },
 
   methods: {
     async openNewPractice() {
+      const teacher = this.listTeachers.find(teacher => teacher.id === this.selectedTeacher)
+      const userName = teacher ? `${teacher.surname || ''} ${teacher.name || ''} ${teacher.middleName || ''}`.trim() : '';
       const data = {
         listStudents: this.listStudents,
-        userName: this.userName,
-        userId: this.userID
+        userName: userName,
+        userId: this.selectedActiveUser,
+        isAdmin: this.isAdmin
       }
-      await this.$openNewPracticeDialogPlugin(data,true)
+      await this.$openNewPracticeDialogPlugin(data, true).then((isCancel) => {
+        if (!isCancel) {
+          this.getAllEvents()
+        }
+      });
     },
-    viewDay({ date }) {
+    viewDay({date}) {
       this.selectedMoreElement = nativeEvent.target
       this.value = date
       this.type = 'day'
@@ -272,7 +268,7 @@ export default {
     valueText(item) {
       return item[0];
     },
-    
+
     async acceptEditableTeacher() {
       const selectedId = this.selectedTeacher;
       if (selectedId !== null) {
@@ -290,7 +286,7 @@ export default {
         this.selectedActiveUser = selectedId
       }
     },
-    
+
     onToggleClick(id) {
       this.lastSelectedJoinType = id;
       switch (id) {
@@ -302,7 +298,7 @@ export default {
           return this.testPractices()
       }
     },
-    
+
     async previousMonth() {
       this.$refs.calendar.prev()
       if (this.type === 'week') {
@@ -333,22 +329,27 @@ export default {
       const [year, month] = dateString.split('-');
       return `${year}-${month}`;
     },
-    
+
     async reviewEvent(e) {
       //TODO: Доработать дату
+      console.log(e)
+      const student = this.listStudents.find(student => student.id === e.event.studentId);
+      console.log(student)
+      const fullName = student ? `${student.surname || ''} ${student.name || ''} ${student.middleName || ''}`.trim() : '';
       const data = {
-        teacher: this.userName,
-        transmission: '---',
+        teacher: e.event.title,
         city: 'Северодвинск',
-        student: '---',
+        student: fullName,
         e: e,
         listStudents: this.listStudents,
-        userTeacher: this.isUserTeacher
+        userTeacher: this.isUserTeacher,
+        isAdmin: this.isAdmin
       }
       await this.$reviewPracticeDialogPlugin(data).then((isCancel) => {
         if (!isCancel) this.getAllEvents()
       })
     },
+
     async getLessons(userId) {
       const lessons = new EventsRequest()
       let lessonsData
@@ -366,7 +367,7 @@ export default {
     async getPractices(userId) {
       const practices = new EventsRequest()
       let cal
-      if (this.type === 'week'){
+      if (this.type === 'week') {
         const monday = this.currentDate.clone().startOf('isoWeek').format('YYYY-MM-DD')
         const sunday = this.currentDate.clone().endOf('isoWeek').format('YYYY-MM-DD')
         const query = `Date=${monday}&Date2=${sunday}`
@@ -377,8 +378,7 @@ export default {
             end: new Date(event.endTime)
           }));
         })
-      }
-      else{
+      } else {
         const query = `Date=${this.value}`
         await practices.getPracticeActiveUser(userId, query).catch(x => console.log(x)).then(x => {
           cal = x.data.practice.map(event => ({
@@ -394,7 +394,7 @@ export default {
     async getPracticeStudent() {
       const practices = new EventsRequest()
       let cal
-      if (this.type === 'week'){
+      if (this.type === 'week') {
         const monday = this.currentDate.clone().startOf('isoWeek').format('YYYY-MM-DD')
         const sunday = this.currentDate.clone().endOf('isoWeek').format('YYYY-MM-DD')
         const query = `Date=${monday}&Date2=${sunday}`
@@ -405,8 +405,7 @@ export default {
             end: new Date(event.endTime)
           }));
         })
-      }
-      else{
+      } else {
         const query = `Date=${this.value}`
         await practices.getOnlyAssigned(query).catch(x => console.log(x)).then(x => {
           cal = x.data.practice.map(event => ({
@@ -483,11 +482,6 @@ export default {
       }
 
     },
-
-    formatDate(startTime) {
-      return moment(startTime).format("DD-MM-YY");
-    },
-
     formatTime(startTime) {
       const date = new Date(startTime);
       const hours = date.getHours().toString().padStart(2, '0');
@@ -533,11 +527,12 @@ export default {
 
 <style scoped lang="scss">
 @import "@/assets/styles/monthScheduleStyles.css";
+
 .schedule-main-section {
-  width: 100%; 
-  height:100%;
+  width: 100%;
+  height: 100%;
   padding: 0 12px 12px 12px;
-  
+
   &_actions {
     display: flex;
     flex-direction: column;
@@ -545,24 +540,25 @@ export default {
     margin-bottom: 12px !important;
     flex-wrap: wrap;
   }
-  
+
   &_month_picker {
     height: 54px;
     display: flex;
     width: 100%;
     justify-content: center;
-    
+
     &-btn {
       margin: 0;
       align-self: center;
     }
   }
-  
+
   &_calendar {
     height: 100%;
     width: 100%;
   }
 }
+
 .toggle-button {
   margin-right: 0 !important;
   margin-left: 0 !important;

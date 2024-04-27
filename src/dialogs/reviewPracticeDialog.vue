@@ -1,21 +1,21 @@
 ﻿<template>
   <v-dialog max-width="407px" v-model="localVisible" persistent>
     <v-card
-      class="review-practice-dialog"
-      flat
+        class="review-practice-dialog"
+        flat
     >
       <v-card-title class="pa-5 d-flex flex-column justify-start">
         <span class="review-practice-dialog_first-title">Сведения о записи</span>
         <div class="review-practice-dialog_top-buttons" v-if="data.userTeacher">
-          <v-btn 
-            class="edit-buttons-div__edit-button" 
-            @click="openEditDialog"
+          <v-btn
+              class="edit-buttons-div__edit-button"
+              @click="openEditDialog"
           >
             <span class="edit-buttons-div__edit-button__text">Изменить</span>
           </v-btn>
-          <v-btn 
-            color="edit-buttons-div__edit-button"
-            @click="openDeleteDialog"
+          <v-btn
+              color="edit-buttons-div__edit-button"
+              @click="openDeleteDialog"
           >
             <span class="edit-buttons-div__edit-button__text">Удалить</span>
           </v-btn>
@@ -34,8 +34,8 @@
       <v-card-text class="pa-5 pt-0 pb-0">
         <div class="open-practice-dialog_text">
           <div
-            v-for="item in items"
-            class="d-flex flex-column"
+              v-for="item in items"
+              class="d-flex flex-column"
           >
             <span class="review-practice-dialog_text_title">{{ item.title }}</span>
             <span class="teacher-text">{{ item.value }}</span>
@@ -59,6 +59,7 @@
 <script>
 import moment from "moment/moment";
 import {isCancel} from "axios";
+
 export default {
   name: "reviewPracticeDialog",
   data: () => ({
@@ -87,12 +88,12 @@ export default {
         {
           id: 1,
           title: 'Коробка передач',
-          value: this.data.transmission
+          value: this.data.e.event.transmissionTypeEnum === [1] ? 'АКП' : this.data.e.event.transmissionTypeEnum === [2] ? 'МКП' : '---'
         },
         {
           id: 2,
           title: 'Город',
-          value: this.data.city
+          value: this.data.e.event.city === [1] ? 'Северодвинск' : this.data.e.event.city === [2] ? 'Новодвинск' : '---'
         },
         {
           id: 3,
@@ -105,21 +106,23 @@ export default {
   methods: {
     async openEditDialog() {
       this.localVisible = false
-      await this.$openNewPracticeDialogPlugin(this.data,false)
-          .finally(()=> this.localVisible = true)
+      await this.$openNewPracticeDialogPlugin(this.data, false)
+          .finally(() => this.localVisible = true)
     },
+
     async openDeleteDialog() {
       this.localVisible = false
       await this.$deletePracticeDialogPlugin(this.data)
           .then(async (isCancel) => {
             if (!isCancel) {
-              this.$emit('destroy',false)
+              this.$emit('destroy', false)
             }
           })
           .finally(() => this.localVisible = true)
     },
+
     onSaveClick() {
-      this.$emit('destroy',true)
+      this.$emit('destroy', true)
     },
   }
 }
@@ -129,6 +132,7 @@ export default {
 .w-full {
   width: 100%;
 }
+
 .review-practice-dialog {
   border-radius: 12px;
   border: 1px solid grey;
@@ -145,6 +149,7 @@ export default {
       text-transform: none;
     }
   }
+
   &_first-title {
     font-size: 12px;
     font-weight: 400;
@@ -153,6 +158,7 @@ export default {
     line-height: 14.06px;
     width: 100%;
   }
+
   &_second-title {
     font-size: 32px;
     font-weight: 700;
@@ -163,7 +169,8 @@ export default {
     margin-top: 12px;
     margin-bottom: 12px;
   }
-  &_top-buttons{
+
+  &_top-buttons {
     margin-top: 12px;
     display: flex;
     flex-direction: row;
@@ -171,6 +178,7 @@ export default {
     justify-content: start;
     box-shadow: none;
   }
+
   &_actions {
     display: flex;
     width: 100%;
@@ -185,10 +193,11 @@ export default {
       width: 89px !important;
       text-transform: none !important;
 
-      span:first-of-type{
+      span:first-of-type {
         color: black;
       }
     }
+
     &_save-button {
       border-radius: 12px !important;
       background-color: #4E7AEC !important;
@@ -196,7 +205,7 @@ export default {
       width: 89px !important;
       text-transform: none !important;
 
-      span:first-of-type{
+      span:first-of-type {
         color: white;
         font-weight: 600;
       }
@@ -214,6 +223,7 @@ export default {
   .v-input__prepend-inner {
     margin: 0 !important;
   }
+
   .v-input__append-inner {
     margin-top: 4px !important;
   }
@@ -229,24 +239,28 @@ export default {
       max-height: 32px !important;
     }
   }
+
   .v-select__selections {
     max-height: 32px !important;
     display: flex !important;
     align-content: center !important;
   }
 }
+
 .duration-text {
   font-size: 12px;
   line-height: 14px;
   font-weight: 400;
-  color:black !important;
+  color: black !important;
 }
+
 .teacher-text {
   font-size: 16px;
   line-height: 18.75px;
   font-weight: 400;
-  color:black !important;
+  color: black !important;
 }
+
 .edit-buttons-div {
   margin-bottom: 12px !important;
   margin-top: 12px !important;
@@ -270,16 +284,19 @@ export default {
     }
   }
 }
+
 .time-of-practice-icon {
   color: #4E7AEC;
   margin-right: 8px;
 }
+
 .date-of-practice {
   color: #4E7AEC;
   font-weight: 600;
   font-size: 12px;
   line-height: 14px;
 }
+
 .time-of-practice {
   color: #2B2A29;
   font-weight: 700;
