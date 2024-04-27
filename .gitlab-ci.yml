@@ -12,44 +12,44 @@ variables:
   DEVOPS_REPOSITORY: 13
   DEVOPS_BRANCH: main  
     
-build-dev-app:
-  stage: build-dev
-  image: docker:20-dind
-  retry: 2
-  variables:
-    DOCKER_HOST: tcp://docker:2375
-    DOCKER_DRIVER: overlay2
-    DOCKER_TLS_CERTDIR: ""
-  services:
-    - name: docker:20-dind
-      alias: docker
-      command: [ "--tls=false" ]
-  before_script:
-    - until docker info; do sleep 1; done
-    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-  script:
-    - docker build --tag $CI_REGISTRY_IMAGE/red/red-frontend:$FRONTEND_VERSION .
-    - docker push $CI_REGISTRY_IMAGE/red/red-frontend:$FRONTEND_VERSION
-
-deploy-dev-app:
-  stage: deploy-dev
-  image: kroniak/ssh-client
-  before_script:
-    - eval $(ssh-agent -s)
-    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
-    - mkdir -p ~/.ssh
-    - chmod 700 ~/.ssh
-    - echo "$SSH_KNOWN_HOSTS" >> ~/.ssh/known_hosts
-    - chmod 644 ~/.ssh/known_hosts
-  script:
-    - ssh ${DEV_USER}@${DEV_HOST} 
-      "cd ./docker_services/red_schedule;
-      export "CI_REGISTRY_USER=$CI_REGISTRY_USER";
-      export "CI_REGISTRY_PASSWORD=$CI_REGISTRY_PASSWORD";
-      export "CI_REGISTRY=$CI_REGISTRY"
-      export "CI_REGISTRY_IMAGE=$CI_REGISTRY_IMAGE";
-      export "FRONTEND_VERSION=${FRONTEND_VERSION}"; 
-      /bin/bash -s " < deploy.sh
+#build-dev-app:
+#  stage: build-dev
+#  image: docker:20-dind
+#  retry: 2
+#  variables:
+#    DOCKER_HOST: tcp://docker:2375
+#    DOCKER_DRIVER: overlay2
+#    DOCKER_TLS_CERTDIR: ""
+#  services:
+#    - name: docker:20-dind
+#      alias: docker
+#      command: [ "--tls=false" ]
+#  before_script:
+#    - until docker info; do sleep 1; done
+#    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+#  script:
+#    - docker build --tag $CI_REGISTRY_IMAGE/red/red-frontend:$FRONTEND_VERSION .
+#    - docker push $CI_REGISTRY_IMAGE/red/red-frontend:$FRONTEND_VERSION
+#
+#deploy-dev-app:
+#  stage: deploy-dev
+#  image: kroniak/ssh-client
+#  before_script:
+#    - eval $(ssh-agent -s)
+#    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+#    - mkdir -p ~/.ssh
+#    - chmod 700 ~/.ssh
+#    - echo "$SSH_KNOWN_HOSTS" >> ~/.ssh/known_hosts
+#    - chmod 644 ~/.ssh/known_hosts
+#  script:
+#    - ssh ${DEV_USER}@${DEV_HOST} 
+#      "cd ./docker_services/red_schedule;
+#      export "CI_REGISTRY_USER=$CI_REGISTRY_USER";
+#      export "CI_REGISTRY_PASSWORD=$CI_REGISTRY_PASSWORD";
+#      export "CI_REGISTRY=$CI_REGISTRY"
+#      export "CI_REGISTRY_IMAGE=$CI_REGISTRY_IMAGE";
+#      export "FRONTEND_VERSION=${FRONTEND_VERSION}"; 
+#      /bin/bash -s " < deploy.sh
     
 build-prod-app:
   stage: build-prod
@@ -84,7 +84,6 @@ deploy-prod-app:
       
 build-vlad:
   stage: build-dev
-  when: manual
   retry: 2
   variables:
     DOCKER_HOST: tcp://docker:2375
@@ -120,5 +119,7 @@ deploy-vlad:
       export "CI_REGISTRY_IMAGE=$CI_REGISTRY_IMAGE";
       export "FRONTEND_VERSION=${FRONTEND_VERSION}";
       /bin/bash -s " < vlad/deploy.sh
+  dependencies:
+    - build-vlad
     
   
