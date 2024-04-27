@@ -3,7 +3,6 @@ stages:
   - deploy-dev
   - build-prod
   - deploy-prod
-  - build-vlad
 
 
 variables:
@@ -84,7 +83,7 @@ deploy-prod-app:
     - build-prod-app
       
 build-vlad:
-  stage: build-vlad
+  stage: build-dev
   when: manual
   retry: 2
   variables:
@@ -101,3 +100,25 @@ build-vlad:
   script:
     - docker build --tag $CI_REGISTRY_IMAGE/red/red-frontend-vlad:$FRONTEND_VERSION . -f DockerfileVlad
     - docker push $CI_REGISTRY_IMAGE/red/red-frontend-vlad:$FRONTEND_VERSION
+
+deploy-vlad:
+  stage: deploy-dev
+  image: kroniak/ssh-client
+  before_script:
+    - eval $(ssh-agent -s)
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - echo "$SSH_KNOWN_HOSTS" >> ~/.ssh/known_hosts
+    - chmod 644 ~/.ssh/known_hosts
+  script:
+    - ssh ${DEV_USER}@${DEV_HOST}
+      "cd /home/ubuntu/vlad;
+      export "CI_REGISTRY_USER=$CI_REGISTRY_USER";
+      export "CI_REGISTRY_PASSWORD=$CI_REGISTRY_PASSWORD";
+      export "CI_REGISTRY=$CI_REGISTRY"
+      export "CI_REGISTRY_IMAGE=$CI_REGISTRY_IMAGE";
+      export "FRONTEND_VERSION=${FRONTEND_VERSION}";
+      /bin/bash -s " < vlad/deploy.sh
+    
+  
