@@ -78,7 +78,7 @@
         </v-row>
     <v-row class="flex-wrap">
       <v-col style="max-width: min-content;">
-        <v-text-field v-model="editedItem.groups.startDate" label="Дата начала курса" dense
+        <v-text-field v-model="globalStartDate" label="Дата начала курса" dense
                       type="date" :rules="[startDateRules.required]"
                       class="text-field-date-template"
                       style="border-radius: 12px !important; max-height: 32px !important; min-width: 167px !important; max-width: 167px !important;"
@@ -236,10 +236,7 @@ export default {
 
   methods: {
     removeStudent(item) {
-      console.log(item)
-      console.log(this.selectedStudents)
       const index = this.selectedStudents.find(student => student.id === item)
-      console.log(index)
       if (index !== -1) {
         this.selectedStudents.splice(index, 1);
       }
@@ -470,7 +467,7 @@ export default {
       } else {
         const body = {
           "title": this.editedItem.groups.title,
-          "courseStartDate": this.editedItem.groups.startDate,
+          "courseStartDate": this.globalStartDate,
           "startTime": this.globalStartTime,
           'groupNumber': this.editedItem.groups.groupNumber,
           "groupId": this.editedItem.groups.groupId,

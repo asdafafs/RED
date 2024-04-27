@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <v-dialog max-width="407px" v-model="localVisible" persistent>
     <v-card
         class="review-practice-dialog"
@@ -6,21 +6,7 @@
     >
       <v-card-title class="pa-5 d-flex flex-column justify-start">
         <span class="review-practice-dialog_first-title">Сведения о записи</span>
-        <div class="review-practice-dialog_top-buttons" v-if="data.userTeacher">
-          <v-btn
-              class="edit-buttons-div__edit-button"
-              @click="openEditDialog"
-          >
-            <span class="edit-buttons-div__edit-button__text">Изменить</span>
-          </v-btn>
-          <v-btn
-              color="edit-buttons-div__edit-button"
-              @click="openDeleteDialog"
-          >
-            <span class="edit-buttons-div__edit-button__text">Удалить</span>
-          </v-btn>
-        </div>
-        <span class="review-practice-dialog_second-title">Вождение</span>
+        <span class="review-practice-dialog_second-title">Лекция</span>
         <div class="d-flex flex-row w-full">
           <div class="d-flex align-center justify-center">
             <v-icon class="time-of-practice-icon">mdi-clock-time-four-outline</v-icon>
@@ -61,7 +47,7 @@ import moment from "moment/moment";
 import {isCancel} from "axios";
 
 export default {
-  name: "reviewPracticeDialog",
+  name: "reviewLectureDialog",
   data: () => ({
     localVisible: true,
   }),
@@ -83,72 +69,17 @@ export default {
         {
           id: 0,
           title: 'Преподаватель',
-          value: this.data.teacher
+          value: this.data.teacher ? this.data.teacher : '---'
         },
         {
           id: 1,
-          title: 'Коробка передач',
-          value: this.formatTransmissions(this.data.e.event.transmissionTypeEnum)
-        },
-        {
-          id: 2,
-          title: 'Город',
-          value: this.formatCity(this.data.e.event.city)
-        },
-        {
-          id: 3,
-          title: 'Текущий студент',
-          value: this.data.student ? this.data.student : '---'
+          title: 'Тема лекции',
+          value: this.data.e.event.title
         },
       ]
     }
   },
   methods: {
-    formatCity(item) {
-      const includes1 = item.includes(1);
-      const includes2 = item.includes(2);
-      if (includes1 && includes2) {
-        return 'Северодвинск, Новодвинск';
-      } else if (includes1) {
-        return 'Северодвинск';
-      } else if (includes2) {
-        return 'Новодвинск';
-      } else {
-        return '';
-      }
-    },
-
-    formatTransmissions(item) {
-      const includes1 = item.includes(1);
-      const includes2 = item.includes(2);
-      if (includes1 && includes2) {
-        return 'АКП, МКП';
-      } else if (includes1) {
-        return 'АКП';
-      } else if (includes2) {
-        return 'МКП';
-      } else {
-        return '';
-      }
-    },
-
-    async openEditDialog() {
-      this.localVisible = false
-      await this.$openNewPracticeDialogPlugin(this.data, false)
-          .finally(() => this.localVisible = true)
-    },
-
-    async openDeleteDialog() {
-      this.localVisible = false
-      await this.$deletePracticeDialogPlugin(this.data)
-          .then(async (isCancel) => {
-            if (!isCancel) {
-              this.$emit('destroy', false)
-            }
-          })
-          .finally(() => this.localVisible = true)
-    },
-
     onSaveClick() {
       this.$emit('destroy', true)
     },

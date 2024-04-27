@@ -57,7 +57,7 @@
               </span>
               <br>
               <span style="font-size: 12px; line-height: 14px; font-weight: 400; color: #A6A8AA">{{
-                  selectedCity
+                  formatCity(item.city)
                 }}</span>
             </div>
             <div v-else>
@@ -73,7 +73,7 @@
                 {{ new Date(item.practiceCourseEnd).toLocaleDateString().replace(/\./g, '.') }}
               </span><br>
               <span style="font-size: 12px; line-height: 14px; font-weight: 400; color: #A6A8AA">{{
-                  selectedCity
+                  formatCity(item.city)
                 }}</span>
             </div>
             <span v-else>
@@ -84,10 +84,11 @@
       </v-col>
       <v-col cols="" class="align-center bg-surface-variant d-flex py-0 px-0" style="max-width: min-content">
         <v-select v-model="selectedCity" label="Город" :items="listCities"
+                  item-value="id"
                   no-data-text="Нет данных для отображения"
                   outlined hide-details
                   class="select-date-practice-template"
-                  style="border-radius: 12px !important; max-height: 32px !important; min-width: 256px !important; max-width: 256px !important;"/>
+                  style="border-radius: 12px !important; max-height: 32px !important; min-width: 256px !important; max-width: 256px !important;" :disabled="blockEditableTemplate"/>
       </v-col>
       <v-col class="align-center d-flex flex-row pa-0" style="width: min-content" v-if="hasChanges">
         <v-btn class="tab-button pa-0 rounded-lg" color="#4E7AEC" @click="save"
@@ -126,7 +127,7 @@ export default {
     practiceCourseEnd: null,
     dateFirstPractice: null,
     selectedCity: null,
-    listCities: ['Новодвинск', 'Северодвинск'],
+    listCities: [{id: [1], text: 'Северодвинск'}, {id:[2], text: 'Новодвинск'}],
     listTemplates: [{
       "practiceCourseId": null,
       "practiceCourseStart": null,
@@ -155,6 +156,20 @@ export default {
   },
 
   methods: {
+    formatCity(item) {
+      const includes1 = item.includes(1);
+      const includes2 = item.includes(2);
+      if (includes1 && includes2) {
+        return 'Северодвинск, Новодвинск';
+      } else if (includes1) {
+        return 'Северодвинск';
+      } else if (includes2) {
+        return 'Новодвинск';
+      } else {
+        return '';
+      }
+    },
+
     handleEvents(events) {
       this.eventsTemplate = events
       if (events.length > 0) {
@@ -187,9 +202,11 @@ export default {
             "practiceCourseId": this.selectedTemplate,
             "practiceCourseStart": this.practiceCourseStart,
             "practiceCourseEnd": this.practiceCourseEnd,
-            "activeUserId": this.getIdUser,
+            "activeUserId": parseInt(this.getIdUser),
             'duration': this.selectedDuration,
-            "practices": this.eventsTemplate
+            "practices": this.eventsTemplate,
+            "transmissionTypeEnum": [ 1 ],
+            "city": this.selectedCity
           };
           await this.postPracticeCourseTemplate(body).finally(() => {
             this.isSaveButtonDisabled = false
@@ -254,9 +271,10 @@ export default {
             this.selectedDuration = response.data.duration;
             this.practiceCourseStart = response.data.practiceCourseStart.slice(0, 10);
             this.practiceCourseEnd = response.data.practiceCourseEnd.slice(0, 10);
+            this.selectedCity = response.data.city
           });
       this.blockEditableTemplate = this.selectedTemplate !== null;
-
+      console.log(this.selectedCity)
       if (events.length > 0) {
         const earliestEvent = events.reduce((earliest, current) => {
           if (current.start < earliest.start) {

@@ -29,7 +29,7 @@
           <div class="d-flex flex-column">
             <span class="open-practice-dialog_text_title">Город</span>
             <span class="teacher-text">{{
-                selectedCity === [1] ? 'Северодвинск' : selectedCity === [2] ? 'Новодвинск' : ''
+                this.formatCity(this.selectedCity)
               }}</span>
           </div>
           <v-text-field
@@ -88,7 +88,7 @@
           </v-btn>
           <v-btn
               class="open-practice-dialog_actions_save-button"
-              @click="saveEvent"
+              @click="checkNewEvent"
           >
             <span>Сохранить</span>
           </v-btn>
@@ -147,6 +147,19 @@ export default {
     }
   },
   methods: {
+    formatCity(item) {
+      const includes1 = item.includes(1);
+      const includes2 = item.includes(2);
+      if (includes1 && includes2) {
+        return 'Северодвинск, Новодвинск';
+      } else if (includes1) {
+        return 'Северодвинск';
+      } else if (includes2) {
+        return 'Новодвинск';
+      } else {
+        return '';
+      }
+    },
     onCancelClick() {
       this.$emit('destroy', true)
     },
@@ -185,7 +198,52 @@ export default {
         }).catch(x => console.log(x))
       }
     },
-  }
+
+    async putEvent(){
+      const [hours, minutes] = this.eventStartTime.split(':');
+      const startTime = moment.utc(this.eventDate).hour(parseInt(hours)).minute(parseInt(minutes));
+      const endTime = startTime.clone().add(this.selectedDuration, 'hours');
+
+      if (this.data.isAdmin) {
+        const body = {
+          "startTime": startTime,
+          "endTime": endTime,
+          "studentId": this.selectedStudentId,
+          "activeUserId": this.data.userId,
+          "transmissionTypeEnum": this.selectedTransmission,
+          "city": this.selectedCity,
+        }
+
+        const event = new EventsRequest()
+        await event.putAdminPractice(body).then(() => {
+          this.$emit('destroy', false)
+        }).catch(x => console.log(x))
+
+      } else {
+        const body = {
+          "startTime": startTime,
+          "endTime": endTime,
+          "studentId": this.selectedStudentId,
+          "transmissionTypeEnum": this.selectedTransmission,
+          "city": this.selectedCity
+        }
+
+        const event = new EventsRequest()
+        await event.putPractice(body).then(() => {
+          this.$emit('destroy', false)
+        }).catch(x => console.log(x))
+      }
+    },
+
+    checkNewEvent(){
+      if (this.isNew){
+        this.saveEvent()
+      }
+      else {
+        this.putEvent()
+      }
+    },
+  },
 }
 
 </script>
