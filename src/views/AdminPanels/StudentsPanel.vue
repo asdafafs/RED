@@ -43,6 +43,8 @@
         <tr>
           <td>{{ item.fullName }}</td>
           <td>{{ item.email }}</td>
+          <td>{{ formatTransmissions(item.transmissionTypeEnum) }}</td>
+          <td>{{ formatCity(item.city) }}</td>
           <td>{{ item.generalHours }}</td>
           <td>{{ item.generalHoursSpent }}</td>
           <td>{{ item.additinalHours }}</td>
@@ -64,12 +66,14 @@ export default {
   data: () => ({
     search: '',
     headers: [
-      {text: 'ФИО', align: 'start', sortable: false, value: 'fullName', width: '30%'},
-      {text: 'E-mail', align: 'start', sortable: false, value: 'email', width: '15%'},
-      {text: 'Оплаченные Всего', align: 'start', sortable: false, value: 'generalHours', width: '15%'},
-      {text: 'Оплаченные Остаток', sortable: false, value: 'generalHoursSpent', width: '15%'},
-      {text: 'Неоплаченные Всего', sortable: false, value: 'additinalHours', width: '15%'},
-      {text: 'Действия', align: 'end', value: 'actions', sortable: false, width: '10%'},
+      {text: 'ФИО', align: 'start', sortable: false, value: 'fullName', width: '25%'},
+      {text: 'E-mail', align: 'start', sortable: false, value: 'email', width: '10%'},
+      {text: 'Коробка передач', align: 'start', sortable: false, value: 'transmissionTypeEnum', width: '25%'},
+      {text: 'Город', align: 'start', sortable: false, value: 'city', width: '10%'},
+      {text: 'Оплаченные всего', align: 'start', sortable: false, value: 'generalHours', width: '8%'},
+      {text: 'Оплаченные остаток', sortable: false, value: 'generalHoursSpent', width: '8%'},
+      {text: 'Неоплаченные всего', sortable: false, value: 'additinalHours', width: '8%'},
+      {text: 'Действия', align: 'end', value: 'actions', sortable: false, width: '6%'},
     ],
     groups: [],
     persons: [],
@@ -85,8 +89,8 @@ export default {
       generalHoursSpent: 56,
       additinalHours: 0,
       additinalHoursSpent: 0,
-      gearboxType: 1,
-      city: '',
+      transmissionTypeEnum: [],
+      city: [],
       block_student: false,
       can_signUp: true,
     },
@@ -96,6 +100,34 @@ export default {
   },
 
   methods: {
+    formatCity(item) {
+      const includes1 = item.includes(1);
+      const includes2 = item.includes(2);
+      if (includes1 && includes2) {
+        return 'Северодвинск, Новодвинск';
+      } else if (includes1) {
+        return 'Северодвинск';
+      } else if (includes2) {
+        return 'Новодвинск';
+      } else {
+        return '';
+      }
+    },
+
+    formatTransmissions(item) {
+      const includes1 = item.includes(1);
+      const includes2 = item.includes(2);
+      if (includes1 && includes2) {
+        return 'АКП, МКП';
+      } else if (includes1) {
+        return 'АКП';
+      } else if (includes2) {
+        return 'МКП';
+      } else {
+        return '';
+      }
+    },
+
     async openNewStudent() {
       this.editedIndex = -1
       this.editedStudent = {
@@ -109,8 +141,8 @@ export default {
         generalHoursSpent: 56,
         additinalHours: 0,
         additinalHoursSpent: 0,
-        gearboxType: 1,
-        city: '',
+        transmissionTypeEnum: [],
+        city: [],
         block_student: false,
         can_signUp: true,
       }
@@ -167,7 +199,9 @@ export default {
         middleName: item.middleName,
         groupId: item.groupId,
         generalHoursSpent: parseInt(item.generalHoursSpent),
-        additinalHours: item.additinalHours
+        additinalHours: item.additinalHours,
+        transmissionTypeEnum: item.transmissionTypeEnum,
+        city: item.city,
       };
       const data = {
         groups: this.groups,
@@ -240,7 +274,7 @@ export default {
 }
 
 .v-text-field-custom-admin.v-text-field--outlined .v-input__control .v-input__slot {
-  width: 367px !important;
+  width: inherit !important;
   min-height: 32px !important;
   margin-top: 24px !important;
 }

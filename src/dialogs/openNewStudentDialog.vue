@@ -36,14 +36,15 @@
                         dense/>
               <v-checkbox v-model="data.editedStudent.block_student" label="Заблокировать студента" hide-details/>
               <div class="card-edit-student__title" style="margin-top: 16px !important;">Параметры обучения</div>
-              <v-radio-group class="px-0 py-0 align-center ma-0 mt-3" v-model="data.editedStudent.gearboxType"
+              <v-radio-group class="px-0 py-0 align-center ma-0 mt-3" v-model="data.editedStudent.transmissionTypeEnum"
                              hide-details>
-                <v-radio label="АКП" :value="1"/>
-                <v-radio label="МКП" :value="2"/>
+                <v-radio label="АКП" :value="[1]"/>
+                <v-radio label="МКП" :value="[2]"/>
               </v-radio-group>
               <v-select outlined class="v-text-field-custom-admin " style="border-radius: 12px"
                         v-model="data.editedStudent.city"
                         :items="availableCity"
+                        item-value="id"
                         multiple
                         label="Город"
                         no-data-text="Нет данных для отображения"
@@ -88,7 +89,7 @@ export default {
   data: () => ({
     localVisible: true,
     blockButtonWhenRequest: false,
-    availableCity: ['Северодвинск', 'Новодвинск'],
+    availableCity: [{id: 1, text: 'Северодвинск'}, {id:2, text: 'Новодвинск'}],
     addHour: 0,
     mask: ['+', /\d/, '(', /[1-9]/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, '-', /\d/, /\d/],
     nameRule: {required: value => !!value},
@@ -142,6 +143,8 @@ export default {
           "groupId": this.data.editedStudent.groupId,
           "generalHours": this.data.editedStudent.generalHours + parseInt(this.addHour),
           "additinalHours": this.data.editedStudent.additinalHours,
+          "transmissionTypeEnum": this.data.editedStudent.transmissionTypeEnum,
+          "city": this.data.editedStudent.city
         }
         await this.postUser(body).catch(() => {
         }).finally(() => {
@@ -165,5 +168,8 @@ export default {
       this.$emit('destroy', false)
     },
   },
+  created() {
+    console.log('student', this.data.editedStudent)
+  }
 }
 </script>

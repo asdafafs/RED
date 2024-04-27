@@ -39,6 +39,7 @@
               <v-select outlined class="v-text-field-custom-admin " style="border-radius: 12px"
                         v-model="data.editedTeacher.city"
                         :items="availableCity"
+                        item-value="id"
                         multiple
                         label="Город"
                         no-data-text="Нет данных для отображения"
@@ -73,7 +74,7 @@ export default {
   data: () => ({
     localVisible: true,
     blockButtonWhenRequest: false,
-    availableCity: ['Северодвинск', 'Новодвинск'],
+    availableCity: [{id: 1, text: 'Северодвинск'}, {id:2, text: 'Новодвинск'}],
     availableGearboxType: [{id: 1, text: 'АКП'},
       {id: 2, text: 'МКП'}],
     mask: ['+', /\d/, '(', /[1-9]/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, '-', /\d/, /\d/],
@@ -145,7 +146,6 @@ export default {
     },
   },
   created() {
-    console.log('huy', this.data.editedTeacher)
   }
 }
 

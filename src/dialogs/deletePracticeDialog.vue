@@ -1,8 +1,8 @@
 ﻿<template>
   <v-dialog max-width="407px" v-model="localVisible" persistent>
     <v-card
-      class="delete-practice-dialog"
-      flat
+        class="delete-practice-dialog"
+        flat
     >
       <v-card-title class="pa-5 d-flex flex-column justify-start">
         <span class="delete-practice-dialog_first-title">Удаление записи</span>
@@ -21,8 +21,8 @@
           </div>
           <div class="open-practice-dialog_text">
             <div
-              v-for="item in items"
-              class="d-flex flex-column"
+                v-for="item in items"
+                class="d-flex flex-column"
             >
               <span class="review-practice-dialog_text_title">{{ item.title }}</span>
               <span class="teacher-text">{{ item.value }}</span>
@@ -30,41 +30,41 @@
           </div>
           <div>
             <v-radio-group
-              class="flex-row mt-2 pt-0"
-              v-model="typeOfReasonId"
-              row
-              hide-details
+                class="flex-row mt-2 pt-0"
+                v-model="typeOfReasonId"
+                row
+                hide-details
             >
               <v-radio label="Отменена" :value="1"/>
               <v-radio label="Сгорела" :value="2"/>
             </v-radio-group>
           </div>
-          <v-select 
-            no-data-text="Нет данных для отображения"
-            v-model="selectedReasonId"
-            :items="reasonsRefusal"
-            item-value="id"
-            item-text="reason"
-            class="v-text-field-custom-h-32" 
-            outlined 
-            dense 
-            hide-details
-            :disabled="typeOfReasonId !== 1"
+          <v-select
+              no-data-text="Нет данных для отображения"
+              v-model="selectedReasonId"
+              :items="reasonsRefusal"
+              item-value="id"
+              item-text="reason"
+              class="v-text-field-custom-h-32"
+              outlined
+              dense
+              hide-details
+              :disabled="typeOfReasonId !== 1"
           />
         </div>
       </v-card-text>
       <v-card-actions class="pa-5">
         <div class="delete-practice-dialog_actions">
           <v-btn
-            class="delete-practice-dialog_actions_cancel-button"
-            text
-            @click="onCancelClick"
+              class="delete-practice-dialog_actions_cancel-button"
+              text
+              @click="onCancelClick"
           >
             <span>Отмена</span>
           </v-btn>
           <v-btn
-            class="delete-practice-dialog_actions_save-button"
-            @click="onDeleteClick"
+              class="delete-practice-dialog_actions_save-button"
+              @click="onDeleteClick"
           >
             <span>Удалить</span>
           </v-btn>
@@ -133,7 +133,7 @@ export default {
         {
           id: 1,
           title: 'Коробка передач',
-          value: this.data.transmission
+          value: this.data.e.event.transmissionTypeEnum === [1] ? 'АКП' : this.data.e.event.transmissionTypeEnum === [2] ? 'МКП' : '---'
         },
         {
           id: 2,
@@ -145,30 +145,50 @@ export default {
   },
   methods: {
     onCancelClick() {
-      this.$emit('destroy',true)
+      this.$emit('destroy', true)
     },
     async onDeleteClick() {
       let body = {}
       const event = new EventsRequest()
-      if (this.typeOfReasonId === 1) {
-        body = {
-          "id": this.data.e.event.id,
-          "deleteReasonEnum": this.selectedReasonId
+      if (this.data.isAdmin) {
+        if (this.typeOfReasonId === 1) {
+          body = {
+            "id": this.data.e.event.id,
+            "deleteReasonEnum": this.selectedReasonId
+          }
+          await event.closeAdminStudent(body).catch(x => console.log(x)).then(
+              this.$emit('destroy', false)
+          )
+        } else {
+          body = {
+            "id": this.data.e.event.id,
+            "stateEnum": this.typeOfReasonId
+          }
+          await event.closeAdminStudent(body).catch(x => console.log(x)).then(
+              this.$emit('destroy', false)
+          )
         }
-        await event.closePractice(body).catch(x => console.log(x)).then(
-            this.$emit('destroy',false)
-        )
       } else {
-        body = {
-          "id": this.data.e.event.id,
-          "stateEnum": this.typeOfReasonId
+        if (this.typeOfReasonId === 1) {
+          body = {
+            "id": this.data.e.event.id,
+            "deleteReasonEnum": this.selectedReasonId
+          }
+          await event.closePractice(body).catch(x => console.log(x)).then(
+              this.$emit('destroy', false)
+          )
+        } else {
+          body = {
+            "id": this.data.e.event.id,
+            "stateEnum": this.typeOfReasonId
+          }
+          await event.closePractice(body).catch(x => console.log(x)).then(
+              this.$emit('destroy', false)
+          )
         }
-        await event.closePractice(body).catch(x => console.log(x)).then(
-            this.$emit('destroy',false)
-        )
       }
     },
-  }
+  },
 }
 
 </script>
@@ -189,6 +209,7 @@ export default {
       text-transform: none;
     }
   }
+
   &_first-title {
     font-size: 12px;
     font-weight: 400;
@@ -198,6 +219,7 @@ export default {
     width: 100%;
     margin-bottom: 12px;
   }
+
   &_second-title {
     font-size: 32px;
     font-weight: 700;
@@ -206,6 +228,7 @@ export default {
     line-height: 37.5px;
     width: 100%
   }
+
   &_actions {
     display: flex;
     width: 100%;
@@ -220,10 +243,11 @@ export default {
       width: 89px !important;
       text-transform: none !important;
 
-      span:first-of-type{
+      span:first-of-type {
         color: black;
       }
     }
+
     &_save-button {
       border-radius: 12px !important;
       background-color: #4E7AEC !important;
@@ -231,7 +255,7 @@ export default {
       width: 89px !important;
       text-transform: none !important;
 
-      span:first-of-type{
+      span:first-of-type {
         color: white;
         font-weight: 600;
       }
@@ -249,6 +273,7 @@ export default {
   .v-input__prepend-inner {
     margin: 0 !important;
   }
+
   .v-input__append-inner {
     margin-top: 4px !important;
   }
@@ -264,22 +289,26 @@ export default {
       max-height: 32px !important;
     }
   }
+
   .v-select__selections {
     max-height: 32px !important;
     display: flex !important;
     align-content: center !important;
   }
 }
+
 .time-of-practice-icon {
   color: #4E7AEC;
   margin-right: 8px;
 }
+
 .date-of-practice {
   color: #4E7AEC;
   font-weight: 600;
   font-size: 12px;
   line-height: 14px;
 }
+
 .time-of-practice {
   color: #2B2A29;
   font-weight: 700;

@@ -23,11 +23,11 @@
       </v-col>
     </v-row>
     <hr>
-<!--    <v-row>-->
-<!--      <div style="font-size: 12px; font-weight: 400; line-height: 14px; color: #A6A8AA; padding: 20px 0 20px 12px">ОБЩИЕ-->
-<!--        СВЕДЕНИЯ-->
-<!--      </div>-->
-<!--    </v-row>-->
+        <v-row>
+          <div style="font-size: 12px; font-weight: 400; line-height: 14px; color: #A6A8AA; padding: 20px 0 20px 12px">ОБЩИЕ
+            СВЕДЕНИЯ
+          </div>
+        </v-row>
     <v-row class="flex-wrap" style="column-gap: 14px">
       <v-col style="max-width: min-content; padding:  0 0 0 12px">
         <v-text-field v-model="editedItem.groups.groupNumber" label="Номер группы" dense
@@ -43,38 +43,45 @@
                       :rules="[titleRules.required]" outlined hide-details disabled/>
       </v-col>
     </v-row>
-<!--    <v-row>-->
-<!--      <div style="font-size: 12px; font-weight: 400; line-height: 14px; color: #A6A8AA; padding: 20px 0 20px 12px">-->
-<!--        СТУДЕНТЫ-->
-<!--      </div>-->
-<!--    </v-row>-->
+        <v-row>
+          <div style="font-size: 12px; font-weight: 400; line-height: 14px; color: #A6A8AA; padding: 20px 0 20px 12px">
+            СТУДЕНТЫ
+          </div>
+        </v-row>
     <v-row class="flex-wrap">
-      <v-col cols="12">
+      <v-col cols="12" class="py-0">
         <v-select
             v-model="selectedStudents"
             :value="editedItem.lecture.activeUser"
             :items="studentList"
             :item-text="item => `${item.surname} ${item.name} ${item.middleName} `"
-            label="Список свободных учеников"
+
             multiple
             hide-details
             persistent-hint
             no-data-text="Нет данных для отображения"
             item-value="id"
-            @change="updateSelectedStudentsIds" dense height="32px"/>
+            @change="updateSelectedStudentsIds" dense height="32px">
+          <template v-slot:selection="{ item, index }">
+            <v-chip class="select-students-chips">
+              <v-icon class="white--text" style="transform: rotate(45deg);" @click.stop="removeStudent(item)">mdi-plus</v-icon>
+              <span class="pl-1 white--text">{{ `${item.surname} ${item.name} ${item.middleName} ` }}</span>
+            </v-chip>
+          </template>
+        </v-select>
       </v-col>
     </v-row>
-<!--    <v-row>-->
-<!--      <div style="font-size: 12px; font-weight: 400; line-height: 14px; color: #A6A8AA; padding: 20px 0 20px 12px">-->
-<!--        ПЛАН ОБУЧЕНИЯ-->
-<!--      </div>-->
-<!--    </v-row>-->
+        <v-row>
+          <div style="font-size: 12px; font-weight: 400; line-height: 14px; color: #A6A8AA; padding: 20px 0 20px 12px">
+            ПЛАН ОБУЧЕНИЯ
+          </div>
+        </v-row>
     <v-row class="flex-wrap">
       <v-col style="max-width: min-content;">
         <v-text-field v-model="editedItem.groups.startDate" label="Дата начала курса" dense
                       type="date" :rules="[startDateRules.required]"
                       class="text-field-date-template"
-                      style="border-radius: 12px !important; max-height: 32px !important; min-width: 143px !important; max-width: 143px !important;"
+                      style="border-radius: 12px !important; max-height: 32px !important; min-width: 167px !important; max-width: 167px !important;"
                       @input="updateGlobalStartDate" :min="getTodayDate()" @change="newGroupTitle" outlined
                       hide-details/>
       </v-col>
@@ -88,15 +95,16 @@
                       outlined
                       hide-details
                       class="text-field-date-template"
-                      style="border-radius: 12px !important; max-height: 32px !important; min-width: 75px !important; max-width: 75px !important;"/>
+                      style="border-radius: 12px !important; max-height: 32px !important; min-width: 100px !important; max-width: 100px !important;"/>
       </v-col>
-      <v-col cols="lg-4 md-4 sm-8" class="d-flex justify-space-around">
+      <v-col cols="lg-4 md-4 sm-8">
         <template>
           <div class="chips-container" style="display: flex; justify-content: space-around; width: 100%;">
             <v-chip
                 v-for="(chip, index) in chips"
                 :key="index"
-                :class="{ 'white--text': selectedChips.includes(chip) }"
+                :class="{'daily-chips-unselected': !selectedChips.includes(chip),
+                'white--text daily-chips-selected': selectedChips.includes(chip)}"
                 :color="selectedChips.includes(chip) ? '#2B2A29' : null"
                 @click="toggleSelectedChip(chip)"
             >
@@ -227,6 +235,16 @@ export default {
   },
 
   methods: {
+    removeStudent(item) {
+      console.log(item)
+      console.log(this.selectedStudents)
+      const index = this.selectedStudents.find(student => student.id === item)
+      console.log(index)
+      if (index !== -1) {
+        this.selectedStudents.splice(index, 1);
+      }
+    },
+
     prev() {
       this.$router.push({name: 'admin-groups'})
     },
@@ -585,19 +603,27 @@ export default {
 <style>
 @import "@/assets/styles/dataTableStyles.css";
 
-.theme--light.v-chip:not(.v-chip--active) {
-  background: rgba(255, 255, 255, 0.7);
+
+.select-students-chips {
+  border-radius: 4px !important;
+  background-color: black !important;
+  margin: 0 0 0 0 !important;
+}
+
+.daily-chips-selected {
+  border-radius: 4px !important;
+  background-color: black !important;
+}
+
+.daily-chips-unselected {
+  border-radius: 4px !important;
+  background: rgba(255, 255, 255, 0.7) !important;
 }
 
 .chips-container {
   display: flex;
   flex-wrap: wrap;
-  min-width: 210px;
-}
-
-.chips-container > .v-chip {
-  margin-right: 8px;
-  margin-bottom: 8px;
+  max-width: 318px;
 }
 
 .text-field-group-template {
@@ -617,12 +643,12 @@ export default {
 }
 
 .text-field-date-template {
-  .v-input__control{
+  .v-input__control {
     .v-input__slot {
       display: flex !important;
       align-items: center !important;
       min-height: 32px !important;
-      padding: 0 !important;
+      //padding: 0 !important;
     }
   }
 

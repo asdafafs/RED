@@ -1,11 +1,11 @@
 ﻿<template>
   <v-dialog max-width="407px" v-model="localVisible" persistent>
     <v-card
-      class="open-practice-dialog"
-      flat
+        class="open-practice-dialog"
+        flat
     >
       <v-card-title class="pa-5 d-flex flex-column justify-start">
-        <span class="open-practice-dialog_first-title">{{ isNew ? 'Новая запись' : 'Изменение записи'}}</span>
+        <span class="open-practice-dialog_first-title">{{ isNew ? 'Новая запись' : 'Изменение записи' }}</span>
         <span class="open-practice-dialog_second-title">Вождение</span>
       </v-card-title>
       <v-card-text class="pa-5 pt-0 pb-0">
@@ -17,45 +17,47 @@
           <div>
             <span class="open-practice-dialog_text_title">Коробка передач</span>
             <v-radio-group
-              class="flex-row mt-2 pt-0"
-              v-model="selectedTransmission"
-              row
-              hide-details
+                class="flex-row mt-2 pt-0"
+                v-model="selectedTransmission"
+                row
+                hide-details
             >
-              <v-radio label="АКП" :value="1"/>
-              <v-radio label="МКП" :value="2"/>
+              <v-radio label="АКП" :value="[1]"/>
+              <v-radio label="МКП" :value="[2]"/>
             </v-radio-group>
           </div>
           <div class="d-flex flex-column">
             <span class="open-practice-dialog_text_title">Город</span>
-            <span class="teacher-text">Северодвинск</span>
+            <span class="teacher-text">{{
+                selectedCity === [1] ? 'Северодвинск' : selectedCity === [2] ? 'Новодвинск' : ''
+              }}</span>
           </div>
           <v-text-field
-            class="v-text-field-custom-h-32 mt-2"
-            v-model="eventDate"
-            hide-details 
-            label="Дата" 
-            type="date"
-            outlined 
-            dense
-            :min="minDate"
+              class="v-text-field-custom-h-32 mt-2"
+              v-model="eventDate"
+              hide-details
+              label="Дата"
+              type="date"
+              outlined
+              dense
+              :min="minDate"
           />
           <v-text-field
-            class="v-text-field-custom-h-32 mt-2"
-            v-model="eventStartTime"
-            hide-details 
-            label="Время начала" 
-            type="time"
-            outlined 
-            dense
+              class="v-text-field-custom-h-32 mt-2"
+              v-model="eventStartTime"
+              hide-details
+              label="Время начала"
+              type="time"
+              outlined
+              dense
           />
           <div>
             <span class="duration-text">Продолжительность</span>
             <v-radio-group
-              class="flex-row mt-2 pt-0"
-              v-model="selectedDuration"
-              row
-              hide-details
+                class="flex-row mt-2 pt-0"
+                v-model="selectedDuration"
+                row
+                hide-details
             >
               <v-radio label="1 час" :value="1"/>
               <v-radio label="2 часа" :value="2"/>
@@ -78,15 +80,15 @@
       <v-card-actions class="pa-5">
         <div class="open-practice-dialog_actions">
           <v-btn
-            class="open-practice-dialog_actions_cancel-button"
-            text
-            @click="onCancelClick"
+              class="open-practice-dialog_actions_cancel-button"
+              text
+              @click="onCancelClick"
           >
             <span>Отмена</span>
           </v-btn>
-          <v-btn 
-            class="open-practice-dialog_actions_save-button"
-            @click="saveEvent"
+          <v-btn
+              class="open-practice-dialog_actions_save-button"
+              @click="saveEvent"
           >
             <span>Сохранить</span>
           </v-btn>
@@ -107,8 +109,9 @@ export default {
     eventDate: null,
     eventStartTime: null,
     selectedDuration: 1,
-    selectedTransmission: 1,
+    selectedTransmission: [1],
     selectedStudentId: null,
+    selectedCity: [1],
   }),
   props: {
     data: {
@@ -122,7 +125,7 @@ export default {
   },
   watch: {
     eventDate() {
-      console.log('date',this.eventDate)
+      console.log('date', this.eventDate)
     }
   },
   mounted() {
@@ -130,7 +133,8 @@ export default {
       this.eventDate = moment(this.data.e.event.startTime).format('YYYY-MM-DD')
       this.eventStartTime = moment(this.data.e.event.startTime).format('HH:mm')
       this.selectedDuration = +moment(this.data.e.event.endTime).format('HH') - +moment(this.data.e.event.startTime).format('HH') === 1 ? 1 : 2
-      this.selectedTransmission = 1
+      this.selectedTransmission = this.data.e.event.transmissionTypeEnum
+      this.selectedCity = this.data.e.event.city
       this.selectedStudentId = this.data.listStudents.find(student => student.id === this.data.e.event.studentId) || null
     } else {
       this.eventDate = moment().format('YYYY-MM-DD')
@@ -144,23 +148,42 @@ export default {
   },
   methods: {
     onCancelClick() {
-      this.$emit('destroy',true)
+      this.$emit('destroy', true)
     },
     async saveEvent() {
       const [hours, minutes] = this.eventStartTime.split(':');
       const startTime = moment.utc(this.eventDate).hour(parseInt(hours)).minute(parseInt(minutes));
       const endTime = startTime.clone().add(this.selectedDuration, 'hours');
-      
-      const body = {
-        "startTime": startTime,
-        "endTime": endTime,
-        "studentId": this.selectedStudentId,
-        "activeUserId": this.data.userId
+
+      if (this.data.isAdmin) {
+        const body = {
+          "startTime": startTime,
+          "endTime": endTime,
+          "studentId": this.selectedStudentId,
+          "activeUserId": this.data.userId,
+          "transmissionTypeEnum": this.selectedTransmission,
+          "city": this.selectedCity
+        }
+
+        const event = new EventsRequest()
+        await event.postAdminPractice(body).then(() => {
+          this.$emit('destroy', false)
+        }).catch(x => console.log(x))
+
+      } else {
+        const body = {
+          "startTime": startTime,
+          "endTime": endTime,
+          "studentId": this.selectedStudentId,
+          "transmissionTypeEnum": this.selectedTransmission,
+          "city": this.selectedCity
+        }
+
+        const event = new EventsRequest()
+        await event.postPractice(body).then(() => {
+          this.$emit('destroy', false)
+        }).catch(x => console.log(x))
       }
-      const event = new EventsRequest()
-      await event.postPractice(body).then(() => {
-        this.$emit('destroy',false)
-      }).catch(x => console.log(x))
     },
   }
 }
@@ -168,14 +191,14 @@ export default {
 </script>
 <style lang="scss">
 .open-practice-dialog {
-  border-radius: 12px; 
+  border-radius: 12px;
   border: 1px solid grey;
-  
+
   &_text {
     display: flex;
     flex-direction: column;
     gap: 12px;
-    
+
     &_title {
       font-size: 12px;
       font-weight: 400;
@@ -183,6 +206,7 @@ export default {
       text-transform: none;
     }
   }
+
   &_first-title {
     font-size: 12px;
     font-weight: 400;
@@ -192,6 +216,7 @@ export default {
     width: 100%;
     margin-bottom: 12px;
   }
+
   &_second-title {
     font-size: 32px;
     font-weight: 700;
@@ -200,6 +225,7 @@ export default {
     line-height: 37.5px;
     width: 100%
   }
+
   &_actions {
     display: flex;
     width: 100%;
@@ -214,10 +240,11 @@ export default {
       width: 89px !important;
       text-transform: none !important;
 
-      span:first-of-type{
+      span:first-of-type {
         color: black;
       }
     }
+
     &_save-button {
       border-radius: 12px !important;
       background-color: #4E7AEC !important;
@@ -225,7 +252,7 @@ export default {
       width: 89px !important;
       text-transform: none !important;
 
-      span:first-of-type{
+      span:first-of-type {
         color: white;
         font-weight: 600;
       }
@@ -243,10 +270,11 @@ export default {
   .v-input__prepend-inner {
     margin: 0 !important;
   }
+
   .v-input__append-inner {
     margin-top: 4px !important;
   }
-  
+
   .v-input__icon {
     max-height: 32px !important;
   }
@@ -258,22 +286,25 @@ export default {
       max-height: 32px !important;
     }
   }
+
   .v-select__selections {
     max-height: 32px !important;
     display: flex !important;
     align-content: center !important;
   }
 }
+
 .duration-text {
   font-size: 12px;
   line-height: 14px;
   font-weight: 400;
-  color:black !important;
+  color: black !important;
 }
+
 .teacher-text {
   font-size: 16px;
   line-height: 18.75px;
   font-weight: 400;
-  color:black !important;
+  color: black !important;
 }
 </style>

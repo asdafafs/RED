@@ -92,10 +92,9 @@ export default {
     search: '',
     dialogDelete: false,
     blockButtonWhenRequest: false,
-    mask: ['+', /\d/, '(', /[1-9]/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, '-', /\d/, /\d/],
     headers: [
       {text: 'ФИО', align: 'start', sortable: false, value: 'fullName', width: '30%'},
-      {text: 'Коробка передач', align: 'start', sortable: false, value: 'gearboxType', width: '15%'},
+      {text: 'Коробка передач', align: 'start', sortable: false, value: 'transmissionTypeEnum', width: '15%'},
       {text: 'E-mail', align: 'start', sortable: false, value: 'email', width: '15%'},
       {text: 'Практики', align: 'start', sortable: false, width: '15%'},
       {text: 'Права оператора', align: 'start', sortable: false, value: 'rulesAdmin', width: '15%'},
@@ -110,9 +109,8 @@ export default {
       middleName: '',
       email: '',
       phoneNumber: '7',
-      gearboxType: 1,
       isAdmin: false,
-      cities: [],
+      city: [],
       transmissionTypeEnum: [],
     },
   }),
@@ -163,7 +161,7 @@ export default {
         phoneNumber: '7',
         transmissionTypeEnum: [],
         isAdmin: false,
-        cities: [],
+        city: [],
       }
       const data = {
         editedIndex: this.editedIndex,
@@ -219,13 +217,12 @@ export default {
         middleName: item.middleName,
         transmissionTypeEnum: item.transmissionTypeEnum,
         isAdmin: item.isAdmin,
-        cities: [],
+        city: item.city,
       };
       const data = {
         editedIndex: this.editedIndex,
         editedTeacher: this.editedTeacher,
       }
-      console.log('huy2', this.editedTeacher)
       await this.$openNewTeacherDialogPlugin(data).then((result) => {
         if (!result) {
           this.initialize();

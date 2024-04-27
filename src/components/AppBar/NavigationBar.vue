@@ -66,7 +66,7 @@ export default {
           id: 3,
           title: 'Админпанель',
           routerName: 'admin-students',
-          visible: true,
+          visible: this.needAdminPanel,
         },
         {
           id: 4,
@@ -80,6 +80,10 @@ export default {
           visible: true,
         },
       ].filter(x => x.visible)
+    },
+
+    needAdminPanel() {
+      return this.$store.state.user.isAdmin
     }
   },
   methods: {
