@@ -1,7 +1,7 @@
 <template>
   <div class="schedule-main-section">
     <div class="schedule-main-section_actions">
-      <div class="d-flex width-full justify-space-between flex-wrap">
+      <div class="d-flex width-full flex-wrap justify-space-between">
         <v-btn-toggle
             v-model="selectedLessonType"
             mandatory
