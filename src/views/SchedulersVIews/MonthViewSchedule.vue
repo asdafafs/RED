@@ -1,12 +1,13 @@
 <template>
   <div class="schedule-main-section">
     <div class="schedule-main-section_actions">
-      <div class="d-flex width-full justify-space-between">
+      <div class="d-flex width-full justify-space-between flex-wrap">
         <v-btn-toggle
             v-model="selectedLessonType"
             mandatory
             group
             color="black"
+            class="flex-wrap"
         >
           <v-btn
               v-for="item in calendarButtons"
@@ -39,7 +40,73 @@
           />
         </div>
       </div>
-      <div>
+      <div  style="gap: 12px !important;" class="d-flex flex-column">
+        <div class="d-flex flex-row flex-wrap" style="column-gap: 8px !important;" >
+          <v-select v-model="selectedTeacher" class="select-user-template " outlined dense hide-details
+                    height="41"
+                    no-data-text="Нет данных для отображения"
+                    :items="listTeachers"
+                    item-value="id" @change="acceptEditableTeacher()" v-if="!isUserTeacher || isAdmin">
+              <template #selection="{ item }">
+              <div v-if="item.id">
+              <span style="font-size: 16px; line-height: 18.75px; font-weight: 400; color: #2B2A29">
+                {{ item.surname + " " + item.name.charAt(0) + ". " + item.middleName.charAt(0)+ "." }}
+              </span>
+                <br>
+                <span style="font-size: 12px; line-height: 14px; font-weight: 400; color: #A6A8AA">{{
+                    formatTransmissions(item.transmissionTypeEnum)
+                  }}</span>
+              </div>
+              <div v-else>
+                <span>Инструктор</span>
+                <br>
+                <span style="font-size: 12px; line-height: 14px; font-weight: 400; color: #A6A8AA">Коробка передач</span>
+              </div>
+            </template>
+            <template #item="{ item }">
+              <div v-if="item.id">
+              <span style="font-size: 16px; line-height: 18.75px; font-weight: 400; color: #2B2A29">
+                {{ item.surname + " " + item.name.charAt(0) + ". " + item.middleName.charAt(0)+ "." }}
+              </span><br>
+                <span style="font-size: 12px; line-height: 14px; font-weight: 400; color: #A6A8AA">{{
+                    formatTransmissions(item.transmissionTypeEnum)
+                  }}</span>
+              </div>
+            </template>
+          </v-select>
+          <v-select v-model="selectedStudent" class="select-user-template " outlined dense hide-details
+                    height="41"
+                    no-data-text="Нет данных для отображения"
+                    :items="listStudents"
+                    item-value="id" @change="acceptEditableStudent()" v-if="isUserTeacher">
+            <template #selection="{ item }">
+              <div v-if="item.id">
+              <span style="font-size: 16px; line-height: 18.75px; font-weight: 400; color: #2B2A29">
+                {{ item.surname + " " + item.name.charAt(0) + ". " + item.middleName.charAt(0)+ "." }}
+              </span>
+                <br>
+                <span style="font-size: 12px; line-height: 14px; font-weight: 400; color: #A6A8AA">{{
+                    formatTransmissions(item.transmissionTypeEnum)
+                  }}</span>
+              </div>
+              <div v-else>
+                <span>Студент</span>
+                <br>
+                <span style="font-size: 12px; line-height: 14px; font-weight: 400; color: #A6A8AA">Коробка передач</span>
+              </div>
+            </template>
+            <template #item="{ item }">
+              <div v-if="item.id">
+              <span style="font-size: 16px; line-height: 18.75px; font-weight: 400; color: #2B2A29">
+                {{ item.surname + " " + item.name.charAt(0) + ". " + item.middleName.charAt(0)+ "." }}
+              </span><br>
+                <span style="font-size: 12px; line-height: 14px; font-weight: 400; color: #A6A8AA">{{
+                    formatTransmissions(item.transmissionTypeEnum)
+                  }}</span>
+              </div>
+            </template>
+          </v-select>
+        </div>
         <div class="d-flex flex-row flex-wrap">
           <v-btn
               v-if="isUserTeacher"
@@ -53,12 +120,7 @@
               <span class="add-instructor-text">Добавить практику</span>
             </section>
           </v-btn>
-          <v-select v-model="selectedTeacher" class="select-period " outlined dense hide-details
-                    style=" max-width: 312px !important;  border-radius: 12px !important; max-height: 32px !important; margin-left: 8px !important; "
-                    no-data-text="Нет данных для отображения" label="Инструктор"
-                    :items="[...listTeachers, { id: null, name: 'Преподаватель не назначен' }]"
-                    :item-text="item => item ? `${item.surname || ''} ${item.name || ''} ${item.middleName || ''}` : 'Преподаватель не назначен'"
-                    item-value="id" @change="acceptEditableTeacher()"></v-select>
+
         </div>
       </div>
     </div>
@@ -177,6 +239,7 @@ export default {
     listTeachers: [],
     listStudents: [],
     selectedTeacher: null,
+    selectedStudent: null,
   }),
   watch: {
     value(newValue) {
@@ -188,8 +251,11 @@ export default {
         this.onToggleClick(0)
         this.getAllTeachers()
         this.getAllStudents()
-        if (this.user.discriminator && this.isUserTeacher) {
+        if (this.user.discriminator && this.isUserTeacher && !this.isAdmin) {
           this.selectedTeacher = this.userID
+          this.selectedActiveUser = this.userID
+        }
+        else if(this.user.discriminator && this.isUserTeacher && this.isAdmin){
           this.selectedActiveUser = this.userID
         }
       }
@@ -228,9 +294,6 @@ export default {
     userID() {
       return this.user.userId
     },
-    userName() {
-      return `${this.user.surname} ${this.user.name[0]}. ${this.user.middleName[0]}. `
-    },
     isUserTeacher() {
       return this.user.discriminator === 'Учитель'
     },
@@ -241,6 +304,20 @@ export default {
   },
 
   methods: {
+    formatTransmissions(item) {
+      const includes1 = item.includes(1);
+      const includes2 = item.includes(2);
+      if (includes1 && includes2) {
+        return 'АКП, МКП';
+      } else if (includes1) {
+        return 'АКП';
+      } else if (includes2) {
+        return 'МКП';
+      } else {
+        return '';
+      }
+    },
+
     async openNewPractice() {
       const teacher = this.listTeachers.find(teacher => teacher.id === this.selectedTeacher)
       const userName = teacher ? `${teacher.surname || ''} ${teacher.name || ''} ${teacher.middleName || ''}`.trim() : '';
@@ -269,6 +346,9 @@ export default {
       return item[0];
     },
 
+    async acceptEditableStudent() {
+    },
+
     async acceptEditableTeacher() {
       const selectedId = this.selectedTeacher;
       if (selectedId !== null) {
@@ -282,11 +362,8 @@ export default {
             end: moment(item.end).format("YYYY-MM-DD HH:mm"),
           }
         })
-
         this.selectedActiveUser = selectedId
       }
-      console.log(this.selectedTeacher)
-      console.log(this.userID)
     },
 
     onToggleClick(id) {
@@ -350,9 +427,10 @@ export default {
         //TODO: Доработать дату
         const student = this.listStudents.find(student => student.id === e.event.studentId);
         const fullName = student ? `${student.surname || ''} ${student.name || ''} ${student.middleName || ''}`.trim() : '';
+        const teacher = this.listTeachers.find(teacher => teacher.id === this.selectedTeacher)
+        const teacherName = teacher ? `${teacher.surname || ''} ${teacher.name || ''} ${teacher.middleName || ''}`.trim() : '';
         const data = {
-          teacher: e.event.title,
-          city: 'Северодвинск',
+          teacher: teacherName,
           student: fullName,
           e: e,
           listStudents: this.listStudents,
@@ -543,6 +621,39 @@ export default {
 
 <style scoped lang="scss">
 @import "@/assets/styles/monthScheduleStyles.css";
+
+.select-user-template {
+  max-width: 312px !important;
+  border-radius: 12px !important;
+
+  .v-input__slot {
+    display: flex !important;
+    align-items: center !important;
+    min-height: 41px !important;
+  }
+
+  .v-input__prepend-inner {
+    margin: 0 !important;
+  }
+
+  .v-input__icon {
+    max-height: 41px !important;
+  }
+
+  .v-input__control {
+    max-height: 41px !important;
+
+    .v-input__slot {
+      max-height: 41px !important;
+    }
+  }
+
+  .v-select__selection--comma {
+    margin: 0 !important;
+  }
+
+
+}
 
 .schedule-main-section {
   width: 100%;

@@ -11,8 +11,8 @@
       </v-col>
     </v-row>
     <hr style="margin: 1em 0 2em 0 !important;">
-    <v-row class="flex-wrap" style="column-gap: 32px !important;">
-      <v-col style="max-width: min-content" class="align-center bg-surface-variant d-flex py-0 pr-0">
+    <v-row class="flex-wrap" style="column-gap: 32px !important; row-gap: 32px !important; padding-left: 12px">
+      <v-col style="max-width: min-content" class="align-center bg-surface-variant d-flex py-0 px-0">
         <v-text-field v-model="practiceCourseStart" label="Дата начала" type="date" ref="startDateField"
                       :rules="[startDateRules.required]" :min="getTodayDate()" outlined
                       class="select-date-practice-template" hide-details :disabled="blockEditableTemplate"

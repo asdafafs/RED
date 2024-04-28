@@ -5,6 +5,7 @@
         mandatory
         group
         color="black"
+        class="flex-wrap"
      >
       <v-btn
           v-for="item in adminPanelButtons"
