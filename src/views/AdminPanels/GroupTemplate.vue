@@ -88,7 +88,7 @@
         ПЛАН ОБУЧЕНИЯ
       </div>
     </v-row>
-    <v-row class="flex-wrap" style="gap: 16px !important;">
+    <v-row class="flex-wrap" style="gap: 37px !important;">
       <v-col style="max-width: min-content; padding: 0 0 0  12px !important;">
         <div style="width: 143px !important;">
           <div
@@ -104,7 +104,7 @@
         </div>
       </v-col>
       <v-col style="max-width: min-content;  padding: 0 !important;">
-        <div style="width: 157px !important;">
+        <div style="width: 128px !important;">
           <div
               style="font-weight: 400 !important; font-size: 12px !important; line-height: 14px !important; color: #A6A8AA; margin-bottom: 8px !important;">
             Время начала занятий
@@ -114,6 +114,23 @@
                         type="time"
                         @input="updateGlobalStartTime"
                         :rules="[startTimeRules.required]"
+                        outlined
+                        hide-details
+                        class="text-field-time-template"
+                        style="border-radius: 12px !important; max-height: 32px !important; min-width: 65px !important; max-width: 65px !important;"/>
+        </div>
+      </v-col>
+      <v-col style="max-width: min-content;  padding: 0 !important;">
+        <div style="width: 157px !important;">
+          <div
+              style="font-weight: 400 !important; font-size: 12px !important; line-height: 14px !important; color: #A6A8AA; margin-bottom: 8px !important;">
+            Время завершения занятий
+          </div>
+          <v-text-field dense
+                        :value="globalEndTime"
+                        type="time"
+                        @input="updateGlobalEndTime"
+                        :min = "globalStartTime"
                         outlined
                         hide-details
                         class="text-field-time-template"
@@ -278,7 +295,8 @@ export default {
 
     newGroupTitle() {
       let startDate = this.editedItem.groups.startDate;
-      let parts = startDate.split('-');
+      let date = startDate.split('T');
+      let parts = date[0].split('-');
       let rearranged = [parts[2], parts[1], parts[0]].join('.');
       return this.editedItem.groups.title = `Группа №${this.editedItem.groups.groupNumber} Старт ${rearranged}`;
     },
@@ -324,6 +342,7 @@ export default {
       await course.getCourseNull().catch(x => console.log(x)).then(x => {
         this.coursesData = x.data.lecture
         this.globalStartTime = x.data.startTime
+        this.globalEndTime = "19:00"
         this.globalStartDate = this.formatDatetime(x.data.startDate)
         this.groupNumber = x.data.groupNumber
       })
@@ -349,6 +368,7 @@ export default {
       await course.getCourse(getItem.id).catch(x => console.log(x)).then(x => {
         this.coursesData = x.data.lecture
         this.globalStartTime = x.data.startTime
+        this.globalEndTime = "19:00"
         this.globalStartDate = this.formatDatetime(x.data.startDate)
         this.groupNumber = x.data.groupNumber
         this.studentList = this.studentList.concat(x.data.students);
@@ -520,6 +540,19 @@ export default {
       return `${year}-${month}-${day}`;
     },
 
+    updateGlobalEndTime(value){
+      const starTime = moment(this.globalStartTime, 'HH:mm');
+      const endTime = moment(value, 'HH:mm');
+      if (starTime.isBefore(endTime)){
+        this.globalEndTime = value;
+        if (this.selectedChips.some(chip => chip === true)) {
+          this.toggleSelectedChip(this.selectedChips);
+        } else {
+          this.toggleSelectedChip(0);
+        }
+      }
+    },
+
     updateGlobalStartTime(value) {
       this.globalStartTime = value;
       if (this.selectedChips.some(chip => chip === true)) {
@@ -573,17 +606,22 @@ export default {
       this.dateOfWeek = this.dateOfWeek.map((value, idx) => sortedSelectedDays.includes(idx));
 
       let [lectureStartHour, lectureStartMinutes] = this.globalStartTime.split(':').map(Number);
+      let [lectureEndHour, lectureEndMinutes] = this.globalEndTime.split(':').map(Number);
 
       this.lessons.forEach(item => {
-
         item.startTime = this.getNextDay().set({
           hour: lectureStartHour,
           minute: lectureStartMinutes,
         })
-        const endTime = moment(item.startTime);
-        const lectureLengthTimeInHours = 2
-        endTime.add('hour', lectureLengthTimeInHours)
+        let endTime = item.startTime.clone().set({ // Создаем копию startTime и устанавливаем новые часы и минуты
+          hour: lectureEndHour,
+          minute: lectureEndMinutes,
+        });
 
+        // const endTime = moment(item.startTime);
+        // const lectureLengthTimeInHours = 2
+        // endTime.add('hour', lectureLengthTimeInHours)
+        //
         Vue.set(item, 'endTime', endTime);
 
         Vue.set(item, 'startTime', item.startTime.format('YYYY-MM-DDTHH:mm'));
@@ -684,7 +722,7 @@ export default {
       display: flex !important;
       align-items: center !important;
       min-height: 32px !important;
-      padding: 0  6px!important;
+      padding: 0 6px !important;
     }
   }
 
@@ -705,7 +743,8 @@ export default {
       justify-content: center !important; /* Добавленный стиль */
       min-height: 32px !important;
       padding: 0 24px !important;
-      .v-text-field__slot{
+
+      .v-text-field__slot {
 
         input::-webkit-calendar-picker-indicator {
           opacity: 0;

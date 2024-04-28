@@ -58,8 +58,9 @@
       <template v-slot:item="{ item }">
         <tr>
           <td>{{ item.fullName }}</td>
-          <td>{{formatTransmissions(item.transmissionTypeEnum)}}</td>
           <td>{{ item.email }}</td>
+          <td>{{formatTransmissions(item.transmissionTypeEnum)}}</td>
+          <td>{{ formatCity(item.city) }}</td>
           <td>
             <v-btn
                 class="grid-button"
@@ -94,10 +95,11 @@ export default {
     blockButtonWhenRequest: false,
     headers: [
       {text: 'ФИО', align: 'start', sortable: false, value: 'fullName', width: '30%'},
-      {text: 'Коробка передач', align: 'start', sortable: false, value: 'transmissionTypeEnum', width: '15%'},
       {text: 'E-mail', align: 'start', sortable: false, value: 'email', width: '15%'},
+      {text: 'Коробка передач', align: 'start', sortable: false, value: 'transmissionTypeEnum', width: '10%'},
+      {text: 'Город', align: 'start', sortable: false, value: 'city', width: '10%'},
       {text: 'Практики', align: 'start', sortable: false, width: '15%'},
-      {text: 'Права оператора', align: 'start', sortable: false, value: 'rulesAdmin', width: '15%'},
+      {text: 'Права оператора', align: 'start', sortable: false, value: 'rulesAdmin', width: '10%'},
       {text: 'Действия', align: 'end', value: 'actions', sortable: false, width: '10%'},
     ],
     persons: [],
@@ -146,6 +148,20 @@ export default {
         return 'АКП';
       } else if (includes2) {
         return 'МКП';
+      } else {
+        return '';
+      }
+    },
+
+    formatCity(item) {
+      const includes1 = item.includes(1);
+      const includes2 = item.includes(2);
+      if (includes1 && includes2) {
+        return 'Северодвинск, Новодвинск';
+      } else if (includes1) {
+        return 'Северодвинск';
+      } else if (includes2) {
+        return 'Новодвинск';
       } else {
         return '';
       }

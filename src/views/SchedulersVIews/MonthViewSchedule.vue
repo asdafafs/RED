@@ -40,18 +40,18 @@
           />
         </div>
       </div>
-      <div  style="gap: 12px !important;" class="d-flex flex-column">
-        <div class="d-flex flex-row flex-wrap" style="column-gap: 8px !important;" >
+      <div style="gap: 12px !important;" class="d-flex flex-column">
+        <div class="d-flex flex-row flex-wrap" style="column-gap: 8px !important;">
           <v-select v-model="selectedTeacher" class="select-user-template " outlined dense hide-details
                     height="41"
                     no-data-text="Нет данных для отображения"
                     :items="listTeachers"
                     item-value="id" @change="acceptEditableTeacher()" v-if="!isUserTeacher || isAdmin">
-              <template #selection="{ item }">
+            <template #selection="{ item }">
               <div v-if="item.id">
-              <span style="font-size: 16px; line-height: 18.75px; font-weight: 400; color: #2B2A29">
-                {{ item.surname + " " + item.name.charAt(0) + ". " + item.middleName.charAt(0)+ "." }}
-              </span>
+                <span style="font-size: 16px; line-height: 18.75px; font-weight: 400; color: #2B2A29">
+                  {{ item.surname + " " + item.name.charAt(0) + ". " + item.middleName.charAt(0) + "." }}
+                </span>
                 <br>
                 <span style="font-size: 12px; line-height: 14px; font-weight: 400; color: #A6A8AA">{{
                     formatTransmissions(item.transmissionTypeEnum)
@@ -60,17 +60,27 @@
               <div v-else>
                 <span>Инструктор</span>
                 <br>
-                <span style="font-size: 12px; line-height: 14px; font-weight: 400; color: #A6A8AA">Коробка передач</span>
+                <span
+                    style="font-size: 12px; line-height: 14px; font-weight: 400; color: #A6A8AA">Коробка передач
+                </span>
               </div>
             </template>
             <template #item="{ item }">
               <div v-if="item.id">
-              <span style="font-size: 16px; line-height: 18.75px; font-weight: 400; color: #2B2A29">
-                {{ item.surname + " " + item.name.charAt(0) + ". " + item.middleName.charAt(0)+ "." }}
-              </span><br>
-                <span style="font-size: 12px; line-height: 14px; font-weight: 400; color: #A6A8AA">{{
-                    formatTransmissions(item.transmissionTypeEnum)
-                  }}</span>
+                <span style="font-size: 16px; line-height: 18.75px; font-weight: 400; color: #2B2A29">
+                  {{ item.surname + " " + item.name.charAt(0) + ". " + item.middleName.charAt(0) + "." }}
+                </span>
+                <br>
+                <span style="font-size: 12px; line-height: 14px; font-weight: 400; color: #A6A8AA">
+                  {{ formatTransmissions(item.transmissionTypeEnum) }}
+                </span>
+              </div>
+              <div v-else>
+                <span>Инструктор</span>
+                <br>
+                <span
+                    style="font-size: 12px; line-height: 14px; font-weight: 400; color: #A6A8AA">Коробка передач
+                </span>
               </div>
             </template>
           </v-select>
@@ -82,7 +92,7 @@
             <template #selection="{ item }">
               <div v-if="item.id">
               <span style="font-size: 16px; line-height: 18.75px; font-weight: 400; color: #2B2A29">
-                {{ item.surname + " " + item.name.charAt(0) + ". " + item.middleName.charAt(0)+ "." }}
+                {{ item.surname + " " + item.name.charAt(0) + ". " + item.middleName.charAt(0) + "." }}
               </span>
                 <br>
                 <span style="font-size: 12px; line-height: 14px; font-weight: 400; color: #A6A8AA">{{
@@ -92,17 +102,26 @@
               <div v-else>
                 <span>Студент</span>
                 <br>
-                <span style="font-size: 12px; line-height: 14px; font-weight: 400; color: #A6A8AA">Коробка передач</span>
+                <span
+                    style="font-size: 12px; line-height: 14px; font-weight: 400; color: #A6A8AA">Коробка передач
+                </span>
               </div>
             </template>
             <template #item="{ item }">
               <div v-if="item.id">
               <span style="font-size: 16px; line-height: 18.75px; font-weight: 400; color: #2B2A29">
-                {{ item.surname + " " + item.name.charAt(0) + ". " + item.middleName.charAt(0)+ "." }}
+                {{ item.surname + " " + item.name.charAt(0) + ". " + item.middleName.charAt(0) + "." }}
               </span><br>
                 <span style="font-size: 12px; line-height: 14px; font-weight: 400; color: #A6A8AA">{{
                     formatTransmissions(item.transmissionTypeEnum)
                   }}</span>
+              </div>
+              <div v-else>
+                <span>Студент</span>
+                <br>
+                <span
+                    style="font-size: 12px; line-height: 14px; font-weight: 400; color: #A6A8AA">Коробка передач
+                </span>
               </div>
             </template>
           </v-select>
@@ -236,8 +255,36 @@ export default {
     selectedActiveUser: 0,
     // types: [['month', 'месяц'], ['week', 'неделя'], ['day', 'день']],
     types: [['month', 'месяц'], ['day', 'день']],
-    listTeachers: [],
-    listStudents: [],
+    listTeachers: [{
+      "id": null,
+      "name": null,
+      "surname": null,
+      "middleName": null,
+      "vkUserId": null,
+      "email": null,
+      "phoneNumber": null,
+      "userName": null,
+      "transmissionTypeEnum": null,
+      "isAdmin": null,
+      "city": null
+    }],
+    listStudents: [{
+      "id": null,
+      "name": null,
+      "surname": null,
+      "middleName": null,
+      "vkUserId": null,
+      "email": null,
+      "phoneNumber": null,
+      "userName": null,
+      "groupId": null,
+      "generalHours": null,
+      "generalHoursSpent": null,
+      "additinalHours": null,
+      "additinalHoursSpent": null,
+      "transmissionTypeEnum": null,
+      "city": null
+    }],
     selectedTeacher: null,
     selectedStudent: null,
   }),
@@ -246,16 +293,23 @@ export default {
       this.confirmOnChangeMonthAndYear(newValue);
     },
 
+    selectedStudent(newValue) {
+      console.log(newValue)
+    },
+
+    selectedTeacher(newValue) {
+      console.log(newValue)
+    },
+
     userID(newValue) {
       if (newValue !== null) {
         this.onToggleClick(0)
         this.getAllTeachers()
         this.getAllStudents()
-        if (this.user.discriminator && this.isUserTeacher && !this.isAdmin) {
+        if (this.isUserTeacher && !this.isAdmin) {
           this.selectedTeacher = this.userID
           this.selectedActiveUser = this.userID
-        }
-        else if(this.user.discriminator && this.isUserTeacher && this.isAdmin){
+        } else if (this.isUserTeacher && this.isAdmin) {
           this.selectedActiveUser = this.userID
         }
       }
@@ -297,7 +351,6 @@ export default {
     isUserTeacher() {
       return this.user.discriminator === 'Учитель'
     },
-
     isAdmin() {
       return this.user.isAdmin
     },
@@ -321,8 +374,9 @@ export default {
     async openNewPractice() {
       const teacher = this.listTeachers.find(teacher => teacher.id === this.selectedTeacher)
       const userName = teacher ? `${teacher.surname || ''} ${teacher.name || ''} ${teacher.middleName || ''}`.trim() : '';
+      const listStudents = this.listStudents.filter(student => student.id !== null);
       const data = {
-        listStudents: this.listStudents,
+        listStudents: listStudents,
         userName: userName,
         userId: this.selectedActiveUser,
         isAdmin: this.isAdmin
@@ -333,11 +387,13 @@ export default {
         }
       });
     },
+
     viewDay({date}) {
       this.selectedMoreElement = nativeEvent.target
       this.value = date
       this.type = 'day'
     },
+
     displayText(item) {
       return item[1];
     },
@@ -347,23 +403,45 @@ export default {
     },
 
     async acceptEditableStudent() {
+      const studentId = this.selectedStudent
+      console.log(this.selectedTeacher, studentId)
+      const query = `IdStudent=${studentId}`
     },
 
     async acceptEditableTeacher() {
+      console.log(this.listTeachers, this.listStudents)
       const selectedId = this.selectedTeacher;
-      if (selectedId !== null) {
-        const lessons = await this.getLessons(selectedId);
-        const practices = await this.getPractices(selectedId);
-        this.events = [...lessons, ...practices];
-        this.events = this.events.map(item => {
-          return {
-            ...item,
-            start: moment(item.start).format("YYYY-MM-DD HH:mm"),
-            end: moment(item.end).format("YYYY-MM-DD HH:mm"),
-          }
-        })
-        this.selectedActiveUser = selectedId
+      if (this.isUserTeacher && this.isAdmin) {
+        // вывод уроков всех инструкторов
+      } else if (this.isUserTeacher && !this.isAdmin) {
+        //вывод уроков персональных уроков
+        // const lessons = await this.getLessons(selectedId);
+        // const practices = await this.getPractices(selectedId);
+        // this.events = [...lessons, ...practices];
+        // this.events = this.events.map(item => {
+        //   return {
+        //     ...item,
+        //     start: moment(item.start).format("YYYY-MM-DD HH:mm"),
+        //     end: moment(item.end).format("YYYY-MM-DD HH:mm"),
+        //   }
+        // })
+        // this.selectedActiveUser = selectedId
+      } else {
+        if (selectedId !== null) {
+          const lessons = await this.getLessonsStudent(selectedId);
+          const practices = await this.getPracticeStudent();
+          this.events = [...lessons, ...practices];
+          this.events = this.events.map(item => {
+            return {
+              ...item,
+              start: moment(item.start).format("YYYY-MM-DD HH:mm"),
+              end: moment(item.end).format("YYYY-MM-DD HH:mm"),
+            }
+          })
+          this.selectedActiveUser = selectedId
+        }
       }
+
     },
 
     onToggleClick(id) {
@@ -429,11 +507,12 @@ export default {
         const fullName = student ? `${student.surname || ''} ${student.name || ''} ${student.middleName || ''}`.trim() : '';
         const teacher = this.listTeachers.find(teacher => teacher.id === this.selectedTeacher)
         const teacherName = teacher ? `${teacher.surname || ''} ${teacher.name || ''} ${teacher.middleName || ''}`.trim() : '';
+        const listStudents = this.listStudents.filter(student => student.id !== null);
         const data = {
           teacher: teacherName,
           student: fullName,
           e: e,
-          listStudents: this.listStudents,
+          listStudents: listStudents,
           userTeacher: this.isUserTeacher,
           isAdmin: this.isAdmin
         }
@@ -456,6 +535,33 @@ export default {
         }));
       })
       return lessonsData
+    },
+
+    async getFreePractices(userId) {
+      const practices = new EventsRequest()
+      let cal
+      if (this.type === 'week') {
+        const monday = this.currentDate.clone().startOf('isoWeek').format('YYYY-MM-DD')
+        const sunday = this.currentDate.clone().endOf('isoWeek').format('YYYY-MM-DD')
+        const query = `Date=${monday}&Date2=${sunday}`
+        await practices.getFreePracticeActiveUser(userId, query).catch(x => console.log(x)).then(x => {
+          cal = x.data.practice.map(event => ({
+            ...event,
+            start: new Date(event.startTime),
+            end: new Date(event.endTime)
+          }));
+        })
+      } else {
+        const query = `Date=${this.value}`
+        await practices.getFreePracticeActiveUser(userId, query).catch(x => console.log(x)).then(x => {
+          cal = x.data.practice.map(event => ({
+            ...event,
+            start: new Date(event.startTime),
+            end: new Date(event.endTime)
+          }));
+        })
+      }
+      return cal
     },
 
     async getPractices(userId) {
@@ -534,7 +640,7 @@ export default {
 
     async getAllEvents() {
       this.currentDate = moment(this.value)
-      if (this.isUserTeacher) {
+      if (this.isUserTeacher && this.isAdmin) {
         const lessons = await this.getLessons(this.selectedActiveUser);
         const practices = await this.getPractices(this.selectedActiveUser);
         this.events = [...lessons, ...practices];
@@ -545,6 +651,18 @@ export default {
             end: moment(item.end).format("YYYY-MM-DD HH:mm"),
           }
         })
+      } else if (this.isUserTeacher && !this.isAdmin) {
+        // выводить свои занятия
+        // const lessons = await this.getLessons(this.selectedActiveUser);
+        // const practices = await this.getPractices(this.selectedActiveUser);
+        // this.events = [...lessons, ...practices];
+        // this.events = this.events.map(item => {
+        //   return {
+        //     ...item,
+        //     start: moment(item.start).format("YYYY-MM-DD HH:mm"),
+        //     end: moment(item.end).format("YYYY-MM-DD HH:mm"),
+        //   }
+        // })
       } else {
         const lessons = await this.getLessonsStudent();
         const practices = await this.getPracticeStudent();
@@ -560,8 +678,10 @@ export default {
     },
 
     async testLessons() {
-      if (this.isUserTeacher) {
-        this.events = await this.getLessons(this.userID);
+      if (this.isAdmin) {
+        this.events = await this.getLessons(this.selectedTeacher);
+      } else if (this.isUserTeacher && !this.isAdmin) {
+        // this.events = await this.getLessons(this.userID);
       } else {
         this.events = await this.getLessonsStudent();
       }
@@ -569,8 +689,10 @@ export default {
     },
 
     async testPractices() {
-      if (this.isUserTeacher) {
-        this.events = await this.getPractices(this.userID);
+      if (this.isAdmin) {
+        this.events = await this.getPractices(this.selectedTeacher);
+      } else if (this.isUserTeacher && !this.isAdmin) {
+        // this.events = await this.getPractices(this.userID);
       } else {
         this.events = await this.getPracticeStudent();
       }
@@ -604,7 +726,7 @@ export default {
       await teachers.getActiveUser().catch(x => console.log(x)).then(x => {
         activeUsers = x.data.activeUsers
       })
-      return this.listTeachers = activeUsers
+      this.listTeachers.push(...activeUsers)
     },
 
     async getAllStudents() {
@@ -613,7 +735,7 @@ export default {
       await student.getUsers().catch(x => console.log(x)).then(x => {
         studentList = x.data.students
       })
-      return this.listStudents = studentList
+      return this.listStudents.push(...studentList)
     }
   },
 }
