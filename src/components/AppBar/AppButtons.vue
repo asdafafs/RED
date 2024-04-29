@@ -82,7 +82,7 @@ export default {
       return [
         {
           id: 0,
-          title:'Мое расписание',
+          title:'Расписание',
           router: 'schedule-lessons',
           visible: true,
         },

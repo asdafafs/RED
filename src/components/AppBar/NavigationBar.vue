@@ -52,7 +52,7 @@ export default {
         },
         {
           id: 1,
-          title: 'Мое расписание',
+          title: 'Расписание',
           routerName: 'schedule-lessons',
           visible: true,
         },

@@ -1,12 +1,24 @@
 <template>
   <v-container class="px-3 pa-0 ma-0" fluid v-if="true">
-    <div class=" px-0 mb-3" :class="!showDrawer ? 'mobile-title' : 'desk-title'" >
-      Мое расписание
+    <div class="d-flex flex-row justify-space-between full-width mb-3 align-center " v-if="showDrawer">
+      <div class="d-flex flex-column" >
+        <div  class="mobile-subtitle">
+          Удачи на дорогах, {{ userName }}!
+        </div>
+        <div class=" px-0 mobile-title">
+          Расписание
+        </div>
+      </div>
+    </div>
+    <div class="d-flex flex-row justify-space-between full-width mb-3 align-center " v-else>
+        <div class=" px-0 desk-title">
+          Расписание
+        </div>
+        <div class="desk-subtitle">
+          Удачи на дорогах, {{ userName }}!
+        </div>
     </div>
     <hr>
-    <div class="text-lg-h6 text-md-h5 text-sm-h4 text-xs-h1 px-0 mb-3">
-      Ваши текущие занятия
-    </div>
     <v-row>
       <v-col class="pa-0">
         <router-view/>
@@ -15,14 +27,25 @@
   </v-container>
 </template>
 <script>
+import {mapState} from "vuex";
+
 export default {
   components: {},
   data: () => ({
     showDrawer: true,
   }),
+
+  computed: {
+    ...mapState(['user']),
+
+    userName() {
+      return `${this.user.name} ${this.user.middleName} ${this.user.surname}`
+    },
+  },
+
   methods: {
     checkWindowWidth() {
-      this.showDrawer = window.innerWidth >= 1260;
+      this.showDrawer = window.innerWidth <= 1260;
     },
   },
 
@@ -37,14 +60,29 @@ export default {
 }
 </script>
 
-<style lang="scss" >
+<style lang="scss">
 .mobile-title {
   font-size: 32px;
   font-weight: 700;
 }
+
 .desk-title {
   font-size: 40px;
   font-weight: 700;
+}
+
+.mobile-subtitle {
+  font-weight: 600;
+  font-size: 16px;
+  color: #4E7AEC;
+  min-width: inherit;
+}
+
+.desk-subtitle {
+  font-weight: 700;
+  font-size: 28px;
+  color: #4E7AEC;
+  //max-width: 547px !important;
 }
 
 @import "@/assets/styles/buttonStyles.css";

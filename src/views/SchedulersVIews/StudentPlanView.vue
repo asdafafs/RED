@@ -1,29 +1,15 @@
 <template>
   <div>
-    <div class="d-flex flex-row justify-space-between full-width  px-3 mb-3 align-center">
-      <div class="font-weight-medium px-0 mb-3" :class="!showDrawer ? 'mobile-title' : 'desk-title'">
+    <div class="d-flex flex-row flex-wrap justify-space-between full-width  px-3 mb-3 align-center">
+      <div class="font-weight-medium px-0 mb-3" :class="showDrawer ? 'mobile-title' : 'desk-title'">
         Личный кабинет
       </div>
-      <div style="font-weight: 700; font-size: 28px; color: #4E7AEC">
+      <div :class="showDrawer ? 'mobile-subtitle' : 'desk-subtitle'">
         Удачи на дорогах, {{ userName }}
       </div>
     </div>
     <v-container class="px-4 pa-0 ma-0" fluid v-if="groupId !== 0">
       <hr class="mb-2">
-      <router-view/>
-    </v-container>
-    <v-container class="px-4 pa-0 ma-0" fluid v-if="!showDrawer">
-      <v-row>
-        <v-col cols="">
-          <div class="big-title">
-            Личный кабинет
-          </div>
-          <div style="font-weight: 700; font-size: 28px; color: #4E7AEC">
-            Удачи на дорогах, {{ userName }}
-          </div>
-        </v-col>
-      </v-row>
-      <hr>
       <router-view/>
     </v-container>
   </div>
@@ -63,7 +49,7 @@ export default {
 
   methods: {
     checkWindowWidth() {
-      this.showDrawer = window.innerWidth >= 1260;
+      this.showDrawer = window.innerWidth <= 1260;
     },
 
     openProgressBar() {
