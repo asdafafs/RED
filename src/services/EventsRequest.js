@@ -71,4 +71,20 @@ export default class EventsRequest extends HTTPService {
     canselAdminStudent(code){
         return this.post("admin/practice/cansel",code)
     }
+
+    getFreePracticeActiveUser(query){
+        return this.get("practice/free" + `?${query}`)
+    }
+
+    getPractices(query){
+        return this.get("practice" + `?${query}`)
+    }
+
+    getLessons(query){
+        return this.get("lecture" + `?${query}`)
+    }
+
+    getPracticesActiveUser(query){
+        return this.get("practice/null" + `?${query}`)
+    }
 }
