@@ -285,7 +285,7 @@ export default {
       "transmissionTypeEnum": null,
       "city": null
     }],
-    selectedTeacher: null,
+    selectedTeacher: 3,
     selectedStudent: null,
   }),
   watch: {
@@ -310,6 +310,7 @@ export default {
           this.selectedTeacher = this.userID
           this.selectedActiveUser = this.userID
         } else if (this.isUserTeacher && this.isAdmin) {
+          this.selectedTeacher = this.listTeachers.length > 0 ? this.listTeachers[1].id : null;
           this.selectedActiveUser = this.userID
         }
       }
@@ -403,7 +404,7 @@ export default {
     },
 
     async acceptEditableStudent() {
-      if (!this.selectedStudent || !this.selectedTeacher){
+      if (!this.selectedStudent || !this.selectedTeacher) {
         return
       }
       this.events = []
@@ -416,7 +417,7 @@ export default {
           const monday = this.currentDate.clone().startOf('isoWeek').format('YYYY-MM-DD')
           const sunday = this.currentDate.clone().endOf('isoWeek').format('YYYY-MM-DD')
           const query = `Date=${monday}&Date2=${sunday}&ActiveUserId=${selectedTeacher}`
-          await practices.getPracticeActiveUser(studentId,query).catch(x => console.log(x)).then(x => {
+          await practices.getPracticeActiveUser(studentId, query).catch(x => console.log(x)).then(x => {
             cal = x.data.practice.map(event => ({
               ...event,
               start: new Date(event.startTime),
@@ -435,13 +436,12 @@ export default {
           })
           this.events = cal
         }
-      }
-      else {
+      } else {
         if (this.type === 'week') {
           const monday = this.currentDate.clone().startOf('isoWeek').format('YYYY-MM-DD')
           const sunday = this.currentDate.clone().endOf('isoWeek').format('YYYY-MM-DD')
           const query = `Date=${monday}&Date2=${sunday}`
-          await practices.getPracticeActiveUser(studentId,query).catch(x => console.log(x)).then(x => {
+          await practices.getPracticeActiveUser(studentId, query).catch(x => console.log(x)).then(x => {
             cal = x.data.practice.map(event => ({
               ...event,
               start: new Date(event.startTime),
@@ -451,7 +451,7 @@ export default {
           this.events = cal
         } else {
           const query = `Date=${this.value}`
-          await practices.getPracticeActiveUser(studentId,query).catch(x => console.log(x)).then(x => {
+          await practices.getPracticeActiveUser(studentId, query).catch(x => console.log(x)).then(x => {
             cal = x.data.practice.map(event => ({
               ...event,
               start: new Date(event.startTime),
@@ -464,13 +464,13 @@ export default {
     },
 
     async acceptEditableTeacher() {
-      if (!this.selectedTeacher){
+      if (!this.selectedTeacher) {
         return
       }
       const selectedId = this.selectedTeacher;
       if (this.isUserTeacher && this.isAdmin) {
         this.events = []
-        const lessons = await this.getLessons(selectedId);
+        const lessons = await this.getLessonsAdmin(selectedId);
         const practices = await this.getPracticesSelectedTeacher(selectedId);
         this.events = [...lessons, ...practices];
         this.events = this.events.map(item => {
@@ -498,7 +498,7 @@ export default {
       }
     },
 
-    async getPracticesSelectedTeacher(ActiveUserId){
+    async getPracticesSelectedTeacher(ActiveUserId) {
       const practices = new EventsRequest()
       let practicesData
       if (this.type === 'week') {
@@ -583,7 +583,6 @@ export default {
           if (!isCancel) this.getAllEvents()
         })
       } else {
-        //TODO: Доработать дату
         const student = this.listStudents.find(student => student.id === e.event.studentId);
         const fullName = student ? `${student.surname || ''} ${student.name || ''} ${student.middleName || ''}`.trim() : '';
         const teacher = this.listTeachers.find(teacher => teacher.id === this.selectedTeacher)
@@ -601,10 +600,9 @@ export default {
           if (!isCancel) this.getAllEvents()
         })
       }
-
     },
 
-    async getLessons(userId) {
+    async getLessonsAdmin(userId) {
       const lessons = new EventsRequest()
       let lessonsData
       const monthTime = `Date=${this.value}`
@@ -645,13 +643,14 @@ export default {
       return cal
     },
 
-    async getPractices(userId) {
+    async getPracticesAdmin(userId) {
       const practices = new EventsRequest()
       let cal
+      const selectedTeacher = this.selectedTeacher
       if (this.type === 'week') {
         const monday = this.currentDate.clone().startOf('isoWeek').format('YYYY-MM-DD')
         const sunday = this.currentDate.clone().endOf('isoWeek').format('YYYY-MM-DD')
-        const query = `Date=${monday}&Date2=${sunday}`
+        const query = `Date=${monday}&Date2=${sunday}&ActiveUserId=${selectedTeacher}`
         await practices.getPracticeActiveUser(userId, query).catch(x => console.log(x)).then(x => {
           cal = x.data.practice.map(event => ({
             ...event,
@@ -774,18 +773,34 @@ export default {
     },
 
     async getAllEvents() {
+      if(!this.selectedTeacher || this.selectedActiveUser){
+        return
+      }
       this.currentDate = moment(this.value)
       if (this.isUserTeacher && this.isAdmin) {
-        const lessons = await this.getLessons(this.selectedActiveUser);
-        const practices = await this.getPractices(this.selectedActiveUser);
-        this.events = [...lessons, ...practices];
-        this.events = this.events.map(item => {
-          return {
-            ...item,
-            start: moment(item.start).format("YYYY-MM-DD HH:mm"),
-            end: moment(item.end).format("YYYY-MM-DD HH:mm"),
-          }
-        })
+        const lessons = await this.getLessonsAdmin(this.selectedActiveUser);
+        if (this.selectedStudent) {
+          const practices = await this.getPracticesAdmin(this.selectedActiveUser);
+          this.events = [...lessons, ...practices];
+          this.events = this.events.map(item => {
+            return {
+              ...item,
+              start: moment(item.start).format("YYYY-MM-DD HH:mm"),
+              end: moment(item.end).format("YYYY-MM-DD HH:mm"),
+            }
+          })
+        } else {
+          const selectedId = this.selectedTeacher;
+          const practices = await this.getPracticesSelectedTeacher(selectedId);
+          this.events = [...lessons, ...practices];
+          this.events = this.events.map(item => {
+            return {
+              ...item,
+              start: moment(item.start).format("YYYY-MM-DD HH:mm"),
+              end: moment(item.end).format("YYYY-MM-DD HH:mm"),
+            }
+          })
+        }
       } else if (this.isUserTeacher && !this.isAdmin) {
         const lessons = await this.getLessonsTeacher();
         const practices = await this.getPracticesTeacher();
@@ -812,8 +827,11 @@ export default {
     },
 
     async testLessons() {
+      if(!this.selectedTeacher){
+        return
+      }
       if (this.isAdmin) {
-        this.events = await this.getLessons(this.selectedTeacher);
+        this.events = await this.getLessonsAdmin(this.selectedTeacher);
       } else if (this.isUserTeacher && !this.isAdmin) {
         this.events = await this.getLessonsTeacher();
       } else {
@@ -822,8 +840,11 @@ export default {
     },
 
     async testPractices() {
+      if(!this.selectedTeacher){
+        return
+      }
       if (this.isAdmin) {
-        this.events = await this.getPractices(this.selectedTeacher);
+        this.events = await this.getPracticesAdmin(this.selectedTeacher);
       } else if (this.isUserTeacher && !this.isAdmin) {
         this.events = await this.getPracticesTeacher();
       } else {
