@@ -342,7 +342,7 @@ export default {
       await course.getCourseNull().catch(x => console.log(x)).then(x => {
         this.coursesData = x.data.lecture
         this.globalStartTime = x.data.startTime
-        this.globalEndTime = "19:00"
+        this.globalEndTime = x.data.endTime
         this.globalStartDate = this.formatDatetime(x.data.startDate)
         this.groupNumber = x.data.groupNumber
       })
@@ -368,7 +368,7 @@ export default {
       await course.getCourse(getItem.id).catch(x => console.log(x)).then(x => {
         this.coursesData = x.data.lecture
         this.globalStartTime = x.data.startTime
-        this.globalEndTime = "19:00"
+        this.globalEndTime = x.data.endTime
         this.globalStartDate = this.formatDatetime(x.data.startDate)
         this.groupNumber = x.data.groupNumber
         this.studentList = this.studentList.concat(x.data.students);
@@ -505,11 +505,13 @@ export default {
           "title": this.editedItem.groups.title,
           "courseStartDate": this.editedItem.groups.startDate,
           "startTime": this.globalStartTime,
+          "endTime": this.globalEndTime,
           'groupNumber': this.editedItem.groups.groupNumber,
           "groupId": this.editedItem.groups.groupId,
           "studentId": this.selectedStudentsIds,
           "lecture": this.lessons
         }
+        console.log(body)
         await this.postCourse(body).then(() => {
           successAlert('Изменения сохранены успешно', 5000);
           // this.close();
@@ -519,6 +521,7 @@ export default {
           "title": this.editedItem.groups.title,
           "courseStartDate": this.globalStartDate,
           "startTime": this.globalStartTime,
+          "endTime": this.globalEndTime,
           'groupNumber': this.editedItem.groups.groupNumber,
           "groupId": this.editedItem.groups.groupId,
           "studentId": this.selectedStudentsIds,
