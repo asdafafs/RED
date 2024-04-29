@@ -87,4 +87,8 @@ export default class EventsRequest extends HTTPService {
     getPracticesActiveUser(query){
         return this.get("practice/null" + `?${query}`)
     }
+
+    getLecturesStudent(id, query){
+        return this.get("lecture/student/" + id + `?${query}`)
+    }
 }
