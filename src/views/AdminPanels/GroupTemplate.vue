@@ -11,7 +11,7 @@
       </v-col>
       <v-col class="text-right col-auto" v-if="hasChanges">
         <v-btn class="template-course-button" @click="save" color="#4E7AEC"
-               :disabled="isSaveButtonDisabled && blockButtonWhenRequest">
+               :disabled="isSaveButtonDisabled || blockButtonWhenRequest">
           <section class="d-flex flex-row align-center" style="padding: 8px 12px 8px 12px !important;">
             <span class="template-course-button-text white--text">Сохранить изменения</span>
           </section>
@@ -28,7 +28,7 @@
         СВЕДЕНИЯ
       </div>
     </v-row>
-    <v-row class="flex-wrap" style="column-gap: 14px">
+    <v-row class="flex-wrap" style="gap: 14px">
       <v-col style="max-width: min-content; padding:  0 0 0 12px">
         <v-text-field v-model="editedItem.groups.groupNumber" label="Номер группы" dense
                       class="text-field-group-template"
@@ -130,7 +130,7 @@
                         :value="globalEndTime"
                         type="time"
                         @input="updateGlobalEndTime"
-                        :min = "globalStartTime"
+                        :min="globalStartTime"
                         outlined
                         hide-details
                         class="text-field-time-template"
@@ -357,9 +357,24 @@ export default {
       return groupData
     },
 
+    async updateCourse(body) {
+      const course = new CoursesRequest();
+      await course.postCourse(body).then(response => {
+        if (response.status && response.status === 200) {
+          successAlert('Изменения сохранены успешно', 5000);
+          this.initialize()
+        }
+      }).catch(x => console.log(x))
+    },
+
     async postCourse(body) {
       const course = new CoursesRequest();
-      await course.postCourse(body).catch(x => console.log(x))
+      await course.postCourse(body).then(response => {
+        if (response.status && response.status === 200) {
+          successAlert('Группа успешно создана', 5000);
+          this.initialize()
+        }
+      }).catch(x => console.log(x))
     },
 
     async getCourseId(id) {
@@ -511,11 +526,9 @@ export default {
           "studentId": this.selectedStudentsIds,
           "lecture": this.lessons
         }
-        console.log(body)
-        await this.postCourse(body).then(() => {
-          successAlert('Изменения сохранены успешно', 5000);
+        await this.updateCourse(body).then(() => {
           // this.close();
-        })
+        }).finally(() => this.blockButtonWhenRequest = false)
       } else {
         const body = {
           "title": this.editedItem.groups.title,
@@ -527,9 +540,11 @@ export default {
           "studentId": this.selectedStudentsIds,
           "lecture": this.lessons
         }
-        await this.postCourse(body).then(() => {
-          successAlert('Группа успешно создана', 5000);
-          this.close();
+        await this.postCourse(body).then(response => {
+              this.initialize()
+            }
+        ).catch(x => console.log(x)).finally(() => {
+          this.blockButtonWhenRequest = false
         })
       }
     },
@@ -543,10 +558,10 @@ export default {
       return `${year}-${month}-${day}`;
     },
 
-    updateGlobalEndTime(value){
+    updateGlobalEndTime(value) {
       const starTime = moment(this.globalStartTime, 'HH:mm');
       const endTime = moment(value, 'HH:mm');
-      if (starTime.isBefore(endTime)){
+      if (starTime.isBefore(endTime)) {
         this.globalEndTime = value;
         if (this.selectedChips.some(chip => chip === true)) {
           this.toggleSelectedChip(this.selectedChips);

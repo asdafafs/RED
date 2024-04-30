@@ -289,7 +289,7 @@ export default {
       "transmissionTypeEnum": null,
       "city": null
     }],
-    selectedTeacher: 3,
+    selectedTeacher: null,
     selectedStudent: null,
   }),
   watch: {
@@ -299,24 +299,23 @@ export default {
 
     userID(newValue) {
       if (newValue !== null) {
-        this.onToggleClick(0)
-        this.getAllTeachers()
-        this.getAllStudents()
         if (this.isUserTeacher && !this.isAdmin) {
           this.selectedTeacher = this.userID
           this.selectedActiveUser = this.userID
-        } else if (this.isUserTeacher && this.isAdmin) {
         }
       }
     },
   },
+
   created() {
-    if (this.userID !== null) {
-      this.onToggleClick(0)
-    }
     this.getAllTeachers().then(() => {
-      this.selectedTeacher = this.listTeachers.length > 0 ? this.listTeachers[1].id : null;
-      this.selectedActiveUser = this.listTeachers.length > 0 ? this.listTeachers[1].id : null;
+      if (this.isUserTeacher && this.isAdmin) {
+        this.selectedTeacher = this.listTeachers.length > 0 ? this.listTeachers[1].id : null;
+        this.selectedActiveUser = this.listTeachers.length > 0 ? this.listTeachers[1].id : null;
+      }
+      if (this.isUserTeacher && !this.isAdmin){
+      }
+      this.onToggleClick(0)
     })
     this.getAllStudents()
 
@@ -440,7 +439,7 @@ export default {
 
     async acceptEditableTeacher() {
       if (!this.selectedTeacher) {
-        return
+        return this.onToggleClick(this.lastSelectedJoinType)
       }
       this.events = []
       const selectedId = this.selectedTeacher;
@@ -751,12 +750,15 @@ export default {
     },
 
     async getAllEvents() {
-      if (!this.selectedTeacher && !this.selectedStudent) {
+      if (!this.selectedTeacher && this.isUserTeacher) {
+        console.log('no_get_events')
         return
       }
 
+
       this.currentDate = moment(this.value)
       if (this.isUserTeacher && this.isAdmin) {
+        console.log('get_events')
         const lessons = await this.getLessonsAdmin();
         if (this.selectedStudent) {
           const practices = await this.getPracticesAdmin();
@@ -778,7 +780,10 @@ export default {
     },
 
     async testLessons() {
-      if (!this.selectedTeacher && !this.selectedStudent) {
+      // if (!this.selectedTeacher && !this.selectedStudent) {
+      //   return
+      // }
+      if(!this.selectedTeacher && this.isAdmin){
         return
       }
       if (this.isAdmin) {
@@ -791,7 +796,10 @@ export default {
     },
 
     async testPractices() {
-      if (!this.selectedTeacher && !this.selectedStudent) {
+      // if (!this.selectedTeacher && !this.selectedStudent) {
+      //   return
+      // }
+      if(!this.selectedTeacher && this.isAdmin){
         return
       }
       if (this.isAdmin) {
