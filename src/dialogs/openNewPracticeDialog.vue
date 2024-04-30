@@ -135,7 +135,9 @@ export default {
       this.selectedDuration = +moment(this.data.e.event.endTime).format('HH') - +moment(this.data.e.event.startTime).format('HH') === 1 ? 1 : 2
       this.selectedTransmission = this.data.e.event.transmissionTypeEnum
       this.selectedCity = this.data.e.event.city
-      this.selectedStudentId = this.data.listStudents.find(student => student.id === this.data.e.event.studentId) || null
+      const selectedStudent = this.data.listStudents.find(student => student.id === this.data.e.event.studentId);
+      this.selectedStudentId = selectedStudent ? selectedStudent.id : null;
+      console.log('this.selectedStudentId', this.selectedStudentId)
     } else {
       this.eventDate = moment().format('YYYY-MM-DD')
       this.eventStartTime = '06:00'
@@ -206,6 +208,7 @@ export default {
 
       if (this.data.isAdmin) {
         const body = {
+          "id" : this.data.e.event.id,
           "startTime": startTime,
           "endTime": endTime,
           "studentId": this.selectedStudentId,
@@ -221,6 +224,7 @@ export default {
 
       } else {
         const body = {
+          "id" : this.data.e.event.id,
           "startTime": startTime,
           "endTime": endTime,
           "studentId": this.selectedStudentId,

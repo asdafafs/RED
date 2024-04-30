@@ -306,19 +306,20 @@ export default {
           this.selectedTeacher = this.userID
           this.selectedActiveUser = this.userID
         } else if (this.isUserTeacher && this.isAdmin) {
-          this.selectedTeacher = this.listTeachers.length > 0 ? this.listTeachers[1].id : null;
-          this.selectedActiveUser = this.userID
         }
       }
-
     },
   },
   created() {
     if (this.userID !== null) {
       this.onToggleClick(0)
     }
-    this.getAllTeachers()
+    this.getAllTeachers().then(() => {
+      this.selectedTeacher = this.listTeachers.length > 0 ? this.listTeachers[1].id : null;
+      this.selectedActiveUser = this.listTeachers.length > 0 ? this.listTeachers[1].id : null;
+    })
     this.getAllStudents()
+
   },
   computed: {
     ...mapState(['user']),
@@ -614,7 +615,7 @@ export default {
 
     async getPracticesAdmin() {
       const practices = new EventsRequest()
-      let cal,query
+      let cal, query
       const selectedTeacher = this.selectedTeacher
       const selectedStudent = this.selectedStudent
       if (this.type === 'week') {
@@ -750,7 +751,7 @@ export default {
     },
 
     async getAllEvents() {
-      if(!this.selectedTeacher && !this.selectedStudent){
+      if (!this.selectedTeacher && !this.selectedStudent) {
         return
       }
 
@@ -777,7 +778,7 @@ export default {
     },
 
     async testLessons() {
-      if(!this.selectedTeacher && !this.selectedStudent){
+      if (!this.selectedTeacher && !this.selectedStudent) {
         return
       }
       if (this.isAdmin) {
@@ -790,7 +791,7 @@ export default {
     },
 
     async testPractices() {
-      if(!this.selectedTeacher && !this.selectedStudent){
+      if (!this.selectedTeacher && !this.selectedStudent) {
         return
       }
       if (this.isAdmin) {
