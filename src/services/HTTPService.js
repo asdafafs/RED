@@ -41,15 +41,13 @@ export default class HttpService {
             if (error.response.request.status === 401) {
                 window.location.replace(`${this.frontPageUrl}?retry=${true}`);
             } else {
-                await store.dispatch('AlertStore/CALL_ALERT', {
-                    message: error.response.data.message,
-                    delay: 5000,
-                    alertType: 'error'
-                })
+                // await store.dispatch('AlertStore/CALL_ALERT', {
+                //     message: error.response.data.message,
+                //     delay: 5000,
+                //     alertType: 'error'
+                // })
             }
         });
-
-
         return request
     }
 
