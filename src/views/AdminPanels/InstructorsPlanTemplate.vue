@@ -1,8 +1,8 @@
 <template>
   <v-container fluid>
     <v-row no-gutters align="center">
-      <v-col lg="">
-        <div class="desk-title">
+      <v-col style="width: min-content">
+        <div :class="showDrawer ? 'mobile-title' : 'desk-title'">
           <v-btn icon class="ma-0  align-self-center" @click="prev">
             <v-icon>mdi-chevron-left</v-icon>
           </v-btn>
@@ -30,12 +30,16 @@
         <v-radio-group class="px-0 py-0 align-center ma-0" v-model="selectedDuration" hide-details>
           <v-radio :value="1">
             <template v-slot:label>
-              <strong style="color:#2B2A29; font-weight: 400; font-size: 16px !important; line-height: 18.75px !important;">1 час</strong>
+              <strong
+                  style="color:#2B2A29; font-weight: 400; font-size: 16px !important; line-height: 18.75px !important;">1
+                час</strong>
             </template>
           </v-radio>
           <v-radio :value="2">
             <template v-slot:label>
-              <strong style="color:#2B2A29; font-weight: 400 !important; font-size: 16px !important; line-height: 18.75px !important;">2 часа</strong>
+              <strong
+                  style="color:#2B2A29; font-weight: 400 !important; font-size: 16px !important; line-height: 18.75px !important;">2
+                часа</strong>
             </template>
           </v-radio>
         </v-radio-group>
@@ -88,7 +92,8 @@
                   no-data-text="Нет данных для отображения"
                   outlined hide-details
                   class="select-date-practice-template"
-                  style="border-radius: 12px !important; max-height: 32px !important; min-width: 256px !important; max-width: 256px !important;" :disabled="blockEditableTemplate"/>
+                  style="border-radius: 12px !important; max-height: 32px !important; min-width: 256px !important; max-width: 256px !important;"
+                  :disabled="blockEditableTemplate"/>
       </v-col>
       <v-col class="align-center d-flex flex-row pa-0" style="width: min-content" v-if="hasChanges">
         <v-btn class="tab-button pa-0 rounded-lg" color="#4E7AEC" @click="save"
@@ -104,7 +109,7 @@
     </v-row>
     <v-row class="pt-5">
       <TemplateSchedule @plan-updated="handleEvents" :selectedDuration="selectedDuration" :fullNameActiveUser="fullName"
-                        :events="eventsTemplate" :practiceCourseStart="dateFirstPractice"/>
+                        :events="eventsTemplate" :practiceCourseStart="dateFirstPractice" :showMobile="showDrawer"/>
     </v-row>
   </v-container>
 </template>
@@ -118,6 +123,7 @@ export default {
   name: 'PlanTemplate',
   components: {TemplateSchedule},
   data: () => ({
+    showDrawer: false,
     isSaveButtonDisabled: false,
     fullName: '',
     eventsTemplate: [],
@@ -127,7 +133,7 @@ export default {
     practiceCourseEnd: null,
     dateFirstPractice: null,
     selectedCity: null,
-    listCities: [{id: [1], text: 'Северодвинск'}, {id:[2], text: 'Новодвинск'}],
+    listCities: [{id: [1], text: 'Северодвинск'}, {id: [2], text: 'Новодвинск'}],
     listTemplates: [{
       "practiceCourseId": null,
       "practiceCourseStart": null,
@@ -205,7 +211,7 @@ export default {
             "activeUserId": parseInt(this.getIdUser),
             'duration': this.selectedDuration,
             "practices": this.eventsTemplate,
-            "transmissionTypeEnum": [ 1 ],
+            "transmissionTypeEnum": [1],
             "city": this.selectedCity
           };
           await this.postPracticeCourseTemplate(body).finally(() => {
@@ -343,14 +349,22 @@ export default {
       this.getListTemplates()
       this.checkInitialValidity();
       this.originalEventsTemplate = JSON.parse(JSON.stringify(this.eventsTemplate))
-    }
+    },
+
+    checkWindowWidth() {
+      this.showDrawer = window.innerWidth <= 1260;
+    },
   },
   created() {
     this.getActiveUser().then(response => this.fullName = `${response.surname} ${response.name} ${response.middleName}`).finally(() => {
       this.initialize()
-    })
+    });
+    this.checkWindowWidth();
+  },
 
-  }
+  beforeDestroy() {
+    window.removeEventListener('resize', this.checkWindowWidth);
+  },
 }
 </script>
 <style lang="scss">
