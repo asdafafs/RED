@@ -1,6 +1,6 @@
 <template>
   <div style="width: 100%">
-    <div class="big-title">
+    <div class="desk-title">
       Группы и планы обучения
     </div>
     <hr>
@@ -177,8 +177,10 @@ export default {
 
 };
 </script>
-<style>
+<style lang="scss">
 @import "@/assets/styles/dataTableStyles.css";
+@import "@/assets/styles/titleStyles.css";
+
 .grid-actions {
   text-align: end !important;
   padding-right: 30px !important;

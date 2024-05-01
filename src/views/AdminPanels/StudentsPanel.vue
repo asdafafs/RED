@@ -1,6 +1,6 @@
 <template>
   <div style="width: 100%">
-    <div class="big-title">
+    <div class="desk-title">
       Студенты и планы
     </div>
     <hr>
@@ -236,6 +236,7 @@ export default {
 <style lang="scss">
 @import "@/assets/styles/phoneMaskStyles.css";
 @import "@/assets/styles/dataTableStyles.css";
+@import "@/assets/styles/titleStyles.css";
 
 .grid-button {
   width: 155px !important;
