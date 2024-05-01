@@ -36,7 +36,7 @@
               class="select-period"
               :item-text="displayText"
               :item-value="valueText"
-              @change="getAllEvents"
+              @change="onToggleClick(lastSelectedJoinType)"
           />
         </div>
       </div>
@@ -799,7 +799,13 @@ export default {
       } else if (this.isUserTeacher && !this.isAdmin) {
         this.events = await this.getPracticesTeacher();
       } else {
-        this.events = await this.getPracticeStudent();
+        if (!this.selectedTeacher) {
+          this.events = await this.getPracticeStudent();
+        } else {
+          const assignedPractices = await this.getPracticeStudent()
+          const practices = await this.getFreePractices(this.selectedTeacher);
+          this.events = [...assignedPractices, ...practices];
+        }
       }
     },
 
