@@ -18,7 +18,7 @@
               hide-header
           >
             <template v-slot:event="{event}">
-              <v-container class="pa-0 mx-0 d-flex" fill>
+              <v-container class="pa-0 mx-0 d-flex flex-wrap" fill @click="mobileEdit(event)">
                 <v-row class="ma-0 flex-wrap" fill>
                   <v-col cols="" class="black--text pa-0 align-self-center  d-lg-block">
                     <div class="text-h6 text-md-subtitle-2 text-lg-h6  d-flex justify-center">
@@ -36,6 +36,15 @@
                   </v-col>
                 </v-row>
               </v-container>
+<!--              <v-dialog v-model="mobileEditEvent" max-width="407px" persistent>-->
+<!--                <v-card>-->
+<!--                  <v-text-field type="date" v-model="event.start" label="измените время начала ивента"/>-->
+<!--                  <v-card-actions>-->
+<!--                    <v-btn>Изменить</v-btn>-->
+<!--                    <v-btn @click="deleteEvent(event)">Удалить</v-btn>-->
+<!--                  </v-card-actions>-->
+<!--                </v-card>-->
+<!--              </v-dialog>-->
             </template>
           </v-calendar>
         </v-sheet>
@@ -111,10 +120,11 @@ export default {
       color: '',
     },
     createStart: null,
+    mobileEditEvent: false,
   }),
 
   props: {
-    practiceCourseStart:{
+    practiceCourseStart: {
       type: String,
       default: '',
     },
@@ -165,6 +175,12 @@ export default {
   },
 
   methods: {
+    mobileEdit(event) {
+      if (this.showMobile) {
+        this.mobileEditEvent = true
+      }
+    },
+
     deleteEvent(event) {
       const index = this.eventsTemplate.indexOf(event);
       if (index !== -1) {

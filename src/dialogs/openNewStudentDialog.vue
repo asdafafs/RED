@@ -55,7 +55,7 @@
               <v-checkbox v-model="data.editedStudent.can_signUp" label="Может записываться на практики" hide-details/>
               <v-text-field outlined class="v-text-field-custom-admin " style="border-radius: 12px"
                             v-model="data.editedStudent.generalHoursSpent"
-                            label="Текущий остаток"
+                            label="Оплаченные практики"
                             height="32px"
                             :hint="`Из них дополнительных: ${data.editedStudent.generalHoursSpent - 56}`"
                             persistent-hint
