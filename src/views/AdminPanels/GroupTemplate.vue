@@ -2,7 +2,7 @@
   <v-container fluid>
     <v-row no-gutters align="center" class="spacer">
       <v-col lg="">
-        <div class="big-title">
+        <div class="desk-title">
           <v-btn icon class="ma-0  align-self-center" @click="prev">
             <v-icon>mdi-chevron-left</v-icon>
           </v-btn>
@@ -685,6 +685,7 @@ export default {
 </script>
 <style>
 @import "@/assets/styles/dataTableStyles.css";
+@import "@/assets/styles/titleStyles.css";
 
 .theme--light.v-text-field > .v-input__control > .v-input__slot:before {
   border-color: rgba(255, 255, 255, 0.7);

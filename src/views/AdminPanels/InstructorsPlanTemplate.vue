@@ -2,7 +2,7 @@
   <v-container fluid>
     <v-row no-gutters align="center">
       <v-col lg="">
-        <div class="text-h4 font-weight-bold">
+        <div class="desk-title">
           <v-btn icon class="ma-0  align-self-center" @click="prev">
             <v-icon>mdi-chevron-left</v-icon>
           </v-btn>
@@ -353,7 +353,9 @@ export default {
   }
 }
 </script>
-<style>
+<style lang="scss">
+@import "@/assets/styles/titleStyles.css";
+
 .select-practice-template {
   .v-input__slot {
     display: flex !important;

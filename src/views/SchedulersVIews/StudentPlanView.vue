@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="d-flex flex-row flex-wrap justify-space-between full-width  px-3 mb-3 align-center">
-      <div class="font-weight-medium px-0 mb-3" :class="showDrawer ? 'mobile-title' : 'desk-title'">
+      <div class="px-0 mb-3" :class="showDrawer ? 'mobile-title' : 'desk-title'">
         Личный кабинет
       </div>
       <div :class="showDrawer ? 'mobile-subtitle' : 'desk-subtitle'">
@@ -98,6 +98,7 @@ export default {
 
 </script>
 <style lang="scss">
+@import "@/assets/styles/titleStyles.css";
 @import "@/assets/styles/lineStyles.css";
 @import "@/assets/styles/buttonStyles.css";
 </style>
