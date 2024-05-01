@@ -255,7 +255,7 @@ export default {
     value: moment().format('YYYY-MM-DD'),
     currentDate: moment(),
     selectedMoreElement: null,
-    lastSelectedJoinType: 0,
+    lastSelectedJoinType: 1,
     selectedActiveUser: 0,
     // types: [['month', 'месяц'], ['week', 'неделя'], ['day', 'день']],
     types: [['month', 'месяц'], ['day', 'день']],
@@ -313,9 +313,9 @@ export default {
         this.selectedTeacher = this.listTeachers.length > 0 ? this.listTeachers[1].id : null;
         this.selectedActiveUser = this.listTeachers.length > 0 ? this.listTeachers[1].id : null;
       }
-      if (this.isUserTeacher && !this.isAdmin){
+      if (this.isUserTeacher && !this.isAdmin) {
       }
-      this.onToggleClick(0)
+      this.onToggleClick(this.lastSelectedJoinType)
     })
     this.getAllStudents()
 
@@ -324,10 +324,10 @@ export default {
     ...mapState(['user']),
     calendarButtons() {
       return [
-        {
-          id: 0,
-          title: 'Смотреть всё',
-        },
+        // {
+        //   id: 0,
+        //   title: 'Смотреть всё',
+        // },
         {
           id: 1,
           title: 'Теория',
@@ -380,7 +380,7 @@ export default {
       }
       await this.$openNewPracticeDialogPlugin(data, true).then((isCancel) => {
         if (!isCancel) {
-          this.getAllEvents()
+          this.onToggleClick(this.lastSelectedJoinType)
         }
       });
     },
@@ -429,10 +429,10 @@ export default {
     },
 
     async acceptEditableStudent() {
-      this.events = []
       if (this.isAdmin) {
         this.onToggleClick(this.lastSelectedJoinType)
       } else {
+        this.events = []
         await this.getSelectedTeacherPractices();
       }
     },
@@ -441,16 +441,16 @@ export default {
       if (!this.selectedTeacher) {
         return this.onToggleClick(this.lastSelectedJoinType)
       }
-      this.events = []
       const selectedId = this.selectedTeacher;
       if (this.isUserTeacher && this.isAdmin) {
+        this.events = []
         this.selectedActiveUser = selectedId
         this.onToggleClick(this.lastSelectedJoinType)
       } else {
+        const assignedPractices = await this.getPracticeStudent()
         const practices = await this.getFreePractices(selectedId);
-        this.events = [...practices];
+        this.events = [...assignedPractices, ...practices];
         this.selectedActiveUser = selectedId
-
       }
     },
 
@@ -497,7 +497,7 @@ export default {
       this.$refs.calendar.prev()
       if (this.type === 'week') {
         this.currentDate = this.currentDate.clone().subtract(1, 'week');
-        await this.getAllEvents()
+        await this.onToggleClick(this.lastSelectedJoinType)
       }
     },
 
@@ -505,7 +505,7 @@ export default {
       this.$refs.calendar.next()
       if (this.type === 'week') {
         this.currentDate = this.currentDate.clone().add(1, 'week');
-        await this.getAllEvents()
+        await this.onToggleClick(this.lastSelectedJoinType)
       }
     },
 
@@ -536,7 +536,7 @@ export default {
           e: e,
         }
         await this.$reviewLectureDialogPlugin(data).then((isCancel) => {
-          if (!isCancel) this.getAllEvents()
+          if (!isCancel) this.onToggleClick(this.lastSelectedJoinType)
         })
       } else {
         const student = this.listStudents.find(student => student.id === e.event.studentId);
@@ -553,7 +553,7 @@ export default {
           isAdmin: this.isAdmin
         }
         await this.$reviewPracticeDialogPlugin(data).then((isCancel) => {
-          if (!isCancel) this.getAllEvents()
+          if (!isCancel) this.onToggleClick(this.lastSelectedJoinType)
         })
       }
     },
@@ -751,14 +751,11 @@ export default {
 
     async getAllEvents() {
       if (!this.selectedTeacher && this.isUserTeacher) {
-        console.log('no_get_events')
         return
       }
 
-
       this.currentDate = moment(this.value)
       if (this.isUserTeacher && this.isAdmin) {
-        console.log('get_events')
         const lessons = await this.getLessonsAdmin();
         if (this.selectedStudent) {
           const practices = await this.getPracticesAdmin();
@@ -780,11 +777,8 @@ export default {
     },
 
     async testLessons() {
-      // if (!this.selectedTeacher && !this.selectedStudent) {
-      //   return
-      // }
-      if(!this.selectedTeacher && this.isAdmin){
-        return
+      if (!this.selectedTeacher && !this.selectedStudent && this.isAdmin) {
+        return this.events = []
       }
       if (this.isAdmin) {
         this.events = await this.getLessonsAdmin();
@@ -796,12 +790,10 @@ export default {
     },
 
     async testPractices() {
-      // if (!this.selectedTeacher && !this.selectedStudent) {
-      //   return
-      // }
-      if(!this.selectedTeacher && this.isAdmin){
-        return
+      if (!this.selectedTeacher && !this.selectedStudent && this.isAdmin) {
+        return this.events = []
       }
+
       if (this.isAdmin) {
         this.events = await this.getPracticesAdmin();
       } else if (this.isUserTeacher && !this.isAdmin) {
