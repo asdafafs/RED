@@ -43,7 +43,7 @@ export default {
   },
   data() {
     return {
-      selectedButton: 0,
+      selectedButton: -1,
       showAdminPanelText: true
     }
   },
