@@ -232,21 +232,13 @@ export default {
     },
 
     isEditedItemEqualInitialItem() {
-      console.log('0')
-      // if (!this.editedItem || !this.initialCourses.length) {
-      //   return false;
-      // }
-      console.log('1')
       const editedItem = this.courses.find(course => course.id === this.editedItem.id);
       const initialItem = this.initialCourses.find(course => course.id === this.editedItem.id);
       if (initialItem && editedItem) {
         const sortedEditedItem = this.sortObjectKeys(editedItem);
         const sortedInitialItem = this.sortObjectKeys(initialItem);
-        console.log(JSON.stringify(sortedEditedItem))
-        console.log(JSON.stringify(sortedInitialItem))
         return JSON.stringify(sortedEditedItem) !== JSON.stringify(sortedInitialItem);
       }
-      console.log('2')
       return false;
     },
   },
@@ -265,10 +257,9 @@ export default {
     },
 
     toggleSelection() {
-      console.log(this.isEditedItemEqualInitialItem)
       if (this.isEditedItemEqualInitialItem) {
         if (!this.selectedRows.includes(this.editedItem.id)) {
-          this.selectedRows.push(this.editedItem.id);
+          this.selectedRows = [this.editedItem.id]
         }
       } else {
         const index = this.selectedRows.indexOf(this.editedItem.id);
