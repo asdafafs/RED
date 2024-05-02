@@ -322,6 +322,9 @@ export default {
   },
   computed: {
     ...mapState(['user']),
+    isUserStudentInPractice() {
+      return this.data?.e?.event?.userId === this.user?.userId
+    },
     calendarButtons() {
       return [
         // {
@@ -550,7 +553,9 @@ export default {
           e: e,
           listStudents: listStudents,
           userTeacher: this.isUserTeacher,
-          isAdmin: this.isAdmin
+          userIsStudentInPractice: this.userID === e.event.studentId,
+          isAdmin: this.isAdmin,
+          userId: this.userID
         }
         await this.$reviewPracticeDialogPlugin(data).then((isCancel) => {
           if (!isCancel) this.onToggleClick(this.lastSelectedJoinType)
