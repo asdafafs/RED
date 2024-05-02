@@ -43,12 +43,23 @@
         </div>
       </v-card-text>
       <v-card-actions class="pa-5">
-        <div class="review-practice-dialog_actions">
+        <div 
+            class="review-practice-dialog_actions" 
+            :class="data.userIsStudentInPractice ? 'justify-space-between' : 'justify-end'"
+        >
+          <v-btn
+              v-if="data.userIsStudentInPractice"
+              class="open-practice-dialog_actions_cancel-button"
+              text
+              @click="onCancelClick"
+          >
+            <span>Отмена</span>
+          </v-btn>
           <v-btn
               class="review-practice-dialog_actions_save-button"
               @click="onSaveClick"
           >
-            <span>Понятно</span>
+            <span>{{ saveButtonTitle}}</span>
           </v-btn>
         </div>
       </v-card-actions>
@@ -58,12 +69,15 @@
 
 <script>
 import moment from "moment/moment";
-import {isCancel} from "axios";
+import EventsRequest from "@/services/EventsRequest";
+import UsersRequest from "@/services/UsersRequest";
 
 export default {
   name: "reviewPracticeDialog",
   data: () => ({
     localVisible: true,
+    studentGeneralHours: '',
+    studentGeneralHoursSpent: '',
   }),
   props: {
     data: {
@@ -72,6 +86,12 @@ export default {
     },
   },
   computed: {
+    saveButtonTitle() {
+      console.log('123',!this.data.student,!this.data.userTeacher,!this.data.isAdmin)
+      if (this.data.student && this.data.userIsStudentInPractice && !this.data.userTeacher && !this.data.isAdmin) return  'Отписаться' 
+      if (!this.data.student && !this.data.userTeacher && !this.data.isAdmin) return  'Записаться'
+      if (this.data.student && !this.data.userIsStudentInPractice || this.data.userTeacher || this.data.isAdmin) return  'Понятно'
+    },
     dateOfPractice() {
       return `${moment(this.data.e.event.startTime).format('DD.MM.YYYY')} (${moment(this.data.e.event.startTime).locale('ru').format('dd')})`;
     },
@@ -83,27 +103,54 @@ export default {
         {
           id: 0,
           title: 'Преподаватель',
-          value: this.data.teacher
+          value: this.data.teacher,
+          visible: true
         },
         {
           id: 1,
           title: 'Коробка передач',
-          value: this.formatTransmissions(this.data.e.event.transmissionTypeEnum)
+          value: this.formatTransmissions(this.data.e.event.transmissionTypeEnum),
+          visible: true
         },
         {
           id: 2,
           title: 'Город',
-          value: this.formatCity(this.data.e.event.city)
+          value: this.formatCity(this.data.e.event.city),
+          visible: true
         },
         {
           id: 3,
           title: 'Текущий студент',
-          value: this.data.student ? this.data.student : '---'
+          value: this.data.student ? this.data.student : '---',
+          visible: true
+        },
+        {
+          id: 4,
+          title: 'Лимит часов',
+          value: `Оплаченые (отстаток ${this.studentGeneralHoursSpent} из ${this.studentGeneralHours})`,
+          visible: true
         },
       ]
     }
   },
+  created() {
+    this.getStudent()
+  },
   methods: {
+    async getStudent() {
+      const student = new UsersRequest()
+      await student.getUsers().catch(x => console.log(x)).then((response) => {
+        const users = response.data.students;
+        const foundUser = users.find(user => user.id === this.data.userId);
+        if (foundUser) {
+          this.studentGeneralHours = foundUser.generalHours
+          this.studentGeneralHoursSpent = foundUser.generalHoursSpent
+        } 
+      })
+    },
+    onCancelClick() {
+      this.$emit('destroy',true)
+    },
     formatCity(item) {
       const includes1 = item.includes(1);
       const includes2 = item.includes(2);
@@ -135,12 +182,6 @@ export default {
     async openEditDialog() {
       this.localVisible = false
       await this.$openNewPracticeDialogPlugin(this.data, false)
-          .finally(() => this.localVisible = true)
-    },
-
-    async openDeleteDialog() {
-      this.localVisible = false
-      await this.$deletePracticeDialogPlugin(this.data)
           .then(async (isCancel) => {
             if (!isCancel) {
               this.$emit('destroy', false)
@@ -149,8 +190,38 @@ export default {
           .finally(() => this.localVisible = true)
     },
 
-    onSaveClick() {
-      this.$emit('destroy', true)
+    async openDeleteDialog() {
+      this.localVisible = false
+      await this.$deletePracticeDialogPlugin(this.data)
+        .then(async (isCancel) => {
+          if (!isCancel) {
+            this.$emit('destroy', false)
+          }
+        })
+        .finally(() => this.localVisible = true)
+    },
+    
+    async onSaveClick() {
+      if (this.saveButtonTitle === 'Отписаться') {
+        await this.signPractice(true).then(()=>{
+          this.$emit('destroy', false)
+        })
+      } else if (this.saveButtonTitle === 'Записаться') {
+        await this.signPractice(false).then(()=>{
+          this.$emit('destroy', false)
+        })
+      } else {
+        this.$emit('destroy', true)
+      }
+    },
+    
+    async signPractice(remove) {
+      const body = {
+        eventId: this.data.e.event.id,
+        studentId: remove ? null : this.data.userID,
+      }
+      const practice = new EventsRequest()
+      await practice.setStudent(body).catch(x => console.log(x))
     },
   }
 }
@@ -211,7 +282,6 @@ export default {
     display: flex;
     width: 100%;
     flex-direction: row;
-    justify-content: end;
     align-items: center;
     text-transform: none !important;
 

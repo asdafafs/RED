@@ -43,15 +43,21 @@ export default {
   },
   data() {
     return {
-      selectedButton: -1,
+      selectedButton: 0,
       showAdminPanelText: true
     }
   },
   watch: {
     currentRoute: {
       handler(newVal) {
-        if (newVal === 'schedule-lessons') this.selectedButton = 0
-        if (newVal === 'progressBar') this.selectedButton = 1
+        console.log(newVal)
+        if (newVal === 'schedule-lessons') {
+          this.selectedButton = 0 
+        } else if (newVal === 'progressBar') {
+          this.selectedButton = 1
+        } else {
+          this.selectedButton = null
+        }
       },
       immediate: true
     }
