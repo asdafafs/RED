@@ -2,7 +2,7 @@
   <v-container fluid>
     <v-row no-gutters align="center">
       <v-col style="width: min-content">
-        <div :class="showDrawer ? 'mobile-title' : 'desk-title'">
+        <div :class="showMobileView ? 'mobile-title' : 'desk-title'">
           <v-btn icon class="ma-0  align-self-center" @click="prev">
             <v-icon>mdi-chevron-left</v-icon>
           </v-btn>
@@ -11,7 +11,8 @@
       </v-col>
     </v-row>
     <hr style="margin: 1em 0 2em 0 !important;">
-    <v-row class="flex-wrap" style="column-gap: 32px !important; row-gap: 32px !important; padding-left: 12px">
+    <v-row class="flex-wrap" style="column-gap: 32px !important; row-gap: 32px !important; padding-left: 12px"
+           v-if="!showMobileView">
       <v-col style="max-width: min-content" class="align-center bg-surface-variant d-flex py-0 px-0">
         <v-text-field v-model="practiceCourseStart" label="Дата начала" type="date" ref="startDateField"
                       :rules="[startDateRules.required]" :min="getTodayDate()" outlined
@@ -107,10 +108,13 @@
         </v-btn>
       </v-col>
     </v-row>
-    <v-row class="pt-5">
+    <v-row class="pt-5" v-if="!showMobileView">
       <TemplateSchedule @plan-updated="handleEvents" :selectedDuration="selectedDuration" :fullNameActiveUser="fullName"
-                        :events="eventsTemplate" :practiceCourseStart="dateFirstPractice" :showMobile="showDrawer"/>
+                        :events="eventsTemplate" :practiceCourseStart="dateFirstPractice" :showMobile="showMobileView"/>
     </v-row>
+    <div v-if="showMobileView" class="text-alert">
+      <span style="text-align: center;">Функция определения плана доступна только с ПК</span>
+    </div>
   </v-container>
 </template>
 <script>
@@ -123,7 +127,7 @@ export default {
   name: 'PlanTemplate',
   components: {TemplateSchedule},
   data: () => ({
-    showDrawer: false,
+    showMobileView: false,
     isSaveButtonDisabled: false,
     fullName: '',
     eventsTemplate: [],
@@ -352,7 +356,7 @@ export default {
     },
 
     checkWindowWidth() {
-      this.showDrawer = window.innerWidth <= 1260;
+      this.showMobileView = window.innerWidth <= 1260;
     },
   },
   created() {
@@ -456,5 +460,16 @@ export default {
 
 .theme--light.v-input input, .theme--light.v-input textarea {
   color: currentColor;
+}
+
+.text-alert{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  font-size: 16px;
+  line-height: 18.75px;
+  font-weight: 600;
+  color: #2B2A29
 }
 </style>

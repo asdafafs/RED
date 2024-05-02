@@ -187,6 +187,8 @@ export default {
     coursesData: null,
     studentList: null,
     globalStartDate: null,
+    originalNumberGroup: null,
+    originalSelectedStudents: [],
     originalLessons: [],
     lessons: [],
     initialData: [],
@@ -214,7 +216,7 @@ export default {
         startDate: null,
         startTime: null,
         fullGroupName: null,
-        groupNumber: 0,
+        groupNumber: null,
       },
 
       lecture: {
@@ -273,7 +275,9 @@ export default {
     },
 
     hasChanges() {
-      return JSON.stringify(this.lessons) !== JSON.stringify(this.originalLessons);
+      return JSON.stringify(this.lessons) !== JSON.stringify(this.originalLessons) ||
+          JSON.stringify(this.originalSelectedStudents) !== JSON.stringify(this.selectedStudents) ||
+          this.originalNumberGroup !== this.editedItem.groups.groupNumber
     }
   },
 
@@ -283,9 +287,10 @@ export default {
 
   methods: {
     removeStudent(item) {
-      const index = this.selectedStudents.find(student => student.id === item)
+      const index = this.selectedStudents.indexOf(item.id);
       if (index !== -1) {
         this.selectedStudents.splice(index, 1);
+        this.updateSelectedStudentsIds();
       }
     },
 
@@ -454,6 +459,8 @@ export default {
         this.updateSelectedStudentsIds()
       }
       this.originalLessons = JSON.parse(JSON.stringify(this.lessons))
+      this.originalSelectedStudents = [...this.selectedStudents];
+      this.originalNumberGroup = this.editedItem.groups.groupNumber
     },
 
     selectedDays() {
@@ -527,7 +534,6 @@ export default {
           "lecture": this.lessons
         }
         await this.updateCourse(body).then(() => {
-          // this.close();
         }).finally(() => this.blockButtonWhenRequest = false)
       } else {
         const body = {
@@ -636,12 +642,7 @@ export default {
           minute: lectureEndMinutes,
         });
 
-        // const endTime = moment(item.startTime);
-        // const lectureLengthTimeInHours = 2
-        // endTime.add('hour', lectureLengthTimeInHours)
-        //
         Vue.set(item, 'endTime', endTime);
-
         Vue.set(item, 'startTime', item.startTime.format('YYYY-MM-DDTHH:mm'));
         Vue.set(item, 'endTime', item.endTime.format('YYYY-MM-DDTHH:mm'));
       })
