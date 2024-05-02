@@ -50,7 +50,6 @@ export default {
   watch: {
     currentRoute: {
       handler(newVal) {
-        console.log(newVal)
         if (newVal === 'schedule-lessons') this.selectedButton = 0
         if (newVal === 'progressBar') this.selectedButton = 1
       },

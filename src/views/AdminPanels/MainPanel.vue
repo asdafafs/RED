@@ -38,16 +38,21 @@ export default {
     }
   },
   watch: {
-    selectedButton(newValue){
-      console.log(newValue)
-      if(this.$route.path.includes("students")){
-        this.selectedButton = 0
-      }
-      else if (this.$route.path.includes("teachers") || this.$route.path.includes("template")){
-        this.selectedButton = 1
-      }
-      else this.selectedButton = 2
+    selectedButton(newValue) {
+      if (this.$route.path.includes("students")) {
+        this.selectedButton = 0;
+      } else if (this.$route.path.includes("teachers") || this.$route.path.includes("template")) {
+        this.selectedButton = 1;
+      } else this.selectedButton = 2;
     },
+
+    $route(newValue){
+      if (this.$route.path.includes("students")) {
+        this.selectedButton = 0;
+      } else if (this.$route.path.includes("teachers") || this.$route.path.includes("template")) {
+        this.selectedButton = 1;
+      } else this.selectedButton = 2;
+    }
   },
 
   computed: {
@@ -70,7 +75,7 @@ export default {
         },
       ]
     },
-  }
+  },
 }
 </script>
 <style scoped lang="scss">
