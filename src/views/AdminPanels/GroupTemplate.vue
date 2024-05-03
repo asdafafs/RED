@@ -251,7 +251,7 @@ export default {
     ...mapState(['user']),
     isSaveButtonDisabled() {
       return !(this.titleRules.required(this.editedItem.groups.title)
-          && this.startDateRules.required(this.editedItem.groups.startDate)
+          && this.startDateRules.required(this.globalStartDate)
           && this.startTimeRules.required(this.globalStartTime)
           && this.groupNumberRules.required(this.editedItem.groups.groupNumber));
     },
@@ -299,7 +299,9 @@ export default {
     },
 
     newGroupTitle() {
-      let startDate = this.editedItem.groups.startDate;
+      console.log(this.globalStartDate)
+
+      let startDate = this.globalStartDate;
       let date = startDate.split('T');
       let parts = date[0].split('-');
       let rearranged = [parts[2], parts[1], parts[0]].join('.');
