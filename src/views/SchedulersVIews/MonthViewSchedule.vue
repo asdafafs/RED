@@ -450,10 +450,15 @@ export default {
         this.selectedActiveUser = selectedId
         this.onToggleClick(this.lastSelectedJoinType)
       } else {
-        const assignedPractices = await this.getPracticeStudent()
-        const practices = await this.getFreePractices(selectedId);
-        this.events = [...assignedPractices, ...practices];
-        this.selectedActiveUser = selectedId
+        if(this.lastSelectedJoinType !== 1){
+          const assignedPractices = await this.getPracticeStudent()
+          const practices = await this.getFreePractices(selectedId);
+          this.events = [...assignedPractices, ...practices];
+          this.selectedActiveUser = selectedId
+        }
+        else{
+          this.onToggleClick(this.lastSelectedJoinType)
+        }
       }
     },
 
