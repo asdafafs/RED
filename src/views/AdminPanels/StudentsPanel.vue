@@ -176,17 +176,37 @@ export default {
 
     async getStudents() {
       const user = new UsersRequest();
-      let studentsData;
-      await user.getUsers()
+      let studentsData = [];
+      let visibleBlockedStudent = 'ShowDeleted=false';
+
+      // Получение данных для ShowDeleted=false
+      await user.getUsers(visibleBlockedStudent)
           .then(response => {
-            studentsData = response.data.students.map(student => ({
+            const students = response.data.students.map(student => ({
               ...student,
-              fullName: `${student.surname} ${student.name} ${student.middleName} `
+              fullName: `${student.surname} ${student.name} ${student.middleName}`,
             }));
+            studentsData = studentsData.concat(students);
           })
           .catch(error => {
             console.error(error);
           });
+
+      // Получение данных для ShowDeleted=true
+      visibleBlockedStudent = 'ShowDeleted=true';
+      await user.getUsers(visibleBlockedStudent)
+          .then(response => {
+            const students = response.data.students.map(student => ({
+              ...student,
+              fullName: `${student.surname} ${student.name} ${student.middleName}`,
+            }));
+            studentsData = studentsData.concat(students);
+          })
+          .catch(error => {
+            console.error(error);
+          });
+
+      console.log('visibleBlockedStudent', visibleBlockedStudent);
       return studentsData;
     },
 

@@ -142,7 +142,8 @@ export default {
           "groupId": this.data.editedStudent.groupId,
           "generalHours": parseInt(this.data.editedStudent.generalHours ),
           "transmissionTypeEnum": this.data.editedStudent.transmissionTypeEnum,
-          "city": this.data.editedStudent.city
+          "city": this.data.editedStudent.city,
+          "IsForbiddenToAssign": this.data.editedStudent.can_signUp
         }
         await this.postUser(body).catch(() => {
         }).finally(() => {
@@ -166,8 +167,9 @@ export default {
       this.$emit('destroy', false)
     },
   },
+
   created() {
-    console.log('student', this.data.editedStudent)
+    console.log(this.data.editedStudent)
   }
 }
 </script>

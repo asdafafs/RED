@@ -5,8 +5,8 @@ export default class UsersRequest extends HTTPService {
         super("User");
     }
 
-    getUsers(isAlertHandler = false) {
-        return this.get("student", isAlertHandler)
+    getUsers(query, isAlertHandler = false, ) {
+        return this.get("student" + `?${query}`, isAlertHandler)
     }
 
     getStudentId(id, isAlertHandler = false){
@@ -24,11 +24,6 @@ export default class UsersRequest extends HTTPService {
     putUser(code, isAlertHandler= false) {
         return this.put("student", code, isAlertHandler)
     }
-
-    deleteUser(id, isAlertHandler = false) {
-        return this.delete("student/" + id, isAlertHandler)
-    }
-
     putStudentGroup(code, isAlertHandler= false){
         return this.put("studentGroup", code, isAlertHandler)
     }
