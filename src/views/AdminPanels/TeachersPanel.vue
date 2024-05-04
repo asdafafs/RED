@@ -59,7 +59,7 @@
         <tr>
           <td>{{ item.fullName }}</td>
           <td>{{ item.email }}</td>
-          <td>{{formatTransmissions(item.transmissionTypeEnum)}}</td>
+          <td>{{ formatTransmissions(item.transmissionTypeEnum) }}</td>
           <td>{{ formatCity(item.city) }}</td>
           <td>
             <v-btn
@@ -133,7 +133,7 @@ export default {
       await user.putActiveUser(body).catch(x => console.log(x))
     },
 
-    async acceptNewRole(item){
+    async acceptNewRole(item) {
       await this.putActiveUser(item).finally(async () => {
         this.close();
       })

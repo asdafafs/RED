@@ -61,31 +61,6 @@ export default {
 </script>
 
 <style lang="scss">
-//.mobile-title {
-//  font-size: 32px !important;
-//  font-weight: 700 !important;
-//}
-//
-//.desk-title {
-//  font-size: 40px !important;
-//  font-weight: 700 !important;
-//  line-height: 46px !important;
-//}
-//
-//.mobile-subtitle {
-//  font-weight: 600 !important;
-//  font-size: 16px !important;
-//  color: #4E7AEC !important;
-//  min-width: inherit !important;
-//}
-//
-//.desk-subtitle {
-//  font-weight: 700 !important;
-//  font-size: 28px !important;
-//  color: #4E7AEC !important;
-//  //max-width: 547px !important;
-//}
-
 @import "@/assets/styles/titleStyles.css";
 @import "@/assets/styles/buttonStyles.css";
 @import "@/assets/styles/lineStyles.css";

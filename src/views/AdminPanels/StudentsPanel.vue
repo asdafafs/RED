@@ -41,13 +41,23 @@
     >
       <template v-slot:item="{ item }">
         <tr>
-          <td>{{ item.fullName }}</td>
+          <td style="display: flex; align-items: center;">
+            <div style="flex: 1;">
+              <span>{{ item.fullName }}</span>
+            </div>
+            <div v-if="item.additinalHoursSpent > 0"
+                style="background-color: #E31E24; border-radius: 4px; width: 36px; height: 20px; display: flex; align-items: center; justify-content: center;">
+              <span style="font-weight: 600; font-size: 12px; line-height: 14px; text-align: center;" class="white--text">
+                Долг
+              </span>
+            </div>
+          </td>
           <td>{{ item.email }}</td>
           <td>{{ formatTransmissions(item.transmissionTypeEnum) }}</td>
           <td>{{ formatCity(item.city) }}</td>
           <td>{{ item.generalHours }}</td>
           <td>{{ item.generalHoursSpent }}</td>
-          <td>{{ item.additinalHours }}</td>
+          <td>{{item.additinalHoursSpent }}</td>
           <td class="text-xs-right grid-actions">
             <v-icon class="mr-2 blue--text" @click="editItem(item)">mdi-pencil</v-icon>
           </td>
@@ -138,9 +148,6 @@ export default {
         groupId: null,
         phoneNumber: '7',
         generalHours: 0,
-        generalHoursSpent: 56,
-        additinalHours: 0,
-        additinalHoursSpent: 0,
         transmissionTypeEnum: [],
         city: [],
         isBlocked: false,
@@ -198,8 +205,7 @@ export default {
         surname: item.surname,
         middleName: item.middleName,
         groupId: item.groupId,
-        generalHoursSpent: parseInt(item.generalHoursSpent),
-        additinalHours: item.additinalHours,
+        generalHours: parseInt(item.generalHours),
         transmissionTypeEnum: item.transmissionTypeEnum,
         city: item.city,
         isBlocked: item.isBlocked,
