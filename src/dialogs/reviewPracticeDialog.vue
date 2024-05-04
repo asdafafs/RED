@@ -218,7 +218,7 @@ export default {
     async signPractice(remove) {
       const body = {
         eventId: this.data.e.event.id,
-        studentId: remove ? null : this.data.userID,
+        studentId: remove ? null : this.data.userId,
       }
       const practice = new EventsRequest()
       await practice.setStudent(body).catch(x => console.log(x))

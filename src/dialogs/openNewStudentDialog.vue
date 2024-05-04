@@ -54,10 +54,10 @@
               <div class="card-edit-student__title" style="margin-top: 16px !important;">Часы</div>
               <v-checkbox v-model="data.editedStudent.can_signUp" label="Может записываться на практики" hide-details/>
               <v-text-field outlined class="v-text-field-custom-admin " style="border-radius: 12px"
-                            v-model="data.editedStudent.generalHoursSpent"
+                            v-model="data.editedStudent.generalHours"
                             label="Оплаченные практики"
                             height="32px"
-                            :hint="`Из них дополнительных: ${data.editedStudent.generalHoursSpent - 56}`"
+                            :hint="`Из них дополнительных: ${data.editedStudent.generalHours - 56}`"
                             persistent-hint
                             dense/>
 
@@ -90,7 +90,6 @@ export default {
     localVisible: true,
     blockButtonWhenRequest: false,
     availableCity: [{id: 1, text: 'Северодвинск'}, {id:2, text: 'Новодвинск'}],
-    addHour: 0,
     mask: ['+', /\d/, '(', /[1-9]/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, '-', /\d/, /\d/],
     nameRule: {required: value => !!value},
     surnameRule: {required: value => !!value},
@@ -141,8 +140,7 @@ export default {
           "surname": this.data.editedStudent.surname,
           "middleName": this.data.editedStudent.middleName,
           "groupId": this.data.editedStudent.groupId,
-          "generalHours": this.data.editedStudent.generalHours + parseInt(this.addHour),
-          "additinalHours": this.data.editedStudent.additinalHours,
+          "generalHours": parseInt(this.data.editedStudent.generalHours ),
           "transmissionTypeEnum": this.data.editedStudent.transmissionTypeEnum,
           "city": this.data.editedStudent.city
         }
