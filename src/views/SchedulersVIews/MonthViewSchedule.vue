@@ -41,7 +41,7 @@
         </div>
       </div>
       <div style="background-color: #4E7AEC; padding: 4px; gap: 10px; min-height: 27px; max-width: 523px"
-           v-if="!isUserTeacher">
+           v-if="!isUserTeacher && lastSelectedJoinType !== 1">
         <span style="font-weight: 600; font-size: 16px; line-height: 18.75px; color: #FEFEFE;  word-wrap: break-word;">Выберите инструктора, чтобы записаться на свободные практики</span>
       </div>
       <div style="gap: 12px !important;" class="d-flex flex-column">
@@ -156,7 +156,7 @@
             </template>
           </v-select>
         </div>
-        <div class="d-flex flex-row flex-wrap">
+        <div class="d-flex flex-row flex-wrap" v-if="lastSelectedJoinType !== 1">
           <v-btn
               v-if="isUserTeacher"
               color="#4E7AEC"
@@ -370,9 +370,6 @@ export default {
 
   computed: {
     ...mapState(['user']),
-    isUserStudentInPractice() {
-      return this.data?.e?.event?.userId === this.user?.userId
-    },
     calendarButtons() {
       return [
         {
