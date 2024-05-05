@@ -158,7 +158,7 @@
         </div>
         <div class="d-flex flex-row flex-wrap" v-if="lastSelectedJoinType !== 1">
           <v-btn
-              v-if="isUserTeacher"
+              v-if="isUserTeacher && selectedLessonType === 2"
               color="#4E7AEC"
               class="add-instructor-btn"
               @click="openNewPractice"
