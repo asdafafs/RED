@@ -325,6 +325,8 @@ export default {
       "courseEndDate": null,
       "students": null,
     }],
+    studentGeneralHours: '',
+    studentGeneralHoursSpent: '',
   }),
   watch: {
     value(newValue) {
@@ -339,6 +341,11 @@ export default {
         }
       }
     },
+    isUserStudent(newValue) {
+      if (newValue) {
+        this.getStudent()
+      }
+    }
   },
 
   created() {
@@ -365,9 +372,8 @@ export default {
           this.onToggleClick(this.lastSelectedJoinType)
         })
       }
-    })
+    });
   },
-
   computed: {
     ...mapState(['user']),
     calendarButtons() {
@@ -382,7 +388,6 @@ export default {
         },
       ]
     },
-
     month() {
       return this.$refs.calendar.title
     },
@@ -392,11 +397,13 @@ export default {
     isUserTeacher() {
       return this.user.discriminator === 'Учитель'
     },
+    isUserStudent() {
+      return this.user.discriminator === 'Студент'
+    },
     isAdmin() {
       return this.user.isAdmin
     },
   },
-
   methods: {
     async acceptLectureGroup(id) {
       if (id){
@@ -429,10 +436,26 @@ export default {
         return '';
       }
     },
-
+    async getStudent() {
+      const student = new UsersRequest()
+      await student.getUsers().catch(x => console.log(x)).then((response) => {
+        const users = response.data.students;
+        const foundUser = users.find(user => user.id === this.userID);
+        console.log('foundUser',foundUser)
+        if (foundUser) {
+          this.studentGeneralHours = foundUser.generalHours
+          this.studentGeneralHoursSpent = foundUser.generalHoursSpent
+        }
+      })
+    },
     async openNewPractice() {
-      const teacher = this.listTeachers.find(teacher => teacher.id === this.selectedTeacher)
-      const userName = teacher ? `${teacher.surname || ''} ${teacher.name || ''} ${teacher.middleName || ''}`.trim() : '';
+      let userName = ''
+      if (this.isAdmin) {
+        const teacher = this.listTeachers.find(teacher => teacher.id === this.selectedTeacher)
+        userName = teacher ? `${teacher.surname || ''} ${teacher.name || ''} ${teacher.middleName || ''}`.trim() : '';
+      } else {
+        userName = `${this.user.surname} ${this.user.name} ${this.user.middleName}`
+      }
       const listStudents = this.listStudents.filter(student => student.id !== null);
       const data = {
         listStudents: listStudents,
@@ -550,10 +573,8 @@ export default {
     onToggleClick(id) {
       this.lastSelectedJoinType = id;
       switch (id) {
-        case 0:
-          return this.getAllEvents()
         case 1:
-          return this.testLessons()
+          return this.getLessons()
         case 2:
           return this.testPractices()
       }
@@ -621,8 +642,9 @@ export default {
           isAdmin: this.isAdmin,
           userId: this.userID,
           teacherTransmissions : teacherTransmissions,
+          studentGeneralHours: this.studentGeneralHours,
+          studentGeneralHoursSpent: this.studentGeneralHoursSpent,
         }
-        console.log(data)
         await this.$reviewPracticeDialogPlugin(data).then((isCancel) => {
           if (!isCancel) this.onToggleClick(this.lastSelectedJoinType)
         })
@@ -819,35 +841,9 @@ export default {
       }
       return lessonsData
     },
+    
 
-    async getAllEvents() {
-      if (!this.selectedTeacher && this.isUserTeacher) {
-        return
-      }
-
-      this.currentDate = moment(this.value)
-      if (this.isUserTeacher && this.isAdmin) {
-        const lessons = await this.getLessonsAdmin();
-        if (this.selectedStudent) {
-          const practices = await this.getPracticesAdmin();
-          this.events = [...lessons, ...practices];
-        } else {
-          const selectedId = this.selectedTeacher;
-          const practices = await this.getPracticesSelectedTeacher(selectedId);
-          this.events = [...lessons, ...practices];
-        }
-      } else if (this.isUserTeacher && !this.isAdmin) {
-        const lessons = await this.getLessonsTeacher();
-        const practices = await this.getPracticesTeacher();
-        this.events = [...lessons, ...practices];
-      } else {
-        const lessons = await this.getLessonsStudent();
-        const practices = await this.getPracticeStudent();
-        this.events = [...lessons, ...practices];
-      }
-    },
-
-    async testLessons() {
+    async getLessons() {
       if (!this.selectedTeacher && !this.selectedStudent && this.isAdmin) {
         return this.events = []
       }

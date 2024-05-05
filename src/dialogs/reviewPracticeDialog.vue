@@ -76,8 +76,6 @@ export default {
   name: "reviewPracticeDialog",
   data: () => ({
     localVisible: true,
-    studentGeneralHours: '',
-    studentGeneralHoursSpent: '',
   }),
   props: {
     data: {
@@ -87,7 +85,6 @@ export default {
   },
   computed: {
     saveButtonTitle() {
-      console.log('123',!this.data.student,!this.data.userTeacher,!this.data.isAdmin)
       if (this.data.student && this.data.userIsStudentInPractice && !this.data.userTeacher && !this.data.isAdmin) return  'Отписаться' 
       if (!this.data.student && !this.data.userTeacher && !this.data.isAdmin) return  'Записаться'
       if (this.data.student && !this.data.userIsStudentInPractice || this.data.userTeacher || this.data.isAdmin) return  'Понятно'
@@ -127,27 +124,14 @@ export default {
         {
           id: 4,
           title: 'Лимит часов',
-          value: `Оплаченые (отстаток ${this.studentGeneralHoursSpent} из ${this.studentGeneralHours})`,
+          value: `Оплаченые (отстаток ${this.data.studentGeneralHoursSpent} из ${this.data.studentGeneralHours})`,
           visible: true
         },
       ]
     }
   },
-  created() {
-    this.getStudent()
-  },
   methods: {
-    async getStudent() {
-      const student = new UsersRequest()
-      await student.getUsers().catch(x => console.log(x)).then((response) => {
-        const users = response.data.students;
-        const foundUser = users.find(user => user.id === this.data.userId);
-        if (foundUser) {
-          this.studentGeneralHours = foundUser.generalHours
-          this.studentGeneralHoursSpent = foundUser.generalHoursSpent
-        } 
-      })
-    },
+    
     onCancelClick() {
       this.$emit('destroy',true)
     },
