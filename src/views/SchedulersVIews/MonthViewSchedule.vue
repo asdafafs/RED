@@ -615,7 +615,7 @@ export default {
       if (e.event.lectureType) {
         const student = this.listStudents.find(student => student.id === e.event.studentId);
         const studentName = student ? `${student.surname || ''} ${student.name || ''} ${student.middleName || ''}`.trim() : '';
-        const teacher = this.listTeachers.find(teacher => teacher.id === this.selectedTeacher)
+        const teacher = this.listTeachers.find(teacher => teacher.id === e.event.activeUser)
         const teacherName = teacher ? `${teacher.surname || ''} ${teacher.name || ''} ${teacher.middleName || ''}`.trim() : '';
         const data = {
           teacher: teacherName,
@@ -626,15 +626,10 @@ export default {
           if (!isCancel) this.onToggleClick(this.lastSelectedJoinType)
         })
       } else {
-        const student = this.listStudents.find(student => student.id === e.event.studentId);
-        const fullName = student ? `${student.surname || ''} ${student.name || ''} ${student.middleName || ''}`.trim() : '';
         const listStudents = this.listStudents.filter(student => student.id !== null);
         const teacher = this.listTeachers.find(teacher => teacher.id === this.selectedTeacher)
-        const teacherName = teacher ? `${teacher.surname || ''} ${teacher.name || ''} ${teacher.middleName || ''}`.trim() : '';
-        const teacherTransmissions = teacher? teacher.transmissionTypeEnum : [];
+        const teacherTransmissions = teacher ? teacher.transmissionTypeEnum : [];
         const data = {
-          teacher: teacherName,
-          student: fullName,
           e: e,
           listStudents: listStudents,
           userTeacher: this.isUserTeacher,
