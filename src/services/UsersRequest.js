@@ -51,4 +51,8 @@ export default class UsersRequest extends HTTPService {
     getAllActiveUsers(isAlertHandler = false){
         return this.get("active-user-all", isAlertHandler)
     }
+
+    getAccessibleTeacher(isAlertHandler = false){
+        return this.get("active-user-for-student", isAlertHandler)
+    }
 }
