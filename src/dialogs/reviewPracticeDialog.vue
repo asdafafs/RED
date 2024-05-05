@@ -100,7 +100,7 @@ export default {
         {
           id: 0,
           title: 'Преподаватель',
-          value: this.data.teacher,
+          value: this.data.e.event.title,
           visible: true
         },
         {
