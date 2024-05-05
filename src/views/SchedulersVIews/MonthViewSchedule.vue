@@ -92,7 +92,7 @@
                     height="41"
                     no-data-text="Нет данных для отображения"
                     :items="listStudents"
-                    item-value="id" @change="acceptEditableStudent()" v-if="isUserTeacher">
+                    item-value="id" @change="acceptEditableStudent()" v-if="isUserTeacher && lastSelectedJoinType === 2">
             <template #selection="{ item }">
               <div v-if="item.id">
               <span style="font-size: 16px; line-height: 18.75px; font-weight: 400; color: #2B2A29">
@@ -129,6 +129,32 @@
               </div>
             </template>
           </v-select>
+          <v-select v-model="selectedGroup" class="select-user-template " outlined dense hide-details
+                    height="41"
+                    no-data-text="Нет данных для отображения"
+                    :items="listGroups"
+                    item-value="groupId" @change="acceptLectureGroup(selectedGroup)" v-if="lastSelectedJoinType === 1">
+            <template #item="{ item }">
+              <div v-if="item.groupId">
+              <span style="font-size: 16px; line-height: 18.75px; font-weight: 400; color: #2B2A29">
+                {{ item.title }}
+              </span>
+              </div>
+              <div v-else>
+                <span>Группа</span>
+              </div>
+            </template>
+            <template #selection="{ item }">
+              <div v-if="item.groupId">
+                <span style="font-size: 16px; line-height: 18.75px; font-weight: 400; color: #2B2A29">
+                  {{ item.title }}
+                </span>
+              </div>
+              <div v-else>
+                <span>Группа</span>
+              </div>
+            </template>
+          </v-select>
         </div>
         <div class="d-flex flex-row flex-wrap">
           <v-btn
@@ -143,7 +169,6 @@
               <span class="add-instructor-text">Добавить практику</span>
             </section>
           </v-btn>
-
         </div>
       </div>
     </div>
@@ -207,6 +232,7 @@ import EventsRequest from "@/services/EventsRequest";
 import moment from "moment/moment";
 import {mapState} from "vuex";
 import UsersRequest from "@/services/UsersRequest";
+import GroupsRequest from "@/services/GroupsRequest";
 
 
 export default {
@@ -291,6 +317,14 @@ export default {
     }],
     selectedTeacher: null,
     selectedStudent: null,
+    selectedGroup: null,
+    listGroups: [{"groupId": null,
+      "title": null,
+      "groupNumber": null,
+      "courseStartDate": null,
+      "courseEndDate": null,
+      "students": null,
+    }],
   }),
   watch: {
     value(newValue) {
@@ -308,18 +342,32 @@ export default {
   },
 
   created() {
-    this.getAllTeachers().then(() => {
-      if (this.isUserTeacher && this.isAdmin) {
-        this.selectedTeacher = this.listTeachers.length > 0 ? this.listTeachers[1].id : null;
-        this.selectedActiveUser = this.listTeachers.length > 0 ? this.listTeachers[1].id : null;
+    this.getGroups()
+    this.getAllStudents().then(() => {
+      if (this.isAdmin) {
+        this.getAllTeachers().then(() => {
+          if (this.isUserTeacher && this.isAdmin) {
+            this.selectedTeacher = this.listTeachers.length > 0 ? this.listTeachers[1].id : null;
+            this.selectedActiveUser = this.listTeachers.length > 0 ? this.listTeachers[1].id : null;
+          }
+          if (this.isUserTeacher && !this.isAdmin) {
+          }
+          this.onToggleClick(this.lastSelectedJoinType)
+        })
+      } else {
+        this.getAccessibleTeachers().then(() => {
+          if (this.isUserTeacher && this.isAdmin) {
+            this.selectedTeacher = this.listTeachers.length > 0 ? this.listTeachers[1].id : null;
+            this.selectedActiveUser = this.listTeachers.length > 0 ? this.listTeachers[1].id : null;
+          }
+          if (this.isUserTeacher && !this.isAdmin) {
+          }
+          this.onToggleClick(this.lastSelectedJoinType)
+        })
       }
-      if (this.isUserTeacher && !this.isAdmin) {
-      }
-      this.onToggleClick(this.lastSelectedJoinType)
     })
-    this.getAllStudents()
-
   },
+
   computed: {
     ...mapState(['user']),
     isUserStudentInPractice() {
@@ -327,10 +375,6 @@ export default {
     },
     calendarButtons() {
       return [
-        // {
-        //   id: 0,
-        //   title: 'Смотреть всё',
-        // },
         {
           id: 1,
           title: 'Теория',
@@ -357,6 +401,24 @@ export default {
   },
 
   methods: {
+    async acceptLectureGroup(id) {
+      if (id){
+        console.log(id)
+        const lessons = new EventsRequest()
+        let lessonsData = []
+        const monthTime = `Date=${this.value}`
+        await lessons.getLectureGroupId(id, monthTime).catch(x => console.log(x)).then(x => {
+          lessonsData = x.data.lecture.map(event => ({
+            ...event,
+            start: new Date(event.startTime),
+            end: new Date(event.endTime)
+          }));
+        })
+        return this.events = lessonsData
+      }
+      else this.events = []
+    },
+
     formatTransmissions(item) {
       const includes1 = item.includes(1);
       const includes2 = item.includes(2);
@@ -450,13 +512,12 @@ export default {
         this.selectedActiveUser = selectedId
         this.onToggleClick(this.lastSelectedJoinType)
       } else {
-        if(this.lastSelectedJoinType !== 1){
+        if (this.lastSelectedJoinType !== 1) {
           const assignedPractices = await this.getPracticeStudent()
           const practices = await this.getFreePractices(selectedId);
           this.events = [...assignedPractices, ...practices];
           this.selectedActiveUser = selectedId
-        }
-        else{
+        } else {
           this.onToggleClick(this.lastSelectedJoinType)
         }
       }
@@ -841,6 +902,15 @@ export default {
       }
     },
 
+    async getAccessibleTeachers() {
+      const teachers = new UsersRequest();
+      let activeUsers
+      await teachers.getAccessibleTeacher().catch(x => console.log(x)).then(x => {
+        activeUsers = x.data.activeUsers
+      })
+      this.listTeachers.push(...activeUsers)
+    },
+
     async getAllTeachers() {
       const teachers = new UsersRequest();
       let activeUsers
@@ -857,7 +927,16 @@ export default {
         studentList = x.data.students
       })
       return this.listStudents.push(...studentList)
-    }
+    },
+
+    async getGroups() {
+      const groups = new GroupsRequest()
+      let groupList
+      await groups.getGroups().catch(x => console.log(x)).then(x => {
+        groupList = x.data
+      })
+      return console.log(this.listGroups.push(...groupList))
+    },
   },
 }
 </script>
