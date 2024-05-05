@@ -16,7 +16,7 @@
       <v-col style="max-width: min-content" class="align-center bg-surface-variant d-flex py-0 px-0">
         <v-text-field v-model="practiceCourseStart" label="Дата начала" type="date" ref="startDateField"
                       :rules="[startDateRules.required]" :min="getTodayDate()" outlined
-                      class="select-date-practice-template" hide-details :disabled="blockEditableTemplate"
+                      class="select-date-practice-template" hide-details
                       style="border-radius: 12px !important; max-height: 32px !important; max-width: 156px !important;"/>
       </v-col>
       <v-col class="align-center bg-surface-variant d-flex py-0 px-0" style="max-width: min-content">
@@ -24,7 +24,7 @@
                       :rules="[endTimeRules.required]" :min="getTodayDate()" outlined
                       class="select-date-practice-template"
                       style="border-radius: 12px !important; max-height: 32px !important; max-width: 156px !important;"
-                      hide-details :disabled="blockEditableTemplate"/>
+                      hide-details/>
       </v-col>
       <v-col class="flex-column align-center bg-surface-variant d-flex py-0 px-0"
              style="min-width: 80px !important; max-width: min-content">
@@ -93,8 +93,7 @@
                   no-data-text="Нет данных для отображения"
                   outlined hide-details
                   class="select-date-practice-template"
-                  style="border-radius: 12px !important; max-height: 32px !important; min-width: 256px !important; max-width: 256px !important;"
-                  :disabled="blockEditableTemplate"/>
+                  style="border-radius: 12px !important; max-height: 32px !important; min-width: 256px !important; max-width: 256px !important;"/>
       </v-col>
       <v-col class="align-center d-flex flex-row pa-0" style="width: min-content" v-if="hasChanges">
         <v-btn class="tab-button pa-0 rounded-lg" color="#4E7AEC" @click="save"
@@ -132,6 +131,9 @@ export default {
     fullName: '',
     eventsTemplate: [],
     originalEventsTemplate: [],
+    originalCity: null,
+    originalPracticeCourseStart: null,
+    originalPracticeCourseEnd: null,
     selectedDuration: 1,
     practiceCourseStart: null,
     practiceCourseEnd: null,
@@ -161,7 +163,14 @@ export default {
     },
 
     hasChanges() {
-      return JSON.stringify(this.eventsTemplate) !== JSON.stringify(this.originalEventsTemplate);
+      console.log(this.originalCity !== this.selectedCity,
+          this.originalPracticeCourseStart !== this.practiceCourseStart,
+          this.originalPracticeCourseEnd !== this.practiceCourseEnd )
+      console.log(1)
+      return JSON.stringify(this.eventsTemplate) !== JSON.stringify(this.originalEventsTemplate) ||
+          this.originalCity !== this.selectedCity ||
+          this.originalPracticeCourseStart !== this.practiceCourseStart ||
+          this.originalPracticeCourseEnd !== this.practiceCourseEnd;
     }
   },
 
@@ -265,6 +274,9 @@ export default {
 
     async getPracticeCourseTemplate() {
       this.originalEventsTemplate = []
+      this.originalCity = null
+      this.originalPracticeCourseStart = null
+      this.originalPracticeCourseEnd = null
       if (this.selectedTemplate === null) {
         return this.eventsTemplate = []
       }
@@ -284,7 +296,6 @@ export default {
             this.selectedCity = response.data.city
           });
       this.blockEditableTemplate = this.selectedTemplate !== null;
-      console.log(this.selectedCity)
       if (events.length > 0) {
         const earliestEvent = events.reduce((earliest, current) => {
           if (current.start < earliest.start) {
@@ -296,6 +307,10 @@ export default {
         this.dateFirstPractice = earliestEvent.start;
       }
       this.originalEventsTemplate = JSON.parse(JSON.stringify(events))
+      this.originalPracticeCourseStart = this.practiceCourseStart
+      this.originalPracticeCourseEnd = this.practiceCourseEnd
+      this.originalCity = this.selectedCity
+      console.log(this.originalEventsTemplate, this.originalPracticeCourseStart,this.originalPracticeCourseEnd, this.originalCity)
       return this.eventsTemplate = events
     },
 
@@ -462,7 +477,7 @@ export default {
   color: currentColor;
 }
 
-.text-alert{
+.text-alert {
   display: flex;
   align-items: center;
   justify-content: center;

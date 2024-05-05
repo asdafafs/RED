@@ -102,7 +102,7 @@ export default {
       transmissionTypeEnum: [],
       city: [],
       isBlocked: false,
-      can_signUp: true,
+      isForbiddenToAssign: false,
     },
   }),
   created() {
@@ -150,8 +150,8 @@ export default {
         generalHours: 0,
         transmissionTypeEnum: [],
         city: [],
-        isBlocked: false,
-        can_signUp: true,
+        isDeleted: false,
+        isForbiddenToAssign: false,
       }
       const data = {
         groups: this.groups,
@@ -178,8 +178,6 @@ export default {
       const user = new UsersRequest();
       let studentsData = [];
       let visibleBlockedStudent = 'ShowDeleted=false';
-
-      // Получение данных для ShowDeleted=false
       await user.getUsers(visibleBlockedStudent)
           .then(response => {
             const students = response.data.students.map(student => ({
@@ -191,8 +189,6 @@ export default {
           .catch(error => {
             console.error(error);
           });
-
-      // Получение данных для ShowDeleted=true
       visibleBlockedStudent = 'ShowDeleted=true';
       await user.getUsers(visibleBlockedStudent)
           .then(response => {
@@ -205,8 +201,6 @@ export default {
           .catch(error => {
             console.error(error);
           });
-
-      console.log('visibleBlockedStudent', visibleBlockedStudent);
       return studentsData;
     },
 
@@ -228,7 +222,8 @@ export default {
         generalHours: parseInt(item.generalHours),
         transmissionTypeEnum: item.transmissionTypeEnum,
         city: item.city,
-        isBlocked: item.isBlocked,
+        isDeleted: item.isDeleted,
+        isForbiddenToAssign: item.isForbiddenToAssign,
       };
       const data = {
         groups: this.groups,
@@ -242,20 +237,6 @@ export default {
       });
     },
 
-    close() {
-      this.dialog = false;
-      this.$nextTick(() => {
-        this.editedStudent = {
-          name: '',
-          surname: '',
-          middleName: '',
-          groupId: 0,
-          email: '',
-          phoneNumber: '7'
-        };
-      })
-      this.editedIndex = -1;
-    },
   },
 };
 </script>

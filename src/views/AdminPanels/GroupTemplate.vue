@@ -299,13 +299,13 @@ export default {
     },
 
     newGroupTitle() {
-      console.log(this.globalStartDate)
-
       let startDate = this.globalStartDate;
-      let date = startDate.split('T');
-      let parts = date[0].split('-');
-      let rearranged = [parts[2], parts[1], parts[0]].join('.');
-      return this.editedItem.groups.title = `Группа №${this.editedItem.groups.groupNumber} Старт ${rearranged}`;
+      if(startDate){
+        let date = startDate.split('T');
+        let parts = date[0].split('-');
+        let rearranged = [parts[2], parts[1], parts[0]].join('.');
+        return this.editedItem.groups.title = `Группа №${this.editedItem.groups.groupNumber} Старт ${rearranged}`;
+      }
     },
 
     getTodayDate() {
