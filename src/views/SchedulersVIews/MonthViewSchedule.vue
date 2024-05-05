@@ -133,7 +133,7 @@
                     height="41"
                     no-data-text="Нет данных для отображения"
                     :items="listGroups"
-                    item-value="groupId" @change="acceptLectureGroup(selectedGroup)" v-if="lastSelectedJoinType === 1">
+                    item-value="groupId" @change="acceptLectureGroup(selectedGroup)" v-if="lastSelectedJoinType === 1 && isUserTeacher">
             <template #item="{ item }">
               <div v-if="item.groupId">
               <span style="font-size: 16px; line-height: 18.75px; font-weight: 400; color: #2B2A29">
@@ -610,9 +610,10 @@ export default {
       } else {
         const student = this.listStudents.find(student => student.id === e.event.studentId);
         const fullName = student ? `${student.surname || ''} ${student.name || ''} ${student.middleName || ''}`.trim() : '';
+        const listStudents = this.listStudents.filter(student => student.id !== null);
         const teacher = this.listTeachers.find(teacher => teacher.id === this.selectedTeacher)
         const teacherName = teacher ? `${teacher.surname || ''} ${teacher.name || ''} ${teacher.middleName || ''}`.trim() : '';
-        const listStudents = this.listStudents.filter(student => student.id !== null);
+        const teacherTransmissions = teacher? teacher.transmissionTypeEnum : [];
         const data = {
           teacher: teacherName,
           student: fullName,
@@ -621,8 +622,10 @@ export default {
           userTeacher: this.isUserTeacher,
           userIsStudentInPractice: this.userID === e.event.studentId,
           isAdmin: this.isAdmin,
-          userId: this.userID
+          userId: this.userID,
+          teacherTransmissions : teacherTransmissions,
         }
+        console.log(data)
         await this.$reviewPracticeDialogPlugin(data).then((isCancel) => {
           if (!isCancel) this.onToggleClick(this.lastSelectedJoinType)
         })

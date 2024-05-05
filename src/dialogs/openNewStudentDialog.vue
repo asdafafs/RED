@@ -34,7 +34,7 @@
                         height="32px"
                         hide-details
                         dense/>
-              <v-checkbox v-model="data.editedStudent.isBlocked" label="Заблокировать студента" hide-details/>
+              <v-checkbox v-model="data.editedStudent.isDeleted" label="Заблокировать студента" hide-details/>
               <div class="card-edit-student__title" style="margin-top: 16px !important;">Параметры обучения</div>
               <v-radio-group class="px-0 py-0 align-center ma-0 mt-3" v-model="data.editedStudent.transmissionTypeEnum"
                              hide-details>
@@ -52,7 +52,7 @@
                         hide-details
                         dense/>
               <div class="card-edit-student__title" style="margin-top: 16px !important;">Часы</div>
-              <v-checkbox v-model="data.editedStudent.can_signUp" label="Может записываться на практики" hide-details/>
+              <v-checkbox v-model="data.editedStudent.isForbiddenToAssign" label="Может записываться на практики" hide-details/>
               <v-text-field outlined class="v-text-field-custom-admin " style="border-radius: 12px"
                             v-model="data.editedStudent.generalHours"
                             label="Оплаченные практики"
@@ -60,7 +60,6 @@
                             :hint="`Из них дополнительных: ${data.editedStudent.generalHours - 56}`"
                             persistent-hint
                             dense/>
-
             </v-col>
           </v-row>
         </v-container>
@@ -143,7 +142,8 @@ export default {
           "generalHours": parseInt(this.data.editedStudent.generalHours ),
           "transmissionTypeEnum": this.data.editedStudent.transmissionTypeEnum,
           "city": this.data.editedStudent.city,
-          "IsForbiddenToAssign": this.data.editedStudent.can_signUp
+          "IsForbiddenToAssign": this.data.editedStudent.isForbiddenToAssign,
+          "isDeleted" : this.data.editedStudent.isDeleted
         }
         await this.postUser(body).catch(() => {
         }).finally(() => {

@@ -21,6 +21,7 @@
                 v-model="selectedTransmission"
                 row
                 hide-details
+                :disabled="data.teacherTransmissions > 1"
             >
               <v-radio label="АКП" :value="[1]"/>
               <v-radio label="МКП" :value="[2]"/>
