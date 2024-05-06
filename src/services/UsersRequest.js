@@ -9,10 +9,6 @@ export default class UsersRequest extends HTTPService {
         return this.get("student" + `?${query}`, isAlertHandler)
     }
 
-    getStudentId(id, isAlertHandler = false){
-        return this.get("student/" + id, isAlertHandler)
-    }
-
     getStudentNullGroup(isAlertHandler = false){
         return this.get("student/nullGroup", isAlertHandler)
     }
@@ -23,9 +19,6 @@ export default class UsersRequest extends HTTPService {
 
     putUser(code, isAlertHandler= false) {
         return this.put("student", code, isAlertHandler)
-    }
-    putStudentGroup(code, isAlertHandler= false){
-        return this.put("studentGroup", code, isAlertHandler)
     }
 
     postActiveUser(code, isAlertHandler= false) {
@@ -54,5 +47,17 @@ export default class UsersRequest extends HTTPService {
 
     getAccessibleTeacher(isAlertHandler = false){
         return this.get("active-user-for-student", isAlertHandler)
+    }
+
+    getCorrectStudentsForCurrentUser(isAlertHandler = false){
+        return this.get("student-matching-for-active-user", isAlertHandler)
+    }
+
+    getCorrectStudentsForSelectedUser(id, isAlertHandler = false){
+        return this.get("student-matching-for-active-user/" + id, isAlertHandler)
+    }
+
+    getFullStudentInfo(isAlertHandler = false){
+        return this.get("student-full-info", isAlertHandler)
     }
 }

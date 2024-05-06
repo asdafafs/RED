@@ -8,7 +8,7 @@
         Удачи на дорогах, {{ userName }}
       </div>
     </div>
-    <v-container class="px-4 pa-0 ma-0" fluid v-if="groupId !== 0">
+    <v-container class="px-4 pa-0 ma-0" fluid >
       <hr class="mb-2">
       <router-view/>
     </v-container>
@@ -17,20 +17,14 @@
 <script>
 
 import {mapState} from "vuex";
-import GroupsRequest from "@/services/GroupsRequest";
 
 export default {
   name: 'plan',
   components: {},
   data: () => ({
     showDrawer: true,
-    groupTitle: ''
   }),
-  watch: {
-    groupId(newValue) {
-      this.getGroupNumber()
-    }
-  },
+
 
   computed: {
     ...mapState(['user']),
@@ -40,10 +34,6 @@ export default {
 
     userId() {
       return this.user.userId
-    },
-
-    groupId() {
-      return this.$store.state.user.groupId
     },
   },
 
@@ -58,24 +48,7 @@ export default {
       });
     },
 
-    async getGroupNumber() {
-      const group = new GroupsRequest();
-
-      if (this.groupId !== 0 && this.groupId !== null) {
-        this.groupTitle = await group.getGroup(this.groupId)
-            .then(group => {
-              return group.data[0].groupNumber;
-            })
-            .catch(error => {
-              console.log("Error fetching group:", error);
-              return null;
-            });
-        return this.groupTitle = `Вы зачислены в группу №${this.groupTitle}`
-      } else return this.groupTitle = 'Вы пока не зачислены в группу'
-    },
-
     async initialize() {
-      await this.getGroupNumber()
       this.openProgressBar()
     },
   },

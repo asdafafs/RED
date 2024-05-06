@@ -92,7 +92,8 @@
                     height="41"
                     no-data-text="Нет данных для отображения"
                     :items="listStudents"
-                    item-value="id" @change="acceptEditableStudent()" v-if="isUserTeacher && lastSelectedJoinType === 2">
+                    item-value="id" @change="acceptEditableStudent()"
+                    v-if="isUserTeacher && lastSelectedJoinType === 2">
             <template #selection="{ item }">
               <div v-if="item.id">
               <span style="font-size: 16px; line-height: 18.75px; font-weight: 400; color: #2B2A29">
@@ -133,7 +134,8 @@
                     height="41"
                     no-data-text="Нет данных для отображения"
                     :items="listGroups"
-                    item-value="groupId" @change="acceptLectureGroup(selectedGroup)" v-if="lastSelectedJoinType === 1 && isUserTeacher">
+                    item-value="groupId" @change="acceptLectureGroup(selectedGroup)"
+                    v-if="lastSelectedJoinType === 1 && isUserTeacher">
             <template #item="{ item }">
               <div v-if="item.groupId">
               <span style="font-size: 16px; line-height: 18.75px; font-weight: 400; color: #2B2A29">
@@ -318,7 +320,8 @@ export default {
     selectedTeacher: null,
     selectedStudent: null,
     selectedGroup: null,
-    listGroups: [{"groupId": null,
+    listGroups: [{
+      "groupId": null,
       "title": null,
       "groupNumber": null,
       "courseStartDate": null,
@@ -405,8 +408,36 @@ export default {
     },
   },
   methods: {
+    async getCorrectStudents(id) {
+      if (id) {
+        const students = new UsersRequest()
+        let listStudents
+        await students.getCorrectStudentsForSelectedUser(id).catch(x => console.log(x)).then(x => {
+          listStudents = x.data.students
+        })
+        this.listStudents = [{
+          "id": null,
+          "name": null,
+          "surname": null,
+          "middleName": null,
+          "vkUserId": null,
+          "email": null,
+          "phoneNumber": null,
+          "userName": null,
+          "groupId": null,
+          "generalHours": null,
+          "generalHoursSpent": null,
+          "additinalHours": null,
+          "additinalHoursSpent": null,
+          "transmissionTypeEnum": null,
+          "city": null
+        }]
+        return this.listStudents.push(...listStudents)
+      }
+    },
+
     async acceptLectureGroup(id) {
-      if (id){
+      if (id) {
         console.log(id)
         const lessons = new EventsRequest()
         let lessonsData = []
@@ -419,8 +450,7 @@ export default {
           }));
         })
         return this.events = lessonsData
-      }
-      else this.events = []
+      } else this.events = []
     },
 
     formatTransmissions(item) {
@@ -441,7 +471,7 @@ export default {
       await student.getUsers().catch(x => console.log(x)).then((response) => {
         const users = response.data.students;
         const foundUser = users.find(user => user.id === this.userID);
-        console.log('foundUser',foundUser)
+        console.log('foundUser', foundUser)
         if (foundUser) {
           this.studentGeneralHours = foundUser.generalHours
           this.studentGeneralHoursSpent = foundUser.generalHoursSpent
@@ -530,6 +560,7 @@ export default {
       if (this.isUserTeacher && this.isAdmin) {
         this.events = []
         this.selectedActiveUser = selectedId
+        this.listStudents = this.getCorrectStudents(this.selectedActiveUser)
         this.onToggleClick(this.lastSelectedJoinType)
       } else {
         if (this.lastSelectedJoinType !== 1) {
@@ -636,7 +667,7 @@ export default {
           userIsStudentInPractice: this.userID === e.event.studentId,
           isAdmin: this.isAdmin,
           userId: this.userID,
-          teacherTransmissions : teacherTransmissions,
+          teacherTransmissions: teacherTransmissions,
           studentGeneralHours: this.studentGeneralHours,
           studentGeneralHoursSpent: this.studentGeneralHoursSpent,
         }
@@ -836,7 +867,7 @@ export default {
       }
       return lessonsData
     },
-    
+
 
     async getLessons() {
       if (!this.selectedTeacher && !this.selectedStudent && this.isAdmin) {
