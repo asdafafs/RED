@@ -536,7 +536,10 @@ export default {
           "lecture": this.lessons
         }
         await this.updateCourse(body).then(() => {
-        }).finally(() => this.blockButtonWhenRequest = false)
+        }).finally(() => {
+          this.blockButtonWhenRequest = false
+          this.$emit('reset-selected-rows');
+        })
       } else {
         const body = {
           "title": this.editedItem.groups.title,
@@ -553,6 +556,7 @@ export default {
             }
         ).catch(x => console.log(x)).finally(() => {
           this.blockButtonWhenRequest = false
+          this.$emit('reset-selected-rows');
         })
       }
     },
