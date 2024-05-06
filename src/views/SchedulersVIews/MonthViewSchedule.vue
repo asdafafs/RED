@@ -204,24 +204,20 @@
           :event-color="getEventColor"
           @click:event="reviewEvent"
           :event-ripple="false"
-          :event-height="num"
+          :event-height="32"
           :hide-header=false
           @click:more="viewDay"
           event-more
           event-more-text="+ {0}"
       >
         <template v-slot:event="{event}">
-          <v-container class="pa-1 mx-0 d-flex ">
-            <v-row class="ma-0" style="height: inherit; width: inherit">
-              <v-col class="black--text pa-0 align-self-center" style="height: inherit;">
-                <div class="text-subtitle-2 d-flex justify-center">{{ formatTime(event.startTime) }}</div>
-              </v-col>
-              <v-col class="black--text pa-0 align-self-center" v-if="$vuetify.breakpoint.lgAndUp">
-                <div class="font-weight-bold text-format" style="width: inherit">{{ event.title }}
-                </div>
-              </v-col>
-            </v-row>
-          </v-container>
+          <div class="calendar-event" :class="{'event-border': selectedLessonType === 2 && event.studentId === null}">
+            <div class="calendar-event_time">{{ formatTime(event.startTime) }}</div>
+            <div class="calendar-event_info">
+              <div class="calendar-event_info_type">{{ getEventTitle(event) }}</div>
+              <div class="calendar-event_info_teacher">{{ getTeacherName(event) }}</div>
+            </div>
+          </div>
         </template>
       </v-calendar>
     </div>
@@ -258,23 +254,16 @@ export default {
           })
         })
     this.test = true
-    window.addEventListener('resize', this.handleResize);
-    this.handleResize();
     this.prevMonthAndYear = this.getMonthAndYear(this.value);
     if (!this.$vuetify.breakpoint.lgAndUp) {
       this.types = [['month', 'месяц'], ['day', 'день']]
     }
   },
-
-  beforeDestroy() {
-    window.removeEventListener('resize', this.handleResize);
-  },
-
+  
   data: () => ({
     selectedLessonType: null,
     events: [],
     moreEvents: [],
-    num: 70,
     test: false,
     type: 'month',
     mode: 'stack',
@@ -455,9 +444,9 @@ export default {
       let userName = ''
       if (this.isAdmin) {
         const teacher = this.listTeachers.find(teacher => teacher.id === this.selectedTeacher)
-        userName = teacher ? `${teacher.surname || ''} ${teacher.name || ''} ${teacher.middleName || ''}`.trim() : '';
+        userName = teacher ? `${teacher.surname} ${teacher.name[0]}. ${teacher.middleName[0]}.` : '';
       } else {
-        userName = `${this.user.surname} ${this.user.name} ${this.user.middleName}`
+        userName = `${this.user.surname} ${this.user.name[0]}. ${this.user.middleName[0]}.`
       }
       const listStudents = this.listStudents.filter(student => student.id !== null);
       const data = {
@@ -499,6 +488,7 @@ export default {
           }));
         })
         this.events = cal
+        console.log('cal',cal)
       }
     },
 
@@ -586,10 +576,11 @@ export default {
         })
       } else {
         const listStudents = this.listStudents.filter(student => student.id !== null);
-        console.log(this.listTeachers)
-        const teacher = this.listTeachers.find(teacher => teacher.id === this.selectedTeacher)
+        const student = this.listStudents.find(student => !!e.event.studentId && student.id === e.event.studentId);
+        const studentName = student ? `${student.surname} ${student.name[0]}. ${student.middleName[0]}.` : ''
+        const teacher = this.listTeachers.find(teacher => this.selectedTeacher && teacher.id === this.selectedTeacher)
+        const teacherName = teacher ? `${teacher.surname} ${teacher.name[0]}. ${teacher.middleName[0]}.` : ''
         const teacherTransmissions = teacher ? teacher.transmissionTypeEnum : [];
-        console.log(teacher)
         const data = {
           e: e,
           listStudents: listStudents,
@@ -601,6 +592,8 @@ export default {
           teacherTransmissions: teacherTransmissions,
           studentGeneralHours: this.studentGeneralHours,
           studentGeneralHoursSpent: this.studentGeneralHoursSpent,
+          studentName: studentName,
+          teacherName: teacherName
         }
         console.log(data)
         await this.$reviewPracticeDialogPlugin(data).then((isCancel) => {
@@ -823,7 +816,20 @@ export default {
         this.events = await this.getLessonsStudent();
       }
     },
-
+    getTeacherName(e) {
+      const teacher = this.listTeachers.find(teacher => teacher.id === e.activeUser || teacher.id === e.activeUserId)
+      if (teacher) return `${teacher.surname} ${teacher.name[0]}. ${teacher.middleName[0]}.`
+      return `Преп. не назначен`
+    },
+    getEventTitle(e) {
+      if (this.selectedLessonType === 1) {
+        if (e.lectureType === 1) return `Основы вождения`
+        if (e.lectureType === 2) return `ПДД`
+        if (e.lectureType === 3) return `Медицина`
+      } else {
+        return 'Вождение'
+      }
+    },
     async testPractices() {
       if (!this.selectedTeacher && !this.selectedStudent && this.isAdmin) {
         return this.events = []
@@ -896,20 +902,18 @@ export default {
     },
 
     getEventColor(event) {
-      if (event.studentId === null)
-        return '#9DB9FF';
-      else
-        return '#E9E9E8';
-    },
-
-    handleResize() {
-      if (window.innerWidth < 1260) {
-        this.num = 30;
+      if (this.selectedLessonType === 1) {
+        if (event.lectureType === 1) return `#9DB9FF`
+        if (event.lectureType === 2) return `#FFCD6D`
+        if (event.lectureType === 3) return `#FC7DC9`
       } else {
-        this.num = 70;
+        if (event.studentId !== null)
+          return '#9DB9FF';
+        else
+          return '#FFFFFF';
       }
     },
-
+    
     async previousMonth() {
       this.$refs.calendar.prev()
       if (this.type === 'week') {
@@ -1139,5 +1143,42 @@ export default {
   .v-input__icon {
     max-height: 32px !important;
   }
+}
+.calendar-event {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  height: 32px;
+  color: #2B2A29;
+  padding-left: 12px;
+  padding-right: 12px;
+  border-radius: 4px;
+  gap: 12px;
+  &_time {
+    display: flex;
+    align-items: center;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 20px;
+  }
+  &_info {
+    display: flex;
+    flex-direction: column;
+    height: 28px;
+    &_type {
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 14px;
+    }
+    &_teacher {
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 14px;
+    }
+  }
+}
+.event-border {
+  border: 1px solid #4E7AEC;
+  border-radius: 4px;
 }
 </style>
