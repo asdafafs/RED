@@ -359,6 +359,7 @@ export default {
           this.onToggleClick(this.lastSelectedJoinType)
         })
       } else {
+        this.getAllStudents()
         this.getAccessibleTeachers().then(() => {
           this.onToggleClick(this.lastSelectedJoinType)
         })
@@ -562,10 +563,10 @@ export default {
 
     async reviewEvent(e) {
       if (e.event.lectureType) {
-        const student = this.listStudents.find(student => student.id === e.event.studentId);
-        const studentName = student ? `${student.surname || ''} ${student.name || ''} ${student.middleName || ''}`.trim() : '';
-        const teacher = this.listTeachers.find(teacher => teacher.id === e.event.activeUser)
-        const teacherName = teacher ? `${teacher.surname || ''} ${teacher.name || ''} ${teacher.middleName || ''}`.trim() : '';
+        const student = this.listStudents.find(student => !!e.event.studentId && student.id === e.event.studentId);
+        const studentName = student ? `${student.surname} ${student.name[0]}. ${student.middleName[0]}.` : ''
+        const teacher = this.listTeachers.find(teacher => !!e.event.activeUser && teacher.id === e.event.activeUser)
+        const teacherName = teacher ? `${teacher.surname} ${teacher.name[0]}. ${teacher.middleName[0]}.` : ''
         const data = {
           teacher: teacherName,
           student: studentName,
@@ -576,7 +577,9 @@ export default {
         })
       } else {
         const listStudents = this.listStudents.filter(student => student.id !== null);
-        const student = this.listStudents.find(student => !!e.event.studentId && student.id === e.event.studentId);
+        console.log('listStudents',listStudents)
+        const student = this.listStudents.find(student => student.id === e.event.studentId);
+        console.log('иоллапиапиьапиапиж',student)
         const studentName = student ? `${student.surname} ${student.name[0]}. ${student.middleName[0]}.` : ''
         const teacher = this.listTeachers.find(teacher => this.selectedTeacher && teacher.id === this.selectedTeacher)
         const teacherName = teacher ? `${teacher.surname} ${teacher.name[0]}. ${teacher.middleName[0]}.` : ''
@@ -882,7 +885,8 @@ export default {
       await student.getUsers().catch(x => console.log(x)).then(x => {
         studentList = x.data.students
       })
-      return this.listStudents.push(...studentList)
+      this.listStudents.push(...studentList)
+      console.log(' this.listStudents123123123123',this.listStudents)
     },
 
     async getGroups() {
