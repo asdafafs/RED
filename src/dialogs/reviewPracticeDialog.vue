@@ -83,6 +83,9 @@ export default {
       default: {}
     },
   },
+  created() {
+    console.log('data.e.event',this.data.e.event)
+  },
   computed: {
     saveButtonTitle() {
       if (this.data.student && this.data.userIsStudentInPractice) return  'Отписаться'
@@ -118,7 +121,7 @@ export default {
         {
           id: 3,
           title: 'Текущий студент',
-          value: this.data.student ? this.data.student : '---',
+          value: this.data.e.event.studentId ? this.data.studentName : '---',
           visible: true
         },
         {

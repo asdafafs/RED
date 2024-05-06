@@ -94,10 +94,10 @@ export default {
   },
   computed: {
     dateOfPractice() {
-      return `${moment(this.data.startTime).format('DD.MM.YYYY')} (${moment(this.data.startTime).locale('ru').format('dd')})`;
+      return `${moment(this.data.e.event.startTime).format('DD.MM.YYYY')} (${moment(this.data.e.event.startTime).locale('ru').format('dd')})`;
     },
     timeOfPractice() {
-      return `${moment(this.data.startTime).format('HH:mm')} - ${moment(this.data.endTime).format('HH:mm')}`
+      return `${moment(this.data.e.event.startTime).format('HH:mm')} - ${moment(this.data.e.event.endTime).format('HH:mm')}`
     },
     reasonsRefusal() {
       return [
@@ -128,7 +128,7 @@ export default {
         {
           id: 0,
           title: 'Преподаватель',
-          value: this.data.teacher
+          value: this.data.teacherName ? this.data.teacherName : '---'
         },
         {
           id: 1,
@@ -138,7 +138,7 @@ export default {
         {
           id: 2,
           title: 'Текущий студент',
-          value: this.data.student
+          value: this.data.studentName ? this.data.studentName : '---'
         },
       ]
     }

@@ -12,7 +12,7 @@
         <div class="open-practice-dialog_text">
           <div class="d-flex flex-column">
             <span class="open-practice-dialog_text_title">Преподаватель</span>
-            <span class="teacher-text">{{ isNew ? data.userName : data.teacher }}</span>
+            <span class="teacher-text">{{ isNew ? data.userName : data.teacherName }}</span>
           </div>
           <div>
             <span class="open-practice-dialog_text_title">Коробка передач</span>
