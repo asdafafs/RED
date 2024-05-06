@@ -49,6 +49,11 @@ export default class UsersRequest extends HTTPService {
         return this.get("active-user-for-student", isAlertHandler)
     }
 
+    getCorrectTeacherForSelectedUser(id ,isAlertHandler = false){
+        return this.get("active-user-for-student/" + id, isAlertHandler)
+    }
+
+
     getCorrectStudentsForCurrentUser(isAlertHandler = false){
         return this.get("student-matching-for-active-user", isAlertHandler)
     }
@@ -60,4 +65,5 @@ export default class UsersRequest extends HTTPService {
     getFullStudentInfo(isAlertHandler = false){
         return this.get("student-full-info", isAlertHandler)
     }
+
 }

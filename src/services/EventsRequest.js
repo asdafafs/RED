@@ -4,6 +4,7 @@ export default class EventsRequest extends HTTPService {
     constructor() {
         super("Event");
     }
+
     getLectureActiveUser(id, query) {
         return this.get("lecture/" + id + `?${query}`)
     }
@@ -17,14 +18,14 @@ export default class EventsRequest extends HTTPService {
     }
 
     getPracticeAssigned(query) {
-        return this.get("practice/assigned" + `?${query}` )
+        return this.get("practice/assigned" + `?${query}`)
     }
 
-    getOnlyAssigned(query){
+    getOnlyAssigned(query) {
         return this.get("practice/assignedOnly" + `?${query}`)
     }
 
-    getPracticeFreeOrAssigned(query){
+    getPracticeFreeOrAssigned(query) {
         return this.get("practice/freeOrAssigned" + `?${query}`)
     }
 
@@ -32,11 +33,11 @@ export default class EventsRequest extends HTTPService {
         return this.get("practice/" + id + `?${query}`)
     }
 
-    putPractice(code){
+    putPractice(code) {
         return this.put("practice", code)
     }
 
-    postPractice(code){
+    postPractice(code) {
         return this.post("practice", code)
     }
 
@@ -48,47 +49,51 @@ export default class EventsRequest extends HTTPService {
         return this.put("practice/close", code)
     }
 
-    cancelPractice(code){
+    cancelPractice(code) {
         return this.put("practice/cancel", code)
     }
 
-    postAdminPractice(code){
-        return this.post("admin/practice",code)
+    postAdminPractice(code) {
+        return this.post("admin/practice", code)
     }
 
-    putAdminPractice(code){
-        return this.put("admin/practice",code)
+    putAdminPractice(code) {
+        return this.put("admin/practice", code)
     }
 
-    setAdminStudent(code){
-        return this.post("admin/practice/setstudent",code)
+    setAdminStudent(code) {
+        return this.post("admin/practice/setstudent", code)
     }
 
-    closeAdminStudent(code){
-        return this.post("admin/practice/close",code)
+    closeAdminStudent(code) {
+        return this.post("admin/practice/close", code)
     }
 
-    canselAdminStudent(code){
-        return this.post("admin/practice/cansel",code)
+    canselAdminStudent(code) {
+        return this.post("admin/practice/cansel", code)
     }
 
-    getFreePracticeActiveUser(query){
+    getFreePracticeActiveUser(query) {
         return this.get("practice/free" + `?${query}`)
     }
 
-    getPractices(query){
+    getPractices(query) {
         return this.get("practice" + `?${query}`)
     }
 
-    getLessons(query){
+    getLessons(query) {
         return this.get("lecture" + `?${query}`)
     }
 
-    getPracticesActiveUser(query){
+    getPracticesActiveUser(query) {
         return this.get("practice/null" + `?${query}`)
     }
 
-    getLecturesStudent(id, query){
+    getLecturesStudent(id, query) {
         return this.get("lecture/student/" + id + `?${query}`)
+    }
+
+    getLectureCurrentUser(query) {
+        return this.get("lecture/null" + `?${query}`)
     }
 }
