@@ -817,7 +817,7 @@ export default {
       }
     },
     getTeacherName(e) {
-      const teacher = this.listTeachers.find(teacher => teacher.id === e.activeUser || teacher.id === e.activeUserId)
+      const teacher = this.listTeachers.find(teacher => (!!e.activeUser && teacher.id === e.activeUser) || (e.activeUserId && teacher.id === e.activeUserId))
       if (teacher) return `${teacher.surname} ${teacher.name[0]}. ${teacher.middleName[0]}.`
       return `Преп. не назначен`
     },
