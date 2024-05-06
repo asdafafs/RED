@@ -245,9 +245,18 @@ export default {
 
   created() {
     this.initialize();
+    this.$parent.$on('reset-selected-rows', this.resetSelectedRows);
+  },
+
+  beforeDestroy() {
+    this.$parent.$off('reset-selected-rows', this.resetSelectedRows);
   },
 
   methods: {
+    resetSelectedRows() {
+      this.selectedRows = [];
+    },
+
     sortObjectKeys(obj) {
       const sortedObj = {};
       Object.keys(obj).sort().forEach(key => {
@@ -404,7 +413,6 @@ export default {
 
     selectItem(item) {
       const index = this.discriminator.indexOf(item);
-
       if (index !== -1) {
         this.editedItem.lectureType = index;
         this.$refs.selectItem.blur();
