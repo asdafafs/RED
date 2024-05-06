@@ -586,8 +586,10 @@ export default {
         })
       } else {
         const listStudents = this.listStudents.filter(student => student.id !== null);
+        console.log(this.listTeachers)
         const teacher = this.listTeachers.find(teacher => teacher.id === this.selectedTeacher)
         const teacherTransmissions = teacher ? teacher.transmissionTypeEnum : [];
+        console.log(teacher)
         const data = {
           e: e,
           listStudents: listStudents,
@@ -595,10 +597,12 @@ export default {
           userIsStudentInPractice: this.userID === e.event.studentId,
           isAdmin: this.isAdmin,
           userId: this.userID,
+          student: this.isUserStudent,
           teacherTransmissions: teacherTransmissions,
           studentGeneralHours: this.studentGeneralHours,
           studentGeneralHoursSpent: this.studentGeneralHoursSpent,
         }
+        console.log(data)
         await this.$reviewPracticeDialogPlugin(data).then((isCancel) => {
           if (!isCancel) this.onToggleClick(this.lastSelectedJoinType)
         })
