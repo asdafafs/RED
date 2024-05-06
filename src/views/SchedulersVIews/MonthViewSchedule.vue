@@ -134,7 +134,7 @@
                     height="41"
                     no-data-text="Нет данных для отображения"
                     :items="listGroups"
-                    item-value="groupId" @change="acceptLectureGroup(selectedGroup)"
+                    item-value="groupId" @change="acceptLectureGroup()"
                     v-if="lastSelectedJoinType === 1 && isUserTeacher">
             <template #item="{ item }">
               <div v-if="item.groupId">
@@ -344,6 +344,7 @@ export default {
         }
       }
     },
+
     isUserStudent(newValue) {
       if (newValue) {
         this.getStudent()
@@ -352,9 +353,9 @@ export default {
   },
 
   created() {
-    this.getGroups()
-    this.getAllStudents().then(() => {
+    this.getGroups().then(() => {
       if (this.isAdmin) {
+        this.getAllStudents()
         this.getAllTeachers().then(() => {
           if (this.isUserTeacher && this.isAdmin) {
             this.selectedTeacher = this.listTeachers.length > 0 ? this.listTeachers[1].id : null;
@@ -364,14 +365,12 @@ export default {
           }
           this.onToggleClick(this.lastSelectedJoinType)
         })
+      } else if (this.isUserTeacher) {
+        this.getCorrectStudentsForCurrentUser().then(() => {
+          this.onToggleClick(this.lastSelectedJoinType)
+        })
       } else {
         this.getAccessibleTeachers().then(() => {
-          if (this.isUserTeacher && this.isAdmin) {
-            this.selectedTeacher = this.listTeachers.length > 0 ? this.listTeachers[1].id : null;
-            this.selectedActiveUser = this.listTeachers.length > 0 ? this.listTeachers[1].id : null;
-          }
-          if (this.isUserTeacher && !this.isAdmin) {
-          }
           this.onToggleClick(this.lastSelectedJoinType)
         })
       }
@@ -436,48 +435,22 @@ export default {
       }
     },
 
-    async acceptLectureGroup(id) {
-      if (id) {
-        console.log(id)
-        const lessons = new EventsRequest()
-        let lessonsData = []
-        const monthTime = `Date=${this.value}`
-        await lessons.getLectureGroupId(id, monthTime).catch(x => console.log(x)).then(x => {
-          lessonsData = x.data.lecture.map(event => ({
-            ...event,
-            start: new Date(event.startTime),
-            end: new Date(event.endTime)
-          }));
-        })
-        return this.events = lessonsData
-      } else this.events = []
+    async acceptLectureGroup() {
+      this.onToggleClick(this.lastSelectedJoinType)
     },
 
-    formatTransmissions(item) {
-      const includes1 = item.includes(1);
-      const includes2 = item.includes(2);
-      if (includes1 && includes2) {
-        return 'АКП, МКП';
-      } else if (includes1) {
-        return 'АКП';
-      } else if (includes2) {
-        return 'МКП';
-      } else {
-        return '';
-      }
-    },
     async getStudent() {
       const student = new UsersRequest()
       await student.getUsers().catch(x => console.log(x)).then((response) => {
         const users = response.data.students;
         const foundUser = users.find(user => user.id === this.userID);
-        console.log('foundUser', foundUser)
         if (foundUser) {
           this.studentGeneralHours = foundUser.generalHours
           this.studentGeneralHoursSpent = foundUser.generalHoursSpent
         }
       })
     },
+
     async openNewPractice() {
       let userName = ''
       if (this.isAdmin) {
@@ -498,20 +471,6 @@ export default {
           this.onToggleClick(this.lastSelectedJoinType)
         }
       });
-    },
-
-    viewDay({date}) {
-      this.selectedMoreElement = nativeEvent.target
-      this.value = date
-      this.type = 'day'
-    },
-
-    displayText(item) {
-      return item[1];
-    },
-
-    valueText(item) {
-      return item[0];
     },
 
     async getSelectedTeacherPractices() {
@@ -545,11 +504,38 @@ export default {
 
     async acceptEditableStudent() {
       if (this.isAdmin) {
+        await this.getAccessibleTeachersForStudent(this.selectedStudent)
         this.onToggleClick(this.lastSelectedJoinType)
       } else {
         this.events = []
         await this.getSelectedTeacherPractices();
       }
+    },
+
+    async getAccessibleTeachersForStudent(id) {
+      if(!id){
+        return
+      }
+      const teachers = new UsersRequest()
+      let listTeachers
+      await teachers.getCorrectTeacherForSelectedUser(id).catch(x => console.log(x)).then(x => {
+        listTeachers = x.data.activeUsers
+      })
+      this.listTeachers = [{
+        "id": null,
+        "name": null,
+        "surname": null,
+        "middleName": null,
+        "vkUserId": null,
+        "email": null,
+        "phoneNumber": null,
+        "userName": null,
+        "transmissionTypeEnum": null,
+        "isAdmin": null,
+        "city": null
+      }]
+      this.selectedTeacher = null
+      return this.listTeachers.push(...listTeachers)
     },
 
     async acceptEditableTeacher() {
@@ -560,7 +546,7 @@ export default {
       if (this.isUserTeacher && this.isAdmin) {
         this.events = []
         this.selectedActiveUser = selectedId
-        this.listStudents = this.getCorrectStudents(this.selectedActiveUser)
+        await this.getCorrectStudents(this.selectedActiveUser)
         this.onToggleClick(this.lastSelectedJoinType)
       } else {
         if (this.lastSelectedJoinType !== 1) {
@@ -574,33 +560,6 @@ export default {
       }
     },
 
-    async getPracticesSelectedTeacher(ActiveUserId) {
-      const practices = new EventsRequest()
-      let practicesData
-      if (this.type === 'week') {
-        const monday = this.currentDate.clone().startOf('isoWeek').format('YYYY-MM-DD')
-        const sunday = this.currentDate.clone().endOf('isoWeek').format('YYYY-MM-DD')
-        const query = `ActiveUserId=${ActiveUserId}&Date=${monday}&Date2=${sunday}`
-        await practices.getPracticesActiveUser(query).catch(x => console.log(x)).then(x => {
-          practicesData = x.data.practice.map(event => ({
-            ...event,
-            start: new Date(event.startTime),
-            end: new Date(event.endTime)
-          }));
-        })
-      } else {
-        const query = `ActiveUserId=${ActiveUserId}&Date=${this.value}`
-        await practices.getPracticesActiveUser(query).catch(x => console.log(x)).then(x => {
-          practicesData = x.data.practice.map(event => ({
-            ...event,
-            start: new Date(event.startTime),
-            end: new Date(event.endTime)
-          }));
-        })
-      }
-      return practicesData
-    },
-
     onToggleClick(id) {
       this.lastSelectedJoinType = id;
       switch (id) {
@@ -609,37 +568,6 @@ export default {
         case 2:
           return this.testPractices()
       }
-    },
-
-    async previousMonth() {
-      this.$refs.calendar.prev()
-      if (this.type === 'week') {
-        this.currentDate = this.currentDate.clone().subtract(1, 'week');
-        await this.onToggleClick(this.lastSelectedJoinType)
-      }
-    },
-
-    async nextMonth() {
-      this.$refs.calendar.next()
-      if (this.type === 'week') {
-        this.currentDate = this.currentDate.clone().add(1, 'week');
-        await this.onToggleClick(this.lastSelectedJoinType)
-      }
-    },
-
-    async confirmOnChangeMonthAndYear(newValue) {
-      if (this.type !== 'week') {
-        const currentMonthAndYear = this.getMonthAndYear(newValue);
-        if (currentMonthAndYear !== this.prevMonthAndYear) {
-          this.onToggleClick(this.lastSelectedJoinType);
-          this.prevMonthAndYear = currentMonthAndYear;
-        }
-      }
-    },
-
-    getMonthAndYear(dateString) {
-      const [year, month] = dateString.split('-');
-      return `${year}-${month}`;
     },
 
     async reviewEvent(e) {
@@ -680,19 +608,11 @@ export default {
     async getLessonsAdmin() {
       const lessons = new EventsRequest()
       let lessonsData
-      const monthTime = `Date=${this.value}`
+      let query
       if (this.selectedTeacher) {
+        this.selectedGroup ? query = `GroupId=${this.selectedGroup}&Date=${this.value}` : query = `Date=${this.value}`
         const userId = this.selectedTeacher
-        await lessons.getLectureActiveUser(userId, monthTime).catch(x => console.log(x)).then(x => {
-          lessonsData = x.data.lecture.map(event => ({
-            ...event,
-            start: new Date(event.startTime),
-            end: new Date(event.endTime)
-          }));
-        })
-      } else if (this.selectedStudent) {
-        const userId = this.selectedStudent
-        await lessons.getLecturesStudent(userId, monthTime).catch(x => console.log(x)).then(x => {
+        await lessons.getLectureActiveUser(userId, query).catch(x => console.log(x)).then(x => {
           lessonsData = x.data.lecture.map(event => ({
             ...event,
             start: new Date(event.startTime),
@@ -700,7 +620,19 @@ export default {
           }));
         })
       }
-
+      else if (this.selectedGroup) {
+        const lessons = new EventsRequest()
+        let lessonsData = []
+        const monthTime = `Date=${this.value}`
+        await lessons.getLectureGroupId(this.selectedGroup, monthTime).catch(x => console.log(x)).then(x => {
+          lessonsData = x.data.lecture.map(event => ({
+            ...event,
+            start: new Date(event.startTime),
+            end: new Date(event.endTime)
+          }));
+        })
+        return this.events = lessonsData
+      }
       return lessonsData
     },
 
@@ -796,22 +728,31 @@ export default {
     },
 
     async getLessonsStudent() {
+      const lessons = new EventsRequest()
+      let lessonsData = []
+      const activeUserId = this.selectedTeacher
       const groupId = this.$store.state.user.groupId
-      if (groupId) {
-        const lessons = new EventsRequest()
-        let lessonsData = []
-        const monthTime = `Date=${this.value}`
-        await lessons.getLectureGroupId(groupId, monthTime).catch(x => console.log(x)).then(x => {
+      if(activeUserId){
+        const query = `GroupId=${groupId}&Date=${this.value}`
+        await lessons.getLectureActiveUser(activeUserId,query).catch(x => console.log(x)).then(x => {
           lessonsData = x.data.lecture.map(event => ({
             ...event,
             start: new Date(event.startTime),
             end: new Date(event.endTime)
           }));
         })
-        return lessonsData
-      } else {
-        return []
       }
+      else {
+        const query = `Date=${this.value}`
+        await lessons.getLessons(query).catch(x => console.log(x)).then(x => {
+          lessonsData = x.data.lecture.map(event => ({
+            ...event,
+            start: new Date(event.startTime),
+            end: new Date(event.endTime)
+          }));
+        })
+      }
+      return lessonsData
     },
 
     async getPracticesTeacher() {
@@ -844,11 +785,12 @@ export default {
     async getLessonsTeacher() {
       const lessons = new EventsRequest()
       let lessonsData
+      let query
       if (this.type === 'week') {
         const monday = this.currentDate.clone().startOf('isoWeek').format('YYYY-MM-DD')
         const sunday = this.currentDate.clone().endOf('isoWeek').format('YYYY-MM-DD')
-        const query = `Date=${monday}&Date2=${sunday}`
-        await lessons.getLessons(query).catch(x => console.log(x)).then(x => {
+        this.selectedGroup ? query = `GroupId=${this.selectedGroup}&Date=${monday}&Date2=${sunday}` : query = `Date=${monday}&Date2=${sunday}`
+        await lessons.getLectureCurrentUser(query).catch(x => console.log(x)).then(x => {
           lessonsData = x.data.lecture.map(event => ({
             ...event,
             start: new Date(event.startTime),
@@ -856,8 +798,8 @@ export default {
           }));
         })
       } else {
-        const query = `Date=${this.value}`
-        await lessons.getLessons(query).catch(x => console.log(x)).then(x => {
+        this.selectedGroup ? query = `GroupId=${this.selectedGroup}&Date=${this.value}`: query = `Date=${this.value}`
+        await lessons.getLectureCurrentUser(query).catch(x => console.log(x)).then(x => {
           lessonsData = x.data.lecture.map(event => ({
             ...event,
             start: new Date(event.startTime),
@@ -868,11 +810,7 @@ export default {
       return lessonsData
     },
 
-
     async getLessons() {
-      if (!this.selectedTeacher && !this.selectedStudent && this.isAdmin) {
-        return this.events = []
-      }
       if (this.isAdmin) {
         this.events = await this.getLessonsAdmin();
       } else if (this.isUserTeacher && !this.isAdmin) {
@@ -886,7 +824,6 @@ export default {
       if (!this.selectedTeacher && !this.selectedStudent && this.isAdmin) {
         return this.events = []
       }
-
       if (this.isAdmin) {
         this.events = await this.getPracticesAdmin();
       } else if (this.isUserTeacher && !this.isAdmin) {
@@ -902,26 +839,13 @@ export default {
       }
     },
 
-    formatTime(startTime) {
-      const date = new Date(startTime);
-      const hours = date.getHours().toString().padStart(2, '0');
-      const minutes = date.getMinutes().toString().padStart(2, '0');
-      return `${hours}:${minutes}`;
-    },
-
-    getEventColor(event) {
-      if (event.studentId === null)
-        return '#9DB9FF';
-      else
-        return '#E9E9E8';
-    },
-
-    handleResize() {
-      if (window.innerWidth < 1260) {
-        this.num = 30;
-      } else {
-        this.num = 70;
-      }
+    async getCorrectStudentsForCurrentUser() {
+      const teachers = new UsersRequest();
+      let students
+      await teachers.getCorrectStudentsForCurrentUser().catch(x => console.log(x)).then(x => {
+        students = x.data.students
+      })
+      this.listStudents.push(...students)
     },
 
     async getAccessibleTeachers() {
@@ -958,6 +882,87 @@ export default {
         groupList = x.data
       })
       return console.log(this.listGroups.push(...groupList))
+    },
+
+    formatTime(startTime) {
+      const date = new Date(startTime);
+      const hours = date.getHours().toString().padStart(2, '0');
+      const minutes = date.getMinutes().toString().padStart(2, '0');
+      return `${hours}:${minutes}`;
+    },
+
+    getEventColor(event) {
+      if (event.studentId === null)
+        return '#9DB9FF';
+      else
+        return '#E9E9E8';
+    },
+
+    handleResize() {
+      if (window.innerWidth < 1260) {
+        this.num = 30;
+      } else {
+        this.num = 70;
+      }
+    },
+
+    async previousMonth() {
+      this.$refs.calendar.prev()
+      if (this.type === 'week') {
+        this.currentDate = this.currentDate.clone().subtract(1, 'week');
+        await this.onToggleClick(this.lastSelectedJoinType)
+      }
+    },
+
+    async nextMonth() {
+      this.$refs.calendar.next()
+      if (this.type === 'week') {
+        this.currentDate = this.currentDate.clone().add(1, 'week');
+        await this.onToggleClick(this.lastSelectedJoinType)
+      }
+    },
+
+    async confirmOnChangeMonthAndYear(newValue) {
+      if (this.type !== 'week') {
+        const currentMonthAndYear = this.getMonthAndYear(newValue);
+        if (currentMonthAndYear !== this.prevMonthAndYear) {
+          this.onToggleClick(this.lastSelectedJoinType);
+          this.prevMonthAndYear = currentMonthAndYear;
+        }
+      }
+    },
+
+    getMonthAndYear(dateString) {
+      const [year, month] = dateString.split('-');
+      return `${year}-${month}`;
+    },
+
+    formatTransmissions(item) {
+      const includes1 = item.includes(1);
+      const includes2 = item.includes(2);
+      if (includes1 && includes2) {
+        return 'АКП, МКП';
+      } else if (includes1) {
+        return 'АКП';
+      } else if (includes2) {
+        return 'МКП';
+      } else {
+        return '';
+      }
+    },
+
+    viewDay({date}) {
+      this.selectedMoreElement = nativeEvent.target
+      this.value = date
+      this.type = 'day'
+    },
+
+    displayText(item) {
+      return item[1];
+    },
+
+    valueText(item) {
+      return item[0];
     },
   },
 }
