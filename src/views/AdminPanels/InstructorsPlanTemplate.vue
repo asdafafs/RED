@@ -154,6 +154,7 @@ export default {
     endTimeRules: {
       required: value => !!value
     },
+    transmissionTypeEnum: [],
   }),
 
   computed: {
@@ -163,10 +164,6 @@ export default {
     },
 
     hasChanges() {
-      console.log(this.originalCity !== this.selectedCity,
-          this.originalPracticeCourseStart !== this.practiceCourseStart,
-          this.originalPracticeCourseEnd !== this.practiceCourseEnd )
-      console.log(1)
       return JSON.stringify(this.eventsTemplate) !== JSON.stringify(this.originalEventsTemplate) ||
           this.originalCity !== this.selectedCity ||
           this.originalPracticeCourseStart !== this.practiceCourseStart ||
@@ -224,7 +221,7 @@ export default {
             "activeUserId": parseInt(this.getIdUser),
             'duration': this.selectedDuration,
             "practices": this.eventsTemplate,
-            "transmissionTypeEnum": [1],
+            "transmissionTypeEnum": this.transmissionTypeEnum,
             "city": this.selectedCity
           };
           await this.postPracticeCourseTemplate(body).finally(() => {
@@ -310,7 +307,6 @@ export default {
       this.originalPracticeCourseStart = this.practiceCourseStart
       this.originalPracticeCourseEnd = this.practiceCourseEnd
       this.originalCity = this.selectedCity
-      console.log(this.originalEventsTemplate, this.originalPracticeCourseStart,this.originalPracticeCourseEnd, this.originalCity)
       return this.eventsTemplate = events
     },
 
@@ -350,7 +346,6 @@ export default {
       const year = today.getFullYear();
       let month = today.getMonth() + 1;
       let day = today.getDate();
-
       if (month < 10) {
         month = '0' + month;
       }
@@ -364,9 +359,17 @@ export default {
       return !(this.startDateRules.required(this.practiceCourseStart) && this.endTimeRules.required(this.practiceCourseEnd))
     },
 
+    async getTeacherInfo() {
+      const teacher = new UsersRequest()
+      await teacher.getActiveUserId(this.getIdUser).then(x => {
+        this.transmissionTypeEnum = x.data.activeUsers[0].transmissionTypeEnum
+      }).catch(error => console.log(error))
+    },
+
     initialize() {
       this.getListTemplates()
       this.checkInitialValidity();
+      this.getTeacherInfo()
       this.originalEventsTemplate = JSON.parse(JSON.stringify(this.eventsTemplate))
     },
 
