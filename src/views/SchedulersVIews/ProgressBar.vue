@@ -16,7 +16,7 @@
         <v-row class="flex-wrap py-2" no-gutters>
           <v-col v-for="(item, index) in items" :key="index">
             <div class="d-flex flex-column justify-center">
-              <div class="text-center custom-text-circular">{{ item.title }}</div>
+              <div class="text-center custom-text-circular" style="height: 56px">{{ item.title }}</div>
               <div class="d-flex justify-center">
                 <v-progress-circular
                     :rotate="360"
@@ -38,14 +38,14 @@
             </div>
           </v-col>
         </v-row>
-        <v-row>
-          <v-col v-for="(item, index) in itemsPastPractices" :key="index">
-            <div class="d-flex flex-column justify-center" style="gap: 17px">
-              <div class="text-center custom-text-circular">{{ item.title }}</div>
-              <div class="text-center custom-text-circular-title">{{ item.totalHours }}</div>
+        <div class="d-flex flex-row justify-center" style="gap: 40px">
+          <div v-for="(item, index) in itemsPastPractices" :key="index" style="width: 225px !important;">
+            <div class="d-flex flex-column justify-center" style="gap: 17px; width: fit-content">
+              <div class="text-center custom-text-practice">{{ item.title }}</div>
+              <div class="text-center custom-text-practice-subtitle">{{ item.totalHours }}</div>
             </div>
-          </v-col>
-        </v-row>
+          </div>
+        </div>
       </div>
     </div>
   </v-container>
@@ -210,6 +210,22 @@ export default {
   font-weight: 700 !important;
   font-size: 40px !important;
   line-height: 28px !important;
+}
+
+.custom-text-practice {
+  color: #000000;
+  font-weight: 700 !important;
+  font-size: 24px !important;
+  line-height: 28px !important;
+  width: fit-content;
+}
+
+.custom-text-practice-subtitle {
+  color: #4E7AEC;
+  font-weight: 700 !important;
+  font-size: 40px !important;
+  line-height: 28px !important;
+  width: fit-content;
 }
 
 .education-info-title {
