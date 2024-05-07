@@ -204,16 +204,22 @@
           :event-color="getEventColor"
           @click:event="reviewEvent"
           :event-ripple="false"
-          :event-height="32"
+          :event-height="eventHeight"
           :hide-header=false
           @click:more="viewDay"
           event-more
           event-more-text="+ {0}"
       >
         <template v-slot:event="{event}">
-          <div class="calendar-event" :class="{'event-border': selectedLessonType === 2 && event.studentId === null}">
+          <div 
+              class="calendar-event" 
+              :class="{
+              'event-border': selectedLessonType === 2 && event.studentId === null,
+             'px-[2px] justify-center' : !$vuetify.breakpoint.lgAndUp, 
+             'px-3' : $vuetify.breakpoint.lgAndUp}"
+          >
             <div class="calendar-event_time">{{ formatTime(event.startTime) }}</div>
-            <div class="calendar-event_info">
+            <div class="calendar-event_info" v-if="$vuetify.breakpoint.lgAndUp">
               <div class="calendar-event_info_type">{{ getEventTitle(event) }}</div>
               <div class="calendar-event_info_teacher">{{ getTeacherName(event) }}</div>
             </div>
@@ -369,6 +375,11 @@ export default {
   },
   computed: {
     ...mapState(['user']),
+    eventHeight() {
+      if (this.type === 'month') return 32
+      if (this.type === 'week') return 32
+      if (this.type === 'day') return 48
+    },
     calendarButtons() {
       return [
         {
@@ -1171,13 +1182,12 @@ export default {
   display: flex;
   flex-direction: row;
   width: 100%;
-  height: 32px;
+  height: 100%;
+  align-items: center;
   color: #2B2A29;
-  padding-left: 12px;
-  padding-right: 12px;
   border-radius: 4px;
   gap: 12px;
-
+  
   &_time {
     display: flex;
     align-items: center;
