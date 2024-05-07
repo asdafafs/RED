@@ -224,9 +224,8 @@ export default {
             "transmissionTypeEnum": this.transmissionTypeEnum,
             "city": this.selectedCity
           };
-          await this.postPracticeCourseTemplate(body).finally(() => {
+          await this.postPracticeCourseTemplate(body).then(() => {this.initialize()}).finally(() => {
             this.isSaveButtonDisabled = false
-            this.initialize()
           })
         } else {
           warningAlert('Не обнаружено доступных изменений', 5000)
