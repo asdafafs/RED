@@ -173,11 +173,7 @@ export default {
       default: true
     }
   },
-  watch: {
-    eventDate() {
-      console.log('date', this.eventDate)
-    }
-  },
+
   mounted() {
     if (!this.isNew) {
       this.eventDate = moment(this.data.e.event.startTime).format('YYYY-MM-DD')
@@ -188,10 +184,12 @@ export default {
       this.selectedCity = this.data.e.event.city
       const selectedStudent = this.data.listStudents.find(student => student.id === this.data.e.event.studentId);
       this.selectedStudentId = selectedStudent ? selectedStudent.id : null;
+      this.data.listStudents = this.data.listStudents.filter(student => student.city[0] === this.data.e.event.city[0])
     } else {
       this.eventDate = moment().format('YYYY-MM-DD')
       this.eventStartTime = '06:00'
       this.savedTransmission = this.data.teacherTransmissions
+      this.selectedTransmission = this.data.teacherTransmissions
     }
   },
   computed: {
@@ -244,42 +242,45 @@ export default {
       if (item) {
         this.selectedTransmission = item.transmissionTypeEnum
         this.data.teacherTransmissions = item.transmissionTypeEnum
-        const includes1 = item.city.includes(1);
-        const includes2 = item.city.includes(2);
-        if (includes1 && includes2) {
-          this.listCities = [
-            {id: [1], text: 'Северодвинск'},
-            {id: [2], text: 'Новодвинск'}
-          ];
-        } else if (includes1) {
-          this.listCities = [{id: [1], text: 'Северодвинск'}];
-          this.selectedCity = [1]
+        if(this.isNew){
+          const includes1 = item.city.includes(1);
+          const includes2 = item.city.includes(2);
+          if (includes1 && includes2) {
+            this.listCities = [
+              {id: [1], text: 'Северодвинск'},
+              {id: [2], text: 'Новодвинск'}
+            ];
+          } else if (includes1) {
+            this.listCities = [{id: [1], text: 'Северодвинск'}];
+            this.selectedCity = [1]
 
-        } else if (includes2) {
-          this.listCities = [{id: [2], text: 'Новодвинск'}];
-          this.selectedCity = [2]
+          } else if (includes2) {
+            this.listCities = [{id: [2], text: 'Новодвинск'}];
+            this.selectedCity = [2]
+          }
         }
       } else {
         this.listCities = [
           {id: [1], text: 'Северодвинск'},
           {id: [2], text: 'Новодвинск'}];
-        this.selectedCity = null
         this.selectedTransmission = null
         this.data.teacherTransmissions = this.savedTransmission
       }
     },
 
     formatCity(item) {
-      const includes1 = item.includes(1);
-      const includes2 = item.includes(2);
-      if (includes1 && includes2) {
-        return 'Северодвинск, Новодвинск';
-      } else if (includes1) {
-        return 'Северодвинск';
-      } else if (includes2) {
-        return 'Новодвинск';
-      } else {
-        return '';
+      if (item) {
+        const includes1 = item.includes(1);
+        const includes2 = item.includes(2);
+        if (includes1 && includes2) {
+          return 'Северодвинск, Новодвинск';
+        } else if (includes1) {
+          return 'Северодвинск';
+        } else if (includes2) {
+          return 'Новодвинск';
+        } else {
+          return '';
+        }
       }
     },
     onCancelClick() {

@@ -447,7 +447,6 @@ export default {
       await student.getUsers(query).catch(x => console.log(x)).then((response) => {
         const users = response.data.students;
         const foundUser = users.find(user => user.id === this.userID);
-        console.log('getStudent')
         if (foundUser) {
           this.studentGeneralHours = foundUser.generalHours
           this.studentGeneralHoursSpent = foundUser.generalHoursSpent
@@ -464,14 +463,11 @@ export default {
       if (this.isAdmin) {
         const teacher = this.listTeachers.find(teacher => teacher.id === this.selectedTeacher)
         userName = teacher ? `${teacher.surname} ${teacher.name[0]}. ${teacher.middleName[0]}.` : '';
-        teacherTransmissions = teacher ? `${teacher.transmissionTypeEnum}` : []
+        teacherTransmissions = teacher ? teacher.transmissionTypeEnum : null
       } else {
         userName = `${this.user.surname} ${this.user.name[0]}. ${this.user.middleName[0]}.`
-        console.log('this.userID', this.userID)
-        console.log('this.listTeachers', this.listTeachers)
         const teacher = this.listTeachers.find(teacher => teacher.id === this.userID)
-        console.log('teacher',teacher)
-        teacherTransmissions = teacher ? `${teacher.transmissionTypeEnum}` : []
+        teacherTransmissions = teacher ? teacher.transmissionTypeEnum : null
       }
       const listStudents = this.listStudents.filter(student => student.id !== null);
       const data = {
