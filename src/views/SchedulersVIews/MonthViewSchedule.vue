@@ -259,7 +259,7 @@ export default {
       this.types = [['month', 'месяц'], ['day', 'день']]
     }
   },
-  
+
   data: () => ({
     selectedLessonType: null,
     events: [],
@@ -431,12 +431,17 @@ export default {
 
     async getStudent() {
       const student = new UsersRequest()
-      await student.getUsers().catch(x => console.log(x)).then((response) => {
+      const query = 'ShowDeleted=false'
+      await student.getUsers(query).catch(x => console.log(x)).then((response) => {
         const users = response.data.students;
         const foundUser = users.find(user => user.id === this.userID);
+        console.log('getStudent')
         if (foundUser) {
           this.studentGeneralHours = foundUser.generalHours
           this.studentGeneralHoursSpent = foundUser.generalHoursSpent
+        } else {
+          this.studentGeneralHours = 0
+          this.studentGeneralHoursSpent = 0
         }
       })
     },
@@ -489,7 +494,7 @@ export default {
           }));
         })
         this.events = cal
-        console.log('cal',cal)
+        console.log('cal', cal)
       }
     },
 
@@ -504,7 +509,7 @@ export default {
     },
 
     async getAccessibleTeachersForStudent(id) {
-      if(!id){
+      if (!id) {
         return
       }
       const teachers = new UsersRequest()
@@ -577,10 +582,18 @@ export default {
         })
       } else {
         const listStudents = this.listStudents.filter(student => student.id !== null);
-        console.log('listStudents',listStudents)
-        const student = this.listStudents.find(student => student.id === e.event.studentId);
-        console.log('иоллапиапиьапиапиж',student)
-        const studentName = student ? `${student.surname} ${student.name[0]}. ${student.middleName[0]}.` : ''
+        const student = listStudents.find(student => student.id === e.event.studentId);
+        let studentName, studentGeneralHours, studentGeneralHoursSpent
+        console.log('student', student)
+        if (student) {
+          studentName = student ? `${student.surname} ${student.name[0]}. ${student.middleName[0]}.` : ''
+          studentGeneralHours = student.generalHours
+          studentGeneralHoursSpent = student.generalHoursSpent
+        } else {
+          studentName = null
+          studentGeneralHours = '0'
+          studentGeneralHoursSpent = '0'
+        }
         const teacher = this.listTeachers.find(teacher => this.selectedTeacher && teacher.id === this.selectedTeacher)
         const teacherName = teacher ? `${teacher.surname} ${teacher.name[0]}. ${teacher.middleName[0]}.` : ''
         const teacherTransmissions = teacher ? teacher.transmissionTypeEnum : [];
@@ -593,12 +606,11 @@ export default {
           userId: this.userID,
           student: this.isUserStudent,
           teacherTransmissions: teacherTransmissions,
-          studentGeneralHours: this.studentGeneralHours,
-          studentGeneralHoursSpent: this.studentGeneralHoursSpent,
+          studentGeneralHours: studentGeneralHours,
+          studentGeneralHoursSpent: studentGeneralHoursSpent,
           studentName: studentName,
           teacherName: teacherName
         }
-        console.log(data)
         await this.$reviewPracticeDialogPlugin(data).then((isCancel) => {
           if (!isCancel) this.onToggleClick(this.lastSelectedJoinType)
         })
@@ -619,8 +631,7 @@ export default {
             end: new Date(event.endTime)
           }));
         })
-      }
-      else if (this.selectedGroup) {
+      } else if (this.selectedGroup) {
         const lessons = new EventsRequest()
         let lessonsData = []
         const monthTime = `Date=${this.value}`
@@ -732,17 +743,16 @@ export default {
       let lessonsData = []
       const activeUserId = this.selectedTeacher
       const groupId = this.$store.state.user.groupId
-      if(activeUserId){
+      if (activeUserId) {
         const query = `GroupId=${groupId}&Date=${this.value}`
-        await lessons.getLectureActiveUser(activeUserId,query).catch(x => console.log(x)).then(x => {
+        await lessons.getLectureActiveUser(activeUserId, query).catch(x => console.log(x)).then(x => {
           lessonsData = x.data.lecture.map(event => ({
             ...event,
             start: new Date(event.startTime),
             end: new Date(event.endTime)
           }));
         })
-      }
-      else {
+      } else {
         const query = `Date=${this.value}`
         await lessons.getLessons(query).catch(x => console.log(x)).then(x => {
           lessonsData = x.data.lecture.map(event => ({
@@ -798,7 +808,7 @@ export default {
           }));
         })
       } else {
-        this.selectedGroup ? query = `GroupId=${this.selectedGroup}&Date=${this.value}`: query = `Date=${this.value}`
+        this.selectedGroup ? query = `GroupId=${this.selectedGroup}&Date=${this.value}` : query = `Date=${this.value}`
         await lessons.getLectureCurrentUser(query).catch(x => console.log(x)).then(x => {
           lessonsData = x.data.lecture.map(event => ({
             ...event,
@@ -886,7 +896,7 @@ export default {
         studentList = x.data.students
       })
       this.listStudents.push(...studentList)
-      console.log(' this.listStudents123123123123',this.listStudents)
+      console.log(' this.listStudents123123123123', this.listStudents)
     },
 
     async getGroups() {
@@ -917,7 +927,7 @@ export default {
           return '#FFFFFF';
       }
     },
-    
+
     async previousMonth() {
       this.$refs.calendar.prev()
       if (this.type === 'week') {
@@ -1148,6 +1158,7 @@ export default {
     max-height: 32px !important;
   }
 }
+
 .calendar-event {
   display: flex;
   flex-direction: row;
@@ -1158,6 +1169,7 @@ export default {
   padding-right: 12px;
   border-radius: 4px;
   gap: 12px;
+
   &_time {
     display: flex;
     align-items: center;
@@ -1165,15 +1177,18 @@ export default {
     font-weight: 600;
     line-height: 20px;
   }
+
   &_info {
     display: flex;
     flex-direction: column;
     height: 28px;
+
     &_type {
       font-size: 12px;
       font-weight: 600;
       line-height: 14px;
     }
+
     &_teacher {
       font-size: 12px;
       font-weight: 400;
@@ -1181,6 +1196,7 @@ export default {
     }
   }
 }
+
 .event-border {
   border: 1px solid #4E7AEC;
   border-radius: 4px;

@@ -134,10 +134,10 @@ export default {
     }
   },
   methods: {
-    
     onCancelClick() {
       this.$emit('destroy',true)
     },
+
     formatCity(item) {
       const includes1 = item.includes(1);
       const includes2 = item.includes(2);
