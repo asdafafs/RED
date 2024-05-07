@@ -16,6 +16,7 @@
           <v-btn
               color="edit-buttons-div__edit-button"
               @click="openDeleteDialog"
+              v-if="data.isAdmin"
           >
             <span class="edit-buttons-div__edit-button__text">Удалить</span>
           </v-btn>
@@ -127,7 +128,7 @@ export default {
         {
           id: 4,
           title: 'Лимит часов',
-          value: `Оплаченые (отстаток ${this.data.studentGeneralHoursSpent} из ${this.data.studentGeneralHours})`,
+          value: `Оплаченые (остаток ${this.data.studentGeneralHoursSpent} из ${this.data.studentGeneralHours})`,
           visible: true
         },
       ]

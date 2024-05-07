@@ -355,6 +355,7 @@ export default {
           this.onToggleClick(this.lastSelectedJoinType)
         })
       } else if (this.isUserTeacher) {
+        this.getAllTeachers()
         this.getCorrectStudentsForCurrentUser().then(() => {
           this.onToggleClick(this.lastSelectedJoinType)
         })
@@ -448,18 +449,26 @@ export default {
 
     async openNewPractice() {
       let userName = ''
+      let teacherTransmissions
       if (this.isAdmin) {
         const teacher = this.listTeachers.find(teacher => teacher.id === this.selectedTeacher)
         userName = teacher ? `${teacher.surname} ${teacher.name[0]}. ${teacher.middleName[0]}.` : '';
+        teacherTransmissions = teacher ? `${teacher.transmissionTypeEnum}` : []
       } else {
         userName = `${this.user.surname} ${this.user.name[0]}. ${this.user.middleName[0]}.`
+        console.log('this.userID', this.userID)
+        console.log('this.listTeachers', this.listTeachers)
+        const teacher = this.listTeachers.find(teacher => teacher.id === this.userID)
+        console.log('teacher',teacher)
+        teacherTransmissions = teacher ? `${teacher.transmissionTypeEnum}` : []
       }
       const listStudents = this.listStudents.filter(student => student.id !== null);
       const data = {
         listStudents: listStudents,
         userName: userName,
         userId: this.selectedActiveUser,
-        isAdmin: this.isAdmin
+        isAdmin: this.isAdmin,
+        teacherTransmissions: teacherTransmissions,
       }
       await this.$openNewPracticeDialogPlugin(data, true).then((isCancel) => {
         if (!isCancel) {
@@ -584,7 +593,6 @@ export default {
         const listStudents = this.listStudents.filter(student => student.id !== null);
         const student = listStudents.find(student => student.id === e.event.studentId);
         let studentName, studentGeneralHours, studentGeneralHoursSpent
-        console.log('student', student)
         if (student) {
           studentName = student ? `${student.surname} ${student.name[0]}. ${student.middleName[0]}.` : ''
           studentGeneralHours = student.generalHours
@@ -611,6 +619,7 @@ export default {
           studentName: studentName,
           teacherName: teacherName
         }
+        console.log('data', data)
         await this.$reviewPracticeDialogPlugin(data).then((isCancel) => {
           if (!isCancel) this.onToggleClick(this.lastSelectedJoinType)
         })
@@ -896,7 +905,6 @@ export default {
         studentList = x.data.students
       })
       this.listStudents.push(...studentList)
-      console.log(' this.listStudents123123123123', this.listStudents)
     },
 
     async getGroups() {
