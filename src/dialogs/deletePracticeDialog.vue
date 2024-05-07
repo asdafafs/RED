@@ -5,52 +5,19 @@
         flat
     >
       <v-card-title class="pa-5 d-flex flex-column justify-start">
-        <span class="delete-practice-dialog_first-title">Удаление записи</span>
-        <span class="delete-practice-dialog_second-title">Вождение</span>
+        <span class="delete-practice-dialog_first-title">ПОДТВЕРЖДЕНИЕ ДЕЙСТВИЯ</span>
+        <span class="delete-practice-dialog_second-title">Вы удаляете практику</span>
       </v-card-title>
       <v-card-text class="pa-5 pt-0 pb-0">
         <div class="delete-practice-dialog_text">
-          <div class="d-flex flex-row w-full">
-            <div class="d-flex align-center justify-center">
-              <v-icon class="time-of-practice-icon">mdi-clock-time-four-outline</v-icon>
-            </div>
-            <div class="d-flex flex-column justify-start">
-              <div class="date-of-practice">{{ dateOfPractice }}</div>
-              <div class="time-of-practice">{{ timeOfPractice }}</div>
-            </div>
-          </div>
           <div class="open-practice-dialog_text">
-            <div
-                v-for="item in items"
-                class="d-flex flex-column"
-            >
-              <span class="review-practice-dialog_text_title">{{ item.title }}</span>
-              <span class="teacher-text">{{ item.value }}</span>
+            <div class="d-flex flex-column">
+              <span class="teacher-text">Вы действительно хотите удалить данную практику?
+                <br>
+                <br>
+Данная практика будет полностью удалена из расписания. Часы данной практики не будут отражены в статистике для инструктора и студента.</span>
             </div>
           </div>
-          <div>
-            <v-radio-group
-                class="flex-row mt-2 pt-0"
-                v-model="typeOfReasonId"
-                row
-                hide-details
-            >
-              <v-radio label="Отменена" :value="1"/>
-              <v-radio label="Сгорела" :value="2"/>
-            </v-radio-group>
-          </div>
-          <v-select
-              no-data-text="Нет данных для отображения"
-              v-model="selectedReasonId"
-              :items="reasonsRefusal"
-              item-value="id"
-              item-text="reason"
-              class="v-text-field-custom-h-32"
-              outlined
-              dense
-              hide-details
-              :disabled="typeOfReasonId !== 1"
-          />
         </div>
       </v-card-text>
       <v-card-actions class="pa-5">
@@ -92,117 +59,21 @@ export default {
       default: {}
     },
   },
-  computed: {
-    dateOfPractice() {
-      return `${moment(this.data.e.event.startTime).format('DD.MM.YYYY')} (${moment(this.data.e.event.startTime).locale('ru').format('dd')})`;
-    },
-    timeOfPractice() {
-      return `${moment(this.data.e.event.startTime).format('HH:mm')} - ${moment(this.data.e.event.endTime).format('HH:mm')}`
-    },
-    reasonsRefusal() {
-      return [
-        {
-          id: 1,
-          reason: 'Ремонт'
-        },
-        {
-          id: 2,
-          reason: 'Семейные обстоятельств'
-        },
-        {
-          id: 3,
-          reason: 'Экзамен'
-        },
-        {
-          id: 4,
-          reason: 'Здоровье'
-        },
-        {
-          id: 5,
-          reason: 'Задачи офиса'
-        }
-      ]
-    },
-    items() {
-      return [
-        {
-          id: 0,
-          title: 'Преподаватель',
-          value: this.data.teacherName ? this.data.teacherName : '---'
-        },
-        {
-          id: 1,
-          title: 'Коробка передач',
-          value: this.formatTransmissions(this.data.e.event.transmissionTypeEnum)
-        },
-        {
-          id: 2,
-          title: 'Текущий студент',
-          value: this.data.studentName ? this.data.studentName : '---'
-        },
-      ]
-    }
-  },
   methods: {
-    formatTransmissions(item) {
-      const includes1 = item.includes(1);
-      const includes2 = item.includes(2);
-      if (includes1 && includes2) {
-        return 'АКП, МКП';
-      } else if (includes1) {
-        return 'АКП';
-      } else if (includes2) {
-        return 'МКП';
-      } else {
-        return '';
-      }
-    },
-
     onCancelClick() {
       this.$emit('destroy', true)
     },
     async onDeleteClick() {
-      let body = {}
       const event = new EventsRequest()
-      if (this.data.isAdmin) {
-        if (this.typeOfReasonId === 1) {
-          body = {
-            "id": this.data.e.event.id,
-            "deleteReasonEnum": this.selectedReasonId
-          }
-          await event.closeAdminStudent(body).catch(x => console.log(x)).then(
-              this.$emit('destroy', false)
-          )
-        } else {
-          body = {
-            "id": this.data.e.event.id,
-            "stateEnum": this.typeOfReasonId
-          }
-          await event.closeAdminStudent(body).catch(x => console.log(x)).then(
-              this.$emit('destroy', false)
-          )
-        }
-      } else {
-        if (this.typeOfReasonId === 1) {
-          body = {
-            "id": this.data.e.event.id,
-            "deleteReasonEnum": this.selectedReasonId
-          }
-          await event.closePractice(body).catch(x => console.log(x)).then(
-              this.$emit('destroy', false)
-          )
-        } else {
-          body = {
-            "id": this.data.e.event.id,
-            "stateEnum": this.typeOfReasonId
-          }
-          await event.closePractice(body).catch(x => console.log(x)).then(
-              this.$emit('destroy', false)
-          )
-        }
-      }
+
+      await event.deleteAdminPractice(this.data.e.event.id).catch(x => console.log(x)).then(
+          this.$emit('destroy', false)
+      )
     },
   },
+  created() {
+    console.log(this.data)
+  }
 }
 
 </script>
@@ -253,6 +124,7 @@ export default {
 
     &_cancel-button {
       border-radius: 12px !important;
+      border: 1px solid rgba(0, 0, 0, 0.53) !important;
       height: 32px !important;
       width: 89px !important;
       text-transform: none !important;
