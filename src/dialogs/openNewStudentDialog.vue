@@ -52,7 +52,7 @@
                         hide-details
                         dense/>
               <div class="card-edit-student__title" style="margin-top: 16px !important;">Часы</div>
-              <v-checkbox v-model="data.editedStudent.isForbiddenToAssign" label="Может записываться на практики" hide-details/>
+              <v-checkbox v-model="data.editedStudent.isForbiddenToAssign" label="Не может записываться на практики" hide-details/>
               <v-text-field outlined class="v-text-field-custom-admin " style="border-radius: 12px"
                             v-model="data.editedStudent.generalHours"
                             label="Оплаченные практики"
