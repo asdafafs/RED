@@ -66,11 +66,11 @@ export default class EventsRequest extends HTTPService {
     }
 
     closeAdminStudent(code) {
-        return this.post("admin/practice/close", code)
+        return this.put("admin/practice/close", code)
     }
 
-    canselAdminStudent(code) {
-        return this.post("admin/practice/cansel", code)
+    canselAdminPractice(code) {
+        return this.put("admin/practice/cancel", code)
     }
 
     getFreePracticeActiveUser(query) {
@@ -95,5 +95,9 @@ export default class EventsRequest extends HTTPService {
 
     getLectureCurrentUser(query) {
         return this.get("lecture/null" + `?${query}`)
+    }
+
+    deleteAdminPractice(id){
+        return this.delete("admin/practice/" + id)
     }
 }
