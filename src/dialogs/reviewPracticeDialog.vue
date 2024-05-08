@@ -21,7 +21,11 @@
             <span class="edit-buttons-div__edit-button__text">Удалить</span>
           </v-btn>
         </div>
-        <span class="review-practice-dialog_second-title">Вождение</span>
+        <div class="d-flex flex-row w-full" style="gap: 12px">
+          <span class="review-practice-dialog_second-title">Вождение</span>
+          <span class="label-closed white--text" v-if="data.e.event.practiceStateEnum ===2">Отменена</span>
+          <span class="label-burned white--text" v-if="data.e.event.practiceStateEnum ===3">Сгорела</span>
+        </div>
         <div class="d-flex flex-row w-full">
           <div class="d-flex align-center justify-center">
             <v-icon class="time-of-practice-icon">mdi-clock-time-four-outline</v-icon>
@@ -34,18 +38,20 @@
       </v-card-title>
       <v-card-text class="pa-5 pt-0 pb-0">
         <div class="open-practice-dialog_text">
-          <div
-              v-for="item in items"
-              class="d-flex flex-column"
-          >
-            <span class="review-practice-dialog_text_title">{{ item.title }}</span>
-            <span class="teacher-text">{{ item.value }}</span>
+          <div v-for="item in items" class="d-flex flex-column">
+            <span class="review-practice-dialog_text_title" v-if="item.id !== 4 || data.student">{{ item.title }}</span>
+            <span class="teacher-text" v-if="item.id !== 4 || data.student">{{ item.value }}</span>
+            <v-radio-group v-model="data.e.event.transmissionTypeEnum" row hide-details
+                           v-if="item.id === 3 && !data.userIsStudentInPractice && !data.userTeacher">
+              <v-radio label="АКП" :value="[1]" v-if="data.e.event.allowedTransmissionTypeEnum.includes(1)"/>
+              <v-radio label="МКП" :value="[2]" v-if="data.e.event.allowedTransmissionTypeEnum.includes(2)"/>
+            </v-radio-group>
           </div>
         </div>
       </v-card-text>
       <v-card-actions class="pa-5">
-        <div 
-            class="review-practice-dialog_actions" 
+        <div
+            class="review-practice-dialog_actions"
             :class="data.student ? 'justify-space-between' : 'justify-end'"
         >
           <v-btn
@@ -60,7 +66,7 @@
               class="review-practice-dialog_actions_save-button"
               @click="onSaveClick"
           >
-            <span>{{ saveButtonTitle}}</span>
+            <span>{{ saveButtonTitle }}</span>
           </v-btn>
         </div>
       </v-card-actions>
@@ -71,7 +77,6 @@
 <script>
 import moment from "moment/moment";
 import EventsRequest from "@/services/EventsRequest";
-import UsersRequest from "@/services/UsersRequest";
 
 export default {
   name: "reviewPracticeDialog",
@@ -85,13 +90,13 @@ export default {
     },
   },
   created() {
-    console.log('data.e.event',this.data.e.event)
+    console.log('data.e.event', this.data.e.event)
   },
   computed: {
     saveButtonTitle() {
-      if (this.data.student && this.data.userIsStudentInPractice) return  'Отписаться'
-      if (this.data.student && !this.data.userIsStudentInPractice) return  'Записаться'
-      if (this.data.userTeacher || this.data.isAdmin) return  'Понятно'
+      if (this.data.student && this.data.userIsStudentInPractice) return 'Отписаться'
+      if (this.data.student && !this.data.userIsStudentInPractice) return 'Записаться'
+      if (this.data.userTeacher || this.data.isAdmin) return 'Понятно'
     },
     dateOfPractice() {
       return `${moment(this.data.e.event.startTime).format('DD.MM.YYYY')} (${moment(this.data.e.event.startTime).locale('ru').format('dd')})`;
@@ -109,20 +114,20 @@ export default {
         },
         {
           id: 1,
-          title: 'Коробка передач',
-          value: this.formatTransmissions(this.data.e.event.transmissionTypeEnum),
-          visible: true
-        },
-        {
-          id: 2,
           title: 'Город',
           value: this.formatCity(this.data.e.event.city),
           visible: true
         },
         {
-          id: 3,
+          id: 2,
           title: 'Текущий студент',
           value: this.data.e.event.studentId ? this.data.studentName : '---',
+          visible: true
+        },
+        {
+          id: 3,
+          title: 'Коробка передач',
+          value: this.formatTransmissions(this.data.e.event.transmissionTypeEnum),
           visible: true
         },
         {
@@ -136,7 +141,7 @@ export default {
   },
   methods: {
     onCancelClick() {
-      this.$emit('destroy',true)
+      this.$emit('destroy', true)
     },
 
     formatCity(item) {
@@ -163,7 +168,7 @@ export default {
       } else if (includes2) {
         return 'МКП';
       } else {
-        return '';
+        return '---';
       }
     },
 
@@ -181,32 +186,33 @@ export default {
     async openDeleteDialog() {
       this.localVisible = false
       await this.$deletePracticeDialogPlugin(this.data)
-        .then(async (isCancel) => {
-          if (!isCancel) {
-            this.$emit('destroy', false)
-          }
-        })
-        .finally(() => this.localVisible = true)
+          .then(async (isCancel) => {
+            if (!isCancel) {
+              this.$emit('destroy', false)
+            }
+          })
+          .finally(() => this.localVisible = true)
     },
-    
+
     async onSaveClick() {
       if (this.saveButtonTitle === 'Отписаться') {
-        await this.signPractice(true).then(()=>{
+        await this.signPractice(true).then(() => {
           this.$emit('destroy', false)
         })
       } else if (this.saveButtonTitle === 'Записаться') {
-        await this.signPractice(false).then(()=>{
+        await this.signPractice(false).then(() => {
           this.$emit('destroy', false)
         })
       } else {
         this.$emit('destroy', true)
       }
     },
-    
+
     async signPractice(remove) {
       const body = {
         eventId: this.data.e.event.id,
         studentId: remove ? null : this.data.userId,
+        transmissionTypeEnum: this.data.e.event.transmissionTypeEnum
       }
       const practice = new EventsRequest()
       await practice.setStudent(body).catch(x => console.log(x))
@@ -252,7 +258,8 @@ export default {
     text-transform: none;
     color: black;
     line-height: 37.5px;
-    width: 100%;
+    //width: 100%;
+    align-self: flex-start;
     margin-top: 12px;
     margin-bottom: 12px;
   }
@@ -388,5 +395,31 @@ export default {
   font-weight: 700;
   font-size: 24px;
   line-height: 28px;
+}
+
+.label-burned{
+  background-color: #FF5055;
+  border-radius: 16px;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 18.75px;
+  height: 32px;
+  width: 88px;
+  padding: 8px 12px 8px 12px;
+  margin-top: 16px;
+  margin-bottom: 12px;
+}
+
+.label-closed{
+  background-color: #2B2A29;
+  border-radius: 16px;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 18.75px;
+  height: 32px;
+  width: 102px;
+  padding: 8px 12px 8px 12px;
+  margin-top: 16px;
+  margin-bottom: 12px;
 }
 </style>
