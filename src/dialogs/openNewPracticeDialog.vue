@@ -345,7 +345,7 @@ export default {
             "city": this.selectedCity
           }
 
-          await event.putAdminPractice(body).catch(x => console.log(x)).then(
+          await event.putAdminPractice(body).catch(x => console.log(x)).then(() =>
               this.$emit('destroy', false)
           )
         } else if (this.typeOfReasonId === 2) {
@@ -353,14 +353,14 @@ export default {
             "id": this.data.e.event.id,
             "stateEnum": this.typeOfReasonId
           }
-          await event.canselAdminPractice(body).catch(x => console.log(x)).then(
+          await event.canselAdminPractice(body).catch(x => console.log(x)).then(() =>
               this.$emit('destroy', false)
           )
         } else if (this.typeOfReasonId === 3) {
           body = {
             "id": this.data.e.event.id,
           }
-          await event.closeAdminStudent(body).catch(x => console.log(x)).then(
+          await event.closeAdminStudent(body).catch(x => console.log(x)).then(() =>
               this.$emit('destroy', false)
           )
         }
@@ -383,14 +383,14 @@ export default {
             "id": this.data.e.event.id,
             "deleteReasonEnum": this.selectedReasonId
           }
-          await event.cancelPractice(body).catch(x => console.log(x)).then(
+          await event.cancelPractice(body).catch(x => console.log(x)).then(()=>
               this.$emit('destroy', false)
           )
         } else if (this.typeOfReasonId === 3) {
           body = {
             "id": this.data.e.event.id,
           }
-          await event.closePractice(body).catch(x => console.log(x)).then(
+          await event.closePractice(body).catch(x => console.log(x)).then(()=>
               this.$emit('destroy', false)
           )
         }
