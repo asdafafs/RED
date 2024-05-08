@@ -211,8 +211,8 @@
           event-more-text="+ {0}"
       >
         <template v-slot:event="{event}">
-          <div 
-              class="calendar-event" 
+          <div
+              class="calendar-event"
               :class="{
               'event-border': selectedLessonType === 2 && event.studentId === null,
              'px-[2px] justify-center' : !$vuetify.breakpoint.lgAndUp, 
@@ -936,10 +936,12 @@ export default {
         if (event.lectureType === 2) return `#FFCD6D`
         if (event.lectureType === 3) return `#FC7DC9`
       } else {
-        if (event.studentId !== null)
+        if (event.studentId !== null && event.practiceStateEnum === 0)
           return '#9DB9FF';
-        else
+        else if (event.studentId === null && event.practiceStateEnum === 0)
           return '#FFFFFF';
+        else
+          return 'rgba(157,185,255,0.61)';
       }
     },
 
@@ -1183,7 +1185,7 @@ export default {
   color: #2B2A29;
   border-radius: 4px;
   gap: 12px;
-  
+
   &_time {
     display: flex;
     align-items: center;
