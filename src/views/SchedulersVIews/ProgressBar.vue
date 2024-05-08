@@ -59,7 +59,7 @@ export default {
   data: () => ({
     items: [
       {
-        title: 'Осталось лекций',
+        title: 'Пройдено лекций',
         hoursSpent: 0,
         hoursSpentPercent: 0,
         totalHours: 0,

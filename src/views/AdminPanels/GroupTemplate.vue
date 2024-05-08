@@ -139,7 +139,7 @@
       </v-col>
       <v-col style="width: min-content;  padding: 0 !important;">
         <template>
-          <div style="width: 313px !important;">
+          <div style="width: 335px !important;">
             <div
                 style="font-weight: 400 !important; font-size: 12px !important; line-height: 14px !important; color: #A6A8AA; margin-bottom: 8px !important;">
               Дни занятий
@@ -707,7 +707,7 @@ export default {
 .select-students-chips {
   border-radius: 4px !important;
   background-color: black !important;
-  margin: 0 0 0 0 !important;
+  margin: 0px 12px 0px 0px !important;
 }
 
 .daily-chips-selected {
@@ -723,7 +723,8 @@ export default {
 .chips-container {
   display: flex;
   flex-wrap: wrap;
-  max-width: 318px;
+  max-width: 335px;
+  gap: 4px
 }
 
 .text-field-group-template {
