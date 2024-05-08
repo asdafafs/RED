@@ -65,10 +65,9 @@ export default {
     },
     async onDeleteClick() {
       const event = new EventsRequest()
-
-      await event.deleteAdminPractice(this.data.e.event.id).catch(x => console.log(x)).then(
-          this.$emit('destroy', false)
-      )
+      await event.deleteAdminPractice(this.data.e.event.id)
+          .then(() => this.$emit('destroy', false))
+      
     },
   },
   created() {
