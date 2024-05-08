@@ -6,7 +6,11 @@
     >
       <v-card-title class="pa-5 d-flex flex-column justify-start">
         <span class="open-practice-dialog_first-title">{{ isNew ? 'Новая запись' : 'Изменение записи' }}</span>
-        <span class="open-practice-dialog_second-title">Вождение</span>
+        <div class="d-flex flex-row w-full" style="gap: 12px">
+          <span class="review-practice-dialog_second-title">Вождение</span>
+          <span class="edit-practice-label-closed white--text" v-if="data.e.event.practiceStateEnum ===2">Отменена</span>
+          <span class="edit-practice-label-burned white--text" v-if="data.e.event.practiceStateEnum ===3">Сгорела</span>
+        </div>
       </v-card-title>
       <v-card-text class="pa-5 pt-0 pb-0">
         <div class="open-practice-dialog_text">
@@ -105,7 +109,7 @@
               row
               hide-details
           >
-            <v-radio label="Ожидается" :value="1"/>
+            <v-radio label="Ожидается" :value="0"/>
             <v-radio label="Отменена" :value="2"/>
             <v-radio label="Сгорела" :value="3"/>
           </v-radio-group>
@@ -185,6 +189,7 @@ export default {
       const selectedStudent = this.data.listStudents.find(student => student.id === this.data.e.event.studentId);
       this.selectedStudentId = selectedStudent ? selectedStudent.id : null;
       this.data.listStudents = this.data.listStudents.filter(student => student.city[0] === this.data.e.event.city[0])
+      this.typeOfReasonId = this.data.e.event.practiceStateEnum
     } else {
       this.eventDate = moment().format('YYYY-MM-DD')
       this.eventStartTime = '06:00'
@@ -329,7 +334,7 @@ export default {
       let body = {}
       const event = new EventsRequest()
       if (this.data.isAdmin) {
-        if (this.typeOfReasonId === 1) {
+        if (this.typeOfReasonId === 0) {
           body = {
             "id": this.data.e.event.id,
             "startTime": startTime,
@@ -360,7 +365,7 @@ export default {
           )
         }
       } else {
-        if (this.typeOfReasonId === 1) {
+        if (this.typeOfReasonId === 0) {
           const body = {
             "id": this.data.e.event.id,
             "startTime": startTime,
@@ -400,9 +405,6 @@ export default {
       }
     },
   },
-  created() {
-    console.log(this.data)
-  }
 }
 
 </script>
@@ -531,5 +533,30 @@ export default {
   line-height: 18.75px;
   font-weight: 400;
   color: black !important;
+}
+
+.edit-practice-label-burned{
+  background-color: #FF5055;
+  border-radius: 16px;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 18.75px;
+  height: 32px;
+  width: 88px;
+  padding: 8px 12px 8px 12px;
+}
+
+.edit-practice-label-closed{
+  background-color: #2B2A29;
+  border-radius: 16px;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 18.75px;
+  height: 32px;
+  width: 102px;
+  padding: 8px 12px 8px 12px;
+}
+.w-full {
+  width: 100%;
 }
 </style>
