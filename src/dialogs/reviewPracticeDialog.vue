@@ -52,10 +52,10 @@
       <v-card-actions class="pa-5">
         <div
             class="review-practice-dialog_actions"
-            :class="data.student ? 'justify-space-between' : 'justify-end'"
+            :class="data.student && this.data.e.event.practiceStateEnum === 0? 'justify-space-between' : 'justify-end'"
         >
           <v-btn
-              v-if="data.student"
+              v-if="data.student && this.data.e.event.practiceStateEnum === 0"
               class="open-practice-dialog_actions_cancel-button"
               text
               @click="onCancelClick"
@@ -94,9 +94,9 @@ export default {
   },
   computed: {
     saveButtonTitle() {
-      if (this.data.student && this.data.userIsStudentInPractice) return 'Отписаться'
-      if (this.data.student && !this.data.userIsStudentInPractice) return 'Записаться'
-      if (this.data.userTeacher || this.data.isAdmin) return 'Понятно'
+      if (this.data.student && this.data.userIsStudentInPractice && this.data.e.event.practiceStateEnum === 0) return 'Отписаться'
+      if (this.data.student && !this.data.userIsStudentInPractice && this.data.e.event.practiceStateEnum === 0) return 'Записаться'
+      if (this.data.userTeacher || this.data.isAdmin || this.data.e.event.practiceStateEnum !== 0) return 'Понятно'
     },
     dateOfPractice() {
       return `${moment(this.data.e.event.startTime).format('DD.MM.YYYY')} (${moment(this.data.e.event.startTime).locale('ru').format('dd')})`;
