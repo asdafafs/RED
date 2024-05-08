@@ -38,14 +38,37 @@
       </v-card-title>
       <v-card-text class="pa-5 pt-0 pb-0">
         <div class="open-practice-dialog_text">
-          <div v-for="item in items" class="d-flex flex-column">
-            <span class="review-practice-dialog_text_title" v-if="item.id !== 4 || data.student">{{ item.title }}</span>
-            <span class="teacher-text" v-if="item.id !== 4 || data.student">{{ item.value }}</span>
+          <div class="d-flex flex-column">
+            <span class="review-practice-dialog_text_title">{{ items[0].title }}</span>
+            <span class="teacher-text">{{ items[0].value }}</span>
+          </div>
+          <div class="d-flex flex-column">
+            <span class="review-practice-dialog_text_title">{{ items[1].title }}</span>
+            <span class="teacher-text">{{ items[1].value }}</span>
+          </div>
+          <div class="d-flex flex-column">
+            <span class="review-practice-dialog_text_title">{{ items[2].title }}</span>
+            <span class="teacher-text">{{ items[2].value }}</span>
+          </div>
+          <div class="d-flex flex-column">
+            <span class="review-practice-dialog_text_title">{{ items[3].title }}</span>
+            <span class="teacher-text"
+                  v-if="data.student && data.userIsStudentInPractice || data.userTeacher">{{ items[3].value }}</span>
+
             <v-radio-group v-model="data.e.event.transmissionTypeEnum" row hide-details
-                           v-if="item.id === 3 && !data.userIsStudentInPractice && !data.userTeacher">
+                           v-if="!data.userIsStudentInPractice && !data.userTeacher">
               <v-radio label="АКП" :value="[1]" v-if="data.e.event.allowedTransmissionTypeEnum.includes(1)"/>
               <v-radio label="МКП" :value="[2]" v-if="data.e.event.allowedTransmissionTypeEnum.includes(2)"/>
             </v-radio-group>
+          </div>
+          <div class="d-flex flex-column" v-if="data.student" style="gap: 4px">
+            <span class="review-practice-dialog_text_title">{{ items[4].title }}</span>
+            <span class="teacher-text">{{ items[4].value.split(' ', 1)[0] }}
+              <span class="teacher-second-text">{{ items[4].value.split(' ').slice(1).join(' ') }}</span>
+            </span>
+            <span class="teacher-text">{{ items[4].spent.split(' ', 2).join(' ') }}
+              <span class="teacher-second-text">{{ items[4].spent.split(' ',3)[2] }}</span>
+            </span>
           </div>
         </div>
       </v-card-text>
@@ -90,7 +113,7 @@ export default {
     },
   },
   created() {
-    console.log('data.e.event', this.data.e.event)
+    console.log('data', this.items[4].spent.split(' ',3))
   },
   computed: {
     saveButtonTitle() {
@@ -133,7 +156,8 @@ export default {
         {
           id: 4,
           title: 'Лимит часов',
-          value: `Оплаченые (остаток ${this.data.studentGeneralHoursSpent} из ${this.data.studentGeneralHours})`,
+          value: `Основные (остаток ${this.data.studentGeneralHoursSpent} из ${this.data.studentGeneralHours})`,
+          spent: `Неоплаченные занятия (${this.data.studentAdditionalHoursSpent})`,
           visible: true
         },
       ]
@@ -354,6 +378,13 @@ export default {
   color: black !important;
 }
 
+.teacher-second-text {
+  font-size: 16px;
+  line-height: 18.75px;
+  font-weight: 400;
+  color: #4E7AEC !important;
+}
+
 .edit-buttons-div {
   margin-bottom: 12px !important;
   margin-top: 12px !important;
@@ -397,7 +428,7 @@ export default {
   line-height: 28px;
 }
 
-.label-burned{
+.label-burned {
   background-color: #FF5055;
   border-radius: 16px;
   font-weight: 600;
@@ -410,7 +441,7 @@ export default {
   margin-bottom: 12px;
 }
 
-.label-closed{
+.label-closed {
   background-color: #2B2A29;
   border-radius: 16px;
   font-weight: 600;
