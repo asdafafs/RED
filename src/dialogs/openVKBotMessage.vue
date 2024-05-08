@@ -1,0 +1,202 @@
+<template>
+  <v-dialog max-width="407px" v-model="localVisible" persistent>
+    <v-card
+        class="vkBot-message-dialog"
+        flat
+    >
+      <v-card-title class="pa-5 d-flex flex-column justify-start">
+        <span class="vkBot-message-dialog_first-title">ПОДКЛЮЧЕНИЕ ПРОФИЛЯ VK</span>
+        <span class="vkBot-message-dialog_second-title">Вы добавили профиль VK</span>
+      </v-card-title>
+      <v-card-text class="pa-5 pt-0 pb-0">
+        <div class="vkBot-message-dialog_text">
+          <div class="open-practice-dialog_text">
+            <div class="d-flex flex-column">
+              <span class="teacher-text">
+                Вы успешно привязали профиль VK к аккаунту в RED: Расписание.
+                Теперь при авторизации  в RED: Расписание вы можете использовать аккаунт VK.
+                Вход по e-mail также останется доступным.
+                </span>
+              <span style="">Как получать уведомления</span>
+              <span>
+                Чтобы получать уведомления VK об изменениях в расписании, вступите в группу Red Автошкола -
+                система уведомлений и напишите в сообщения сообществу — Хочу уведомления.
+              </span>
+            </div>
+          </div>
+        </div>
+      </v-card-text>
+      <v-card-actions class="pa-5">
+        <div class="vkBot-message-dialog_actions">
+          <v-btn
+              class="vkBot-message-dialog_actions_save-button"
+              @click="transitionVk"
+          >
+            <span>Перейти в группу</span>
+          </v-btn>
+        </div>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
+</template>
+
+<script>
+export default {
+  name: "deletePracticeDialog",
+  data: () => ({
+    selectedReasonId: 1,
+    typeOfReasonId: 1,
+    localVisible: true,
+  }),
+  props: {
+    data: {
+      type: Object,
+      default: {}
+    },
+  },
+  methods: {
+    transitionVk() {
+      const vkBotURL = 'https://vk.com/red_bot'
+      window.location.replace(vkBotURL)
+      this.$emit('destroy', false)
+
+    },
+  },
+}
+
+</script>
+<style scoped lang="scss">
+.vkBot-message-dialog {
+  border-radius: 12px;
+  border: 1px solid grey;
+
+  &_text {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+
+    &_title {
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 14.06px;
+      text-transform: none;
+    }
+  }
+
+  &_first-title {
+    font-size: 12px;
+    font-weight: 400;
+    text-transform: uppercase;
+    color: #A6A8AA;
+    line-height: 14.06px;
+    width: 100%;
+    margin-bottom: 12px;
+  }
+
+  &_second-title {
+    font-size: 32px;
+    font-weight: 700;
+    text-transform: none;
+    color: black;
+    line-height: 37.5px;
+    width: 100%
+  }
+
+  &_third-title {
+    background-color: #4E7AEC;
+    font-size: 20px;
+    font-weight: 800;
+    text-transform: none;
+    color: white;
+    line-height: 24px;
+    width: 100%
+  }
+
+  &_actions {
+    display: flex;
+    width: 100%;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    text-transform: none !important;
+
+    &_cancel-button {
+      border-radius: 12px !important;
+      border: 1px solid rgba(0, 0, 0, 0.53) !important;
+      height: 32px !important;
+      width: 89px !important;
+      text-transform: none !important;
+
+      span:first-of-type {
+        color: black;
+      }
+    }
+
+    &_save-button {
+      border-radius: 12px !important;
+      background-color: #4E7AEC !important;
+      height: 32px !important;
+      width: 89px !important;
+      text-transform: none !important;
+
+      span:first-of-type {
+        color: white;
+        font-weight: 600;
+      }
+    }
+  }
+}
+
+.v-text-field-custom-h-32 {
+  .v-input__slot {
+    display: flex !important;
+    align-items: center !important;
+    min-height: 32px !important;
+  }
+
+  .v-input__prepend-inner {
+    margin: 0 !important;
+  }
+
+  .v-input__append-inner {
+    margin-top: 4px !important;
+  }
+
+  .v-input__icon {
+    max-height: 32px !important;
+  }
+
+  .v-input__control {
+    max-height: 32px !important;
+
+    .v-input__slot {
+      max-height: 32px !important;
+    }
+  }
+
+  .v-select__selections {
+    max-height: 32px !important;
+    display: flex !important;
+    align-content: center !important;
+  }
+}
+
+.time-of-practice-icon {
+  color: #4E7AEC;
+  margin-right: 8px;
+}
+
+.date-of-practice {
+  color: #4E7AEC;
+  font-weight: 600;
+  font-size: 12px;
+  line-height: 14px;
+}
+
+.time-of-practice {
+  color: #2B2A29;
+  font-weight: 700;
+  font-size: 24px;
+  line-height: 28px;
+}
+</style>
