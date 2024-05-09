@@ -255,7 +255,7 @@ export default {
   },
 
   computed: {
-    ...mapState(['user']),
+    ...mapState(['user','isMobile']),
     calendarButtons() {
       return [
         {
@@ -510,7 +510,7 @@ export default {
     },
 
     handleResize() {
-      if (window.innerWidth < 1260) {
+      if (this.isMobile) {
         this.num = 30;
       } else {
         this.num = 70;
