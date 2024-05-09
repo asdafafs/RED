@@ -603,22 +603,20 @@ export default {
         const listStudents = this.listStudents.filter(student => student.id !== null);
         const student = listStudents.find(student => student.id === e.event.studentId);
         let studentName, studentGeneralHours, studentGeneralHoursSpent, studentAdditionalHoursSpent
-        if (this.isUserStudent &&  student) {
-          studentName = student ? `${student.surname} ${student.name[0]}. ${student.middleName[0]}.` : ''
-          studentGeneralHours = student.generalHours
-          studentGeneralHoursSpent = student.generalHoursSpent
-          studentAdditionalHoursSpent = student.additinalHoursSpent
-        }
-        else if(this.isUserStudent &&  !student){
-          const student = listStudents.find(student => student.id === this.userID);
+        if (student ) {
           studentName = student ? `${student.surname} ${student.name[0]}. ${student.middleName[0]}.` : ''
           studentGeneralHours = student.generalHours
           studentGeneralHoursSpent = student.generalHoursSpent
           studentAdditionalHoursSpent = student.additinalHoursSpent
         }
         else {
-          studentName = null
+          const student = listStudents.find(student => student.id === this.userID);
+          studentName = student ? `${student.surname} ${student.name[0]}. ${student.middleName[0]}.` : ''
+          studentGeneralHours = student.generalHours
+          studentGeneralHoursSpent = student.generalHoursSpent
+          studentAdditionalHoursSpent = student.additinalHoursSpent
         }
+        
         const teacher = this.listTeachers.find(teacher => this.selectedTeacher && teacher.id === this.selectedTeacher)
         const teacherName = teacher ? `${teacher.surname} ${teacher.name[0]}. ${teacher.middleName[0]}.` : ''
         const teacherTransmissions = teacher ? teacher.transmissionTypeEnum : [];
@@ -637,7 +635,6 @@ export default {
           studentName: studentName,
           teacherName: teacherName
         }
-        console.log('data', data)
         await this.$reviewPracticeDialogPlugin(data).then((isCancel) => {
           if (!isCancel) this.onToggleClick(this.lastSelectedJoinType)
         })
