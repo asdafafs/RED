@@ -5,7 +5,7 @@ import openVKBotMessage from "@/dialogs/openVKBotMessage.vue";
 
 export default {
     install(Vue) {
-        Vue.prototype.$deletePracticeDialogPlugin = (data) => {
+        Vue.prototype.$openVKBotMessagePlugin = (data) => {
             return new Promise(((resolve) => {
                 const on = {
                     destroy: undefined
