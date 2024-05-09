@@ -225,7 +225,7 @@ export default {
             "transmissionTypeEnum": this.transmissionTypeEnum,
             "city": this.selectedCity
           };
-          await this.postPracticeCourseTemplate(body).then(() => {this.initialize()}).finally(() => {
+          await this.postPracticeCourseTemplate(body).finally(() => {
             this.isSaveButtonDisabled = false
           })
         } else {
@@ -315,6 +315,7 @@ export default {
       await practiceCourse.postPracticeCourse(body).then(response => {
             if (response.status && response.status === 200) {
               successAlert('Изменения сохранены успешно', 5000);
+              this.initialize()
             }
           }
       ).catch(x => console.log(x))
@@ -371,6 +372,9 @@ export default {
       this.checkInitialValidity();
       this.getTeacherInfo()
       this.originalEventsTemplate = JSON.parse(JSON.stringify(this.eventsTemplate))
+      this.originalCity = this.selectedCity
+      this.originalPracticeCourseStart = this.practiceCourseStart
+      this.originalPracticeCourseEnd = this.practiceCourseEnd;
     },
     
   },
