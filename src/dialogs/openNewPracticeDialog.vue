@@ -5,7 +5,7 @@
         flat
     >
       <v-card-title class="pa-5 d-flex flex-column justify-start">
-        <span class="open-practice-dialog_first-title">{{ isNew ? 'Новая запись' : 'Изменение записи' }}</span>
+        <span class="open-practice-dialog_first-title">{{ isNew ? 'Новая запись' : 'Изменение записи'  }}</span>
         <div class="d-flex flex-row w-full" style="gap: 12px">
           <span class="review-practice-dialog_second-title">Вождение</span>
           <span class="edit-practice-label-closed white--text" v-if="!isNew && data.e.event.practiceStateEnum ===2">Отменена</span>
