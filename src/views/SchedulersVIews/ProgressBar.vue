@@ -238,5 +238,6 @@ export default {
   font-size: 16px;
   line-height: 18.75px;
   font-weight: 400
+  
 }
 </style>
