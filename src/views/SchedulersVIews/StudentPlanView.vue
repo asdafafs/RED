@@ -1,10 +1,10 @@
 <template>
   <div>
     <div class="d-flex flex-row flex-wrap justify-space-between full-width  px-3 mb-3 align-center">
-      <div class="px-0 mb-3" :class="showDrawer ? 'mobile-title' : 'desk-title'">
+      <div class="px-0 mb-3" :class="isMobile ? 'mobile-title' : 'desk-title'">
         Личный кабинет
       </div>
-      <div :class="showDrawer ? 'mobile-subtitle' : 'desk-subtitle'">
+      <div :class="isMobile ? 'mobile-subtitle' : 'desk-subtitle'">
         Удачи на дорогах, {{ userName }}
       </div>
     </div>
@@ -20,14 +20,8 @@ import {mapState} from "vuex";
 
 export default {
   name: 'plan',
-  components: {},
-  data: () => ({
-    showDrawer: true,
-  }),
-
-
   computed: {
-    ...mapState(['user']),
+    ...mapState(['user','isMobile']),
     userName() {
       return `${this.user.name} ${this.user.middleName} ${this.user.surname}`
     },
@@ -38,10 +32,6 @@ export default {
   },
 
   methods: {
-    checkWindowWidth() {
-      this.showDrawer = window.innerWidth <= 1260;
-    },
-
     openProgressBar() {
       const currentStudentID = this.userId;
       this.$router.push({name: 'progressBar', params: {currentStudentID}}).catch(() => {
@@ -54,14 +44,7 @@ export default {
   },
 
   created() {
-    this.checkWindowWidth();
-    window.addEventListener('resize', this.checkWindowWidth);
     this.initialize()
-
-  },
-
-  beforeDestroy() {
-    window.removeEventListener('resize', this.checkWindowWidth);
   },
 
   updated() {

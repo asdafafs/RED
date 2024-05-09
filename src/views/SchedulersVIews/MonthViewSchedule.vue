@@ -182,8 +182,8 @@
       >
         <v-icon>mdi-chevron-left</v-icon>
       </v-btn>
-      <v-toolbar-title v-if="test" class="month-name">
-        {{ month }}
+      <v-toolbar-title v-if="test" :class=" isMobile ? 'month-name-mobile' : 'month-name'">
+        {{ type === 'week' ? weekInMonth : month }}
       </v-toolbar-title>
       <v-btn
           icon
@@ -214,12 +214,13 @@
           <div
               class="calendar-event"
               :class="{
-              'event-border': selectedLessonType === 2 && event.studentId === null,
-             'px-[2px] justify-center' : !$vuetify.breakpoint.lgAndUp, 
-             'px-3' : $vuetify.breakpoint.lgAndUp}"
+                'event-border': selectedLessonType === 2 && event.studentId === null && event.practiceStateEnum === 0,
+                'px-[2px] justify-center' : isMobile, 
+                'px-3' : !isMobile
+                }"
           >
             <div class="calendar-event_time">{{ formatTime(event.startTime) }}</div>
-            <div class="calendar-event_info" v-if="$vuetify.breakpoint.lgAndUp">
+            <div class="calendar-event_info" v-if="!isMobile">
               <div class="calendar-event_info_type">{{ getEventTitle(event) }}</div>
               <div class="calendar-event_info_teacher">{{ getTeacherName(event) }}</div>
             </div>
@@ -261,9 +262,6 @@ export default {
         })
     this.test = true
     this.prevMonthAndYear = this.getMonthAndYear(this.value);
-    if (!this.$vuetify.breakpoint.lgAndUp) {
-      this.types = [['month', 'месяц'], ['day', 'день']]
-    }
   },
 
   data: () => ({
@@ -280,8 +278,7 @@ export default {
     selectedMoreElement: null,
     lastSelectedJoinType: 1,
     selectedActiveUser: 0,
-    // types: [['month', 'месяц'], ['week', 'неделя'], ['day', 'день']],
-    types: [['month', 'месяц'], ['day', 'день']],
+    types: [['month', 'месяц'], ['week', 'неделя'], ['day', 'день']],
     listTeachers: [{
       "id": null,
       "name": null,
@@ -374,11 +371,14 @@ export default {
     });
   },
   computed: {
-    ...mapState(['user']),
+    ...mapState(['user','isMobile']),
     eventHeight() {
       if (this.type === 'month') return 32
       if (this.type === 'week') return 32
       if (this.type === 'day') return 48
+    },
+    today() {
+      return moment().format('YYYY-MM-DD')
     },
     calendarButtons() {
       return [
@@ -394,6 +394,9 @@ export default {
     },
     month() {
       return this.$refs.calendar.title
+    },
+    weekInMonth() {
+      return `${moment(this.$refs.calendar.lastStart).lang('ru').format('ll').slice(0, -7)}- ${moment(this.$refs.calendar.lastEnd).lang('ru').format('ll').slice(0, -8)}`
     },
     userID() {
       return this.user.userId
@@ -940,7 +943,7 @@ export default {
 
     getEventColor(event) {
       if (this.selectedLessonType === 1) {
-        if (event.lectureType === 1) return `#9DB9FF`
+        if (event.lectureType === 1) return `#8CED7C`
         if (event.lectureType === 2) return `#FFCD6D`
         if (event.lectureType === 3) return `#FC7DC9`
       } else {
@@ -948,8 +951,10 @@ export default {
           return '#9DB9FF';
         else if (event.studentId === null && event.practiceStateEnum === 0)
           return '#FFFFFF';
+        else if (event.studentId !== null && event.practiceStateEnum === 1)
+          return 'rgba(157,185,255,0.3)';
         else
-          return 'rgba(157,185,255,0.61)';
+          return 'rgba(11, 11, 11, 0.04)';
       }
     },
 
@@ -1110,7 +1115,14 @@ export default {
   margin-right: 8px !important;
   margin-left: 8px !important;
 }
-
+.month-name-mobile {
+  font-size: 24px !important;
+  font-weight: 700 !important;
+  display: flex !important;
+  align-items: center !important;
+  margin-right: 8px !important;
+  margin-left: 8px !important;
+}
 .event-time {
   font-size: 16px !important;
   font-weight: 600 !important;

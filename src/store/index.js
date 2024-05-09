@@ -18,7 +18,8 @@ export default new Vuex.Store({
             groupId: 0,
             vkUserId: 0,
             isAdmin: false,
-        }
+        },
+        isMobile: Boolean(/mobile|iphone|ipad|ipod|android|blackberry|mini|windows\sce|palm/i.test(navigator.userAgent.toLowerCase()))
     },
     mutations: {
         SET_CURRENT_USER(state, user) {
