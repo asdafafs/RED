@@ -943,7 +943,7 @@ export default {
 
     getEventColor(event) {
       if (this.selectedLessonType === 1) {
-        if (event.lectureType === 1) return `#9DB9FF`
+        if (event.lectureType === 1) return `#8CED7C`
         if (event.lectureType === 2) return `#FFCD6D`
         if (event.lectureType === 3) return `#FC7DC9`
       } else {
