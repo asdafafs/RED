@@ -5,7 +5,7 @@
       app
       clipped
       color="#1e1f22"
-      :style="{ height: '100vh' }"
+      :style="{ height: '100%' }"
   >
     <v-list
         height="inherit"
