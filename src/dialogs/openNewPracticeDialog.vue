@@ -181,7 +181,7 @@ export default {
   created() {
     console.log('this.data')
   }
-,
+  ,
   mounted() {
     if (!this.isNew) {
       this.eventDate = moment(this.data.e.event.startTime).format('YYYY-MM-DD')
@@ -251,7 +251,7 @@ export default {
       if (item) {
         this.selectedTransmission = item.transmissionTypeEnum
         this.data.teacherTransmissions = item.transmissionTypeEnum
-        if(this.isNew){
+        if (this.isNew) {
           const includes1 = item.city.includes(1);
           const includes2 = item.city.includes(2);
           if (includes1 && includes2) {
@@ -355,16 +355,16 @@ export default {
         } else if (this.typeOfReasonId === 2) {
           body = {
             "id": this.data.e.event.id,
-            "stateEnum": this.typeOfReasonId
           }
-          await event.canselAdminPractice(body).catch(x => console.log(x)).then(() =>
+          await event.closeAdminStudent(body).catch(x => console.log(x)).then(() =>
               this.$emit('destroy', false)
           )
         } else if (this.typeOfReasonId === 3) {
           body = {
             "id": this.data.e.event.id,
+            "stateEnum": this.typeOfReasonId
           }
-          await event.closeAdminStudent(body).catch(x => console.log(x)).then(() =>
+          await event.canselAdminPractice(body).catch(x => console.log(x)).then(() =>
               this.$emit('destroy', false)
           )
         }
@@ -385,16 +385,16 @@ export default {
         } else if (this.typeOfReasonId === 2) {
           body = {
             "id": this.data.e.event.id,
-            "deleteReasonEnum": this.selectedReasonId
           }
-          await event.cancelPractice(body).catch(x => console.log(x)).then(()=>
+          await event.closePractice(body).catch(x => console.log(x)).then(() =>
               this.$emit('destroy', false)
           )
         } else if (this.typeOfReasonId === 3) {
           body = {
             "id": this.data.e.event.id,
+            "deleteReasonEnum": this.selectedReasonId
           }
-          await event.closePractice(body).catch(x => console.log(x)).then(()=>
+          await event.cancelPractice(body).catch(x => console.log(x)).then(() =>
               this.$emit('destroy', false)
           )
         }
@@ -539,7 +539,7 @@ export default {
   color: black !important;
 }
 
-.edit-practice-label-burned{
+.edit-practice-label-burned {
   background-color: #FF5055;
   border-radius: 16px;
   font-weight: 600;
@@ -550,7 +550,7 @@ export default {
   padding: 8px 12px 8px 12px;
 }
 
-.edit-practice-label-closed{
+.edit-practice-label-closed {
   background-color: #2B2A29;
   border-radius: 16px;
   font-weight: 600;
@@ -560,6 +560,7 @@ export default {
   width: 102px;
   padding: 8px 12px 8px 12px;
 }
+
 .w-full {
   width: 100%;
 }
