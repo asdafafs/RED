@@ -11,7 +11,7 @@
       </v-col>
       <v-col class="text-right col-auto" v-if="hasChanges">
         <v-btn class="template-course-button" @click="save" color="#4E7AEC"
-               :disabled="isSaveButtonDisabled || blockButtonWhenRequest">
+               :disabled="isSaveButtonDisabled || blockButtonWhenRequest ">
           <section class="d-flex flex-row align-center" style="padding: 8px 12px 8px 12px !important;">
             <span class="template-course-button-text white--text">Сохранить изменения</span>
           </section>
