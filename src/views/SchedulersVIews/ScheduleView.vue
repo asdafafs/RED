@@ -1,6 +1,6 @@
 <template>
   <v-container class="px-3 pa-0 ma-0" fluid v-if="true">
-    <div class="d-flex flex-row justify-space-between full-width mb-3 align-center " v-if="showDrawer">
+    <div class="d-flex flex-row justify-space-between full-width mb-3 align-center " v-if="isMobile">
       <div class="d-flex flex-column" >
         <div  class="mobile-subtitle">
           Удачи на дорогах, {{ userName }}!
@@ -30,32 +30,11 @@
 import {mapState} from "vuex";
 
 export default {
-  components: {},
-  data: () => ({
-    showDrawer: true,
-  }),
-
   computed: {
-    ...mapState(['user']),
-
+    ...mapState(['user','isMobile']),
     userName() {
       return `${this.user.name} ${this.user.middleName} ${this.user.surname}`
     },
-  },
-
-  methods: {
-    checkWindowWidth() {
-      this.showDrawer = window.innerWidth <= 1260;
-    },
-  },
-
-  created() {
-    this.checkWindowWidth();
-    window.addEventListener('resize', this.checkWindowWidth);
-  },
-
-  beforeDestroy() {
-    window.removeEventListener('resize', this.checkWindowWidth);
   },
 }
 </script>

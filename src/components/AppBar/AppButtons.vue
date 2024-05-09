@@ -36,6 +36,8 @@
   </div>
 </template>
 <script>
+import {mapState} from "vuex";
+
 export default {
   name: 'AppButtons',
   props: {
@@ -70,6 +72,7 @@ export default {
     window.removeEventListener('resize', this.checkWindowWidth);
   },
   computed: {
+    ...mapState(['isMobile']),
     getToggleValue() {
       if (this.needAdminPanel) return false
       return true
@@ -106,7 +109,7 @@ export default {
       this.goRoute('admin-students')
     },
     checkWindowWidth() {
-      this.showAdminPanelText = window.innerWidth >= 1200;
+      this.showAdminPanelText = !this.isMobile;
     },
     goRoute(router) {
       this.$router.push(

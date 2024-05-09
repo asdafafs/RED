@@ -2,7 +2,7 @@
   <v-container fluid>
     <v-row no-gutters align="center">
       <v-col style="width: min-content">
-        <div :class="showMobileView ? 'mobile-title' : 'desk-title'">
+        <div :class="isMobile ? 'mobile-title' : 'desk-title'">
           <v-btn icon class="ma-0  align-self-center" @click="prev">
             <v-icon>mdi-chevron-left</v-icon>
           </v-btn>
@@ -12,7 +12,7 @@
     </v-row>
     <hr style="margin: 1em 0 2em 0 !important;">
     <v-row class="flex-wrap" style="column-gap: 32px !important; row-gap: 32px !important; padding-left: 12px"
-           v-if="!showMobileView">
+           v-if="!isMobile">
       <v-col style="max-width: min-content" class="align-center bg-surface-variant d-flex py-0 px-0">
         <v-text-field v-model="practiceCourseStart" label="Дата начала" type="date" ref="startDateField"
                       :rules="[startDateRules.required]" :min="getTodayDate()" outlined
@@ -107,11 +107,11 @@
         </v-btn>
       </v-col>
     </v-row>
-    <v-row class="pt-5" v-if="!showMobileView">
+    <v-row class="pt-5" v-if="!isMobile">
       <TemplateSchedule @plan-updated="handleEvents" :selectedDuration="selectedDuration" :fullNameActiveUser="fullName"
-                        :events="eventsTemplate" :practiceCourseStart="dateFirstPractice" :showMobile="showMobileView"/>
+                        :events="eventsTemplate" :practiceCourseStart="dateFirstPractice" :showMobile="isMobile"/>
     </v-row>
-    <div v-if="showMobileView" class="text-alert">
+    <div v-if="isMobile" class="text-alert">
       <span style="text-align: center;">Функция определения плана доступна только с ПК</span>
     </div>
   </v-container>
@@ -121,12 +121,12 @@ import TemplateSchedule from "@/views/AdminPanels/TemplateSchedule.vue";
 import UsersRequest from "@/services/UsersRequest";
 import PracticeCourseRequest from "@/services/PracticeCourseRequest";
 import {errorAlert, successAlert, warningAlert} from "@/components/Alerts/alert";
+import {mapState} from "vuex";
 
 export default {
   name: 'PlanTemplate',
   components: {TemplateSchedule},
   data: () => ({
-    showMobileView: false,
     isSaveButtonDisabled: false,
     fullName: '',
     eventsTemplate: [],
@@ -158,6 +158,7 @@ export default {
   }),
 
   computed: {
+    ...mapState(['isMobile']),
     getIdUser() {
       const {selectedUserID} = this.$route.params;
       return selectedUserID;
@@ -371,20 +372,12 @@ export default {
       this.getTeacherInfo()
       this.originalEventsTemplate = JSON.parse(JSON.stringify(this.eventsTemplate))
     },
-
-    checkWindowWidth() {
-      this.showMobileView = window.innerWidth <= 1260;
-    },
+    
   },
   created() {
     this.getActiveUser().then(response => this.fullName = `${response.surname} ${response.name} ${response.middleName}`).finally(() => {
       this.initialize()
     });
-    this.checkWindowWidth();
-  },
-
-  beforeDestroy() {
-    window.removeEventListener('resize', this.checkWindowWidth);
   },
 }
 </script>

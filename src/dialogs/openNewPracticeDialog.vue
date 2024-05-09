@@ -8,8 +8,8 @@
         <span class="open-practice-dialog_first-title">{{ isNew ? 'Новая запись' : 'Изменение записи' }}</span>
         <div class="d-flex flex-row w-full" style="gap: 12px">
           <span class="review-practice-dialog_second-title">Вождение</span>
-          <span class="edit-practice-label-closed white--text" v-if="data.e.event.practiceStateEnum ===2">Отменена</span>
-          <span class="edit-practice-label-burned white--text" v-if="data.e.event.practiceStateEnum ===3">Сгорела</span>
+          <span class="edit-practice-label-closed white--text" v-if="!isNew && data.e.event.practiceStateEnum ===2">Отменена</span>
+          <span class="edit-practice-label-burned white--text" v-if="!isNew && data.e.event.practiceStateEnum ===3">Сгорела</span>
         </div>
       </v-card-title>
       <v-card-text class="pa-5 pt-0 pb-0">
