@@ -863,6 +863,7 @@ export default {
         if (e.lectureType === 1) return `Основы вождения`
         if (e.lectureType === 2) return `ПДД`
         if (e.lectureType === 3) return `Медицина`
+        if (e.lectureType === 4) return `Другое`
       } else {
         return 'Вождение'
       }
@@ -943,6 +944,7 @@ export default {
         if (event.lectureType === 1) return `#8CED7C`
         if (event.lectureType === 2) return `#FFCD6D`
         if (event.lectureType === 3) return `#FC7DC9`
+        if (event.lectureType === 4) return `#d6dae1`
       } else {
         if (event.studentId !== null && event.practiceStateEnum === 0)
           return '#9DB9FF';
