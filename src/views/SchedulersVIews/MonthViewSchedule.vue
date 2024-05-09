@@ -603,18 +603,20 @@ export default {
         const listStudents = this.listStudents.filter(student => student.id !== null);
         const student = listStudents.find(student => student.id === e.event.studentId);
         let studentName, studentGeneralHours, studentGeneralHoursSpent, studentAdditionalHoursSpent
-        if (student ) {
+        if (this.isUserStudent && student ) {
           studentName = student ? `${student.surname} ${student.name[0]}. ${student.middleName[0]}.` : ''
           studentGeneralHours = student.generalHours
           studentGeneralHoursSpent = student.generalHoursSpent
           studentAdditionalHoursSpent = student.additinalHoursSpent
         }
-        else {
+        else if (this.isUserStudent && !student) {
           const student = listStudents.find(student => student.id === this.userID);
           studentName = student ? `${student.surname} ${student.name[0]}. ${student.middleName[0]}.` : ''
           studentGeneralHours = student.generalHours
           studentGeneralHoursSpent = student.generalHoursSpent
           studentAdditionalHoursSpent = student.additinalHoursSpent
+        } else {
+          studentName = student ? `${student.surname} ${student.name[0]}. ${student.middleName[0]}.` : ''
         }
         
         const teacher = this.listTeachers.find(teacher => this.selectedTeacher && teacher.id === this.selectedTeacher)
