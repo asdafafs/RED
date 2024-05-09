@@ -150,7 +150,7 @@ export default {
       this.city = this.formatCity(studentInfo.city)
       this.items = [
         {
-          title: 'Осталось лекций',
+          title: 'Пройдено лекций',
           hoursSpent: studentInfo.lectureHoursCurrent,
           hoursSpentPercent: (studentInfo.lectureHoursCurrent / studentInfo.lectureHoursMax) * 100,
           totalHours: studentInfo.lectureHoursMax,
