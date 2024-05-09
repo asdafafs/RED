@@ -1,20 +1,20 @@
 <template>
   <v-container fluid>
-    <NavigationBar
-        :drawer.sync="drawer"
-        :role="role"
-        :show-drawer="showDrawer"
-        :student="discriminatorUser"
-        :user="userName"
+    <NavigationBar 
+      :drawer.sync="drawer" 
+      :role="role" 
+      :show-drawer="!isMobile" 
+      :student="discriminatorUser" 
+      :user="userName"
     />
-    <v-app-bar
-        app
-        density="compact"
-        color="#1e1f22"
-        class="appbar position_component app-bar-height"
+    <v-app-bar 
+      app 
+      density="compact" 
+      color="#1e1f22" 
+      class="appbar position_component app-bar-height"
     >
       <v-container
-          v-if="showDrawer"
+          v-if="!isMobile"
           class="pa-0 my-2"
           fluid
           style="max-height: 60px"
@@ -32,19 +32,19 @@
           <v-col cols="2">
             <div class="d-flex align-center" style="height: 100%; width: 90%">
               <UserProfile
-                  class="mr-3 ml-3"
-                  v-if="isDataLoaded"
-                  :role="role"
-                  :student="discriminatorUser"
-                  :user="userName"
+                class="mr-3 ml-3"
+                v-if="isDataLoaded"
+                :role="role"
+                :student="discriminatorUser"
+                :user="userName"
               />
             </div>
           </v-col>
         </v-row>
       </v-container>
       <MobileAppBar
-          v-else
-          :drawer.sync="drawer"
+        v-else
+        :drawer.sync="drawer"
       />
     </v-app-bar>
   </v-container>
@@ -63,27 +63,14 @@ export default {
     return {
       role: ["Ученик", "Учитель", "Администратор"],
       drawer: false,
-      showDrawer: true,
       student: false,
     }
   },
   props: {
     isDataLoaded: Boolean,
   },
-  methods: {
-    checkWindowWidth() {
-      this.showDrawer = window.innerWidth >= 960;
-    },
-  },
-  created() {
-    this.checkWindowWidth();
-    window.addEventListener('resize', this.checkWindowWidth);
-  },
-  beforeDestroy() {
-    window.removeEventListener('resize', this.checkWindowWidth);
-  },
   computed: {
-    ...mapState(['user']),
+    ...mapState(['user','isMobile']),
     userName() {
       return this.user.name
     },
