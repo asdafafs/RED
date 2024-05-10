@@ -157,6 +157,7 @@ export default {
       required: value => !!value
     },
     transmissionTypeEnum: [],
+    responseListCities: [],
   }),
 
   computed: {
@@ -241,7 +242,7 @@ export default {
         if (!this.endTimeRules.required(this.practiceCourseEnd)) {
           this.$refs.endDateField.$el.classList.add('error--text');
         }
-        if (!this.selectedCity){
+        if (!this.selectedCity) {
           this.$refs.selectedCity.$el.classList.add('error--text');
         }
         this.isSaveButtonDisabled = false
@@ -371,6 +372,18 @@ export default {
       }).catch(error => console.log(error))
     },
 
+    initializeCity() {
+      const includes1 = this.responseListCities.includes(1);
+      const includes2 = this.responseListCities.includes(2);
+      if (includes1 && includes2) {
+        this.listCities = [{id: [1], text: 'Северодвинск'}, {id: [2], text: 'Новодвинск'}]
+      } else if (includes1) {
+        this.listCities = [{id: [1], text: 'Северодвинск'}]
+      } else if (includes2) {
+        this.listCities = [{id: [2], text: 'Новодвинск'}]
+      } else this.listCities = []
+    },
+
     initialize() {
       this.getListTemplates()
       this.checkInitialValidity();
@@ -379,11 +392,15 @@ export default {
       this.originalCity = this.selectedCity
       this.originalPracticeCourseStart = this.practiceCourseStart
       this.originalPracticeCourseEnd = this.practiceCourseEnd;
+      this.initializeCity()
     },
-    
+
   },
   created() {
-    this.getActiveUser().then(response => this.fullName = `${response.surname} ${response.name} ${response.middleName}`).finally(() => {
+    this.getActiveUser().then(response => {
+      this.fullName = `${response.surname} ${response.name} ${response.middleName}`
+      this.responseListCities = response.city
+    }).finally(() => {
       this.initialize()
     });
   },
