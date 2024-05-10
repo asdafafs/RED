@@ -322,6 +322,7 @@ export default {
     }],
     studentGeneralHours: '',
     studentGeneralHoursSpent: '',
+    listInfoTeachers:[],
   }),
   watch: {
     value(newValue) {
@@ -371,7 +372,7 @@ export default {
     });
   },
   computed: {
-    ...mapState(['user','isMobile']),
+    ...mapState(['user', 'isMobile']),
     eventHeight() {
       if (this.type === 'month') return 32
       if (this.type === 'week') return 32
@@ -618,7 +619,7 @@ export default {
         } else {
           studentName = student ? `${student.surname} ${student.name[0]}. ${student.middleName[0]}.` : ''
         }
-        
+        console.log('review', this.listTeachers)
         const teacher = this.listTeachers.find(teacher => this.selectedTeacher && teacher.id === this.selectedTeacher)
         const teacherName = teacher ? `${teacher.surname} ${teacher.name[0]}. ${teacher.middleName[0]}.` : ''
         const teacherTransmissions = teacher ? teacher.transmissionTypeEnum : [];
@@ -855,11 +856,14 @@ export default {
         this.events = await this.getLessonsStudent();
       }
     },
+
     getTeacherName(e) {
-      const teacher = this.listTeachers.find(teacher => (!!e.activeUser && teacher.id === e.activeUser) || (e.activeUserId && teacher.id === e.activeUserId))
+      const teacher = this.listInfoTeachers.find(teacher => (!!e.activeUser && teacher.id === e.activeUser) || (e.activeUserId && teacher.id === e.activeUserId))
       if (teacher) return `${teacher.surname} ${teacher.name[0]}. ${teacher.middleName[0]}.`
-      return `Преп. не назначен`
+      else return `Преп. не назначен`
+
     },
+
     getEventTitle(e) {
       if (this.selectedLessonType === 1) {
         if (e.lectureType === 1) return `Основы вождения`
@@ -870,10 +874,12 @@ export default {
         return 'Вождение'
       }
     },
+
     async testPractices() {
       if (!this.selectedTeacher && !this.selectedStudent && this.isAdmin) {
         return this.events = []
       }
+      console.log('практики', this.listTeachers)
       if (this.isAdmin) {
         this.events = await this.getPracticesAdmin();
       } else if (this.isUserTeacher && !this.isAdmin) {
@@ -913,10 +919,29 @@ export default {
       await teachers.getActiveUser().catch(x => console.log(x)).then(x => {
         activeUsers = x.data.activeUsers
       })
+      this.listInfoTeachers.push(...activeUsers)
       this.listTeachers.push(...activeUsers)
     },
 
     async getAllStudents() {
+      this.listStudents = [{
+        "id": null,
+        "name": null,
+        "surname": null,
+        "middleName": null,
+        "vkUserId": null,
+        "email": null,
+        "phoneNumber": null,
+        "userName": null,
+        "groupId": null,
+        "generalHours": null,
+        "generalHoursSpent": null,
+        "additinalHours": null,
+        "additinalHoursSpent": null,
+        "transmissionTypeEnum": null,
+        "city": null
+      }]
+
       const student = new UsersRequest()
       let studentList
       await student.getUsers().catch(x => console.log(x)).then(x => {
@@ -1116,6 +1141,7 @@ export default {
   margin-right: 8px !important;
   margin-left: 8px !important;
 }
+
 .month-name-mobile {
   font-size: 24px !important;
   font-weight: 700 !important;
@@ -1124,6 +1150,7 @@ export default {
   margin-right: 8px !important;
   margin-left: 8px !important;
 }
+
 .event-time {
   font-size: 16px !important;
   font-weight: 600 !important;

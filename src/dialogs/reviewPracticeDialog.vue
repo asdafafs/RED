@@ -112,9 +112,6 @@ export default {
       default: {}
     },
   },
-  created() {
-    console.log('data', this.data.listStudents)
-  },
 
   computed: {
     saveButtonTitle() {
