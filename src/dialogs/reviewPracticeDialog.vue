@@ -23,8 +23,8 @@
         </div>
         <div class="d-flex flex-row w-full" style="gap: 12px">
           <span class="review-practice-dialog_second-title">Вождение</span>
-          <span class="label-closed white--text" v-if="data.e.event.practiceStateEnum ===2">Отменена</span>
-          <span class="label-burned white--text" v-if="data.e.event.practiceStateEnum ===3">Сгорела</span>
+          <span class="label-closed white--text" v-if="data.e.event.practiceStateEnum ===3">Отменена</span>
+          <span class="label-burned white--text" v-if="data.e.event.practiceStateEnum ===2">Сгорела</span>
         </div>
         <div class="d-flex flex-row w-full">
           <div class="d-flex align-center justify-center">
@@ -67,7 +67,7 @@
               <span class="teacher-second-text">{{ items[4].value.split(' ').slice(1).join(' ') }}</span>
             </span>
             <span class="teacher-text">{{ items[4].spent.split(' ', 2).join(' ') }}
-              <span class="teacher-second-text">{{ items[4].spent.split(' ',3)[2] }}</span>
+              <span class="teacher-second-text">{{ items[4].spent.split(' ', 3)[2] }}</span>
             </span>
           </div>
         </div>
