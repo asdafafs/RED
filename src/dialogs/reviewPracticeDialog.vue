@@ -199,7 +199,6 @@ export default {
 
     async openEditDialog() {
       this.localVisible = false
-      console.log('openEditDialog',this.data.listStudents)
       await this.$openNewPracticeDialogPlugin(this.data, false)
           .then(async (isCancel) => {
             if (!isCancel) {

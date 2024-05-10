@@ -1,38 +1,45 @@
 <template>
-  <v-dialog max-width="407px" v-model="localVisible" persistent>
+  <v-dialog max-width="470px" v-model="localVisible" persistent>
     <v-card
         class="vkBot-message-dialog"
         flat
     >
       <v-card-title class="pa-5 d-flex flex-column justify-start">
         <span class="vkBot-message-dialog_first-title">ПОДКЛЮЧЕНИЕ ПРОФИЛЯ VK</span>
-        <span class="vkBot-message-dialog_second-title">Вы добавили профиль VK</span>
+        <span class="vkBot-message-dialog_second-title">Вы добавляете профиль VK</span>
       </v-card-title>
       <v-card-text class="pa-5 pt-0 pb-0">
-        <div class="vkBot-message-dialog_text">
-          <div class="open-practice-dialog_text">
-            <div class="d-flex flex-column">
-              <span class="teacher-text">
-                Вы успешно привязали профиль VK к аккаунту в RED: Расписание.
-                Теперь при авторизации  в RED: Расписание вы можете использовать аккаунт VK.
+        <div class="vkBot-message-dialog_text-panel">
+          <div class="d-flex flex-column">
+              <span class="vkBot-message-dialog_text-panel_text">
+                Сейчас вы будете перенаправлены в окно авторизации через VK.
+                После выполнения входа через VK в RED: Расписание вы можете использовать аккаунт VK при авторизации .
                 Вход по e-mail также останется доступным.
                 </span>
-              <span style="">Как получать уведомления</span>
-              <span>
-                Чтобы получать уведомления VK об изменениях в расписании, вступите в группу Red Автошкола -
-                система уведомлений и напишите в сообщения сообществу — Хочу уведомления.
+            <span class="vkBot-message-dialog_text-panel_title">Как получать уведомления</span>
+            <span class="vkBot-message-dialog_text-panel_text">
+                До выполнения входа перейдите и вступите в группу
+              <span style="font-weight: 600">Red Автошкола - система уведомлений.</span>
+                Чтобы получать уведомления VK об изменениях в расписании, напишите в сообщения сообществу — <span
+                style="font-weight: 600">Хочу уведомления.</span>
               </span>
-            </div>
           </div>
         </div>
       </v-card-text>
       <v-card-actions class="pa-5">
         <div class="vkBot-message-dialog_actions">
           <v-btn
-              class="vkBot-message-dialog_actions_save-button"
+              class="vkBot-message-dialog_actions_cancel-button"
+              text
               @click="transitionVk"
           >
             <span>Перейти в группу</span>
+          </v-btn>
+          <v-btn
+              class="vkBot-message-dialog_actions_save-button"
+              @click="bindingVK"
+          >
+            <span>Войти через VK</span>
           </v-btn>
         </div>
       </v-card-actions>
@@ -56,11 +63,14 @@ export default {
   },
   methods: {
     transitionVk() {
-      const vkBotURL = 'https://vk.com/red_bot'
-      window.location.replace(vkBotURL)
-      this.$emit('destroy', false)
-
+      const vkBotURL = 'https://vk.com/red_bot';
+      window.open(vkBotURL, '_blank');
+      this.$emit('destroy', false);
     },
+
+    bindingVK() {
+      this.$emit('destroy', false)
+    }
   },
 }
 
@@ -70,17 +80,31 @@ export default {
   border-radius: 12px;
   border: 1px solid grey;
 
-  &_text {
+  &_text-panel {
     display: flex;
     flex-direction: column;
     gap: 12px;
 
-    &_title {
-      font-size: 12px;
+    &_text {
+      color: #000000;
+      font-size: 16px;
       font-weight: 400;
-      line-height: 14.06px;
-      text-transform: none;
+      line-height: 18.75px;
     }
+
+    &_title {
+      padding: 0 10px 0 10px;
+      margin-bottom: 10px;
+      margin-top: 10px;
+      width: 290px;
+      font-size: 20px;
+      font-weight: 800;
+      line-height: 24px;
+      text-transform: none;
+      color: #FEFEFE;
+      background-color: #4E7AEC;
+    }
+
   }
 
   &_first-title {
@@ -124,7 +148,7 @@ export default {
       border-radius: 12px !important;
       border: 1px solid rgba(0, 0, 0, 0.53) !important;
       height: 32px !important;
-      width: 89px !important;
+      width: 155px !important;
       text-transform: none !important;
 
       span:first-of-type {
@@ -136,7 +160,7 @@ export default {
       border-radius: 12px !important;
       background-color: #4E7AEC !important;
       height: 32px !important;
-      width: 89px !important;
+      width: 142px !important;
       text-transform: none !important;
 
       span:first-of-type {
@@ -145,58 +169,5 @@ export default {
       }
     }
   }
-}
-
-.v-text-field-custom-h-32 {
-  .v-input__slot {
-    display: flex !important;
-    align-items: center !important;
-    min-height: 32px !important;
-  }
-
-  .v-input__prepend-inner {
-    margin: 0 !important;
-  }
-
-  .v-input__append-inner {
-    margin-top: 4px !important;
-  }
-
-  .v-input__icon {
-    max-height: 32px !important;
-  }
-
-  .v-input__control {
-    max-height: 32px !important;
-
-    .v-input__slot {
-      max-height: 32px !important;
-    }
-  }
-
-  .v-select__selections {
-    max-height: 32px !important;
-    display: flex !important;
-    align-content: center !important;
-  }
-}
-
-.time-of-practice-icon {
-  color: #4E7AEC;
-  margin-right: 8px;
-}
-
-.date-of-practice {
-  color: #4E7AEC;
-  font-weight: 600;
-  font-size: 12px;
-  line-height: 14px;
-}
-
-.time-of-practice {
-  color: #2B2A29;
-  font-weight: 700;
-  font-size: 24px;
-  line-height: 28px;
 }
 </style>
