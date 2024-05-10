@@ -345,7 +345,7 @@ export default {
             "endTime": endTime,
             "studentId": this.selectedStudentId,
             "activeUserId": this.data.userId,
-            "transmissionTypeEnum": null,
+            "transmissionTypeEnum": this.selectedTransmission,
             "city": this.selectedCity
           }
 
@@ -375,7 +375,7 @@ export default {
             "startTime": startTime,
             "endTime": endTime,
             "studentId": this.selectedStudentId,
-            "transmissionTypeEnum": null,
+            "transmissionTypeEnum": this.selectedTransmission,
             "city": this.selectedCity
           }
 
