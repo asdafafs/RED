@@ -160,15 +160,23 @@
                     Отмена
                   </v-btn>
                   <div>
-                    <v-btn text color="primary"
-                           v-if="selectedEvent.studentId === null && discriminatorUser && userID !== selectedEvent.studentId"
-                           @click="addEventStudent"
-                           :disabled="studentHours[1] <= 0">
+                    <v-btn 
+                      text 
+                      color="primary"
+                      v-if="selectedEvent.studentId === null && discriminatorUser && userID !== selectedEvent.studentId"
+                      @click="addEventStudent"
+                      :disabled="studentHours[1] <= 0"
+                      @keydown.enter="addEventStudent"
+                    >
                       Записаться
                     </v-btn>
-                    <v-btn text color="secondary"
-                           v-else-if="discriminatorUser && userID === selectedEvent.studentId"
-                           @click="removeEventStudent">
+                    <v-btn 
+                      text 
+                      color="secondary"
+                      v-else-if="discriminatorUser && userID === selectedEvent.studentId"
+                      @click="removeEventStudent"
+                      @keydown.enter="removeEventStudent"
+                    >
                       Отписаться
                     </v-btn>
                   </div>

@@ -31,8 +31,9 @@
       <v-card-actions class="pa-5">
         <div class="review-practice-dialog_actions">
           <v-btn
-              class="review-practice-dialog_actions_save-button"
-              @click="onSaveClick"
+            class="review-practice-dialog_actions_save-button"
+            @click="onSaveClick"
+            @keydown.enter="onSaveClick"
           >
             <span>Понятно</span>
           </v-btn>
