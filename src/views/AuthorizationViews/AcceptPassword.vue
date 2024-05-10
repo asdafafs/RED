@@ -56,9 +56,14 @@
               </v-text-field>
             </v-card-text>
             <v-card-actions class="accept-password-card__actions">
-              <v-btn color="#4E7AEC" @click="validatePassword" class="accept-password-card__actions__btn white--text"
-                     block
-                     :disabled="loginButtonDisabled || passwordsMatch">
+              <v-btn 
+                color="#4E7AEC"
+                @click="validatePassword"
+                class="accept-password-card__actions__btn white--text"
+                block
+                :disabled="loginButtonDisabled || passwordsMatch"
+                @keydown.enter="validatePassword"
+              >
                 Сохранить и войти
               </v-btn>
             </v-card-actions>

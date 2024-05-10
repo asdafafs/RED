@@ -137,8 +137,9 @@
             <span>Отмена</span>
           </v-btn>
           <v-btn
-              class="open-practice-dialog_actions_save-button"
-              @click="checkNewEvent"
+            class="open-practice-dialog_actions_save-button"
+            @click="checkNewEvent"
+            @keydown.enter="checkNewEvent"
           >
             <span>Сохранить</span>
           </v-btn>

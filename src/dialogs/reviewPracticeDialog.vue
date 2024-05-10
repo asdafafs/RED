@@ -74,20 +74,21 @@
       </v-card-text>
       <v-card-actions class="pa-5">
         <div
-            class="review-practice-dialog_actions"
-            :class="data.student && this.data.e.event.practiceStateEnum === 0? 'justify-space-between' : 'justify-end'"
+          class="review-practice-dialog_actions"
+          :class="data.student && this.data.e.event.practiceStateEnum === 0? 'justify-space-between' : 'justify-end'"
         >
           <v-btn
-              v-if="data.student && this.data.e.event.practiceStateEnum === 0"
-              class="open-practice-dialog_actions_cancel-button"
-              text
-              @click="onCancelClick"
+            v-if="data.student && this.data.e.event.practiceStateEnum === 0"
+            lass="open-practice-dialog_actions_cancel-button"
+            text
+            @click="onCancelClick"
           >
             <span>Отмена</span>
           </v-btn>
           <v-btn
-              class="review-practice-dialog_actions_save-button"
-              @click="onSaveClick"
+            class="review-practice-dialog_actions_save-button"
+            @click="onSaveClick"
+            @keydown.enter="onSaveClick"
           >
             <span>{{ saveButtonTitle }}</span>
           </v-btn>
