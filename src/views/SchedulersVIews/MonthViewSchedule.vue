@@ -593,10 +593,8 @@ export default {
       if (e.event.lectureType) {
         const student = this.listStudents.find(student => !!e.event.studentId && student.id === e.event.studentId);
         const studentName = student ? `${student.surname} ${student.name[0]}. ${student.middleName[0]}.` : ''
-        const teacher = this.listTeachers.find(teacher => !!e.event.activeUser && teacher.id === e.event.activeUser)
-        const teacherName = teacher ? `${teacher.surname} ${teacher.name[0]}. ${teacher.middleName[0]}.` : ''
         const data = {
-          teacher: teacherName,
+          teacher: e.event.activeUserFullNameShort,
           student: studentName,
           e: e,
         }
@@ -623,7 +621,6 @@ export default {
           studentName = student ? `${student.surname} ${student.name[0]}. ${student.middleName[0]}.` : ''
         }
         const teacher = this.listTeachers.find(teacher => this.selectedTeacher && teacher.id === this.selectedTeacher)
-        const teacherName = teacher ? `${teacher.surname} ${teacher.name[0]}. ${teacher.middleName[0]}.` : ''
         const teacherTransmissions = teacher ? teacher.transmissionTypeEnum : [];
         const data = {
           e: e,
@@ -638,7 +635,7 @@ export default {
           studentGeneralHoursSpent: studentGeneralHoursSpent,
           studentAdditionalHoursSpent: studentAdditionalHoursSpent,
           studentName: studentName,
-          teacherName: teacherName
+          teacherName: e.event.activeUserFullNameShort
         }
         await this.$reviewPracticeDialogPlugin(data).then((isCancel) => {
           if (!isCancel) this.onToggleClick(this.lastSelectedJoinType)
@@ -860,10 +857,8 @@ export default {
     },
 
     getTeacherName(e) {
-      const teacher = this.listInfoTeachers.find(teacher => (!!e.activeUser && teacher.id === e.activeUser) || (e.activeUserId && teacher.id === e.activeUserId))
-      if (teacher) return `${teacher.surname} ${teacher.name[0]}. ${teacher.middleName[0]}.`
+      if (e.activeUserFullNameShort) return e.activeUserFullNameShort
       else return `Преп. не назначен`
-
     },
 
     getEventTitle(e) {
