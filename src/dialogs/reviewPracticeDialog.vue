@@ -113,8 +113,9 @@ export default {
     },
   },
   created() {
-    console.log('data', this.items[4].spent.split(' ',3))
+    console.log('data', this.data.listStudents)
   },
+
   computed: {
     saveButtonTitle() {
       if (this.data.student && this.data.userIsStudentInPractice && this.data.e.event.practiceStateEnum === 0) return 'Отписаться'
@@ -198,6 +199,7 @@ export default {
 
     async openEditDialog() {
       this.localVisible = false
+      console.log('openEditDialog',this.data.listStudents)
       await this.$openNewPracticeDialogPlugin(this.data, false)
           .then(async (isCancel) => {
             if (!isCancel) {
@@ -282,7 +284,6 @@ export default {
     text-transform: none;
     color: black;
     line-height: 37.5px;
-    //width: 100%;
     align-self: flex-start;
     margin-top: 12px;
     margin-bottom: 12px;
