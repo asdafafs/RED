@@ -346,7 +346,8 @@ export default {
             "studentId": this.selectedStudentId,
             "activeUserId": this.data.userId,
             "transmissionTypeEnum": this.selectedTransmission,
-            "city": this.selectedCity
+            "city": this.selectedCity,
+            "stateEnum": 0
           }
 
           await event.putAdminPractice(body).catch(x => console.log(x)).then(() =>
@@ -376,7 +377,8 @@ export default {
             "endTime": endTime,
             "studentId": this.selectedStudentId,
             "transmissionTypeEnum": this.selectedTransmission,
-            "city": this.selectedCity
+            "city": this.selectedCity,
+            "stateEnum": 0
           }
 
           await event.putPractice(body).then(() => {
