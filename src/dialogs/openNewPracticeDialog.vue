@@ -7,7 +7,7 @@
       <v-card-title class="pa-5 d-flex flex-column justify-start">
         <span class="open-practice-dialog_first-title">{{ isNew ? 'Новая запись' : 'Изменение записи'  }}</span>
         <div class="d-flex flex-row w-full" style="gap: 12px">
-          <span class="review-practice-dialog_second-title">Вождение</span>
+          <span class="open-practice-dialog_second-title">Вождение</span>
           <span class="edit-practice-label-closed white--text" v-if="!isNew && data.e.event.practiceStateEnum ===2">Отменена</span>
           <span class="edit-practice-label-burned white--text" v-if="!isNew && data.e.event.practiceStateEnum ===3">Сгорела</span>
         </div>
@@ -179,7 +179,7 @@ export default {
   },
 
   created() {
-    console.log('this.data')
+    console.log('created', this.data.listStudents)
   }
   ,
   mounted() {
@@ -192,7 +192,6 @@ export default {
       this.selectedCity = this.data.e.event.city
       const selectedStudent = this.data.listStudents.find(student => student.id === this.data.e.event.studentId);
       this.selectedStudentId = selectedStudent ? selectedStudent.id : null;
-      this.data.listStudents = this.data.listStudents.filter(student => student.city[0] === this.data.e.event.city[0])
       this.typeOfReasonId = this.data.e.event.practiceStateEnum
     } else {
       this.eventDate = moment().format('YYYY-MM-DD')
@@ -247,7 +246,8 @@ export default {
     },
 
     acceptStudent(id) {
-      const item = this.data.listStudents.find(teacher => teacher.id === id)
+      console.log('this.data.listStudents',this.data.listStudents)
+      const item = this.data.listStudents.find(student => student.id === id)
       if (item) {
         this.selectedTransmission = item.transmissionTypeEnum
         this.data.teacherTransmissions = item.transmissionTypeEnum
@@ -454,7 +454,7 @@ export default {
     text-transform: none;
     color: black;
     line-height: 37.5px;
-    width: 100%
+    //width: 100%
   }
 
   &_actions {
