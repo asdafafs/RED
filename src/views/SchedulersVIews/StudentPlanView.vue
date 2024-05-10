@@ -5,7 +5,7 @@
         Личный кабинет
       </div>
       <div :class="isMobile ? 'mobile-subtitle' : 'desk-subtitle'">
-        Удачи на дорогах, {{ userName }}
+        Удачи на дорогах, {{ userName }}!
       </div>
     </div>
     <v-container class="px-4 pa-0 ma-0" fluid >
