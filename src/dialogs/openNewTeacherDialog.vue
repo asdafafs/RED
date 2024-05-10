@@ -136,6 +136,7 @@ export default {
           "transmissionTypeEnum": this.data.editedTeacher.transmissionTypeEnum,
           "city": this.data.editedTeacher.city,
         }
+
         await this.postActiveUser(body).finally(async () => {
           this.close();
         })
