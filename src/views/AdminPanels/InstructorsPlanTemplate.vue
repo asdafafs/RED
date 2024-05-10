@@ -204,8 +204,7 @@ export default {
     },
 
     prev() {
-      const hasUnsavedTime = this.eventsTemplate.some(event => event.savedTime === undefined);
-      if (hasUnsavedTime) {
+      if (this.hasChanges) {
         warningAlert('Есть несохранненые изменения', 5000)
       } else {
         this.$router.push({name: 'admin-teachers'})
