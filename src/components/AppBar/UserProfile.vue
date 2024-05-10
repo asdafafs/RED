@@ -10,7 +10,7 @@
           </template>
           <v-list>
             <v-list-item
-                @click.stop="linkVk()">
+                @click.stop="openVKBotMessage()">
               Привязать аккаунт к вк
             </v-list-item>
             <v-list-item
@@ -44,6 +44,20 @@ export default {
     async logoutAndExit() {
       await this.$store.dispatch('LOGOUT')
       await this.$router.push({name: 'main'});
+    },
+
+    async openVKBotMessage() {
+      this.localVisible = false
+      await this.$openVKBotMessagePlugin(null, false)
+          .then(async (isCancel) => {
+            if (!isCancel) {
+              this.$emit('destroy', false)
+            }
+          })
+          .finally(() => {
+            this.localVisible = true
+            this.linkVk()
+          })
     },
 
     async linkVk() {
