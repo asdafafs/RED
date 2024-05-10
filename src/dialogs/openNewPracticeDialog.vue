@@ -247,7 +247,6 @@ export default {
     },
 
     acceptStudent(id) {
-      console.log('this.data.listStudents',this.data.listStudents)
       const item = this.data.listStudents.find(student => student.id === id)
       if (item) {
         this.selectedTransmission = item.transmissionTypeEnum
@@ -273,7 +272,7 @@ export default {
         this.listCities = [
           {id: [1], text: 'Северодвинск'},
           {id: [2], text: 'Новодвинск'}];
-        this.selectedTransmission = null
+        this.selectedTransmission = []
         this.data.teacherTransmissions = this.savedTransmission
       }
     },
