@@ -192,6 +192,10 @@ export default {
       this.savedTransmission = this.data.teacherTransmissions
       this.selectedCity = this.data.e.event.city
       const selectedStudent = this.data.listStudents.find(student => student.id === this.data.e.event.studentId);
+      if (selectedStudent){
+        this.selectedTransmission = selectedStudent.transmissionTypeEnum
+        this.data.teacherTransmissions = selectedStudent.transmissionTypeEnum
+      }
       this.selectedStudentId = selectedStudent ? selectedStudent.id : null;
       this.typeOfReasonId = this.data.e.event.practiceStateEnum
     } else {
@@ -292,9 +296,11 @@ export default {
         }
       }
     },
+
     onCancelClick() {
       this.$emit('destroy', true)
     },
+
     async saveEvent() {
       const [hours, minutes] = this.eventStartTime.split(':');
       const startTime = moment.utc(this.eventDate).hour(parseInt(hours)).minute(parseInt(minutes));
