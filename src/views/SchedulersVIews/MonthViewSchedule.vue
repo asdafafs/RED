@@ -342,6 +342,10 @@ export default {
       if (newValue) {
         this.getStudent()
       }
+    },
+
+    selectedTeacher(newValue){
+      console.log(newValue)
     }
   },
 
@@ -514,7 +518,6 @@ export default {
           }));
         })
         this.events = cal
-        console.log('cal', cal)
       }
     },
 
@@ -619,7 +622,6 @@ export default {
         } else {
           studentName = student ? `${student.surname} ${student.name[0]}. ${student.middleName[0]}.` : ''
         }
-        console.log('review', this.listTeachers)
         const teacher = this.listTeachers.find(teacher => this.selectedTeacher && teacher.id === this.selectedTeacher)
         const teacherName = teacher ? `${teacher.surname} ${teacher.name[0]}. ${teacher.middleName[0]}.` : ''
         const teacherTransmissions = teacher ? teacher.transmissionTypeEnum : [];
@@ -879,7 +881,6 @@ export default {
       if (!this.selectedTeacher && !this.selectedStudent && this.isAdmin) {
         return this.events = []
       }
-      console.log('практики', this.listTeachers)
       if (this.isAdmin) {
         this.events = await this.getPracticesAdmin();
       } else if (this.isUserTeacher && !this.isAdmin) {
