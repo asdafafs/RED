@@ -638,7 +638,7 @@ export default {
           teacherName: e.event.activeUserFullNameShort
         }
         await this.$reviewPracticeDialogPlugin(data).then((isCancel) => {
-          if (!isCancel) this.onToggleClick(this.lastSelectedJoinType)
+          if (!isCancel) this.onToggleClick(this.lastSelectedJoinType).then(() => {this.getAllStudents()})
         })
       }
     },
