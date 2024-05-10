@@ -133,7 +133,8 @@ export default {
           "name": this.data.editedTeacher.name,
           "surname": this.data.editedTeacher.surname,
           "middleName": this.data.editedTeacher.middleName,
-
+          "transmissionTypeEnum": this.data.editedTeacher.transmissionTypeEnum,
+          "city": this.data.editedTeacher.city,
         }
         await this.postActiveUser(body).finally(async () => {
           this.close();
