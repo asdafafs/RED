@@ -53,7 +53,8 @@
                   @change="getPracticeCourseTemplate(); blockEditableTemplate = selectedTemplate ? !!selectedTemplate.practiceCourseId : false"
                   outlined hide-details
                   class="select-practice-template"
-                  style="border-radius: 12px !important; max-height: 41px !important; min-width: 256px !important; max-width: 256px !important; ">
+                  style="border-radius: 12px !important; max-height: 41px !important; min-width: 256px !important; max-width: 256px !important; "
+        >
           <template #selection="{ item }">
             <div v-if="item.practiceCourseId">
               <span style="font-size: 16px; line-height: 18.75px; font-weight: 400; color: #2B2A29">
@@ -93,7 +94,8 @@
                   no-data-text="Нет данных для отображения"
                   outlined hide-details
                   class="select-date-practice-template"
-                  style="border-radius: 12px !important; max-height: 32px !important; min-width: 256px !important; max-width: 256px !important;"/>
+                  style="border-radius: 12px !important; max-height: 32px !important; min-width: 256px !important; max-width: 256px !important;"
+                  ref="selectedCity"/>
       </v-col>
       <v-col class="align-center d-flex flex-row pa-0" style="width: min-content" v-if="hasChanges">
         <v-btn class="tab-button pa-0 rounded-lg" color="#4E7AEC" @click="save"
@@ -212,7 +214,7 @@ export default {
 
     async save() {
       this.isSaveButtonDisabled = true
-      if (this.startDateRules.required(this.practiceCourseStart) && this.endTimeRules.required(this.practiceCourseEnd)) {
+      if (this.startDateRules.required(this.practiceCourseStart) && this.endTimeRules.required(this.practiceCourseEnd) && this.selectedCity) {
         const hasUnsavedTime = this.eventsTemplate.some(event => event.savedTime === undefined || event.startTime !== event.savedTime);
         if (hasUnsavedTime) {
           const body = {
@@ -239,6 +241,9 @@ export default {
         }
         if (!this.endTimeRules.required(this.practiceCourseEnd)) {
           this.$refs.endDateField.$el.classList.add('error--text');
+        }
+        if (!this.selectedCity){
+          this.$refs.selectedCity.$el.classList.add('error--text');
         }
         this.isSaveButtonDisabled = false
       }
