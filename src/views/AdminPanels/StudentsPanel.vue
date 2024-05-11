@@ -40,8 +40,8 @@
         mobile-breakpoint="0"
     >
       <template v-slot:item="{ item }">
-        <tr>
-          <td style="display: flex; align-items: center;">
+        <tr style="height: 64px !important;">
+          <td style="display: flex; align-items: center; height: inherit">
             <div style="flex: 1;">
               <span>{{ item.fullName }}</span>
             </div>
