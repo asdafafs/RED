@@ -217,7 +217,7 @@
                 'event-border': selectedLessonType === 2 && event.studentId === null && event.practiceStateEnum === 0,
                 'px-[2px] justify-center' : isMobile, 
                 'px-3' : !isMobile,
-                'blur' : event.hasEnded
+                'blur' : event.haaEnded
                 }"
           >
             <div class="calendar-event_time">{{ formatTime(event.startTime) }}</div>
