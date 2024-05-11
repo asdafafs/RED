@@ -239,7 +239,7 @@ export default {
     },
     groupNumberRules: {
       required: value => !!value,
-      integer: value => Number.isInteger(Number(value)) || 'Введите целое число',
+      integer: value => Number.isInteger(Number(value)) || false,
     },
 
     dateOfWeek: [false, false, false, false, false, false, false],
@@ -253,7 +253,8 @@ export default {
       return !(this.titleRules.required(this.editedItem.groups.title)
           && this.startDateRules.required(this.globalStartDate)
           && this.startTimeRules.required(this.globalStartTime)
-          && this.groupNumberRules.required(this.editedItem.groups.groupNumber));
+          && this.groupNumberRules.required(this.editedItem.groups.groupNumber)
+          && this.groupNumberRules.integer(this.editedItem.groups.groupNumber));
     },
 
     areDatesOfWeekNotEmpty() {
@@ -344,6 +345,7 @@ export default {
       })
       return studentList
     },
+
     async getCourseLast() {
       const course = new CoursesRequest()
       await course.getCourseNull().catch(x => console.log(x)).then(x => {
@@ -379,7 +381,7 @@ export default {
       await course.postCourse(body).then(response => {
         if (response.status && response.status === 200) {
           successAlert('Группа успешно создана', 5000);
-          this.initialize()
+          this.close()
         }
       }).catch(x => console.log(x))
     },
@@ -535,8 +537,8 @@ export default {
           "studentId": this.selectedStudentsIds,
           "lecture": this.lessons
         }
-        await this.updateCourse(body).then(() => {
-        }).finally(() => {
+        await this.updateCourse(body).then(() => {}).
+        finally(() => {
           this.blockButtonWhenRequest = false
           this.$emit('reset-selected-rows');
         })
@@ -551,10 +553,8 @@ export default {
           "studentId": this.selectedStudentsIds,
           "lecture": this.lessons
         }
-        await this.postCourse(body).then(response => {
-              this.initialize()
-            }
-        ).catch(x => console.log(x)).finally(() => {
+        await this.postCourse(body).then(() => {}).
+        catch(x => console.log(x)).finally(() => {
           this.blockButtonWhenRequest = false
           this.$emit('reset-selected-rows');
         })
@@ -590,7 +590,6 @@ export default {
       } else {
         this.toggleSelectedChip(0);
       }
-
     },
 
     updateGlobalStartDate(value) {
