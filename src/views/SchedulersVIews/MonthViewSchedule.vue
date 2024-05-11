@@ -45,7 +45,7 @@
         <span style="font-weight: 600; font-size: 16px; line-height: 18.75px; color: #FEFEFE;  word-wrap: break-word;">Выберите инструктора, чтобы записаться на свободные практики</span>
       </div>
       <div style="gap: 12px !important;" class="d-flex flex-column">
-        <div class="d-flex flex-row flex-wrap" style="column-gap: 8px !important;">
+        <div class="d-flex flex-row flex-wrap" style="gap: 4px 8px !important;">
           <v-select v-model="selectedTeacher" class="select-user-template " outlined dense hide-details
                     height="41"
                     no-data-text="Нет данных для отображения"
@@ -216,7 +216,8 @@
               :class="{
                 'event-border': selectedLessonType === 2 && event.studentId === null && event.practiceStateEnum === 0,
                 'px-[2px] justify-center' : isMobile, 
-                'px-3' : !isMobile
+                'px-3' : !isMobile,
+                'blur' : event.hasEnded
                 }"
           >
             <div class="calendar-event_time">{{ formatTime(event.startTime) }}</div>
@@ -974,8 +975,6 @@ export default {
           return '#9DB9FF';
         else if (event.studentId === null && event.practiceStateEnum === 0)
           return '#FFFFFF';
-        else if (event.studentId !== null && event.practiceStateEnum === 1)
-          return 'rgba(157,185,255,0.3)';
         else
           return 'rgba(11, 11, 11, 0.04)';
       }
@@ -1220,7 +1219,9 @@ export default {
     max-height: 32px !important;
   }
 }
-
+.blur {
+  filter:opacity(30%)
+}
 .calendar-event {
   display: flex;
   flex-direction: row;
