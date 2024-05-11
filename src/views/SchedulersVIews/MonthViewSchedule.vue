@@ -279,7 +279,7 @@ export default {
     selectedMoreElement: null,
     lastSelectedJoinType: 1,
     selectedActiveUser: 0,
-    types: [['month', 'месяц'], ['week', 'неделя'], ['day', 'день']],
+    types: [['month', 'месяц'], ['day', 'день']],
     listTeachers: [{
       "id": null,
       "name": null,
