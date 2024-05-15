@@ -15,7 +15,6 @@
               @mousedown:time="startTime"
               @mousemove:time="mouseMove"
               @mouseup:time="endDrag"
-              hide-header
           >
             <template v-slot:event="{event}">
               <v-container class="pa-0 mx-0 d-flex flex-wrap" fill @click="mobileEdit(event)">
@@ -265,12 +264,13 @@ export default {
 
     startTime(tms) {
       const mouse = this.toTime(tms);
-
+      console.log('mouse',mouse)
       if (this.dragEvent && this.dragTime === null) {
         const start = new Date(this.dragEvent.start).getTime();
         this.dragTime = mouse - start;
       } else {
         const start = moment(this.roundTime(mouse)).format("YYYY-MM-DDTHH:mm:ss");
+        console.log('start',start)
         const endHour = new Date(start).getHours() + this.selectedDuration;
         const end = moment(new Date(start).setHours(endHour)).format("YYYY-MM-DDTHH:mm:ss");
         const dayOfWeek = moment(start).day();
