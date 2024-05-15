@@ -51,7 +51,7 @@
               <v-btn
                   color="##E9E9E8"
                   @click="logout"
-                  class="recovery-password-card__actions__btn mt-2"
+                  class="recovery-password-card__actions__btn mt-2 mb-4"
                   text
               >
                 Отмена
@@ -66,7 +66,6 @@
 <script>
 import IdentityRequest from "@/services/IdentityRequest";
 import LogoRed from "@/components/logos/LogoRed.vue";
-import {successAlert} from "@/components/Alerts/alert";
 
 export default {
   name: 'RecoveryPassword',
@@ -106,7 +105,7 @@ export default {
         return;
       }
 
-      this.checkEmail(this.email).then(() => {
+      this.checkEmail(this.email.replace(/\s/g, '')).then(() => {
         this.$router.push({name: 'forget-password'}).catch(err => {
           console.log(err)
         })
@@ -136,7 +135,7 @@ export default {
   display: flex !important;
   flex-direction: column !important;
   width: 400px !important;
-  height: 372px !important;
+  //height: 372px !important;
 
   &__title {
     font-weight: 700 !important;
@@ -144,6 +143,7 @@ export default {
     line-height: 37.5px !important;
     padding: 0 24px 10px !important;
     margin-bottom: 16px !important;
+    word-break: keep-all;
   }
 
   &__subtitle {
@@ -172,7 +172,7 @@ export default {
       border-radius: 12px !important;
       padding: 0;
       margin: 0 0 0 0 !important;
-      width: 350px;
+      width: 100%;
       height: 32px !important;
 
     }

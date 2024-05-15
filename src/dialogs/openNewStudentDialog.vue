@@ -126,14 +126,18 @@ export default {
       this.blockButtonWhenRequest = true
 
       if (this.data.editedIndex > -1) {
+        console.log(this.data.editedStudent.email)
+        this.data.editedStudent.email = this.data.editedStudent.email.replace(/ /g, '')
         const body = this.data.editedStudent
         await this.putUser(body).catch(() => {
         }).finally(() => {
           this.close();
         })
       } else {
+        console.log('email with space', this.data.editedStudent.email)
+        console.log('email another space', this.data.editedStudent.email.replace(/ /g, ''))
         const body = {
-          "email": this.data.editedStudent.email,
+          "email": this.data.editedStudent.email.replace(/ /g, ''),
           "phoneNumber": this.data.editedStudent.phoneNumber,
           "name": this.data.editedStudent.name,
           "surname": this.data.editedStudent.surname,
@@ -145,6 +149,7 @@ export default {
           "IsForbiddenToAssign": this.data.editedStudent.isForbiddenToAssign,
           "isDeleted" : this.data.editedStudent.isDeleted
         }
+        console.log(body)
         await this.postUser(body).catch(() => {
         }).finally(() => {
           this.close();
