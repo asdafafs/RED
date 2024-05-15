@@ -159,7 +159,7 @@ export default {
     localVisible: true,
     eventDate: null,
     eventStartTime: null,
-    selectedDuration: 1,
+    selectedDuration: 2,
     selectedTransmission: null,
     selectedStudentId: null,
     selectedCity: [1],
