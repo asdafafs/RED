@@ -69,9 +69,18 @@ export default {
     },
 
     bindingVK() {
+      this.linkVk()
       this.$emit('destroy', false)
-    }
-  },
+    },
+
+    async linkVk() {
+      const clientId = process.env.CLIENT_ID
+      const redirectUri = `${process.env.FRONT_PAGE_URL}/post-login`
+      const display = process.env.DISPLAY
+      const responseType = process.env.RESPONSE_TYPE
+      window.location.replace(`https://oauth.vk.com/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&display=${display}&response_type=${responseType}`)
+    },
+  }
 }
 
 </script>

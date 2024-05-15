@@ -157,7 +157,7 @@ export default {
       if (!this.isPasswordValid) return
       this.loginButtonDisabled = true
       const body = {
-        "email": this.email,
+        "email": this.email.replace(/\s/g, ''),
         "password": this.password
       }
       new IdentityRequest();

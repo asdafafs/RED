@@ -122,13 +122,14 @@ export default {
     async save() {
       this.blockButtonWhenRequest = true
       if (this.data.editedIndex > -1) {
+        this.data.editedTeacher.email.replace(/\s/g, '')
         const body = this.data.editedTeacher
         await this.putActiveUser(body).finally(async () => {
           this.close();
         })
       } else {
         const body = {
-          "email": this.data.editedTeacher.email,
+          "email": this.data.editedTeacher.email.replace(/\s/g, ''),
           "phoneNumber": this.data.editedTeacher.phoneNumber,
           "name": this.data.editedTeacher.name,
           "surname": this.data.editedTeacher.surname,
