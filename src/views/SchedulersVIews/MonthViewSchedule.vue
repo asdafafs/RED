@@ -771,7 +771,7 @@ export default {
       let lessonsData = []
       const activeUserId = this.selectedTeacher
       const groupId = this.$store.state.user.groupId
-      if (activeUserId) {
+      if (activeUserId && groupId) {
         const query = `GroupId=${groupId}&Date=${this.value}`
         await lessons.getLectureActiveUser(activeUserId, query).catch(x => console.log(x)).then(x => {
           lessonsData = x.data.lecture.map(event => ({
@@ -780,7 +780,7 @@ export default {
             end: new Date(event.endTime)
           }));
         })
-      } else {
+      } else if(groupId) {
         const query = `Date=${this.value}`
         await lessons.getLessons(query).catch(x => console.log(x)).then(x => {
           lessonsData = x.data.lecture.map(event => ({
