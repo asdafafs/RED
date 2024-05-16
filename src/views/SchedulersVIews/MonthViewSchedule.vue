@@ -214,14 +214,14 @@
           <div
               class="calendar-event"
               :class="{
-                'event-border': selectedLessonType === 2 && event.studentId === null && event.practiceStateEnum === 0,
+                'event-border': selectedLessonType === 2 && event.studentId === null && (event.practiceStateEnum === 0 || event.practiceStateEnum === 1),
                 'px-[2px] justify-center' : isMobile, 
                 'px-3' : !isMobile,
                 'blur' : event.haaEnded
                 }"
           >
             <div class="calendar-event_time">{{ formatTime(event.startTime) }}</div>
-            <div class="calendar-event_info" v-if="!isMobile">
+            <div class="calendar-event_info" v-if="showInfoSection">
               <div class="calendar-event_info_type">{{ getEventTitle(event) }}</div>
               <div class="calendar-event_info_teacher">{{ getTeacherName(event) }}</div>
             </div>
@@ -276,7 +276,6 @@ export default {
     weekday: [1, 2, 3, 4, 5, 6, 0],
     value: moment().format('YYYY-MM-DD'),
     currentDate: moment(),
-    selectedMoreElement: null,
     lastSelectedJoinType: 1,
     selectedActiveUser: 0,
     types: [['month', 'месяц'], ['day', 'день']],
@@ -378,6 +377,9 @@ export default {
   },
   computed: {
     ...mapState(['user', 'isMobile']),
+    showInfoSection() {
+      return !(this.isMobile && this.type === 'month')
+    },
     eventHeight() {
       if (this.type === 'month') return 32
       if (this.type === 'week') return 32
@@ -971,10 +973,12 @@ export default {
         if (event.lectureType === 3) return `#FC7DC9`
         if (event.lectureType === 4) return `#d6dae1`
       } else {
-        if (event.studentId !== null && event.practiceStateEnum === 0)
+        if (event.studentId !== null && (event.practiceStateEnum === 0 || event.practiceStateEnum === 1))
           return '#9DB9FF';
-        else if (event.studentId === null && event.practiceStateEnum === 0)
+        else if (event.studentId === null && (event.practiceStateEnum === 0 || event.practiceStateEnum === 1))
           return '#FFFFFF';
+        else if (event.practiceStateEnum === 2)
+          return '#fb8689'
         else
           return 'rgba(11, 11, 11, 0.04)';
       }
@@ -1026,7 +1030,6 @@ export default {
     },
 
     viewDay({date}) {
-      this.selectedMoreElement = nativeEvent.target
       this.value = date
       this.type = 'day'
     },
@@ -1244,7 +1247,7 @@ export default {
     display: flex;
     flex-direction: column;
     height: 28px;
-
+    overflow: hidden;
     &_type {
       font-size: 12px;
       font-weight: 600;
