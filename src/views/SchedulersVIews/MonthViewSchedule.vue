@@ -220,7 +220,7 @@
                 'blur' : event.haaEnded
                 }"
           >
-            <div class="calendar-event_time">{{ formatTime(event.startTime) }}</div>
+            <div class="calendar-event_time" :class="showInfoSection ? 'font-16' : 'font-12'">{{ formatTime(event.startTime) }}</div>
             <div class="calendar-event_info" v-if="showInfoSection">
               <div class="calendar-event_info_type">{{ getEventTitle(event) }}</div>
               <div class="calendar-event_info_teacher">{{ getTeacherName(event) }}</div>
@@ -278,7 +278,7 @@ export default {
     currentDate: moment(),
     lastSelectedJoinType: 1,
     selectedActiveUser: 0,
-    types: [['month', 'месяц'], ['day', 'день']],
+    types: [['month', 'месяц'],['week', 'неделя'] ,['day', 'день']],
     listTeachers: [{
       "id": null,
       "name": null,
@@ -378,7 +378,7 @@ export default {
   computed: {
     ...mapState(['user', 'isMobile']),
     showInfoSection() {
-      return !(this.isMobile && this.type === 'month')
+      return !(this.isMobile && (this.type === 'month' || this.type === 'week'))
     },
     eventHeight() {
       if (this.type === 'month') return 32
@@ -404,7 +404,7 @@ export default {
       return this.$refs.calendar.title
     },
     weekInMonth() {
-      return `${moment(this.$refs.calendar.lastStart).lang('ru').format('ll').slice(0, -7)}- ${moment(this.$refs.calendar.lastEnd).lang('ru').format('ll').slice(0, -8)}`
+      return `${moment(this.$refs.calendar.lastStart.date).lang('ru').format('ll').slice(0, -7)}- ${moment(this.$refs.calendar.lastEnd.date).lang('ru').format('ll').slice(0, -8)}`
     },
     userID() {
       return this.user.userId
@@ -1238,7 +1238,6 @@ export default {
   &_time {
     display: flex;
     align-items: center;
-    font-size: 16px;
     font-weight: 600;
     line-height: 20px;
   }
@@ -1265,5 +1264,11 @@ export default {
 .event-border {
   border: 1px solid #4E7AEC;
   border-radius: 4px;
+}
+.font-16 {
+  font-size: 16px;
+}
+.font-12 {
+  font-size: 12px;
 }
 </style>
