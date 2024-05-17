@@ -27,7 +27,7 @@
         </div>
       </v-card-text>
       <v-card-actions class="pa-5">
-        <div class="vkBot-message-dialog_actions">
+        <div class="vkBot-message-dialog_actions" v-if="isWideEnough">
           <v-btn
               class="vkBot-message-dialog_actions_cancel-button"
               text
@@ -37,6 +37,21 @@
           </v-btn>
           <v-btn
               class="vkBot-message-dialog_actions_save-button"
+              @click="bindingVK"
+          >
+            <span>Войти через VK</span>
+          </v-btn>
+        </div>
+        <div class="vkBot-message-dialog_actions_mobile" v-if="!isWideEnough">
+          <v-btn
+              class="vkBot-message-dialog_actions_mobile_cancel-button"
+              text
+              @click="transitionVk"
+          >
+            <span>Перейти в группу</span>
+          </v-btn>
+          <v-btn
+              class="vkBot-message-dialog_actions_mobile_save-button"
               @click="bindingVK"
           >
             <span>Войти через VK</span>
@@ -54,6 +69,7 @@ export default {
     selectedReasonId: 1,
     typeOfReasonId: 1,
     localVisible: true,
+    isWideEnough: window.innerWidth >= 400
   }),
   props: {
     data: {
@@ -61,7 +77,20 @@ export default {
       default: {}
     },
   },
+
+  mounted() {
+    window.addEventListener('resize', this.updateWidth);
+  },
+
+  beforeDestroy() {
+    window.removeEventListener('resize', this.updateWidth);
+  },
+
   methods: {
+    updateWidth() {
+      this.isWideEnough = window.innerWidth >= 400;
+    },
+
     transitionVk() {
       const vkBotURL = 'https://vk.com/red_bot';
       window.open(vkBotURL, '_blank');
@@ -105,7 +134,7 @@ export default {
       padding: 0 10px 0 10px;
       margin-bottom: 10px;
       margin-top: 10px;
-      width: 290px;
+      max-width: 290px;
       font-size: 20px;
       font-weight: 800;
       line-height: 24px;
@@ -132,7 +161,8 @@ export default {
     text-transform: none;
     color: black;
     line-height: 37.5px;
-    width: 100%
+    width: 100%;
+    word-break: keep-all;
   }
 
   &_third-title {
@@ -170,6 +200,41 @@ export default {
       background-color: #4E7AEC !important;
       height: 32px !important;
       width: 142px !important;
+      text-transform: none !important;
+
+      span:first-of-type {
+        color: white;
+        font-weight: 600;
+      }
+    }
+  }
+  &_actions_mobile {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    text-transform: none !important;
+    gap: 12px;
+
+    &_cancel-button {
+      border-radius: 12px !important;
+      border: 1px solid rgba(0, 0, 0, 0.53) !important;
+      height: 32px !important;
+      width: 100% !important;
+      text-transform: none !important;
+
+      span:first-of-type {
+        color: black;
+      }
+    }
+
+    &_save-button {
+      border-radius: 12px !important;
+      background-color: #4E7AEC !important;
+      height: 32px !important;
+      width: 100% !important;
       text-transform: none !important;
 
       span:first-of-type {
