@@ -21,7 +21,7 @@
                             class="v-text-field-custom-admin "/>
               <v-text-field v-model="data.editedStudent.email" outlined label="email" height="32px" dense
                             hide-details
-                            :rules="[emailRule.required]" class="v-text-field-custom-admin "></v-text-field>
+                            :rules="[emailRule.required]" class="v-text-field-custom-admin " :disabled="data.editedIndex >-1"/>
               <vue-text-mask class="phone-field" v-model="data.editedStudent.phoneNumber" :mask="mask"
                              :rules="[phoneRule.required]"/>
               <v-select outlined class="v-text-field-custom-admin " style="border-radius: 12px"
