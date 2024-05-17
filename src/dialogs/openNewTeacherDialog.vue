@@ -20,7 +20,7 @@
                             class="v-text-field-custom-admin"/>
               <v-text-field v-model="data.editedTeacher.email" label="email" :rules="[emailRule.required]"
                             height="32px" dense hide-details
-                            class="v-text-field-custom-admin" outlined/>
+                            class="v-text-field-custom-admin" outlined :disabled="data.editedIndex >-1"/>
               <vue-text-mask class="phone-field" v-model="data.editedTeacher.phoneNumber" :mask="mask"
                              :rules="[phoneRule.required]"/>
               <div class="card-edit-student__title" style="margin-top: 16px !important;">
