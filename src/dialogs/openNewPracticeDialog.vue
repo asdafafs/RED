@@ -87,7 +87,7 @@
               <v-radio label="2 часа" :value="2"/>
             </v-radio-group>
           </div>
-          <v-select
+          <v-autocomplete
               class="v-text-field-custom-h-32 mt-2"
               v-model="selectedStudentId"
               outlined
@@ -98,7 +98,7 @@
               item-value="id"
               :items="[...data.listStudents, { id: null, name: 'Студент не назначен' }]"
               :item-text="item => item ? `${item.surname || ''} ${item.name || ''} ${item.middleName || ''} ` : 'Студент не назначен'"
-              @change="acceptStudent(selectedStudentId)"
+              @change="acceptStudent"
           />
         </div>
         <div v-if="!isNew" class="d-flex flex-column" style="gap: 12px; padding-top: 12px;">
@@ -166,7 +166,9 @@ export default {
     listCities: [{id: [1], text: 'Северодвинск'}, {id: [2], text: 'Новодвинск'}],
     typeOfReasonId: 1,
     selectedReasonId: 1,
-    savedTransmission: []
+    savedTransmission: [],
+    searchInput: '',
+    refreshToken: true,
   }),
   props: {
     data: {
@@ -179,10 +181,6 @@ export default {
     }
   },
 
-  created() {
-    console.log('created', this.data.listStudents)
-  }
-  ,
   mounted() {
     if (!this.isNew) {
       this.eventDate = moment(this.data.e.event.startTime).format('YYYY-MM-DD')
@@ -234,6 +232,11 @@ export default {
         }
       ]
     },
+
+    filteredStudents() {
+      let students = this.data.listStudents
+      return students.length > 1 ? students.slice(0, -1) : students;
+    }
   },
   methods: {
     formatTransmissions(item) {

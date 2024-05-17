@@ -46,11 +46,12 @@
       </div>
       <div style="gap: 12px !important;" class="d-flex flex-column">
         <div class="d-flex flex-row flex-wrap" style="gap: 4px 8px !important;">
-          <v-select v-model="selectedTeacher" class="select-user-template " outlined dense hide-details
+          <v-autocomplete v-model="selectedTeacher" class="select-user-template " outlined dense hide-details
                     height="41"
                     no-data-text="Нет данных для отображения"
-                    :items="listTeachers"
-                    item-value="id" @change="acceptEditableTeacher()" v-if="!isUserTeacher || isAdmin">
+                    item-value="id" @change="acceptEditableTeacher()" v-if="!isUserTeacher || isAdmin"
+                          :item-text="item => `${item.surname || ''} ${item.name || ''} ${item.middleName || ''} `"
+                    :items="listTeachers">
             <template #selection="{ item }">
               <div v-if="item.id">
                 <span style="font-size: 16px; line-height: 18.75px; font-weight: 400; color: #2B2A29">
@@ -87,13 +88,14 @@
                 </span>
               </div>
             </template>
-          </v-select>
-          <v-select v-model="selectedStudent" class="select-user-template " outlined dense hide-details
+          </v-autocomplete>
+          <v-autocomplete v-model="selectedStudent" class="select-user-template " outlined dense hide-details
                     height="41"
                     no-data-text="Нет данных для отображения"
                     :items="listStudents"
                     item-value="id" @change="acceptEditableStudent()"
-                    v-if="isUserTeacher && lastSelectedJoinType === 2">
+                    v-if="isUserTeacher && lastSelectedJoinType === 2"
+                    :item-text="item => `${item.surname || ''} ${item.name || ''} ${item.middleName || ''} `">
             <template #selection="{ item }">
               <div v-if="item.id">
               <span style="font-size: 16px; line-height: 18.75px; font-weight: 400; color: #2B2A29">
@@ -129,7 +131,7 @@
                 </span>
               </div>
             </template>
-          </v-select>
+          </v-autocomplete>
           <v-select v-model="selectedGroup" class="select-user-template " outlined dense hide-details
                     height="41"
                     no-data-text="Нет данных для отображения"
