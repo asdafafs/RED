@@ -11,11 +11,13 @@ export default class PracticeCourseRequest extends HTTPService {
 
     getPracticeCourseId(practiceCourseId ){
         return this.get("course/" + practiceCourseId )
-
     }
 
     getPracticeCourseActiveUser(activeUserId ){
         return this.get("activeUser/" + activeUserId )
+    }
 
+    deletePracticeCourseActiveUser(practiceCourseId){
+        return this.delete('course/' + practiceCourseId)
     }
 }

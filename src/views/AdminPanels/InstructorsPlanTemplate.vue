@@ -10,23 +10,54 @@
         </div>
       </v-col>
     </v-row>
-    <hr style="margin: 1em 0 2em 0 !important;">
-    <v-row class="flex-wrap" style="column-gap: 32px !important; row-gap: 32px !important; padding-left: 12px"
+    <hr style="margin: 1em 0 1em 0 !important;">
+    <div class="d-flex width-full flex-wrap justify-space-between">
+      <v-btn-toggle
+          v-model="selectedModeType"
+          mandatory
+          group
+          color="black"
+          class="flex-wrap"
+      >
+        <div
+            v-for="item in calendarButtons"
+            :key="item.id"
+            class="toggle-button-container"
+        >
+          <v-btn
+              height="32"
+              class="toggle-button-template"
+              :value="item.id"
+              @click="onToggleClick(item.id)"
+          >
+        <span :class="selectedModeType === item.id ? 'blue-text' : 'grey--text'">
+          {{ item.title }}
+        </span>
+          </v-btn>
+          <div v-if="selectedModeType === item.id" class="underline"></div>
+        </div>
+      </v-btn-toggle>
+    </div>
+
+    <v-row class="flex-wrap"
+           style="column-gap: 32px !important; row-gap: 32px !important; padding-left: 12px; margin-top: 70px; min-height: 56px"
            v-if="!isMobile">
-      <v-col style="max-width: min-content" class="align-center bg-surface-variant d-flex py-0 px-0">
+      <v-col style="max-width: min-content" class="align-center bg-surface-variant d-flex py-0 px-0"
+             v-if="selectedModeType !==2">
         <v-text-field v-model="practiceCourseStart" label="Дата начала" type="date" ref="startDateField"
                       :rules="[startDateRules.required]" :min="getTodayDate()" outlined
                       class="select-date-practice-template" hide-details
                       style="border-radius: 12px !important; max-height: 32px !important; max-width: 156px !important;"/>
       </v-col>
-      <v-col class="align-center bg-surface-variant d-flex py-0 px-0" style="max-width: min-content">
+      <v-col class="align-center bg-surface-variant d-flex py-0 px-0" style="max-width: min-content"
+             v-if="selectedModeType !==2">
         <v-text-field v-model="practiceCourseEnd" label="Дата окончания" type="date" ref="endDateField"
                       :rules="[endTimeRules.required]" :min="getTodayDate()" outlined
                       class="select-date-practice-template"
                       style="border-radius: 12px !important; max-height: 32px !important; max-width: 156px !important;"
                       hide-details/>
       </v-col>
-      <v-col class="flex-column align-center bg-surface-variant d-flex py-0 px-0"
+      <v-col class="flex-column align-center bg-surface-variant d-flex py-0 px-0" v-if="selectedModeType !==2"
              style="min-width: 80px !important; max-width: min-content">
         <v-radio-group class="px-0 py-0 align-center ma-0" v-model="selectedDuration" hide-details>
           <v-radio :value="1">
@@ -54,6 +85,7 @@
                   outlined hide-details
                   class="select-practice-template"
                   style="border-radius: 12px !important; max-height: 41px !important; min-width: 256px !important; max-width: 256px !important; "
+                  refreshToken
         >
           <template #selection="{ item }">
             <div v-if="item.practiceCourseId">
@@ -88,7 +120,8 @@
           </template>
         </v-select>
       </v-col>
-      <v-col cols="" class="align-center bg-surface-variant d-flex py-0 px-0" style="max-width: min-content">
+      <v-col cols="" class="align-center bg-surface-variant d-flex py-0 px-0" style="max-width: min-content"
+             v-if="selectedModeType !==2">
         <v-select v-model="selectedCity" label="Город" :items="listCities"
                   item-value="id"
                   no-data-text="Нет данных для отображения"
@@ -97,7 +130,8 @@
                   style="border-radius: 12px !important; max-height: 32px !important; min-width: 256px !important; max-width: 256px !important;"
                   ref="selectedCity"/>
       </v-col>
-      <v-col class="align-center d-flex flex-row pa-0" style="width: min-content" v-if="hasChanges">
+      <v-col class="align-center d-flex flex-row pa-0" style="width: min-content"
+             v-if="hasChanges && selectedModeType !==2">
         <v-btn class="tab-button pa-0 rounded-lg" color="#4E7AEC" @click="save"
                style="min-width: 132px !important; max-height: 32px !important;"
                :disabled="isSaveButtonDisabled">
@@ -108,10 +142,18 @@
           <span class="black--text">Отмена</span>
         </v-btn>
       </v-col>
+      <v-col class="align-center d-flex flex-row pa-0" style="width: min-content"
+             v-if="selectedModeType ===2 && selectedTemplate">
+        <v-btn class="tab-button pa-0 rounded-lg" color="#4E7AEC" @click="deletePracticeCourse"
+               style="min-width: 132px !important; max-height: 32px !important;">
+          <span class="white--text">Удалить</span>
+        </v-btn>
+      </v-col>
     </v-row>
     <v-row class="pt-5" v-if="!isMobile">
       <TemplateSchedule @plan-updated="handleEvents" :selectedDuration="selectedDuration" :fullNameActiveUser="fullName"
-                        :events="eventsTemplate" :practiceCourseStart="dateFirstPractice" :showMobile="isMobile"/>
+                        :events="eventsTemplate" :practiceCourseStart="dateFirstPractice" :showMobile="isMobile"
+                        :is-delete-mode="lastSelectedJoinType === 2"/>
     </v-row>
     <div v-if="isMobile" class="text-alert">
       <span style="text-align: center;">Функция определения плана доступна только с ПК</span>
@@ -158,6 +200,9 @@ export default {
     },
     transmissionTypeEnum: [],
     responseListCities: [],
+    selectedModeType: null,
+    lastSelectedJoinType: 1,
+    refreshToken: true,
   }),
 
   computed: {
@@ -168,14 +213,60 @@ export default {
     },
 
     hasChanges() {
+      // console.log('JSON.stringify(this.eventsTemplate) !== JSON.stringify(this.originalEventsTemplate)', JSON.stringify(this.eventsTemplate) !== JSON.stringify(this.originalEventsTemplate))
+      // console.log('this.originalCity !== this.selectedCity', this.originalCity !== this.selectedCity)
+      // console.log('this.originalPracticeCourseStart !== this.practiceCourseStart', this.originalPracticeCourseStart !== this.practiceCourseStart)
+      // console.log('this.originalPracticeCourseEnd !== this.practiceCourseEnd', this.originalPracticeCourseEnd !== this.practiceCourseEnd)
       return JSON.stringify(this.eventsTemplate) !== JSON.stringify(this.originalEventsTemplate) ||
           this.originalCity !== this.selectedCity ||
           this.originalPracticeCourseStart !== this.practiceCourseStart ||
           this.originalPracticeCourseEnd !== this.practiceCourseEnd;
-    }
+    },
+
+    calendarButtons() {
+      return [
+        {
+          id: 1,
+          title: 'СОЗДАТЬ НОВЫЙ',
+        },
+        {
+          id: 2,
+          title: 'УДАЛИТЬ СУЩЕСТВУЮЩИЙ',
+        },
+      ]
+    },
   },
 
   methods: {
+    async deletePracticeCourse() {
+      this.isSaveButtonDisabled = true
+      const course = new PracticeCourseRequest()
+      await course.deletePracticeCourseActiveUser(this.selectedTemplate).then(response => {
+        if (response.status && response.status === 200) {
+          successAlert(' Практики, созданные по плану, успешно удалены из расписания', 5000);
+          this.refreshToken = false
+          this.refreshToken = true
+          this.listTemplates=  [{
+            "practiceCourseId": null,
+            "practiceCourseStart": null,
+            "practiceCourseEnd": null,
+            "test": 'TEST'
+          }]
+          this.initialize()
+          this.onToggleClick(this.lastSelectedJoinType)
+        }
+      }).finally(() => {
+        this.isSaveButtonDisabled = false
+      })
+    },
+
+    onToggleClick(id) {
+      this.selectedTemplate = null
+      this.eventsTemplate = []
+      this.originalEventsTemplate = []
+      this.lastSelectedJoinType = id;
+    },
+
     formatCity(item) {
       const includes1 = item.includes(1);
       const includes2 = item.includes(2);
@@ -275,11 +366,8 @@ export default {
     },
 
     async getPracticeCourseTemplate() {
-      this.originalEventsTemplate = []
-      this.originalCity = null
-      this.originalPracticeCourseStart = null
-      this.originalPracticeCourseEnd = null
       if (this.selectedTemplate === null) {
+        this.originalEventsTemplate = []
         return this.eventsTemplate = []
       }
       const practiceCourseTemplate = new PracticeCourseRequest()
@@ -506,5 +594,39 @@ export default {
   line-height: 18.75px;
   font-weight: 600;
   color: #2B2A29
+}
+
+.toggle-button-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.toggle-button-template {
+  margin-right: 0 !important;
+  margin-left: 0 !important;
+  color: white !important;
+  border-radius: 4px !important;
+  text-transform: none !important;
+  padding: 0 16px !important;
+}
+
+.toggle-button-template.v-btn--is-elevated {
+  box-shadow: none !important;
+}
+
+.toggle-button-template.theme--light.v-btn.v-btn--has-bg {
+  background-color: transparent !important;
+}
+
+.underline {
+  width: 100%;
+  height: 2px;
+  background-color: #4E7AEC;
+  margin-top: 4px;
+}
+
+.blue-text {
+  color: #4E7AEC
 }
 </style>

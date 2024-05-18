@@ -47,16 +47,17 @@
       <div style="gap: 12px !important;" class="d-flex flex-column">
         <div class="d-flex flex-row flex-wrap" style="gap: 4px 8px !important;">
           <v-autocomplete v-model="selectedTeacher" class="select-user-template " outlined dense hide-details
-                    height="41"
-                    no-data-text="Нет данных для отображения"
-                    item-value="id" @change="acceptEditableTeacher()" v-if="!isUserTeacher || isAdmin"
+                          height="41"
+                          no-data-text="Нет данных для отображения"
+                          item-value="id" @change="acceptEditableTeacher()" v-if="!isUserTeacher || isAdmin"
                           :item-text="item => `${item.surname || ''} ${item.name || ''} ${item.middleName || ''} `"
-                    :items="listTeachers">
+                          :items="listTeachers">
             <template #selection="{ item }">
               <div v-if="item.id">
                 <span style="font-size: 16px; line-height: 18.75px; font-weight: 400; color: #2B2A29">
                   {{ item.surname + " " + item.name.charAt(0) + ". " + item.middleName.charAt(0) + "." }}
                 </span>
+                <span style="padding-left: 16px"></span>
                 <br>
                 <span style="font-size: 12px; line-height: 14px; font-weight: 400; color: #A6A8AA">{{
                     formatTransmissions(item.transmissionTypeEnum)
@@ -64,6 +65,7 @@
               </div>
               <div v-else>
                 <span>Инструктор</span>
+                <span style="padding-left: 16px"></span>
                 <br>
                 <span
                     style="font-size: 12px; line-height: 14px; font-weight: 400; color: #A6A8AA">Коробка передач
@@ -90,17 +92,18 @@
             </template>
           </v-autocomplete>
           <v-autocomplete v-model="selectedStudent" class="select-user-template " outlined dense hide-details
-                    height="41"
-                    no-data-text="Нет данных для отображения"
-                    :items="listStudents"
-                    item-value="id" @change="acceptEditableStudent()"
-                    v-if="isUserTeacher && lastSelectedJoinType === 2"
-                    :item-text="item => `${item.surname || ''} ${item.name || ''} ${item.middleName || ''} `">
+                          height="41"
+                          no-data-text="Нет данных для отображения"
+                          :items="listStudents"
+                          item-value="id" @change="acceptEditableStudent()"
+                          v-if="isUserTeacher && lastSelectedJoinType === 2"
+                          :item-text="item => `${item.surname || ''} ${item.name || ''} ${item.middleName || ''} `">
             <template #selection="{ item }">
               <div v-if="item.id">
-              <span style="font-size: 16px; line-height: 18.75px; font-weight: 400; color: #2B2A29">
-                {{ item.surname + " " + item.name.charAt(0) + ". " + item.middleName.charAt(0) + "." }}
-              </span>
+                <span style="font-size: 16px; line-height: 18.75px; font-weight: 400; color: #2B2A29">
+                  {{ item.surname + " " + item.name.charAt(0) + ". " + item.middleName.charAt(0) + "." }}
+                </span>
+                <span style="padding-left: 16px"></span>
                 <br>
                 <span style="font-size: 12px; line-height: 14px; font-weight: 400; color: #A6A8AA">{{
                     formatTransmissions(item.transmissionTypeEnum)
@@ -108,6 +111,7 @@
               </div>
               <div v-else>
                 <span>Студент</span>
+                <span style="padding-left: 48px"></span>
                 <br>
                 <span
                     style="font-size: 12px; line-height: 14px; font-weight: 400; color: #A6A8AA">Коробка передач
@@ -222,7 +226,9 @@
                 'blur' : event.haaEnded
                 }"
           >
-            <div class="calendar-event_time" :class="showInfoSection ? 'font-16' : 'font-12'">{{ formatTime(event.startTime) }}</div>
+            <div class="calendar-event_time" :class="showInfoSection ? 'font-16' : 'font-12'">
+              {{ formatTime(event.startTime) }}
+            </div>
             <div class="calendar-event_info" v-if="showInfoSection">
               <div class="calendar-event_info_type">{{ getEventTitle(event) }}</div>
               <div class="calendar-event_info_teacher">{{ getTeacherName(event) }}</div>
@@ -280,7 +286,7 @@ export default {
     currentDate: moment(),
     lastSelectedJoinType: 1,
     selectedActiveUser: 0,
-    types: [['month', 'месяц'],['week', 'неделя'] ,['day', 'день']],
+    types: [['month', 'месяц'], ['week', 'неделя'], ['day', 'день']],
     listTeachers: [{
       "id": null,
       "name": null,
@@ -324,7 +330,7 @@ export default {
     }],
     studentGeneralHours: '',
     studentGeneralHoursSpent: '',
-    listInfoTeachers:[],
+    listInfoTeachers: [],
   }),
   watch: {
     value(newValue) {
@@ -346,7 +352,7 @@ export default {
       }
     },
 
-    selectedTeacher(newValue){
+    selectedTeacher(newValue) {
       console.log(newValue)
     }
   },
@@ -610,13 +616,12 @@ export default {
         const listStudents = this.listStudents.filter(student => student.id !== null);
         const student = listStudents.find(student => student.id === e.event.studentId);
         let studentName, studentGeneralHours, studentGeneralHoursSpent, studentAdditionalHoursSpent
-        if (this.isUserStudent && student ) {
+        if (this.isUserStudent && student) {
           studentName = student ? `${student.surname} ${student.name[0]}. ${student.middleName[0]}.` : ''
           studentGeneralHours = student.generalHours
           studentGeneralHoursSpent = student.generalHoursSpent
           studentAdditionalHoursSpent = student.additinalHoursSpent
-        }
-        else if (this.isUserStudent && !student) {
+        } else if (this.isUserStudent && !student) {
           const student = listStudents.find(student => student.id === this.userID);
           studentName = student ? `${student.surname} ${student.name[0]}. ${student.middleName[0]}.` : ''
           studentGeneralHours = student.generalHours
@@ -644,7 +649,9 @@ export default {
         }
         await this.$reviewPracticeDialogPlugin(data).then((isCancel) => {
 
-          if (!isCancel) this.onToggleClick(this.lastSelectedJoinType).then(() => {this.getAllStudents()})
+          if (!isCancel) this.onToggleClick(this.lastSelectedJoinType).then(() => {
+            this.getAllStudents()
+          })
         })
       }
     },
@@ -784,7 +791,7 @@ export default {
             end: new Date(event.endTime)
           }));
         })
-      } else if(groupId) {
+      } else if (groupId) {
         const query = `Date=${this.value}`
         await lessons.getLessons(query).catch(x => console.log(x)).then(x => {
           lessonsData = x.data.lecture.map(event => ({
@@ -1079,8 +1086,6 @@ export default {
   .v-select__selection--comma {
     margin: 0 !important;
   }
-
-
 }
 
 .schedule-main-section {
@@ -1224,9 +1229,11 @@ export default {
     max-height: 32px !important;
   }
 }
+
 .blur {
-  filter:opacity(30%)
+  filter: opacity(30%)
 }
+
 .calendar-event {
   display: flex;
   flex-direction: row;
@@ -1249,6 +1256,7 @@ export default {
     flex-direction: column;
     height: 28px;
     overflow: hidden;
+
     &_type {
       font-size: 12px;
       font-weight: 600;
@@ -1267,9 +1275,11 @@ export default {
   border: 1px solid #4E7AEC;
   border-radius: 4px;
 }
+
 .font-16 {
   font-size: 16px;
 }
+
 .font-12 {
   font-size: 12px;
 }
