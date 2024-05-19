@@ -35,6 +35,15 @@
             <div class="time-of-practice">{{ timeOfPractice }}</div>
           </div>
         </div>
+        <div class="d-flex flex-row w-full" style="border-radius: 12px; border: #FFCD6D 1px solid; gap: 8px; padding: 4px 8px 4px 8px; margin-top: 12px"
+         v-if="data.e.event.hasIntersection">
+          <div class="d-flex align-center justify-center">
+            <warning-icon class="warning-icon"/>
+          </div>
+          <div class="d-flex align-center justify-center">
+            <span class="warning-match">В расписании инструктора есть <br> другие занятия в это время </span>
+          </div>
+        </div>
       </v-card-title>
       <v-card-text class="pa-5 pt-0 pb-0">
         <div class="open-practice-dialog_text">
@@ -102,9 +111,11 @@
 import moment from "moment/moment";
 import EventsRequest from "@/services/EventsRequest";
 import { formatTransmissions, formatCity } from '@/utils/utils';
+import WarningIcon from "@/components/Icons/WarningIcon.vue";
 
 export default {
   name: "reviewPracticeDialog",
+  components: {WarningIcon},
   data: () => ({
     localVisible: true,
   }),
@@ -132,7 +143,7 @@ export default {
         {
           id: 0,
           title: 'Преподаватель',
-          value: this.data.e.event.title,
+          value: this.data.teacherName,
           visible: true
         },
         {
@@ -388,6 +399,13 @@ export default {
   margin-right: 8px;
 }
 
+.warning-icon{
+  color: #FFCD6D !important;
+  fill: #FFCD6D !important;
+  height: 20px !important;
+  width: 20px;
+}
+
 .date-of-practice {
   color: #4E7AEC;
   font-weight: 600;
@@ -426,5 +444,12 @@ export default {
   padding: 8px 12px 8px 12px;
   margin-top: 16px;
   margin-bottom: 12px;
+}
+
+.warning-match{
+  word-break: keep-all;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 14px;
 }
 </style>

@@ -5,7 +5,7 @@
         flat
     >
       <v-card-title class="pa-5 d-flex flex-column justify-start">
-        <span class="open-practice-dialog_first-title">{{ isNew ? 'Новая запись' : 'Изменение записи'  }}</span>
+        <span class="open-practice-dialog_first-title">{{ isNew ? 'Новая запись' : 'Изменение записи' }}</span>
         <div class="d-flex flex-row w-full" style="gap: 12px">
           <span class="open-practice-dialog_second-title">Вождение</span>
           <span class="edit-practice-label-closed white--text" v-if="!isNew && data.e.event.practiceStateEnum ===3">Отменена</span>
@@ -17,6 +17,18 @@
           <div class="d-flex flex-column">
             <span class="open-practice-dialog_text_title">Преподаватель</span>
             <span class="teacher-text">{{ isNew ? data.userName : data.teacherName }}</span>
+          </div>
+          <div class="d-flex flex-row w-full" style="border-radius: 12px; border: #FFCD6D 1px solid; gap: 8px; padding: 4px 8px 4px 8px"
+               v-if="!isNew && data.e.event.hasIntersection">
+            <div v-if="">
+              <div class="d-flex align-center justify-center">
+                <warning-icon class="warning-icon"/>
+              </div>
+              <div class="d-flex align-center justify-center">
+                <span class="warning-match">В расписании инструктора есть <br> другие занятия в это время </span>
+              </div>
+            </div>
+
           </div>
           <v-text-field
               class="v-text-field-custom-h-32 mt-2"
@@ -99,7 +111,18 @@
               :items="[...data.listStudents, { id: null, name: 'Студент не назначен' }]"
               :item-text="item => item ? `${item.surname || ''} ${item.name || ''} ${item.middleName || ''} ` : 'Студент не назначен'"
               @change="acceptStudent"
-          />
+          >
+            <template #selection="{ item }">
+              <div v-if="item.id">
+                <span>
+                  {{ item.surname + " " + item.name + " " + item.middleName }}
+                </span>
+              </div>
+              <div v-else style="padding-right: 16px">
+                <span>Студент не назначен</span>
+              </div>
+            </template>
+          </v-autocomplete>
         </div>
         <div v-if="!isNew" class="d-flex flex-column" style="gap: 12px; padding-top: 12px;">
           <span class="open-practice-dialog_text_subtitle">Статус практики</span>
@@ -137,9 +160,9 @@
             <span>Отмена</span>
           </v-btn>
           <v-btn
-            class="open-practice-dialog_actions_save-button"
-            @click="checkNewEvent"
-            @keydown.enter="checkNewEvent"
+              class="open-practice-dialog_actions_save-button"
+              @click="checkNewEvent"
+              @keydown.enter="checkNewEvent"
           >
             <span>Сохранить</span>
           </v-btn>
@@ -152,10 +175,12 @@
 <script>
 import moment from "moment/moment";
 import EventsRequest from "@/services/EventsRequest";
-import { formatTransmissions, formatCity } from '@/utils/utils';
+import {formatTransmissions, formatCity} from '@/utils/utils';
+import WarningIcon from "@/components/Icons/WarningIcon.vue";
 
 export default {
   name: "openNewPracticeDialog",
+  components: {WarningIcon},
   data: () => ({
     localVisible: true,
     eventDate: null,
@@ -191,7 +216,7 @@ export default {
       this.savedTransmission = this.data.teacherTransmissions
       this.selectedCity = this.data.e.event.city
       const selectedStudent = this.data.listStudents.find(student => student.id === this.data.e.event.studentId);
-      if (selectedStudent){
+      if (selectedStudent) {
         this.selectedTransmission = selectedStudent.transmissionTypeEnum
         this.data.teacherTransmissions = selectedStudent.transmissionTypeEnum
       }
@@ -543,5 +568,19 @@ export default {
 
 .w-full {
   width: 100%;
+}
+
+.warning-match{
+  word-break: keep-all;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 14px;
+}
+
+.warning-icon{
+  color: #FFCD6D !important;
+  fill: #FFCD6D !important;
+  height: 20px !important;
+  width: 20px;
 }
 </style>

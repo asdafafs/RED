@@ -98,7 +98,23 @@
       </template>
       <template v-slot:item="{ item  }">
         <tr :class="selectedRows.indexOf(item.id)>-1?'selected-row':''">
-          <td>{{ item.title }}</td>
+          <td class="custom-td">
+            <div class="content-wrapper">
+              <div class="flex-1">
+                <span>{{ item.title }}</span>
+              </div>
+              <div  class="warning-container" v-if="false">
+                <div class="icon-container">
+                  <warning-lecture-icon class="warning-lecture-icon"/>
+                </div>
+                <div class="text-container">
+                  <span class="warning-match">
+                    В расписании инструктора есть<br>другие занятия в это время
+                  </span>
+                </div>
+              </div>
+            </div>
+          </td>
           <td>{{ getTitleTeacher(item.activeUser) }}</td>
           <td>{{ discriminator[item.lectureType] }}</td>
           <td>
@@ -122,8 +138,11 @@
 </template>
 <script>
 import moment from "moment";
+import WarningIcon from "@/components/Icons/WarningIcon.vue";
+import WarningLectureIcon from "@/components/Icons/WarningLectureIcon.vue";
 
 export default {
+  components: {WarningLectureIcon, WarningIcon},
   props: {
     coursesData: {
       type: Array,
@@ -508,5 +527,50 @@ export default {
   }
 }
 
+.warning-lecture-icon {
+  color: #FFCD6D !important;
+  fill: #FFCD6D !important;
+  height: 20px !important;
+  width: 20px;
+}
 
+.custom-td {
+  padding: 0;
+  vertical-align: middle; /* Ensures the td content is vertically centered */
+}
+
+.content-wrapper {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+}
+
+.flex-1 {
+  flex: 1;
+}
+
+.warning-container {
+  display: flex;
+  align-items: center;
+  border-radius: 12px;
+  border: #FFCD6D 1px solid;
+  gap: 8px;
+  padding: 4px 8px;
+  width: 239px;
+  height: 36px;
+}
+
+.icon-container, .text-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.warning-match {
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 14px;
+  word-break: keep-all;
+}
 </style>

@@ -231,7 +231,7 @@
             </div>
             <div class="calendar-event_info" v-if="showInfoSection">
               <div class="calendar-event_info_type">{{ getEventTitle(event) }}</div>
-              <div class="calendar-event_info_teacher">{{ getTeacherName(event) }}</div>
+              <div class="calendar-event_info_teacher">{{ getNameUser(event) }}</div>
             </div>
           </div>
         </template>
@@ -247,7 +247,7 @@ import moment from "moment/moment";
 import {mapState} from "vuex";
 import UsersRequest from "@/services/UsersRequest";
 import GroupsRequest from "@/services/GroupsRequest";
-import { formatTransmissions } from '@/utils/utils';
+import {formatTransmissions} from '@/utils/utils';
 
 
 export default {
@@ -546,14 +546,6 @@ export default {
     },
 
     async getAccessibleTeachersForStudent(id) {
-      if (!id) {
-        return
-      }
-      const teachers = new UsersRequest()
-      let listTeachers
-      await teachers.getCorrectTeacherForSelectedUser(id).catch(x => console.log(x)).then(x => {
-        listTeachers = x.data.activeUsers
-      })
       this.listTeachers = [{
         "id": null,
         "name": null,
@@ -567,6 +559,15 @@ export default {
         "isAdmin": null,
         "city": null
       }]
+
+      if (!id) {
+        return this.getAllTeachers()
+      }
+      const teachers = new UsersRequest()
+      let listTeachers
+      await teachers.getCorrectTeacherForSelectedUser(id).catch(x => console.log(x)).then(x => {
+        listTeachers = x.data.activeUsers
+      })
       this.selectedTeacher = null
       return this.listTeachers.push(...listTeachers)
     },
@@ -650,6 +651,7 @@ export default {
           studentName: studentName,
           teacherName: e.event.activeUserFullNameShort
         }
+
         await this.$reviewPracticeDialogPlugin(data).then((isCancel) => {
 
           if (!isCancel) this.onToggleClick(this.lastSelectedJoinType).then(() => {
@@ -872,9 +874,8 @@ export default {
       }
     },
 
-    getTeacherName(e) {
-      if (e.activeUserFullNameShort) return e.activeUserFullNameShort
-      else return `Преп. не назначен`
+    getNameUser(e) {
+      if (e.title) return e.title
     },
 
     getEventTitle(e) {
