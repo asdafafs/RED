@@ -45,8 +45,8 @@
                 row
                 hide-details
             >
-              <v-radio label="АКП" :value="[1]" v-if="data.teacherTransmissions.includes(1)"/>
-              <v-radio label="МКП" :value="[2]" v-if="data.teacherTransmissions.includes(2)"/>
+              <v-radio label="АКП" :value="[2]" v-if="data.teacherTransmissions.includes(2)"/>
+              <v-radio label="МКП" :value="[1]" v-if="data.teacherTransmissions.includes(1)"/>
             </v-radio-group>
           </div>
           <div v-else>
@@ -152,6 +152,7 @@
 <script>
 import moment from "moment/moment";
 import EventsRequest from "@/services/EventsRequest";
+import { formatTransmissions, formatCity } from '@/utils/utils';
 
 export default {
   name: "openNewPracticeDialog",
@@ -231,27 +232,11 @@ export default {
           reason: 'Задачи офиса'
         }
       ]
-    },
-
-    filteredStudents() {
-      let students = this.data.listStudents
-      return students.length > 1 ? students.slice(0, -1) : students;
     }
   },
   methods: {
-    formatTransmissions(item) {
-      const includes1 = item.includes(1);
-      const includes2 = item.includes(2);
-      if (includes1 && includes2) {
-        return 'АКП, МКП';
-      } else if (includes1) {
-        return 'АКП';
-      } else if (includes2) {
-        return 'МКП';
-      } else {
-        return '';
-      }
-    },
+    formatTransmissions,
+    formatCity,
 
     acceptStudent(id) {
       const item = this.data.listStudents.find(student => student.id === id)
@@ -281,22 +266,6 @@ export default {
           {id: [2], text: 'Новодвинск'}];
         this.selectedTransmission = []
         this.data.teacherTransmissions = this.savedTransmission
-      }
-    },
-
-    formatCity(item) {
-      if (item) {
-        const includes1 = item.includes(1);
-        const includes2 = item.includes(2);
-        if (includes1 && includes2) {
-          return 'Северодвинск, Новодвинск';
-        } else if (includes1) {
-          return 'Северодвинск';
-        } else if (includes2) {
-          return 'Новодвинск';
-        } else {
-          return '';
-        }
       }
     },
 

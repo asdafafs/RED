@@ -57,8 +57,8 @@
 
             <v-radio-group v-model="data.e.event.transmissionTypeEnum" row hide-details
                            v-if="!data.userIsStudentInPractice && !data.userTeacher">
-              <v-radio label="АКП" :value="[1]" v-if="data.e.event.allowedTransmissionTypeEnum.includes(1)"/>
-              <v-radio label="МКП" :value="[2]" v-if="data.e.event.allowedTransmissionTypeEnum.includes(2)"/>
+              <v-radio label="АКП" :value="[2]" v-if="data.e.event.allowedTransmissionTypeEnum.includes(2)"/>
+              <v-radio label="МКП" :value="[1]" v-if="data.e.event.allowedTransmissionTypeEnum.includes(1)"/>
             </v-radio-group>
           </div>
           <div class="d-flex flex-column" v-if="data.student" style="gap: 4px">
@@ -101,6 +101,7 @@
 <script>
 import moment from "moment/moment";
 import EventsRequest from "@/services/EventsRequest";
+import { formatTransmissions, formatCity } from '@/utils/utils';
 
 export default {
   name: "reviewPracticeDialog",
@@ -163,36 +164,11 @@ export default {
     }
   },
   methods: {
+    formatTransmissions,
+    formatCity,
+
     onCancelClick() {
       this.$emit('destroy', true)
-    },
-
-    formatCity(item) {
-      const includes1 = item.includes(1);
-      const includes2 = item.includes(2);
-      if (includes1 && includes2) {
-        return 'Северодвинск, Новодвинск';
-      } else if (includes1) {
-        return 'Северодвинск';
-      } else if (includes2) {
-        return 'Новодвинск';
-      } else {
-        return '';
-      }
-    },
-
-    formatTransmissions(item) {
-      const includes1 = item.includes(1);
-      const includes2 = item.includes(2);
-      if (includes1 && includes2) {
-        return 'АКП, МКП';
-      } else if (includes1) {
-        return 'АКП';
-      } else if (includes2) {
-        return 'МКП';
-      } else {
-        return '---';
-      }
     },
 
     async openEditDialog() {

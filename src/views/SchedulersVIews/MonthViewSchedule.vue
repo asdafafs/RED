@@ -247,6 +247,7 @@ import moment from "moment/moment";
 import {mapState} from "vuex";
 import UsersRequest from "@/services/UsersRequest";
 import GroupsRequest from "@/services/GroupsRequest";
+import { formatTransmissions } from '@/utils/utils';
 
 
 export default {
@@ -428,6 +429,8 @@ export default {
     },
   },
   methods: {
+    formatTransmissions,
+
     async getCorrectStudents(id) {
       if (id) {
         const students = new UsersRequest()
@@ -1022,20 +1025,6 @@ export default {
     getMonthAndYear(dateString) {
       const [year, month] = dateString.split('-');
       return `${year}-${month}`;
-    },
-
-    formatTransmissions(item) {
-      const includes1 = item.includes(1);
-      const includes2 = item.includes(2);
-      if (includes1 && includes2) {
-        return 'АКП, МКП';
-      } else if (includes1) {
-        return 'АКП';
-      } else if (includes2) {
-        return 'МКП';
-      } else {
-        return '';
-      }
     },
 
     viewDay({date}) {
