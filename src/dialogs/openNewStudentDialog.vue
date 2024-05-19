@@ -38,8 +38,8 @@
               <div class="card-edit-student__title" style="margin-top: 16px !important;">Параметры обучения</div>
               <v-radio-group class="px-0 py-0 align-center ma-0 mt-3" v-model="data.editedStudent.transmissionTypeEnum"
                              hide-details>
-                <v-radio label="АКП" :value="[1]"/>
-                <v-radio label="МКП" :value="[2]"/>
+                <v-radio label="АКП" :value="[2]"/>
+                <v-radio label="МКП" :value="[1]"/>
               </v-radio-group>
               <v-select outlined class="v-text-field-custom-admin " style="border-radius: 12px"
                         v-model="data.editedStudent.city"

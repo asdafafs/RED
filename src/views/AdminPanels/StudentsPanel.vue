@@ -46,8 +46,9 @@
               <span>{{ item.fullName }}</span>
             </div>
             <div v-if="item.additinalHoursSpent > 0"
-                style="background-color: #E31E24; border-radius: 4px; width: 36px; height: 20px; display: flex; align-items: center; justify-content: center;">
-              <span style="font-weight: 600; font-size: 12px; line-height: 14px; text-align: center;" class="white--text">
+                 style="background-color: #E31E24; border-radius: 4px; width: 36px; height: 20px; display: flex; align-items: center; justify-content: center;">
+              <span style="font-weight: 600; font-size: 12px; line-height: 14px; text-align: center;"
+                    class="white--text">
                 Долг
               </span>
             </div>
@@ -57,7 +58,7 @@
           <td>{{ formatCity(item.city) }}</td>
           <td>{{ item.generalHours }}</td>
           <td>{{ item.generalHoursSpent }}</td>
-          <td>{{item.additinalHoursSpent }}</td>
+          <td>{{ item.additinalHoursSpent }}</td>
           <td class="text-xs-right grid-actions">
             <v-icon class="mr-2 blue--text" @click="editItem(item)">mdi-pencil</v-icon>
           </td>
@@ -70,6 +71,7 @@
 import UsersRequest from "@/services/UsersRequest";
 import VueTextMask from "vue-text-mask";
 import GroupsRequest from "@/services/GroupsRequest";
+import {formatTransmissions, formatCity} from '@/utils/utils';
 
 export default {
   components: {VueTextMask},
@@ -110,33 +112,8 @@ export default {
   },
 
   methods: {
-    formatCity(item) {
-      const includes1 = item.includes(1);
-      const includes2 = item.includes(2);
-      if (includes1 && includes2) {
-        return 'Северодвинск, Новодвинск';
-      } else if (includes1) {
-        return 'Северодвинск';
-      } else if (includes2) {
-        return 'Новодвинск';
-      } else {
-        return '';
-      }
-    },
-
-    formatTransmissions(item) {
-      const includes1 = item.includes(1);
-      const includes2 = item.includes(2);
-      if (includes1 && includes2) {
-        return 'АКП, МКП';
-      } else if (includes1) {
-        return 'АКП';
-      } else if (includes2) {
-        return 'МКП';
-      } else {
-        return '';
-      }
-    },
+    formatCity,
+    formatTransmissions,
 
     async openNewStudent() {
       this.editedIndex = -1

@@ -53,6 +53,7 @@
 <script>
 import UsersRequest from "@/services/UsersRequest";
 import GroupsRequest from "@/services/GroupsRequest";
+import { formatTransmissions, formatCity } from '@/utils/utils';
 
 export default {
   name: 'progressBar',
@@ -99,33 +100,8 @@ export default {
 
 
   methods: {
-    formatCity(item) {
-      const includes1 = item.includes(1);
-      const includes2 = item.includes(2);
-      if (includes1 && includes2) {
-        return 'Северодвинск, Новодвинск';
-      } else if (includes1) {
-        return 'Северодвинск';
-      } else if (includes2) {
-        return 'Новодвинск';
-      } else {
-        return '';
-      }
-    },
-
-    formatTransmissions(item) {
-      const includes1 = item.includes(1);
-      const includes2 = item.includes(2);
-      if (includes1 && includes2) {
-        return 'АКП, МКП';
-      } else if (includes1) {
-        return 'АКП';
-      } else if (includes2) {
-        return 'МКП';
-      } else {
-        return '';
-      }
-    },
+    formatCity,
+    formatTransmissions,
 
     async getGroupNumber() {
       const group = new GroupsRequest();

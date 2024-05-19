@@ -86,6 +86,7 @@
 <script>
 import UsersRequest from "@/services/UsersRequest";
 import VueTextMask from "vue-text-mask";
+import { formatTransmissions, formatCity } from '@/utils/utils';
 
 export default {
   components: {VueTextMask},
@@ -139,33 +140,8 @@ export default {
       })
     },
 
-    formatTransmissions(item) {
-      const includes1 = item.includes(1);
-      const includes2 = item.includes(2);
-      if (includes1 && includes2) {
-        return 'АКП, МКП';
-      } else if (includes1) {
-        return 'АКП';
-      } else if (includes2) {
-        return 'МКП';
-      } else {
-        return '';
-      }
-    },
-
-    formatCity(item) {
-      const includes1 = item.includes(1);
-      const includes2 = item.includes(2);
-      if (includes1 && includes2) {
-        return 'Северодвинск, Новодвинск';
-      } else if (includes1) {
-        return 'Северодвинск';
-      } else if (includes2) {
-        return 'Новодвинск';
-      } else {
-        return '';
-      }
-    },
+    formatTransmissions,
+    formatCity,
 
     async openNewTeacher() {
       this.editedIndex = -1

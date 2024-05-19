@@ -74,9 +74,9 @@ export default {
   data: () => ({
     localVisible: true,
     blockButtonWhenRequest: false,
-    availableCity: [{id: 1, text: 'Северодвинск'}, {id:2, text: 'Новодвинск'}],
-    availableGearboxType: [{id: 1, text: 'АКП'},
-      {id: 2, text: 'МКП'}],
+    availableCity: [{id: 1, text: 'Северодвинск'}, {id: 2, text: 'Новодвинск'}],
+    availableGearboxType: [{id: 2, text: 'АКП'},
+      {id: 1, text: 'МКП'}],
     mask: ['+', /\d/, '(', /[1-9]/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, '-', /\d/, /\d/],
     nameRule: {required: value => !!value},
     surnameRule: {required: value => !!value},
