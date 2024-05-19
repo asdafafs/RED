@@ -16,6 +16,11 @@
               @mousemove:time="mouseMove"
               @mouseup:time="endDrag"
           >
+            <template v-slot:day-label-header="{ days }">
+              <tr>
+                <th v-for="day in days" :key="day"/>
+              </tr>
+            </template>
             <template v-slot:event="{event}">
               <v-container class="pa-0 mx-0 d-flex flex-wrap" fill @click="mobileEdit(event)">
                 <v-row class="ma-0 flex-wrap" fill>

@@ -231,7 +231,7 @@
             </div>
             <div class="calendar-event_info" v-if="showInfoSection">
               <div class="calendar-event_info_type">{{ getEventTitle(event) }}</div>
-              <div class="calendar-event_info_teacher">{{ getTeacherName(event) }}</div>
+              <div class="calendar-event_info_teacher">{{ getEventPersonName(event) }}</div>
             </div>
           </div>
         </template>
@@ -871,12 +871,17 @@ export default {
         this.events = await this.getLessonsStudent();
       }
     },
-
-    getTeacherName(e) {
-      if (e.activeUserFullNameShort) return e.activeUserFullNameShort
-      else return `Преп. не назначен`
+    
+    getEventPersonName(e) {
+      if (this.isUserStudent || this.isAdmin) {
+        if (e.activeUserFullNameShort) return e.activeUserFullNameShort
+        else return `Преп. не назначен`
+      }
+      if (this.isUserTeacher) {
+        if (e.studentFullNameShort) return e.studentFullNameShort
+        else return `Студ. не назначен`
+      }
     },
-
     getEventTitle(e) {
       if (this.selectedLessonType === 1) {
         if (e.lectureType === 1) return `Основы вождения`
