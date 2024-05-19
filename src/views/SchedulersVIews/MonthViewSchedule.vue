@@ -231,7 +231,7 @@
             </div>
             <div class="calendar-event_info" v-if="showInfoSection">
               <div class="calendar-event_info_type">{{ getEventTitle(event) }}</div>
-              <div class="calendar-event_info_teacher">{{ getNameUser(event) }}</div>
+              <div class="calendar-event_info_teacher">{{ getEventPersonName(event) }}</div>
             </div>
           </div>
         </template>
@@ -651,7 +651,6 @@ export default {
           studentName: studentName,
           teacherName: e.event.activeUserFullNameShort
         }
-
         await this.$reviewPracticeDialogPlugin(data).then((isCancel) => {
 
           if (!isCancel) this.onToggleClick(this.lastSelectedJoinType).then(() => {
@@ -874,10 +873,16 @@ export default {
       }
     },
 
-    getNameUser(e) {
-      if (e.title) return e.title
+    getEventPersonName(e) {
+      if (this.isUserStudent || this.isAdmin) {
+        if (e.activeUserFullNameShort) return e.activeUserFullNameShort
+        else return `Преп. не назначен`
+      }
+      if (this.isUserTeacher) {
+        if (e.studentFullNameShort) return e.studentFullNameShort
+        else return `Студ. не назначен`
+      }
     },
-
     getEventTitle(e) {
       if (this.selectedLessonType === 1) {
         if (e.lectureType === 1) return `Основы вождения`
