@@ -60,9 +60,9 @@
 import CarLogo from "@/components/logos/CarLogo.vue";
 import LectureLogo from "@/components/logos/LectureLogo.vue";
 import moment from "moment";
-
+import {Icon } from '@iconify/vue2'
 export default {
-  components: {CarLogo, LectureLogo},
+  components: {CarLogo, LectureLogo,Icon},
   watch: {
     eventsTemplate: {
       handler(newVal) {

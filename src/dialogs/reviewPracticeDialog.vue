@@ -28,7 +28,7 @@
         </div>
         <div class="d-flex flex-row w-full">
           <div class="d-flex align-center justify-center">
-            <v-icon class="time-of-practice-icon">mdi-clock-time-four-outline</v-icon>
+            <Icon icon="mdi-clock-time-four-outline" class="time-of-practice-icon" height="24"/>
           </div>
           <div class="d-flex flex-column justify-start">
             <div class="date-of-practice">{{ dateOfPractice }}</div>
@@ -124,9 +124,10 @@ import WarningIcon from "@/components/Icons/WarningIcon.vue";
 import WarningInstructorIcon from "@/components/Icons/WarningInstructorIcon.vue";
 import WarningStudentIcon from "@/components/Icons/WarningStudentIcon.vue";
 
+import {Icon} from "@iconify/vue2"
 export default {
   name: "reviewPracticeDialog",
-  components: {WarningStudentIcon, WarningInstructorIcon, WarningIcon},
+  components: {WarningStudentIcon, WarningInstructorIcon, WarningIcon, Icon},
   data: () => ({
     localVisible: true,
   }),
