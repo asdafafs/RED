@@ -4,7 +4,7 @@
       <v-col lg="">
         <div class="desk-title">
           <v-btn icon class="ma-0  align-self-center" @click="prev">
-            <v-icon>mdi-chevron-left</v-icon>
+            <Icon icon="mdi-chevron-left" height="24"/>
           </v-btn>
           {{ formTitle }}
         </div>
@@ -76,7 +76,7 @@
           </template>
           <template v-slot:append>
             <v-chip class="select-add-item" @click.stop>
-              <v-icon class="white--text">mdi-account</v-icon>
+              <Icon class="white--text" icon="mdi-account" height="24"/>
               <span class="pl-1 white--text">Добавить</span>
             </v-chip>
           </template>
@@ -177,10 +177,10 @@ import CoursesRequest from "@/services/CoursesRequest";
 import GroupsRequest from "@/services/GroupsRequest";
 import Vue from "vue";
 import {successAlert, warningAlert} from "@/components/Alerts/alert";
-
+import { Icon } from '@iconify/vue2'
 export default {
   name: 'Item',
-  components: {CoursesList},
+  components: {CoursesList,Icon},
   data: () => ({
     globalStartTime: null,
     globalEndTime: null,

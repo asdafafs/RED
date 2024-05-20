@@ -27,7 +27,7 @@
         :class="currentRouteIsAdmin ? 'admin-panel-selected_button': 'admin-panel_button'"
         @click="onBtnClick"
       >
-        <v-icon color="white" class="mr-2">mdi-vector-arrange-above</v-icon>
+        <Icon color="white" icon="mdi-vector-arrange-above" height="24"/>
         <span class="admin-panel_text">
           Админпанель
         </span>
@@ -37,9 +37,10 @@
 </template>
 <script>
 import {mapState} from "vuex";
-
+import { Icon } from '@iconify/vue2'
 export default {
   name: 'AppButtons',
+  components: {Icon},
   props: {
     student: {}
   },

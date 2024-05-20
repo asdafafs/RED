@@ -9,7 +9,7 @@
         <span class="review-practice-dialog_second-title">Лекция</span>
         <div class="d-flex flex-row w-full">
           <div class="d-flex align-center justify-center">
-            <v-icon class="time-of-practice-icon">mdi-clock-time-four-outline</v-icon>
+            <Icon class="time-of-practice-icon" icon="mdi-clock-time-four-outline" height="24"/>
           </div>
           <div class="d-flex flex-column justify-start">
             <div class="date-of-practice">{{ dateOfPractice }}</div>
@@ -45,10 +45,11 @@
 
 <script>
 import moment from "moment/moment";
-import {isCancel} from "axios";
+import {Icon} from '@iconify/vue2'
 
 export default {
   name: "reviewLectureDialog",
+  components:{Icon},
   data: () => ({
     localVisible: true,
   }),
