@@ -874,13 +874,18 @@ export default {
     },
 
     getEventPersonName(e) {
-      if (this.isUserStudent || this.isAdmin) {
+      if (this.selectedLessonType === 1) {
         if (e.activeUserFullNameShort) return e.activeUserFullNameShort
         else return `Преп. не назначен`
-      }
-      if (this.isUserTeacher) {
-        if (e.studentFullNameShort) return e.studentFullNameShort
-        else return `Студ. не назначен`
+      } else {
+        if (this.isUserStudent || this.isAdmin) {
+          if (e.activeUserFullNameShort) return e.activeUserFullNameShort
+          else return `Преп. не назначен`
+        }
+        if (this.isUserTeacher) {
+          if (e.studentFullNameShort) return e.studentFullNameShort
+          else return `Студ. не назначен`
+        }
       }
     },
     getEventTitle(e) {
