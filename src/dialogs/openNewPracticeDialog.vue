@@ -19,16 +19,15 @@
             <span class="teacher-text">{{ isNew ? data.userName : data.teacherName }}</span>
           </div>
           <div class="d-flex flex-row w-full" style="border-radius: 12px; border: #FFCD6D 1px solid; gap: 8px; padding: 4px 8px 4px 8px"
-               v-if="!isNew && data.e.event.hasIntersection">
+               v-if="false">
             <div v-if="">
               <div class="d-flex align-center justify-center">
-                <warning-icon class="warning-icon"/>
+                <warning-instructor-icon class="warning-icon"/>
               </div>
               <div class="d-flex align-center justify-center">
                 <span class="warning-match">В расписании инструктора есть <br> другие занятия в это время </span>
               </div>
             </div>
-
           </div>
           <v-text-field
               class="v-text-field-custom-h-32 mt-2"
@@ -177,10 +176,11 @@ import moment from "moment/moment";
 import EventsRequest from "@/services/EventsRequest";
 import {formatTransmissions, formatCity} from '@/utils/utils';
 import WarningIcon from "@/components/Icons/WarningIcon.vue";
+import WarningInstructorIcon from "@/components/Icons/WarningInstructorIcon.vue";
 
 export default {
   name: "openNewPracticeDialog",
-  components: {WarningIcon},
+  components: {WarningInstructorIcon, WarningIcon},
   data: () => ({
     localVisible: true,
     eventDate: null,
@@ -582,5 +582,9 @@ export default {
   fill: #FFCD6D !important;
   height: 20px !important;
   width: 20px;
+}
+
+.v-autocomplete.v-select.v-input--is-focused input {
+  min-width: 0 !important;
 }
 </style>

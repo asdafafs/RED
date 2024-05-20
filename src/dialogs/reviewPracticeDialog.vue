@@ -36,12 +36,21 @@
           </div>
         </div>
         <div class="d-flex flex-row w-full" style="border-radius: 12px; border: #FFCD6D 1px solid; gap: 8px; padding: 4px 8px 4px 8px; margin-top: 12px"
-         v-if="data.e.event.hasIntersection">
+         v-if="data.e.event.hasIntersectionActiveUser">
           <div class="d-flex align-center justify-center">
-            <warning-icon class="warning-icon"/>
+            <warning-instructor-icon class="warning-icon"/>
           </div>
           <div class="d-flex align-center justify-center">
             <span class="warning-match">В расписании инструктора есть <br> другие занятия в это время </span>
+          </div>
+        </div>
+        <div class="d-flex flex-row w-full" style="border-radius: 12px; border: #FFCD6D 1px solid; gap: 8px; padding: 4px 8px 4px 8px; margin-top: 12px"
+             v-if="data.e.event.hasIntersectionStudent">
+          <div class="d-flex align-center justify-center">
+            <warning-student-icon class="warning-icon"/>
+          </div>
+          <div class="d-flex align-center justify-center">
+            <span class="warning-match">В расписании студента есть <br> другие занятия в это время </span>
           </div>
         </div>
       </v-card-title>
@@ -112,10 +121,12 @@ import moment from "moment/moment";
 import EventsRequest from "@/services/EventsRequest";
 import { formatTransmissions, formatCity } from '@/utils/utils';
 import WarningIcon from "@/components/Icons/WarningIcon.vue";
+import WarningInstructorIcon from "@/components/Icons/WarningInstructorIcon.vue";
+import WarningStudentIcon from "@/components/Icons/WarningStudentIcon.vue";
 
 export default {
   name: "reviewPracticeDialog",
-  components: {WarningIcon},
+  components: {WarningStudentIcon, WarningInstructorIcon, WarningIcon},
   data: () => ({
     localVisible: true,
   }),

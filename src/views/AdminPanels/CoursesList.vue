@@ -103,9 +103,9 @@
               <div class="flex-1">
                 <span>{{ item.title }}</span>
               </div>
-              <div  class="warning-container" v-if="false">
+              <div  class="warning-container" v-if="item.hasIntersection">
                 <div class="icon-container">
-                  <warning-lecture-icon class="warning-lecture-icon"/>
+                  <warning-instructor-icon class="warning-lecture-icon"/>
                 </div>
                 <div class="text-container">
                   <span class="warning-match">
@@ -139,10 +139,10 @@
 <script>
 import moment from "moment";
 import WarningIcon from "@/components/Icons/WarningIcon.vue";
-import WarningLectureIcon from "@/components/Icons/WarningLectureIcon.vue";
+import WarningInstructorIcon from "@/components/Icons/WarningInstructorIcon.vue";
 
 export default {
-  components: {WarningLectureIcon, WarningIcon},
+  components: {WarningInstructorIcon, WarningIcon},
   props: {
     coursesData: {
       type: Array,

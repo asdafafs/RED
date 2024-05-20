@@ -166,6 +166,7 @@ import UsersRequest from "@/services/UsersRequest";
 import PracticeCourseRequest from "@/services/PracticeCourseRequest";
 import {errorAlert, successAlert, warningAlert} from "@/components/Alerts/alert";
 import {mapState} from "vuex";
+import {formatCity} from "@/utils/utils";
 
 export default {
   name: 'PlanTemplate',
@@ -238,6 +239,8 @@ export default {
   },
 
   methods: {
+    formatCity,
+
     async deletePracticeCourse() {
       this.isSaveButtonDisabled = true
       const course = new PracticeCourseRequest()
@@ -265,20 +268,6 @@ export default {
       this.eventsTemplate = []
       this.originalEventsTemplate = []
       this.lastSelectedJoinType = id;
-    },
-
-    formatCity(item) {
-      const includes1 = item.includes(1);
-      const includes2 = item.includes(2);
-      if (includes1 && includes2) {
-        return 'Северодвинск, Новодвинск';
-      } else if (includes1) {
-        return 'Северодвинск';
-      } else if (includes2) {
-        return 'Новодвинск';
-      } else {
-        return '';
-      }
     },
 
     handleEvents(events) {
