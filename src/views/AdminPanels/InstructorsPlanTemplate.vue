@@ -4,7 +4,7 @@
       <v-col style="width: min-content">
         <div :class="isMobile ? 'mobile-title' : 'desk-title'">
           <v-btn icon class="ma-0  align-self-center" @click="prev">
-            <v-icon>mdi-chevron-left</v-icon>
+            <Icon icon="mdi-chevron-left" height="24"/>
           </v-btn>
           <span v-if="fullName">{{ fullName }}</span>
         </div>
@@ -168,9 +168,10 @@ import {errorAlert, successAlert, warningAlert} from "@/components/Alerts/alert"
 import {mapState} from "vuex";
 import {formatCity} from "@/utils/utils";
 
+import { Icon } from '@iconify/vue2'
 export default {
   name: 'PlanTemplate',
-  components: {TemplateSchedule},
+  components: {TemplateSchedule,Icon},
   data: () => ({
     isSaveButtonDisabled: false,
     fullName: '',

@@ -21,7 +21,7 @@
       >
         <template #default>
           {{ item.title }}
-          <v-icon color="white">{{ item.icon }}</v-icon>
+          <Icon color="white" height="24" :icon="item.icon"/>
           <logoutButton v-if="item.routerName === 'main'"/>
         </template>
       </v-list-item>
@@ -31,11 +31,12 @@
 <script>
 import IdentityRequest from "@/services/IdentityRequest";
 import logoutButton from "@/components/UI/LogoutButton.vue";
-
+import {Icon} from "@iconify/vue2"
 export default {
   name: 'NavigationBar',
   components: {
-    logoutButton
+    logoutButton,
+    Icon
   },
   props: {
     student: Boolean,

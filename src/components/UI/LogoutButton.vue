@@ -2,7 +2,7 @@
   <div class="d-flex flex-row">
     <div class="d-flex flex-column">
       <div class="user-info-section">
-        <v-icon color="white">mdi-account-outline</v-icon>
+        <Icon color="white" icon="mdi-account-outline" height="24"/>
         <span class="user-name">{{ userName }}</span>
       </div>
       <div class="user-role-section">
@@ -17,11 +17,12 @@
 <script>
 import {mapState} from "vuex";
 import loginIcon from "@/components/Icons/LoginIcon.vue";
-
+import { Icon } from '@iconify/vue2'
 export default {
   name: 'LogoutButton',
   components:{
-    loginIcon
+    loginIcon,
+    Icon
   },
   computed: {
     ...mapState(['user']),
