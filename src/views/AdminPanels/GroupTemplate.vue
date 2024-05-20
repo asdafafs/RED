@@ -416,6 +416,7 @@ export default {
             endTime: item.endTime,
             lectureType: item.lectureType,
             activeUser: item.activeUser,
+            hasIntersection: item.hasIntersection,
           };
         });
         this.initialData = this.coursesData.map(item => {
@@ -426,6 +427,7 @@ export default {
             endTime: item.endTime,
             lectureType: item.lectureType,
             activeUser: item.activeUser,
+            hasIntersection: item.hasIntersection,
           };
         });
         this.editedItem.groups.title = `Группа №0`;
@@ -440,6 +442,7 @@ export default {
             endTime: item.endTime,
             lectureType: item.lectureType,
             activeUser: item.activeUser,
+            hasIntersection: item.hasIntersection,
           };
         });
         this.editedItem.groups = {
@@ -457,6 +460,7 @@ export default {
             endTime: item.endTime,
             lectureType: item.lectureType,
             activeUser: item.activeUser,
+            hasIntersection: item.hasIntersection,
           };
         });
         this.selectedDays()

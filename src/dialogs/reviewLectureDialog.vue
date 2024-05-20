@@ -16,6 +16,15 @@
             <div class="time-of-practice">{{ timeOfPractice }}</div>
           </div>
         </div>
+        <div class="d-flex flex-row w-full" style="border-radius: 12px; border: #FFCD6D 1px solid; gap: 8px; padding: 4px 8px 4px 8px; margin-top: 12px"
+             v-if="data.e.event.hasIntersection">
+          <div class="d-flex align-center justify-center">
+            <warning-instructor-icon class="warning-icon"/>
+          </div>
+          <div class="d-flex align-center justify-center">
+            <span class="warning-match">В расписании инструктора есть <br> другие занятия в это время </span>
+          </div>
+        </div>
       </v-card-title>
       <v-card-text class="pa-5 pt-0 pb-0">
         <div class="open-practice-dialog_text">
@@ -46,9 +55,12 @@
 <script>
 import moment from "moment/moment";
 import {isCancel} from "axios";
+import WarningStudentIcon from "@/components/Icons/WarningStudentIcon.vue";
+import WarningInstructorIcon from "@/components/Icons/WarningInstructorIcon.vue";
 
 export default {
   name: "reviewLectureDialog",
+  components: {WarningInstructorIcon, WarningStudentIcon},
   data: () => ({
     localVisible: true,
   }),
