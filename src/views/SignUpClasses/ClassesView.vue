@@ -59,13 +59,13 @@
       <div>
         <v-sheet tile height="54" class="d-flex justify-center">
           <v-btn icon class="ma-0 align-self-center" @click="prev()">
-            <v-icon>mdi-chevron-left</v-icon>
+            <Icon icon="mdi-chevron-left" height="24"/>
           </v-btn>
           <v-toolbar-title v-if="test" class="month-name">
             {{ month }}
           </v-toolbar-title>
           <v-btn icon class="ma-0 align-self-center" @click="next()">
-            <v-icon>mdi-chevron-right</v-icon>
+            <Icon icon="mdi-chevron-right" height="24"/>
           </v-btn>
         </v-sheet>
         <v-sheet>
@@ -196,9 +196,9 @@ import EventsRequest from "@/services/EventsRequest";
 import UsersRequest from "@/services/UsersRequest";
 import {mapState} from "vuex";
 import moment from "moment/moment";
-
+import { Icon } from '@iconify/vue2'
 export default {
-  components: {LectureLogo, CarLogo},
+  components: {LectureLogo, CarLogo,Icon},
   data: () => ({
     selectedJoinType: 0,
     dialog: false,

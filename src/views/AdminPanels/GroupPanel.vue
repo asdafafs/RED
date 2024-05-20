@@ -11,7 +11,7 @@
           @click="transitionNewCourse"
       >
         <section class="d-flex flex-row align-center" style="padding: 8px 12px 8px 12px !important;">
-          <v-icon color="white">mdi-plus-circle-outline</v-icon>
+          <Icon color="white" icon="mdi-plus-circle-outline" height="24"/>
           <span class="add-instructor-text">Добавить группу</span>
         </section>
       </v-btn>
@@ -75,9 +75,9 @@ import GroupsRequest from "@/services/GroupsRequest";
 import {mapState} from "vuex";
 import Item from "@/views/AdminPanels/GroupTemplate.vue";
 import CoursesList from "@/views/AdminPanels/CoursesList.vue";
-
+import {Icon} from '@iconify/vue2'
 export default {
-  components: {CoursesList, Item},
+  components: {CoursesList, Item,Icon},
   data: () => ({
     groupDelete: false,
     blockButtonWhenRequest: false,

@@ -11,7 +11,7 @@
           @click="openNewTeacher"
       >
         <section class="d-flex flex-row align-center" style="padding: 8px 12px 8px 12px !important;">
-          <v-icon color="white">mdi-plus-circle-outline</v-icon>
+          <Icon icon="mdi-plus-circle-outline" height="24"/>
           <span class="add-instructor-text">Добавить инструктора</span>
         </section>
       </v-btn>
@@ -87,9 +87,9 @@
 import UsersRequest from "@/services/UsersRequest";
 import VueTextMask from "vue-text-mask";
 import { formatTransmissions, formatCity } from '@/utils/utils';
-
+import { Icon } from '@iconify/vue2'
 export default {
-  components: {VueTextMask},
+  components: {VueTextMask,Icon},
   data: () => ({
     search: '',
     dialogDelete: false,

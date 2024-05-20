@@ -140,9 +140,9 @@
 import moment from "moment";
 import WarningIcon from "@/components/Icons/WarningIcon.vue";
 import WarningLectureIcon from "@/components/Icons/WarningLectureIcon.vue";
-
+import { Icon } from '@iconify/vue2'
 export default {
-  components: {WarningLectureIcon, WarningIcon},
+  components: {WarningLectureIcon, WarningIcon,Icon},
   props: {
     coursesData: {
       type: Array,

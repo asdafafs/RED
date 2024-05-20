@@ -173,7 +173,7 @@
               :disabled="this.selectedTeacher === this.userID && isAdmin || this.selectedTeacher === null && isAdmin"
           >
             <section class="d-flex flex-row align-center" style="padding: 8px 12px 8px 12px !important;">
-              <v-icon color="white">mdi-plus-circle-outline</v-icon>
+              <Icon color="white" icon="mdi-plus-circle-outline" height="24"/>
               <span class="add-instructor-text">Добавить практику</span>
             </section>
           </v-btn>
@@ -186,7 +186,7 @@
           class="schedule-main-section_month_picker-btn"
           @click="previousMonth()"
       >
-        <v-icon>mdi-chevron-left</v-icon>
+        <Icon icon="mdi-chevron-left" height="24"/>
       </v-btn>
       <v-toolbar-title v-if="test" :class=" isMobile ? 'month-name-mobile' : 'month-name'">
         {{ type === 'week' ? weekInMonth : month }}
@@ -196,7 +196,7 @@
           class="schedule-main-section_month_picker-btn"
           @click="nextMonth()"
       >
-        <v-icon>mdi-chevron-right</v-icon>
+        <Icon icon="mdi-chevron-right" height="24"/>
       </v-btn>
     </div>
     <div class="schedule-main-section_calendar">
@@ -248,10 +248,10 @@ import {mapState} from "vuex";
 import UsersRequest from "@/services/UsersRequest";
 import GroupsRequest from "@/services/GroupsRequest";
 import {formatTransmissions} from '@/utils/utils';
-
+import { Icon } from '@iconify/vue2'
 
 export default {
-  components: {LectureLogo, CarLogo},
+  components: {LectureLogo, CarLogo, Icon},
   mounted() {
     const buttonStyleReplace = [
       'v-btn',
@@ -273,7 +273,7 @@ export default {
     this.test = true
     this.prevMonthAndYear = this.getMonthAndYear(this.value);
   },
-
+  
   data: () => ({
     selectedLessonType: null,
     events: [],
