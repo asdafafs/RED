@@ -47,6 +47,7 @@
       <MobileAppBar
         v-else
         :drawer.sync="drawer"
+        :isDataLoaded = isDataLoaded
       />
     </v-app-bar>
   </v-container>
