@@ -61,6 +61,7 @@
           <td>{{ item.additinalHoursSpent }}</td>
           <td class="text-xs-right grid-actions">
             <v-icon class="mr-2 blue--text" @click="editItem(item)">mdi-pencil</v-icon>
+            <v-icon class="blue--text" @click="sendEmail(item)">mdi-email-arrow-right-outline</v-icon>
           </td>
         </tr>
       </template>
@@ -73,6 +74,8 @@ import VueTextMask from "vue-text-mask";
 import GroupsRequest from "@/services/GroupsRequest";
 import {formatTransmissions, formatCity} from '@/utils/utils';
 import { Icon} from '@iconify/vue2'
+import IdentityRequest from "@/services/IdentityRequest";
+import {successAlert} from "@/components/Alerts/alert";
 export default {
   components: {VueTextMask,Icon},
   data: () => ({
@@ -213,11 +216,16 @@ export default {
         }
       });
     },
-
+    async sendEmail(item) {
+      const identity = new IdentityRequest();
+      await identity.sendEmail(item.id).then(() => {
+        successAlert('Запрос на авторизацию отправлен повторно', 5000);
+      })
+    },
   },
 };
 </script>
-<style lang="scss">
+<style lang="scss" scoped>
 @import "@/assets/styles/phoneMaskStyles.css";
 @import "@/assets/styles/dataTableStyles.css";
 @import "@/assets/styles/titleStyles.css";
@@ -236,7 +244,8 @@ export default {
 
 .grid-actions {
   text-align: end !important;
-  padding-right: 30px !important;
+  padding-right: 16px !important;
+  min-width: 105px !important;
 }
 
 .v-text-field--outlined .v-label {

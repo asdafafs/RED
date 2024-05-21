@@ -48,4 +48,8 @@ export default class IdentityRequest extends HTTPService {
     postPasswordNewUser(code){
         return this.post("CreateUserPassword", code)
     }
+    
+    sendEmail(userId) {
+        return this.post('resend-email',{userId: userId})
+    }
 }
