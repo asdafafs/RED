@@ -20,9 +20,11 @@
           style="max-height: 60px"
       >
         <v-row no-gutters class="pa-0 ma-0" style="max-height: 60px;flex-wrap: nowrap;">
-          <div style="width: min-content; padding-left: 24px">
-            <DesktopLogo/>
-          </div>
+          <v-col cols=2>
+            <div style="width: min-content; padding-left: 24px">
+              <DesktopLogo/>
+            </div>
+          </v-col>
           <v-col>
             <AppButtons
                 v-if="isDataLoaded"
