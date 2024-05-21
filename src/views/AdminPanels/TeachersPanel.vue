@@ -11,7 +11,7 @@
           @click="openNewTeacher"
       >
         <section class="d-flex flex-row align-center" style="padding: 8px 12px 8px 12px !important;">
-          <Icon icon="mdi-plus-circle-outline" height="24"/>
+          <Icon icon="mdi-plus-circle-outline" height="24" color="white"/>
           <span class="add-instructor-text">Добавить инструктора</span>
         </section>
       </v-btn>
