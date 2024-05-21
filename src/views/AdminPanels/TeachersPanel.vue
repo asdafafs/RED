@@ -73,7 +73,7 @@
           <td>
             <v-checkbox v-model="item.isAdmin" @click="acceptNewRole(item)"/>
           </td>
-          <td class="text-xs-right grid-actions">
+          <td class="text-xs-right grid-actions-teachers-panel">
             <v-icon class="mr-2 blue--text" @click="editItem(item)">mdi-pencil</v-icon>
             <v-icon class="mr-2 red--text" @click="deleteItem(item)">mdi-delete</v-icon>
             <v-icon class="blue--text" @click="sendEmail(item)">mdi-email-arrow-right-outline</v-icon>
@@ -297,7 +297,7 @@ export default {
   font-size: 16px !important;
 }
 
-.grid-actions {
+.grid-actions-teachers-panel {
   text-align: end !important;
   padding-right: 16px !important;
   min-width: 136px !important;
