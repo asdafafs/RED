@@ -59,7 +59,7 @@
           <td>{{ item.generalHours }}</td>
           <td>{{ item.generalHoursSpent }}</td>
           <td>{{ item.additinalHoursSpent }}</td>
-          <td class="text-xs-right grid-actions">
+          <td class="text-xs-right grid-actions-student-panel">
             <v-icon class="mr-2 blue--text" @click="editItem(item)">mdi-pencil</v-icon>
             <v-icon class="blue--text" @click="sendEmail(item)">mdi-email-arrow-right-outline</v-icon>
           </td>
@@ -242,7 +242,7 @@ export default {
   font-size: 16px !important;
 }
 
-.grid-actions {
+.grid-actions-student-panel {
   text-align: end !important;
   padding-right: 16px !important;
   min-width: 105px !important;
