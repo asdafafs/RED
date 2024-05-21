@@ -177,7 +177,7 @@ export default {
 
 };
 </script>
-<style lang="scss" scoped>
+<style lang="scss">
 @import "@/assets/styles/dataTableStyles.css";
 @import "@/assets/styles/titleStyles.css";
 
