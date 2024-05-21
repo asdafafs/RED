@@ -75,7 +75,8 @@
           </td>
           <td class="text-xs-right grid-actions">
             <v-icon class="mr-2 blue--text" @click="editItem(item)">mdi-pencil</v-icon>
-            <v-icon class="red--text" @click="deleteItem(item)">mdi-delete</v-icon>
+            <v-icon class="mr-2 red--text" @click="deleteItem(item)">mdi-delete</v-icon>
+            <v-icon class="blue--text" @click="sendEmail(item)">mdi-email-arrow-right-outline</v-icon>
           </td>
         </tr>
       </template>
@@ -88,6 +89,8 @@ import UsersRequest from "@/services/UsersRequest";
 import VueTextMask from "vue-text-mask";
 import { formatTransmissions, formatCity } from '@/utils/utils';
 import { Icon } from '@iconify/vue2'
+import {successAlert} from "@/components/Alerts/alert";
+import IdentityRequest from "@/services/IdentityRequest";
 export default {
   components: {VueTextMask,Icon},
   data: () => ({
@@ -236,7 +239,14 @@ export default {
         this.closeDelete();
       })
     },
-
+    
+    async sendEmail(item) {
+      const identity = new IdentityRequest();
+      await identity.sendEmail(item.id).then(() => {
+        successAlert('Запрос на авторизацию отправлен повторно', 5000);
+      })
+    },
+    
     close() {
       this.blockButtonWhenRequest = false;
       this.$nextTick(() => {
@@ -270,7 +280,7 @@ export default {
   },
 };
 </script>
-<style lang="scss">
+<style lang="scss" scoped>
 @import "@/assets/styles/phoneMaskStyles.css";
 @import "@/assets/styles/dataTableStyles.css";
 @import "@/assets/styles/titleStyles.css";
@@ -289,7 +299,8 @@ export default {
 
 .grid-actions {
   text-align: end !important;
-  padding-right: 30px !important;
+  padding-right: 16px !important;
+  min-width: 136px !important;
 }
 
 .add-instructor-card {
