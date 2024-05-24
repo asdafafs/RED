@@ -878,11 +878,11 @@ export default {
         if (e.activeUserFullNameShort) return e.activeUserFullNameShort
         else return `Преп. не назначен`
       } else {
-        if (this.isUserStudent || this.isAdmin) {
+        if (this.isUserStudent) {
           if (e.activeUserFullNameShort) return e.activeUserFullNameShort
           else return `Преп. не назначен`
         }
-        if (this.isUserTeacher) {
+        if (this.isUserTeacher || this.isAdmin) {
           if (e.studentFullNameShort) return e.studentFullNameShort
           else return `Студ. не назначен`
         }
