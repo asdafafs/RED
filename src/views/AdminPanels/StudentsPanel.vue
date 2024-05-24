@@ -59,8 +59,9 @@
           <td>{{ item.generalHours }}</td>
           <td>{{ item.generalHoursSpent }}</td>
           <td>{{ item.additinalHoursSpent }}</td>
-          <td class="text-xs-right grid-actions">
+          <td class="text-xs-right grid-actions-student-panel">
             <v-icon class="mr-2 blue--text" @click="editItem(item)">mdi-pencil</v-icon>
+            <v-icon class="blue--text" @click="sendEmail(item)">mdi-email-arrow-right-outline</v-icon>
           </td>
         </tr>
       </template>
@@ -73,6 +74,8 @@ import VueTextMask from "vue-text-mask";
 import GroupsRequest from "@/services/GroupsRequest";
 import {formatTransmissions, formatCity} from '@/utils/utils';
 import { Icon} from '@iconify/vue2'
+import IdentityRequest from "@/services/IdentityRequest";
+import {successAlert} from "@/components/Alerts/alert";
 export default {
   components: {VueTextMask,Icon},
   data: () => ({
@@ -213,7 +216,12 @@ export default {
         }
       });
     },
-
+    async sendEmail(item) {
+      const identity = new IdentityRequest();
+      await identity.sendEmail(item.id).then(() => {
+        successAlert('Запрос на авторизацию отправлен повторно', 5000);
+      })
+    },
   },
 };
 </script>
@@ -234,9 +242,10 @@ export default {
   font-size: 16px !important;
 }
 
-.grid-actions {
+.grid-actions-student-panel {
   text-align: end !important;
-  padding-right: 30px !important;
+  padding-right: 16px !important;
+  min-width: 105px !important;
 }
 
 .v-text-field--outlined .v-label {

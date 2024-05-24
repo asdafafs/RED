@@ -11,7 +11,7 @@
           @click="openNewTeacher"
       >
         <section class="d-flex flex-row align-center" style="padding: 8px 12px 8px 12px !important;">
-          <Icon icon="mdi-plus-circle-outline" height="24"/>
+          <Icon icon="mdi-plus-circle-outline" height="24" color="white"/>
           <span class="add-instructor-text">Добавить инструктора</span>
         </section>
       </v-btn>
@@ -73,9 +73,10 @@
           <td>
             <v-checkbox v-model="item.isAdmin" @click="acceptNewRole(item)"/>
           </td>
-          <td class="text-xs-right grid-actions">
+          <td class="text-xs-right grid-actions-teachers-panel">
             <v-icon class="mr-2 blue--text" @click="editItem(item)">mdi-pencil</v-icon>
-            <v-icon class="red--text" @click="deleteItem(item)">mdi-delete</v-icon>
+            <v-icon class="mr-2 red--text" @click="deleteItem(item)">mdi-delete</v-icon>
+            <v-icon class="blue--text" @click="sendEmail(item)">mdi-email-arrow-right-outline</v-icon>
           </td>
         </tr>
       </template>
@@ -88,6 +89,8 @@ import UsersRequest from "@/services/UsersRequest";
 import VueTextMask from "vue-text-mask";
 import { formatTransmissions, formatCity } from '@/utils/utils';
 import { Icon } from '@iconify/vue2'
+import {successAlert} from "@/components/Alerts/alert";
+import IdentityRequest from "@/services/IdentityRequest";
 export default {
   components: {VueTextMask,Icon},
   data: () => ({
@@ -236,7 +239,14 @@ export default {
         this.closeDelete();
       })
     },
-
+    
+    async sendEmail(item) {
+      const identity = new IdentityRequest();
+      await identity.sendEmail(item.id).then(() => {
+        successAlert('Запрос на авторизацию отправлен повторно', 5000);
+      })
+    },
+    
     close() {
       this.blockButtonWhenRequest = false;
       this.$nextTick(() => {
@@ -287,9 +297,10 @@ export default {
   font-size: 16px !important;
 }
 
-.grid-actions {
+.grid-actions-teachers-panel {
   text-align: end !important;
-  padding-right: 30px !important;
+  padding-right: 16px !important;
+  min-width: 136px !important;
 }
 
 .add-instructor-card {
