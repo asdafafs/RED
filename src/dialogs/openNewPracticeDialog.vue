@@ -6,7 +6,7 @@
     >
       <v-card-title class="pa-5 d-flex flex-column justify-start">
         <span class="open-practice-dialog_first-title">{{ isNew ? 'Новая запись' : 'Изменение записи' }}</span>
-        <div class="d-flex flex-row w-full" style="gap: 12px">
+        <div class="d-flex flex-row w-full flex-wrap" style="gap: 12px">
           <span class="open-practice-dialog_second-title">Вождение</span>
           <span class="edit-practice-label-closed white--text" v-if="!isNew && data.e.event.practiceStateEnum ===3">Отменена</span>
           <span class="edit-practice-label-burned white--text" v-if="!isNew && data.e.event.practiceStateEnum ===2">Сгорела</span>
@@ -459,6 +459,7 @@ export default {
     text-transform: none;
     color: black;
     line-height: 37.5px;
+    word-break: keep-all !important;
     //width: 100%
   }
 
