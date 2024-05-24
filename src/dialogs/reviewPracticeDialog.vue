@@ -21,7 +21,7 @@
             <span class="edit-buttons-div__edit-button__text">Удалить</span>
           </v-btn>
         </div>
-        <div class="d-flex flex-row w-full" style="gap: 12px">
+        <div class="d-flex flex-row w-full flex-wrap" style="column-gap: 12px">
           <span class="review-practice-dialog_second-title">Вождение</span>
           <span class="label-closed white--text" v-if="data.e.event.practiceStateEnum ===3">Отменена</span>
           <span class="label-burned white--text" v-if="data.e.event.practiceStateEnum ===2">Сгорела</span>

@@ -19,7 +19,7 @@
             </v-card-subtitle>
             <v-card-text class="pb-0">
               <v-text-field
-                  solo dense outlined hide-details
+                  solo dense outlined
                   v-model="password"
                   :rules="[rulesPassword.required, rulesPassword.min]"
                   name="input-10-1"
@@ -36,7 +36,7 @@
                 </template>
               </v-text-field>
               <v-text-field
-                  solo dense outlined hide-details
+                  solo dense outlined
                   v-model="passwordRepeat"
                   :rules="[rulesPassword.required, rulesPassword.min, checkPasswordMatch]"
                   name="input-10-2"
@@ -56,13 +56,13 @@
               </v-text-field>
             </v-card-text>
             <v-card-actions class="accept-password-card__actions">
-              <v-btn 
-                color="#4E7AEC"
-                @click="validatePassword"
-                class="accept-password-card__actions__btn white--text"
-                block
-                :disabled="loginButtonDisabled || passwordsMatch"
-                @keydown.enter="validatePassword"
+              <v-btn
+                  color="#4E7AEC"
+                  @click="validatePassword"
+                  class="accept-password-card__actions__btn white--text"
+                  block
+                  :disabled="loginButtonDisabled || passwordsMatch"
+                  @keydown.enter="validatePassword"
               >
                 Сохранить и войти
               </v-btn>
@@ -96,8 +96,10 @@ export default {
   }),
   computed: {
     passwordsMatch() {
-      return !(this.password === this.passwordRepeat);
+      return !(this.password === this.passwordRepeat && this.rulesPassword.min(this.password) === true
+          && this.rulesPassword.min(this.passwordRepeat) === true);
     },
+
     checkPasswordMatch() {
       return value => (value === this.password ? true : 'Пароли не совпадают');
     },
