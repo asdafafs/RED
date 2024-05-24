@@ -177,10 +177,11 @@ import CoursesRequest from "@/services/CoursesRequest";
 import GroupsRequest from "@/services/GroupsRequest";
 import Vue from "vue";
 import {successAlert, warningAlert} from "@/components/Alerts/alert";
-import { Icon } from '@iconify/vue2'
+import {Icon} from '@iconify/vue2'
+
 export default {
   name: 'Item',
-  components: {CoursesList,Icon},
+  components: {CoursesList, Icon},
   data: () => ({
     globalStartTime: null,
     globalEndTime: null,
@@ -244,7 +245,8 @@ export default {
 
     dateOfWeek: [false, false, false, false, false, false, false],
     cursorDateOfWeek: 0,
-    cursorDate: moment(new Date())
+    cursorDate: moment(new Date()),
+    isFirstCall: true,
   }),
 
   computed: {
@@ -301,7 +303,7 @@ export default {
 
     newGroupTitle() {
       let startDate = this.globalStartDate;
-      if(startDate){
+      if (startDate) {
         let date = startDate.split('T');
         let parts = date[0].split('-');
         let rearranged = [parts[2], parts[1], parts[0]].join('.');
@@ -541,8 +543,8 @@ export default {
           "studentId": this.selectedStudentsIds,
           "lecture": this.lessons
         }
-        await this.updateCourse(body).then(() => {}).
-        finally(() => {
+        await this.updateCourse(body).then(() => {
+        }).finally(() => {
           this.blockButtonWhenRequest = false
           this.$emit('reset-selected-rows');
         })
@@ -557,8 +559,8 @@ export default {
           "studentId": this.selectedStudentsIds,
           "lecture": this.lessons
         }
-        await this.postCourse(body).then(() => {}).
-        catch(x => console.log(x)).finally(() => {
+        await this.postCourse(body).then(() => {
+        }).catch(x => console.log(x)).finally(() => {
           this.blockButtonWhenRequest = false
           this.$emit('reset-selected-rows');
         })
@@ -626,14 +628,14 @@ export default {
         'Вс': 6,
       };
 
-      this.cursorDate = this.globalStartDate
+      this.cursorDate = moment(this.globalStartDate);
       const index = this.selectedChips.indexOf(chip);
       if (index !== -1) {
         this.selectedChips.splice(index, 1);
       } else {
         this.selectedChips.push(chip);
       }
-      if (this.selectedChips.length === 0) return
+      if (this.selectedChips.length === 0) return;
 
       const sortedSelectedDays = this.selectedChips.map(day => dayOfWeekMapping[day]);
       this.dateOfWeek = this.dateOfWeek.map((value, idx) => sortedSelectedDays.includes(idx));
@@ -641,12 +643,14 @@ export default {
       let [lectureStartHour, lectureStartMinutes] = this.globalStartTime.split(':').map(Number);
       let [lectureEndHour, lectureEndMinutes] = this.globalEndTime.split(':').map(Number);
 
+      let initialCursorDate = moment(this.globalStartDate);
+      let lessonDate = this.getNextDay(initialCursorDate);
       this.lessons.forEach(item => {
-        item.startTime = this.getNextDay().set({
+        item.startTime = lessonDate.set({
           hour: lectureStartHour,
           minute: lectureStartMinutes,
-        })
-        let endTime = item.startTime.clone().set({ // Создаем копию startTime и устанавливаем новые часы и минуты
+        });
+        let endTime = item.startTime.clone().set({
           hour: lectureEndHour,
           minute: lectureEndMinutes,
         });
@@ -654,43 +658,40 @@ export default {
         Vue.set(item, 'endTime', endTime);
         Vue.set(item, 'startTime', item.startTime.format('YYYY-MM-DDTHH:mm'));
         Vue.set(item, 'endTime', item.endTime.format('YYYY-MM-DDTHH:mm'));
-      })
-      this.cursorDateOfWeek = 0
-      this.cursorDate = moment(new Date())
+        lessonDate = this.getNextDay(lessonDate);
+      });
+
+      this.cursorDateOfWeek = 0;
+      this.cursorDate = moment(new Date());
     },
 
-    getNextDay() {
-      const nextWeekendIndex = this.getNextWeekendDayIndex()
-      return this.getNextDayByWeekendDayIndex(nextWeekendIndex);
+    getNextDay(startDate) {
+      const nextWeekendIndex = this.getNextWeekendDayIndex(startDate);
+      console.log(this.dateOfWeek)
+      return this.getNextDayByWeekendDayIndex(startDate, nextWeekendIndex);
     },
 
-    getNextWeekendDayIndex() {
+    getNextWeekendDayIndex(startDate) {
       if (!this.areDatesOfWeekNotEmpty) return;
-      while (true) {
-        if (this.dateOfWeek[this.cursorDateOfWeek]) {
-          this.cursorDateOfWeek++;
-          return this.cursorDateOfWeek - 1;
-        }
-        this.cursorDateOfWeek++;
-        if (this.cursorDateOfWeek > this.dateOfWeek.length - 1) {
-          this.cursorDateOfWeek = 0;
+      let dayIndex = startDate.isoWeekday() - 1;
+      for (let i = 0; i < 7; i++) {
+        dayIndex = (dayIndex + 1) % 7;
+        if (this.dateOfWeek[dayIndex]) {
+          return dayIndex;
         }
       }
     },
 
-    getNextDayByWeekendDayIndex(dayOfWeek) {
+    getNextDayByWeekendDayIndex(startDate, dayOfWeek) {
       let day = dayOfWeek + 1;
-      const date = moment(this.cursorDate).isoWeekday(day)
-      if (date <= this.cursorDate) {
-        this.cursorDate = moment(this.cursorDate).add(1, 'weeks').isoWeekday(day)
-      } else {
-        this.cursorDate = date
+      let date = moment(startDate).isoWeekday(day);
+      if (date.isSameOrBefore(startDate)) {
+        date = moment(startDate).add(1, 'weeks').isoWeekday(day)
+        return date;
       }
-      return this.cursorDate;
-    },
+      return date;
+    }
   },
-
-
 }
 </script>
 <style>
