@@ -663,6 +663,7 @@ export default {
 
       this.cursorDateOfWeek = 0;
       this.cursorDate = moment(new Date());
+
     },
 
     getNextDay(startDate) {
@@ -679,6 +680,8 @@ export default {
         if (this.dateOfWeek[dayIndex]) {
           return dayIndex;
         }
+
+
       }
     },
 
