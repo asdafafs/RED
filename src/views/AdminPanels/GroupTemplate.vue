@@ -680,8 +680,6 @@ export default {
         if (this.dateOfWeek[dayIndex]) {
           return dayIndex;
         }
-
-
       }
     },
 
