@@ -41,7 +41,7 @@
         </div>
       </div>
       <div style="background-color: #4E7AEC; padding: 4px; gap: 10px; min-height: 27px; max-width: 523px"
-           v-if="!isUserTeacher && lastSelectedJoinType !== 1">
+           v-if="!isUserTeacher && lastSelectedJoinType === 1">
         <span style="font-weight: 600; font-size: 16px; line-height: 18.75px; color: #FEFEFE;  word-wrap: break-word;">Выберите инструктора, чтобы записаться на свободные практики</span>
       </div>
       <div style="gap: 12px !important;" class="d-flex flex-column">
@@ -96,7 +96,7 @@
                           no-data-text="Нет данных для отображения"
                           :items="listStudents"
                           item-value="id" @change="acceptEditableStudent()"
-                          v-if="isUserTeacher && lastSelectedJoinType === 2"
+                          v-if="isUserTeacher && lastSelectedJoinType === 1"
                           :item-text="item => `${item.surname || ''} ${item.name || ''} ${item.middleName || ''} `">
             <template #selection="{ item }">
               <div v-if="item.id">
@@ -141,7 +141,7 @@
                     no-data-text="Нет данных для отображения"
                     :items="listGroups"
                     item-value="groupId" @change="acceptLectureGroup()"
-                    v-if="lastSelectedJoinType === 1 && isUserTeacher">
+                    v-if="lastSelectedJoinType === 2 && isUserTeacher">
             <template #item="{ item }">
               <div v-if="item.groupId">
               <span style="font-size: 16px; line-height: 18.75px; font-weight: 400; color: #2B2A29">
@@ -164,9 +164,8 @@
             </template>
           </v-select>
         </div>
-        <div class="d-flex flex-row flex-wrap" v-if="lastSelectedJoinType !== 1">
+        <div class="d-flex flex-row flex-wrap" v-if="isUserTeacher && lastSelectedJoinType === 1">
           <v-btn
-              v-if="isUserTeacher && selectedLessonType === 2"
               color="#4E7AEC"
               class="add-instructor-btn"
               @click="openNewPractice"
@@ -220,7 +219,7 @@
           <div
               class="calendar-event"
               :class="{
-                'event-border': selectedLessonType === 2 && event.studentId === null && (event.practiceStateEnum === 0 || event.practiceStateEnum === 1),
+                'event-border': selectedLessonType === 1 && event.studentId === null && (event.practiceStateEnum === 0 || event.practiceStateEnum === 1),
                 'px-[2px] justify-center' : isMobile, 
                 'px-3' : !isMobile,
                 'blur' : event.haaEnded
@@ -394,18 +393,16 @@ export default {
       if (this.type === 'week') return 32
       if (this.type === 'day') return 48
     },
-    today() {
-      return moment().format('YYYY-MM-DD')
-    },
+
     calendarButtons() {
       return [
         {
           id: 1,
-          title: 'Теория',
+          title: 'Практика',
         },
         {
           id: 2,
-          title: 'Практика',
+          title: 'Теория',
         },
       ]
     },
@@ -598,9 +595,9 @@ export default {
       this.lastSelectedJoinType = id;
       switch (id) {
         case 1:
-          return this.getLessons()
-        case 2:
           return this.testPractices()
+        case 2:
+          return this.getLessons()
       }
     },
 
@@ -649,6 +646,7 @@ export default {
           studentGeneralHoursSpent: studentGeneralHoursSpent,
           studentAdditionalHoursSpent: studentAdditionalHoursSpent,
           studentName: studentName,
+          studentPhone: e.event.title,
           teacherName: e.event.activeUserFullNameShort
         }
         await this.$reviewPracticeDialogPlugin(data).then((isCancel) => {
@@ -874,7 +872,7 @@ export default {
     },
 
     getEventPersonName(e) {
-      if (this.selectedLessonType === 1) {
+      if (this.selectedLessonType === 2) {
         if (e.activeUserFullNameShort) return e.activeUserFullNameShort
         else return `Преп. не назначен`
       } else {
@@ -888,8 +886,9 @@ export default {
         }
       }
     },
+
     getEventTitle(e) {
-      if (this.selectedLessonType === 1) {
+      if (this.selectedLessonType === 2) {
         if (e.lectureType === 1) return `Основы вождения`
         if (e.lectureType === 2) return `ПДД`
         if (e.lectureType === 3) return `Медицина`
@@ -990,7 +989,7 @@ export default {
     },
 
     getEventColor(event) {
-      if (this.selectedLessonType === 1) {
+      if (this.selectedLessonType === 2) {
         if (event.lectureType === 1) return `#8CED7C`
         if (event.lectureType === 2) return `#FFCD6D`
         if (event.lectureType === 3) return `#FC7DC9`

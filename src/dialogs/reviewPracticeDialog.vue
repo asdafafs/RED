@@ -35,8 +35,9 @@
             <div class="time-of-practice">{{ timeOfPractice }}</div>
           </div>
         </div>
-        <div class="d-flex flex-row w-full" style="border-radius: 12px; border: #FFCD6D 1px solid; gap: 8px; padding: 4px 8px 4px 8px; margin-top: 12px"
-         v-if="data.e.event.hasIntersectionActiveUser">
+        <div class="d-flex flex-row w-full"
+             style="border-radius: 12px; border: #FFCD6D 1px solid; gap: 8px; padding: 4px 8px 4px 8px; margin-top: 12px"
+             v-if="data.e.event.hasIntersectionActiveUser">
           <div class="d-flex align-center justify-center">
             <warning-instructor-icon class="warning-icon"/>
           </div>
@@ -44,7 +45,8 @@
             <span class="warning-match">В расписании инструктора есть <br> другие занятия в это время </span>
           </div>
         </div>
-        <div class="d-flex flex-row w-full" style="border-radius: 12px; border: #FFCD6D 1px solid; gap: 8px; padding: 4px 8px 4px 8px; margin-top: 12px"
+        <div class="d-flex flex-row w-full"
+             style="border-radius: 12px; border: #FFCD6D 1px solid; gap: 8px; padding: 4px 8px 4px 8px; margin-top: 12px"
              v-if="data.e.event.hasIntersectionStudent">
           <div class="d-flex align-center justify-center">
             <warning-student-icon class="warning-icon"/>
@@ -67,6 +69,7 @@
           <div class="d-flex flex-column">
             <span class="review-practice-dialog_text_title">{{ items[2].title }}</span>
             <span class="teacher-text">{{ items[2].value }}</span>
+            <span class="teacher-text" v-if="this.data.studentPhone !== 'Номер не указан'">{{ items[2].phone }}</span>
           </div>
           <div class="d-flex flex-column">
             <span class="review-practice-dialog_text_title">{{ items[3].title }}</span>
@@ -92,21 +95,21 @@
       </v-card-text>
       <v-card-actions class="pa-5">
         <div
-          class="review-practice-dialog_actions"
-          :class="data.student && this.data.e.event.practiceStateEnum === 0? 'justify-space-between' : 'justify-end'"
+            class="review-practice-dialog_actions"
+            :class="data.student && this.data.e.event.practiceStateEnum === 0? 'justify-space-between' : 'justify-end'"
         >
           <v-btn
-            v-if="data.student && this.data.e.event.practiceStateEnum === 0"
-            lass="open-practice-dialog_actions_cancel-button"
-            text
-            @click="onCancelClick"
+              v-if="data.student && this.data.e.event.practiceStateEnum === 0"
+              lass="open-practice-dialog_actions_cancel-button"
+              text
+              @click="onCancelClick"
           >
             <span>Отмена</span>
           </v-btn>
           <v-btn
-            class="review-practice-dialog_actions_save-button"
-            @click="onSaveClick"
-            @keydown.enter="onSaveClick"
+              class="review-practice-dialog_actions_save-button"
+              @click="onSaveClick"
+              @keydown.enter="onSaveClick"
           >
             <span>{{ saveButtonTitle }}</span>
           </v-btn>
@@ -119,12 +122,13 @@
 <script>
 import moment from "moment/moment";
 import EventsRequest from "@/services/EventsRequest";
-import { formatTransmissions, formatCity } from '@/utils/utils';
+import {formatTransmissions, formatCity} from '@/utils/utils';
 import WarningIcon from "@/components/Icons/WarningIcon.vue";
 import WarningInstructorIcon from "@/components/Icons/WarningInstructorIcon.vue";
 import WarningStudentIcon from "@/components/Icons/WarningStudentIcon.vue";
 
 import {Icon} from "@iconify/vue2"
+
 export default {
   name: "reviewPracticeDialog",
   components: {WarningStudentIcon, WarningInstructorIcon, WarningIcon, Icon},
@@ -168,6 +172,7 @@ export default {
           id: 2,
           title: 'Текущий студент',
           value: this.data.e.event.studentId ? this.data.studentName : '---',
+          phone: this.data.studentPhone ? this.data.studentPhone : '',
           visible: true
         },
         {
@@ -186,6 +191,12 @@ export default {
       ]
     }
   },
+
+  created() {
+    console.log(this.data)
+
+  },
+
   methods: {
     formatTransmissions,
     formatCity,
@@ -411,7 +422,7 @@ export default {
   margin-right: 8px;
 }
 
-.warning-icon{
+.warning-icon {
   color: #FFCD6D !important;
   fill: #FFCD6D !important;
   height: 20px !important;
@@ -458,7 +469,7 @@ export default {
   margin-bottom: 12px;
 }
 
-.warning-match{
+.warning-match {
   word-break: keep-all;
   font-size: 12px;
   font-weight: 400;
