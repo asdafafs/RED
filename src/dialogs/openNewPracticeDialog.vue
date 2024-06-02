@@ -18,7 +18,8 @@
             <span class="open-practice-dialog_text_title">Преподаватель</span>
             <span class="teacher-text">{{ isNew ? data.userName : data.teacherName }}</span>
           </div>
-          <div class="d-flex flex-row w-full" style="border-radius: 12px; border: #FFCD6D 1px solid; gap: 8px; padding: 4px 8px 4px 8px"
+          <div class="d-flex flex-row w-full"
+               style="border-radius: 12px; border: #FFCD6D 1px solid; gap: 8px; padding: 4px 8px 4px 8px"
                v-if="false">
             <div v-if="">
               <div class="d-flex align-center justify-center">
@@ -341,68 +342,57 @@ export default {
       let body = {}
       const event = new EventsRequest()
       if (this.data.isAdmin) {
-        if (this.typeOfReasonId === 0) {
+        if (this.typeOfReasonId === 3) {
           body = {
             "id": this.data.e.event.id,
             "startTime": startTime,
             "endTime": endTime,
             "studentId": this.selectedStudentId,
-            "activeUserId": this.data.userId,
             "transmissionTypeEnum": this.selectedTransmission,
             "city": this.selectedCity,
-            "stateEnum": 0
+            "practiceStateEnum": this.typeOfReasonId,
+            "deleteReasonEnum": this.selectedReasonId,
           }
-
-          await event.putAdminPractice(body).catch(x => console.log(x)).then(() =>
-              this.$emit('destroy', false)
-          )
-        } else if (this.typeOfReasonId === 2) {
+        } else {
           body = {
             "id": this.data.e.event.id,
+            "startTime": startTime,
+            "endTime": endTime,
+            "studentId": this.selectedStudentId,
+            "transmissionTypeEnum": this.selectedTransmission,
+            "city": this.selectedCity,
+            "practiceStateEnum": this.typeOfReasonId,
           }
-          await event.closeAdminStudent(body).catch(x => console.log(x)).then(() =>
-              this.$emit('destroy', false)
-          )
-        } else if (this.typeOfReasonId === 3) {
-          body = {
-            "id": this.data.e.event.id,
-            "stateEnum": this.typeOfReasonId
-          }
-          await event.canselAdminPractice(body).catch(x => console.log(x)).then(() =>
-              this.$emit('destroy', false)
-          )
         }
-      } else {
-        if (this.typeOfReasonId === 0) {
-          const body = {
-            "id": this.data.e.event.id,
-            "startTime": startTime,
-            "endTime": endTime,
-            "studentId": this.selectedStudentId,
-            "transmissionTypeEnum": this.selectedTransmission,
-            "city": this.selectedCity,
-            "stateEnum": 0
-          }
-
-          await event.putPractice(body).then(() => {
+        await event.putAdminPractice(body).catch(x => console.log(x)).then(() =>
             this.$emit('destroy', false)
-          }).catch(x => console.log(x))
-        } else if (this.typeOfReasonId === 2) {
+        )
+      } else {
+        if (this.typeOfReasonId === 3) {
           body = {
             "id": this.data.e.event.id,
+            "startTime": startTime,
+            "endTime": endTime,
+            "studentId": this.selectedStudentId,
+            "transmissionTypeEnum": this.selectedTransmission,
+            "city": this.selectedCity,
+            "practiceStateEnum": this.typeOfReasonId,
+            "deleteReasonEnum": this.selectedReasonId,
           }
-          await event.closePractice(body).catch(x => console.log(x)).then(() =>
-              this.$emit('destroy', false)
-          )
-        } else if (this.typeOfReasonId === 3) {
+        } else {
           body = {
             "id": this.data.e.event.id,
-            "deleteReasonEnum": this.selectedReasonId
+            "startTime": startTime,
+            "endTime": endTime,
+            "studentId": this.selectedStudentId,
+            "transmissionTypeEnum": this.selectedTransmission,
+            "city": this.selectedCity,
+            "practiceStateEnum": this.typeOfReasonId,
           }
-          await event.cancelPractice(body).catch(x => console.log(x)).then(() =>
-              this.$emit('destroy', false)
-          )
         }
+        await event.putPractice(body).then(() => {
+          this.$emit('destroy', false)
+        }).catch(x => console.log(x))
       }
     },
 
@@ -571,14 +561,14 @@ export default {
   width: 100%;
 }
 
-.warning-match{
+.warning-match {
   word-break: keep-all;
   font-size: 12px;
   font-weight: 400;
   line-height: 14px;
 }
 
-.warning-icon{
+.warning-icon {
   color: #FFCD6D !important;
   fill: #FFCD6D !important;
   height: 20px !important;
