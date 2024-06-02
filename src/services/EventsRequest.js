@@ -16,11 +16,6 @@ export default class EventsRequest extends HTTPService {
     getPracticeActiveUser(id, query) {
         return this.get("practice/" + id + `?${query}`)
     }
-
-    getPracticeAssigned(query) {
-        return this.get("practice/assigned" + `?${query}`)
-    }
-
     getOnlyAssigned(query) {
         return this.get("practice/assignedOnly" + `?${query}`)
     }
@@ -44,15 +39,6 @@ export default class EventsRequest extends HTTPService {
     setStudent(code) {
         return this.put("practice/setstudent", code)
     }
-
-    closePractice(code) {
-        return this.put("practice/close", code)
-    }
-
-    cancelPractice(code) {
-        return this.put("practice/cancel", code)
-    }
-
     postAdminPractice(code) {
         return this.post("admin/practice", code)
     }
@@ -60,19 +46,6 @@ export default class EventsRequest extends HTTPService {
     putAdminPractice(code) {
         return this.put("admin/practice", code)
     }
-
-    setAdminStudent(code) {
-        return this.post("admin/practice/setstudent", code)
-    }
-
-    closeAdminStudent(code) {
-        return this.put("admin/practice/close", code)
-    }
-
-    canselAdminPractice(code) {
-        return this.put("admin/practice/cancel", code)
-    }
-
     getFreePracticeActiveUser(query) {
         return this.get("practice/free" + `?${query}`)
     }
@@ -84,15 +57,6 @@ export default class EventsRequest extends HTTPService {
     getLessons(query) {
         return this.get("lecture" + `?${query}`)
     }
-
-    getPracticesActiveUser(query) {
-        return this.get("practice/null" + `?${query}`)
-    }
-
-    getLecturesStudent(id, query) {
-        return this.get("lecture/student/" + id + `?${query}`)
-    }
-
     getLectureCurrentUser(query) {
         return this.get("lecture/null" + `?${query}`)
     }
