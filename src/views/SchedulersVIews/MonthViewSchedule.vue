@@ -565,7 +565,7 @@ export default {
       await teachers.getCorrectTeacherForSelectedUser(id).catch(x => console.log(x)).then(x => {
         listTeachers = x.data.activeUsers
       })
-      this.selectedTeacher = null
+      // this.selectedTeacher = null
       return this.listTeachers.push(...listTeachers)
     },
 
