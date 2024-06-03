@@ -224,7 +224,7 @@ export default {
       this.selectedStudentId = selectedStudent ? selectedStudent.id : null;
       this.typeOfReasonId = this.data.e.event.practiceStateEnum
     } else {
-      this.eventDate = moment().format('YYYY-MM-DD')
+      this.eventDate = this.data.practiceDate
       this.eventStartTime = '06:00'
       this.savedTransmission = this.data.teacherTransmissions
       this.selectedTransmission = this.data.teacherTransmissions

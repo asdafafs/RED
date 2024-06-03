@@ -206,6 +206,7 @@
           :event-overlap-mode="mode"
           :type="type"
           :events="events"
+          
           :event-color="getEventColor"
           @click:event="reviewEvent"
           :event-ripple="false"
@@ -495,6 +496,7 @@ export default {
         userId: this.selectedActiveUser,
         isAdmin: this.isAdmin,
         teacherTransmissions: teacherTransmissions,
+        practiceDate: this.type === 'day' ? moment(this.value).format('YYYY-MM-DD') : moment().format('YYYY-MM-DD')
       }
       await this.$openNewPracticeDialogPlugin(data, true).then((isCancel) => {
         if (!isCancel) {
