@@ -21,7 +21,6 @@ import InstructorsPlanTemplate from "@/views/AdminPanels/InstructorsPlanTemplate
 import Item from "@/views/AdminPanels/GroupTemplate.vue";
 import AcceptPassword from "@/views/AuthorizationViews/AcceptPassword.vue";
 import PostAuthorizationVkPage from "@/views/AuthorizationViews/PostAuthorizationVkPage.vue";
-import AnalyticsPanel from "@/views/AdminPanels/AnalyticsPanel.vue";
 
 
 Vue.use(VueRouter)
@@ -86,11 +85,6 @@ const routes = [
                 path: 'groups',
                 name: 'admin-groups',
                 component: GroupPanel,
-            },
-            {
-                path: 'analytics',
-                name: 'admin-analytics',
-                component:AnalyticsPanel,
             },
             {
                 path: 'groupItem/:selectedGroupID',

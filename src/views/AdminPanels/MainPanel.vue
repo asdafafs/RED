@@ -43,8 +43,6 @@ export default {
         this.selectedButton = 0;
       } else if (this.$route.path.includes("teachers") || this.$route.path.includes("template")) {
         this.selectedButton = 1;
-      } else if (this.$route.path.includes("analytics")) {
-        this.selectedButton = 3;
       } else this.selectedButton = 2;
     },
 
@@ -53,11 +51,7 @@ export default {
         this.selectedButton = 0;
       } else if (this.$route.path.includes("teachers") || this.$route.path.includes("template")) {
         this.selectedButton = 1;
-      } else if (this.$route.path.includes("analytics")) {
-        this.selectedButton = 3;
-      } 
-      else
-        this.selectedButton = 2;
+      } else this.selectedButton = 2;
     }
   },
 
@@ -78,11 +72,6 @@ export default {
           id: 2,
           title: 'Группы',
           router: 'admin-groups'
-        },
-        {
-          id: 3,
-          title: 'Аналитика',
-          router: 'admin-analytics'
         },
       ]
     },

@@ -66,7 +66,4 @@ export default class UsersRequest extends HTTPService {
         return this.get("student-full-info", isAlertHandler)
     }
 
-    getUserStatInfo(data) {
-        return this.get('getUserStatInfo/',false,data)
-    }
 }
