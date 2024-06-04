@@ -70,7 +70,7 @@
           <div class="d-flex flex-column">
             <span class="review-practice-dialog_text_title">{{ items[2].title }}</span>
             <span class="teacher-text">{{ items[2].value }}</span>
-            <span class="teacher-text" v-if="data.userTeacher">{{ items[2].phone }}</span>
+            <span class="teacher-text" v-if="data.userTeacher && data.e.event.studentId">{{ items[2].phone }}</span>
           </div>
           <div class="d-flex flex-column">
             <span class="review-practice-dialog_text_title">{{ items[3].title }}</span>

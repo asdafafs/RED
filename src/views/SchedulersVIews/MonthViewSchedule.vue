@@ -647,10 +647,10 @@ export default {
           studentGeneralHours: studentGeneralHours,
           studentGeneralHoursSpent: studentGeneralHoursSpent,
           studentAdditionalHoursSpent: studentAdditionalHoursSpent,
-          studentName: studentName,
+          studentName: e.event.studentFullName,
           studentPhone: e.event.phoneNumberStudent,
           teacherPhone: e.event.phoneNumberActiveUser,
-          teacherName: e.event.activeUserFullNameShort
+          teacherName: e.event.activeUserFullName
         }
         await this.$reviewPracticeDialogPlugin(data).then((isCancel) => {
 
