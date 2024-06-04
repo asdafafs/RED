@@ -61,6 +61,7 @@
           <div class="d-flex flex-column">
             <span class="review-practice-dialog_text_title">{{ items[0].title }}</span>
             <span class="teacher-text">{{ items[0].value }}</span>
+            <span class="teacher-text" v-if="data.student">{{ items[0].phone }}</span>
           </div>
           <div class="d-flex flex-column">
             <span class="review-practice-dialog_text_title">{{ items[1].title }}</span>
@@ -69,13 +70,13 @@
           <div class="d-flex flex-column">
             <span class="review-practice-dialog_text_title">{{ items[2].title }}</span>
             <span class="teacher-text">{{ items[2].value }}</span>
-            <span class="teacher-text" v-if="this.data.studentPhone !== 'Номер не указан'">{{ items[2].phone }}</span>
+            <span class="teacher-text" v-if="data.userTeacher">{{ items[2].phone }}</span>
           </div>
           <div class="d-flex flex-column">
             <span class="review-practice-dialog_text_title">{{ items[3].title }}</span>
             <span class="teacher-text"
-                  v-if="data.student && data.userIsStudentInPractice || data.userTeacher">{{ items[3].value }}</span>
-
+                  v-if="data.student && data.userIsStudentInPractice || data.userTeacher">{{ items[3].value }}
+            </span>
             <v-radio-group v-model="data.e.event.transmissionTypeEnum" row hide-details
                            v-if="!data.userIsStudentInPractice && !data.userTeacher">
               <v-radio label="АКП" :value="[2]" v-if="data.e.event.allowedTransmissionTypeEnum.includes(2)"/>
@@ -160,6 +161,7 @@ export default {
           id: 0,
           title: 'Преподаватель',
           value: this.data.teacherName,
+          phone: this.data.teacherPhone ? this.data.teacherPhone : '',
           visible: true
         },
         {
