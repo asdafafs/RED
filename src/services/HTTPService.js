@@ -17,6 +17,7 @@ export default class HttpService {
             headers: {
                 'Content-Type': 'application/json'
             },
+            params: body,
             withCredentials: true,
             baseURL: this.backendUrl
         }
@@ -46,8 +47,8 @@ export default class HttpService {
     }
 
 
-    get(path, isAlertHandler = false) {
-        let response = this.baseRequest(path, "GET")
+    get(path, isAlertHandler = false,body = {}) {
+        let response = this.baseRequest(path, "GET",body)
         response = this._checkErrorHandling(response, isAlertHandler)
         return response
     }

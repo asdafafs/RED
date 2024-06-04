@@ -27,6 +27,9 @@ export default {
   computed: {
     ...mapState(['user']),
     userName() {
+      if (this.user.isAdmin) {
+        return 'Администратор'
+      }
       return `${this.user.surname} ${this.user.name[0]}. ${this.user.middleName[0]}. `
     },
     userRole() {
