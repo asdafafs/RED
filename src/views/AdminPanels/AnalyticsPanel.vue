@@ -4,12 +4,12 @@
       Аналитика
     </div>
     <hr>
-    <div :class="isMobile ? 'analytics-mobile-filters' : 'analytics-desktop-filters'">
+    <div class="d-flex flex-row mb-3">
       <v-autocomplete
         v-for="filter in filterItems"
         v-model="filters[filter.key]"
-        class="select-user-template v-text-field-custom-h-32 mr-3"
-        :class="isMobile ? 'mobile-filter-item' : 'desktop-filter-item'"
+        class="select-user-template v-text-field-custom-h-32 mr-3" 
+        style="width: 256px; max-width: 256px"
         outlined 
         dense 
         hide-details
@@ -27,7 +27,7 @@
         dense
         type="week"
         class="text-field-date-template"
-        :class="isMobile ? 'mobile-filter-item' : 'desktop-filter-item'"
+        style="border-radius: 12px !important; max-height: 32px !important; min-width: 256px !important; max-width: 256px !important;"
         outlined
         hide-details
       />
@@ -64,7 +64,6 @@ import {Icon} from '@iconify/vue2'
 import UsersRequest from "@/services/UsersRequest";
 import moment from "moment";
 import {formatTransmissions} from "@/utils/utils";
-import {mapState} from "vuex";
 export default {
   name:'AnalyticsPanel',
   components: {
@@ -149,7 +148,6 @@ export default {
     }
   },
   computed:{
-    ...mapState(['isMobile']),
     filterItems() {
       return [
         {
@@ -235,10 +233,10 @@ export default {
       })
     },
     getStatusName(statusNumber) {
-      return (this.statusesList.find(x => x.id === statusNumber)?.value || '-')
+      return this.statusesList.find(x => x.id === statusNumber)?.value || '-'
     },
     getReasonName(reasonNumber) {
-      return (this.reasonsList.find(x => x.id === reasonNumber)?.value || '-')
+      return this.reasonsList.find(x => x.id === reasonNumber)?.value || '-'
     }
   },
 };
@@ -251,26 +249,5 @@ export default {
   color: #2B2A29;
   margin-left: 16px;
 }
-.analytics-mobile-filters {
-  display: flex;
-  flex-direction: column;
-  row-gap: 8px;
-  margin-bottom: 8px;
-}
-.analytics-desktop-filters {
-  display: flex;
-  flex-direction: row;
-  margin-bottom: 12px;
-}
-.mobile-filter-item {
-  width: 100%;
-  border-radius: 12px !important;
-  max-height: 32px !important;
-}
-.desktop-filter-item {
-  width: 256px;
-  max-width: 256px;
-  border-radius: 12px !important;
-  max-height: 32px !important;
-}
+
 </style>
