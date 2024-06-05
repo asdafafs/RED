@@ -747,6 +747,9 @@ export default {
 }
 
 .text-field-date-template {
+  .v-input__append-inner {
+    margin: 0 !important;
+  }
   .v-input__control {
     .v-input__slot {
       display: flex !important;
