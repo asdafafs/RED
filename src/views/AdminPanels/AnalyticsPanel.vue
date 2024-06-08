@@ -210,7 +210,7 @@ export default {
           id: 2,
           placeholder: 'Студент',
           key: 'studentId',
-          items: this.studentsList,
+          items: [ { id: null, shortName: 'Студент не назначен' }, ...this.studentsList],
           textField: 'shortName',
           valueField: 'id'
         },
