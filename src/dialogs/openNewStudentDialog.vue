@@ -69,7 +69,7 @@
           <v-btn text @click="close" style="text-transform: none !important; padding: 0 !important;">
             <span style="color: black">Отмена</span>
           </v-btn>
-          <v-btn class="close-button" @click="save" :disabled="isSaveButtonDisabled && blockButtonWhenRequest ">
+          <v-btn class="close-button" @click="save" :disabled="isSaveButtonDisabled || blockButtonWhenRequest ">
             <span style="color: white">{{ formAction }}</span>
           </v-btn>
         </v-container>
@@ -113,6 +113,11 @@ export default {
     },
 
     isSaveButtonDisabled() {
+      console.log(!(this.nameRule.required(this.data.editedStudent.name)
+          && this.surnameRule.required(this.data.editedStudent.surname)
+          && this.middleNameRule.required(this.data.editedStudent.middleName)
+          && this.emailRule.required(this.data.editedStudent.email)
+          && this.phoneRule.required(this.data.editedStudent.phoneNumber)))
       return !(this.nameRule.required(this.data.editedStudent.name)
           && this.surnameRule.required(this.data.editedStudent.surname)
           && this.middleNameRule.required(this.data.editedStudent.middleName)
@@ -134,8 +139,6 @@ export default {
           this.close();
         })
       } else {
-        console.log('email with space', this.data.editedStudent.email)
-        console.log('email another space', this.data.editedStudent.email.replace(/ /g, ''))
         const body = {
           "email": this.data.editedStudent.email.replace(/ /g, ''),
           "phoneNumber": this.data.editedStudent.phoneNumber,
