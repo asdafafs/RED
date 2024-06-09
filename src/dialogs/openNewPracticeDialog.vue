@@ -132,7 +132,8 @@
               row
               hide-details
           >
-            <v-radio label="Ожидается" :value="0"/>
+            <v-radio label="Ожидается" v-if="!practicePassed" :value="0"/>
+            <v-radio label="Завершена" v-if="practicePassed" :value="1"/>
             <v-radio label="Отменена" :value="3"/>
             <v-radio label="Сгорела" :value="2"/>
           </v-radio-group>
@@ -191,11 +192,12 @@ export default {
     selectedStudentId: null,
     selectedCity: [1],
     listCities: [{id: [1], text: 'Северодвинск'}, {id: [2], text: 'Новодвинск'}],
-    typeOfReasonId: 1,
+    typeOfReasonId: 0,
     selectedReasonId: 1,
     savedTransmission: [],
     searchInput: '',
     refreshToken: true,
+    currentTime: moment(),
   }),
   props: {
     data: {
@@ -258,6 +260,15 @@ export default {
           reason: 'Задачи офиса'
         }
       ]
+    },
+
+    practicePassed() {
+      if (this.typeOfReasonId === 1 || this.typeOfReasonId === 0) {
+        if (moment(this.eventDate).isSameOrBefore(this.currentTime)) {
+          this.typeOfReasonId = 1
+        } else this.typeOfReasonId = 0
+      }
+      return moment(this.eventDate).isSameOrBefore(this.currentTime)
     }
   },
   methods: {

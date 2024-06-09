@@ -127,7 +127,7 @@ export default {
         email: '',
         groupId: null,
         phoneNumber: '7',
-        generalHours: 0,
+        generalHours: 56,
         transmissionTypeEnum: [],
         city: [],
         isDeleted: false,
