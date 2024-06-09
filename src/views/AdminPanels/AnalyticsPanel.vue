@@ -82,6 +82,7 @@
           <td>{{ item.activeUserFullName || '-' }}</td>
           <td>{{ item.studentFullName || '-'}}</td>
           <td>{{ item.startTime || '-' }}</td>
+          <td>{{ item.duration ? `${item.duration} ч.` : '-' }}</td>
           <td>{{ getStatusName(item.practiceStateEnum) }}</td>
           <td>{{ getReasonName(item.practiceDeleteReasonEnum)}}</td>
         </tr>
@@ -107,7 +108,8 @@ export default {
     headers: [
       {text: 'Инструктор', align: 'start', sortable: false, value: 'activeUserFullName', width: '25%'},
       {text: 'Студент', align: 'start', sortable: false, value: 'studentFullName', width: '25%'},
-      {text: 'Дата практики', align: 'start', sortable: false, value: 'startTime', width: '15%'},
+      {text: 'Дата практики', align: 'start', sortable: false, value: 'startTime', width: '10%'},
+      {text: 'Длительность', align: 'start', sortable: false, value: 'duration', width: '5%'},
       {text: 'Статус практики', align: 'start', sortable: false, value: 'practiceStateEnum', width: '15%'},
       {text: 'Причина', align: 'start', sortable: false, value: 'practiceDeleteReasonEnum', width: '20%'},
     ],
@@ -176,10 +178,8 @@ export default {
   watch:{
     filters: {
       handler(newVal) {
-        if (newVal) {
-          if (newVal.selectedPeriod.length === 1 || this.clearingFilters || this.firstChangeOfFilters) return
-          this.getAnalyticsData()
-        }
+        if (newVal.selectedPeriod.length === 1 || this.clearingFilters || this.firstChangeOfFilters) return
+        this.getAnalyticsData()
       },
       deep: true,
     }
@@ -249,14 +249,17 @@ export default {
     async getAnalyticsData() {
       const data = {
         activeUserId: this.filters.activeUserId,
-        studentId: this.filters.studentId ,
+        studentId: this.filters.studentId ? this.filters.studentId : this.filters.studentId === null ? '' : '',
         practiceStateEnum: this.filters.practiceStateEnum,
         practiceDeleteReasonEnum: this.filters.practiceDeleteReasonEnum,
         start: this.filters.selectedPeriod[0],
         end: this.filters.selectedPeriod[1],
       }
-      console.log(this.filters)
+      Object.keys(data).forEach(key => {
+        if (data[key] === "") delete data[key]
+      })
       await this.usersRequest.getUserStatInfo(data).then(({data}) => {
+        console.log(data)
         this.analyticsData = data.practice
         this.analyticsData.forEach(x => x.startTime = moment(x.startTime).format('DD.MM.YY HH:mm'))
       })
