@@ -249,12 +249,13 @@ export default {
     async getAnalyticsData() {
       const data = {
         activeUserId: this.filters.activeUserId,
-        studentId: this.filters.studentId,
+        studentId: this.filters.studentId ,
         practiceStateEnum: this.filters.practiceStateEnum,
         practiceDeleteReasonEnum: this.filters.practiceDeleteReasonEnum,
         start: this.filters.selectedPeriod[0],
         end: this.filters.selectedPeriod[1],
       }
+      console.log(this.filters)
       await this.usersRequest.getUserStatInfo(data).then(({data}) => {
         this.analyticsData = data.practice
         this.analyticsData.forEach(x => x.startTime = moment(x.startTime).format('DD.MM.YY HH:mm'))
