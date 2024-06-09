@@ -67,6 +67,6 @@ export default class UsersRequest extends HTTPService {
     }
 
     getUserStatInfo(data) {
-        return this.get('getUserStatInfo/',false,data)
+        return this.post('getUserStatInfo/',data,false)
     }
 }

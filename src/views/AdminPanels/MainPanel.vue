@@ -79,11 +79,11 @@ export default {
           title: 'Группы',
           router: 'admin-groups'
         },
-        {
+        /*{
           id: 3,
           title: 'Аналитика',
           router: 'admin-analytics'
-        },
+        },*/
       ]
     },
   },
