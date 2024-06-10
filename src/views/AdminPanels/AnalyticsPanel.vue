@@ -249,7 +249,7 @@ export default {
     async getAnalyticsData() {
       const data = {
         activeUserId: this.filters.activeUserId,
-        studentId: this.filters.studentId ? this.filters.studentId : this.filters.studentId === null ? '' : '',
+        studentId: this.filters.studentId ? this.filters.studentId : this.filters.studentId === null ? null : 0,
         practiceStateEnum: this.filters.practiceStateEnum,
         practiceDeleteReasonEnum: this.filters.practiceDeleteReasonEnum,
         start: this.filters.selectedPeriod[0],
