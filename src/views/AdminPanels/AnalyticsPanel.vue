@@ -20,6 +20,7 @@
           :item-text="filter.textField"
           :item-value="filter.valueField"
           clearable
+          @click:clear="onClear(filter.key)"
       />
       <v-menu
           :close-on-content-click="false"
@@ -259,7 +260,6 @@ export default {
         if (data[key] === "") delete data[key]
       })
       await this.usersRequest.getUserStatInfo(data).then(({data}) => {
-        console.log(data)
         this.analyticsData = data.practice
         this.analyticsData.forEach(x => x.startTime = moment(x.startTime).format('DD.MM.YY HH:mm'))
       })
@@ -297,6 +297,11 @@ export default {
       this.filters.practiceDeleteReasonEnum = '';
       this.filters.selectedPeriod = this.getStartDate()
       this.clearingFilters = false
+    },
+    onClear(key) {
+      if (key === 'studentId') {
+        this.filters.studentId = ''
+      }
     }
   },
 };
