@@ -225,6 +225,7 @@ export default {
       }
       this.selectedStudentId = selectedStudent ? selectedStudent.id : null;
       this.typeOfReasonId = this.data.e.event.practiceStateEnum
+      this.selectedReasonId = this.data.e.event.practiceDeleteReasonEnum !== 0 ? this.data.e.event.practiceDeleteReasonEnum : 1
     } else {
       this.eventDate = this.data.practiceDate
       this.eventStartTime = '06:00'
