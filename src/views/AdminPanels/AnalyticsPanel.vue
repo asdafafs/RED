@@ -1,9 +1,9 @@
 ﻿<template>
   <div style="width: 100%">
-    <div class="desk-title">
+    <div class="desk-title" :class="{'ml-4': !isMobile}">
       Аналитика
     </div>
-    <hr>
+    <hr :class="{'ml-4': !isMobile}">
     <div :class="isMobile ? 'analytics-mobile-filters' : 'analytics-desktop-filters'">
       <v-autocomplete
           v-for="filter in filterItems"
@@ -64,13 +64,19 @@
         </section>
       </v-btn>
     </div>
-    <span class="total-count-text">
-      Всего записей: {{ analyticsDataCount }}
-    </span>
+    <div class="d-flex" :class="isMobile ? 'flex-column' : 'flex-row'">
+      <div class="total-count-text" :class="{'ml-4': !isMobile}">
+        Всего записей: {{ analyticsDataCount }} 
+       </div>
+       <div class="total-count-text" :class="{'ml-4': !isMobile}">
+        Количество часов: {{ analyticsDataHoursCount }}
+       </div>
+    </div>
     <v-data-table
         :headers="headers"
         :items="analyticsData"
         class="custom-header-table"
+        :class="{'header-no-padding': isMobile}"
         style="border-bottom: thin solid rgba(0, 0, 0, 0.12); border-radius: unset !important;"
         no-data-text="Нет данных для отображения"
         :hide-default-footer="true"
@@ -80,7 +86,7 @@
     >
       <template v-slot:item="{ item }">
         <tr style="height: 64px !important;">
-          <td>{{ item.activeUserFullName || '-' }}</td>
+          <td :class="{'pl-0': isMobile}">{{ item.activeUserFullName || '-' }}</td>
           <td>{{ item.studentFullName || '-'}}</td>
           <td>{{ item.startTime || '-' }}</td>
           <td>{{ item.duration ? `${item.duration} ч.` : '-' }}</td>
@@ -238,6 +244,19 @@ export default {
     },
     analyticsDataCount() {
       return this.analyticsData.length ? this.analyticsData.length : 0
+    },
+    analyticsDataHoursCount() {
+      if (this.analyticsData.length) {
+        let sum = 0;
+        this.analyticsData.forEach(obj => {
+            if (obj.hasOwnProperty('duration')) {
+              sum += obj['duration'];
+            }
+        });
+        return sum
+      } else {
+        return 0
+      } 
     }
   },
   methods: {
@@ -312,7 +331,6 @@ export default {
   font-size: 16px;
   line-height: 18.75px;
   color: #2B2A29;
-  margin-left: 16px;
 }
 
 .analytics-mobile-filters {
@@ -323,6 +341,7 @@ export default {
 }
 
 .analytics-desktop-filters {
+  margin-left: 16px;
   display: flex;
   flex-direction: row;
   margin-bottom: 12px;
@@ -348,6 +367,11 @@ export default {
     .v-btn__content {
       color: white;
     }
+  }
+}
+.header-no-padding {
+  th:first-of-type {
+    padding-left: 0 !important;
   }
 }
 </style>
