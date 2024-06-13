@@ -141,7 +141,7 @@
                     no-data-text="Нет данных для отображения"
                     :items="listGroups"
                     item-value="groupId" @change="acceptLectureGroup()"
-                    v-if="lastSelectedJoinType === 2 && isUserTeacher">
+                    v-if="lastSelectedJoinType === 2">
             <template #item="{ item }">
               <div v-if="item.groupId">
               <span style="font-size: 16px; line-height: 18.75px; font-weight: 400; color: #2B2A29">
@@ -206,7 +206,6 @@
           :event-overlap-mode="mode"
           :type="type"
           :events="events"
-          
           :event-color="getEventColor"
           @click:event="reviewEvent"
           :event-ripple="false"
@@ -248,7 +247,7 @@ import {mapState} from "vuex";
 import UsersRequest from "@/services/UsersRequest";
 import GroupsRequest from "@/services/GroupsRequest";
 import {formatTransmissions} from '@/utils/utils';
-import { Icon } from '@iconify/vue2'
+import {Icon} from '@iconify/vue2'
 
 export default {
   components: {LectureLogo, CarLogo, Icon},
@@ -273,7 +272,7 @@ export default {
     this.test = true
     this.prevMonthAndYear = this.getMonthAndYear(this.value);
   },
-  
+
   data: () => ({
     selectedLessonType: null,
     events: [],
@@ -567,7 +566,6 @@ export default {
       await teachers.getCorrectTeacherForSelectedUser(id).catch(x => console.log(x)).then(x => {
         listTeachers = x.data.activeUsers
       })
-      // this.selectedTeacher = null
       return this.listTeachers.push(...listTeachers)
     },
 
@@ -582,7 +580,7 @@ export default {
         await this.getCorrectStudents(this.selectedActiveUser)
         this.onToggleClick(this.lastSelectedJoinType)
       } else {
-        if (this.lastSelectedJoinType !== 1) {
+        if (this.lastSelectedJoinType === 1) {
           const assignedPractices = await this.getPracticeStudent()
           const practices = await this.getFreePractices(selectedId);
           this.events = [...assignedPractices, ...practices];
@@ -786,7 +784,7 @@ export default {
       const lessons = new EventsRequest()
       let lessonsData = []
       const activeUserId = this.selectedTeacher
-      const groupId = this.$store.state.user.groupId
+      const groupId = this.selectedGroup !== null ? this.selectedGroup : this.$store.state.user.groupId
       if (activeUserId && groupId) {
         const query = `GroupId=${groupId}&Date=${this.value}`
         await lessons.getLectureActiveUser(activeUserId, query).catch(x => console.log(x)).then(x => {
@@ -796,7 +794,16 @@ export default {
             end: new Date(event.endTime)
           }));
         })
-      } else if (groupId) {
+      } else if (this.selectedGroup !== null) {
+        const query = `GroupId=${groupId}&Date=${this.value}`
+        await lessons.getLectureGroupId(this.selectedGroup, query).catch(x => console.log(x)).then(x => {
+          lessonsData = x.data.lecture.map(event => ({
+            ...event,
+            start: new Date(event.startTime),
+            end: new Date(event.endTime)
+          }));
+        })
+      } else {
         const query = `Date=${this.value}`
         await lessons.getLessons(query).catch(x => console.log(x)).then(x => {
           lessonsData = x.data.lecture.map(event => ({
