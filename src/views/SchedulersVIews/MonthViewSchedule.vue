@@ -803,7 +803,7 @@ export default {
             end: new Date(event.endTime)
           }));
         })
-      } else {
+      } else if (this.$store.state.user.groupId){
         const query = `Date=${this.value}`
         await lessons.getLessons(query).catch(x => console.log(x)).then(x => {
           lessonsData = x.data.lecture.map(event => ({
