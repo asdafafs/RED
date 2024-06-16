@@ -353,10 +353,9 @@ export default {
     },
 
     selectedTeacher(newValue) {
-      console.log(newValue)
-    }
+        // console.log(newValue)
+    },
   },
-
   created() {
     this.getGroups().then(() => {
       if (this.isAdmin) {
@@ -376,6 +375,7 @@ export default {
           this.onToggleClick(this.lastSelectedJoinType)
         })
       } else {
+        this.getGroupsStudent()
         this.getAllStudents()
         this.getAccessibleTeachers().then(() => {
           this.onToggleClick(this.lastSelectedJoinType)
@@ -803,7 +803,7 @@ export default {
             end: new Date(event.endTime)
           }));
         })
-      } else if (this.$store.state.user.groupId){
+      } else if (this.$store.state.user.groupId) {
         const query = `Date=${this.value}`
         await lessons.getLessons(query).catch(x => console.log(x)).then(x => {
           lessonsData = x.data.lecture.map(event => ({
@@ -988,7 +988,25 @@ export default {
       await groups.getGroups().catch(x => console.log(x)).then(x => {
         groupList = x.data
       })
-      return console.log(this.listGroups.push(...groupList))
+      return this.listGroups.push(...groupList)
+    },
+
+    async getGroupsStudent() {
+      this.listGroups = [{
+        "groupId": null,
+        "title": null,
+        "groupNumber": null,
+        "courseStartDate": null,
+        "courseEndDate": null,
+        "students": null,
+      }]
+      const groups = new GroupsRequest()
+      let groupList
+      await groups.getGroupStudent().catch(x => console.log(x)).then(x => {
+        groupList = x.data
+      })
+      this.selectedGroup = groupList[0].groupId
+      return this.listGroups.push(...groupList)
     },
 
     formatTime(startTime) {

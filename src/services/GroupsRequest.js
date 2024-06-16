@@ -15,4 +15,8 @@ export default class GroupsRequest extends HTTPService {
     deleteGroup(id) {
         return this.delete("" + id)
     }
+
+    getGroupStudent() {
+        return this.get("student")
+    }
 }
