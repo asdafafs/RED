@@ -42,7 +42,7 @@
       </div>
       <div style="background-color: #4E7AEC; padding: 4px; gap: 10px; min-height: 27px; max-width: 523px"
            v-if="!isUserTeacher && lastSelectedJoinType === 1">
-        <span style="font-weight: 600; font-size: 16px; line-height: 18.75px; color: #FEFEFE;  word-wrap: break-word;">Выберите инструктора, чтобы записаться на свободные практики</span>
+        <span style="font-weight: 600; font-size: 16px; line-height: 18.75px; color: #FEFEFE;  word-wrap: break-word;">Выберите инструктора, чтобы записаться на практики</span>
       </div>
       <div style="gap: 12px !important;" class="d-flex flex-column">
         <div class="d-flex flex-row flex-wrap" style="gap: 4px 8px !important;">
@@ -163,6 +163,25 @@
               </div>
             </template>
           </v-select>
+          <div class="d-flex flex-column" v-if="!isUserTeacher && lastSelectedJoinType === 1">
+            <v-radio-group class="px-0 py-0 align-center ma-0 custom-radio" v-model="typePractices" hide-details
+                           mandatory>
+              <v-radio :value="false" @click="getPractices">
+                <template v-slot:label>
+                  <strong
+                      style="color:#2B2A29; font-weight: 400 !important; font-size: 16px !important; line-height: 18.75px !important;">Показать
+                    свободные</strong>
+                </template>
+              </v-radio>
+              <v-radio :value="true" @click="getPractices">
+                <template v-slot:label>
+                  <strong
+                      style="color:#2B2A29; font-weight: 400 !important; font-size: 16px !important; line-height: 18.75px !important;">Показать
+                    занятые</strong>
+                </template>
+              </v-radio>
+            </v-radio-group>
+          </div>
         </div>
         <div class="d-flex flex-row flex-wrap" v-if="isUserTeacher && lastSelectedJoinType === 1">
           <v-btn
@@ -331,6 +350,7 @@ export default {
     studentGeneralHours: '',
     studentGeneralHoursSpent: '',
     listInfoTeachers: [],
+    typePractices: false,
   }),
   watch: {
     value(newValue) {
@@ -353,7 +373,7 @@ export default {
     },
 
     selectedTeacher(newValue) {
-        // console.log(newValue)
+      // console.log(newValue)
     },
   },
   created() {
@@ -695,7 +715,7 @@ export default {
       if (this.type === 'week') {
         const monday = this.currentDate.clone().startOf('isoWeek').format('YYYY-MM-DD')
         const sunday = this.currentDate.clone().endOf('isoWeek').format('YYYY-MM-DD')
-        const query = `Id=${userId}&Date=${monday}&Date2=${sunday}`
+        const query = `Id=${userId}&Date=${monday}&Date2=${sunday}&showAssigned=${this.typePractices}`
         await practices.getFreePracticeActiveUser(query).catch(x => console.log(x)).then(x => {
           cal = x.data.practice.map(event => ({
             ...event,
@@ -704,7 +724,7 @@ export default {
           }));
         })
       } else {
-        const query = `Id=${userId}&Date=${this.value}`
+        const query = `Id=${userId}&Date=${this.value}&showAssigned=${this.typePractices}`
         await practices.getFreePracticeActiveUser(query).catch(x => console.log(x)).then(x => {
           cal = x.data.practice.map(event => ({
             ...event,
@@ -879,6 +899,40 @@ export default {
       } else {
         this.events = await this.getLessonsStudent();
       }
+    },
+
+    async getPractices() {
+      const practices = new EventsRequest()
+      let practicesData
+      const userId = this.selectedTeacher
+      if (userId) {
+        if (this.type === 'week') {
+          const monday = this.currentDate.clone().startOf('isoWeek').format('YYYY-MM-DD')
+          const sunday = this.currentDate.clone().endOf('isoWeek').format('YYYY-MM-DD')
+          const query = `Id=${userId}&Date=${monday}&Date2=${sunday}&showAssigned=${this.typePractices}`
+          await practices.getFreePracticeActiveUser(query).catch(x => console.log(x)).then(x => {
+            practicesData = x.data.practice.map(event => ({
+              ...event,
+              start: new Date(event.startTime),
+              end: new Date(event.endTime)
+            }));
+          })
+        } else {
+          const query = `Id=${userId}&Date=${this.value}&showAssigned=${this.typePractices}`
+          await practices.getFreePracticeActiveUser(query).catch(x => console.log(x)).then(x => {
+            practicesData = x.data.practice.map(event => ({
+              ...event,
+              start: new Date(event.startTime),
+              end: new Date(event.endTime)
+            }));
+          })
+        }
+
+        this.events = []
+        const assignedPractices = await this.getPracticeStudent()
+        this.events = [...assignedPractices, ...practicesData];
+        return this.events
+      } else return null
     },
 
     getEventPersonName(e) {
@@ -1201,6 +1255,18 @@ export default {
   font-weight: 400 !important;
   font-size: 12px !important;
   color: black !important;
+}
+
+.custom-radio .v-radio {
+  margin-bottom: 0 !important;
+}
+
+.custom-radio .v-input--selection-controls__ripple {
+  height: 0px;
+}
+
+.custom-radio [class*="__ripple"] {
+  height: 0 !important;
 }
 
 .close-button {
