@@ -11,6 +11,9 @@
   },
   "dependencies": {
     "@mdi/light-font": "^0.2.63",
+    "ag-grid-community": "^31.3.2",
+    "ag-grid-enterprise": "^31.3.2",
+    "ag-grid-vue": "^31.3.2",
     "axios": "^1.6.2",
     "core-js": "^3.8.3",
     "dotenv": "^16.3.1",
