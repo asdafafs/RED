@@ -53,19 +53,33 @@
             :first-day-of-week="1"
         />
       </v-menu>
-      <v-btn
-          color="#4E7AEC"
-          class="add-instructor-btn"
-          style="max-width: 150px"
-          @click="clearFilters"
-      >
-        <section class="d-flex flex-row align-center" style="padding: 8px 12px 8px 12px !important;">
-          <span class="add-instructor-text ml-0">Сбросить</span>
-        </section>
-      </v-btn>
+      <div class="d-flex flex-row" :class="{'justify-space-between': isMobile}" :style="{'width: 100%': isMobile}">
+        <v-btn
+            color="#4E7AEC"
+            class="add-instructor-btn"
+            style="max-width: 150px"
+            @click="clearFilters"
+        >
+          <section class="d-flex flex-row align-center" style="padding: 8px 12px 8px 12px !important;">
+            <span class="add-instructor-text ml-0">Сбросить</span>
+          </section>
+        </v-btn>
+        <v-btn
+            color="#4E7AEC"
+            class="add-instructor-btn"
+            :class="{'ml-3': !isMobile}"
+            style="max-width: 150px"
+            @click="downloadExcel"
+        >
+          <section class="d-flex flex-row align-center" style="padding: 8px 12px 8px 12px !important;">
+            <span class="add-instructor-text ml-0">Скачать</span>
+          </section>
+        </v-btn>
+      </div>
     </div>
     <div :class="{'ml-4':!isMobile}" style="height: calc(100%  - 150px); background-color: firebrick" > 
       <ag-grid-vue
+          ref="analyticsGrid"
           style="width: 100%; height: 100%;"
           class="ag-theme-alpine"
           :columnDefs="columnDefs"
@@ -88,6 +102,7 @@ import {Icon} from '@iconify/vue2'
 import UsersRequest from "@/services/UsersRequest";
 import moment from "moment";
 import {mapState} from "vuex";
+import {ValueFormatterParams} from "ag-grid-community";
 export default {
   name:'AnalyticsPanel',
   components: {
@@ -278,27 +293,32 @@ export default {
     usersRequest() {
       return new UsersRequest();
     },
-    analyticsDataCount() {
-      return this.analyticsData.length ? this.analyticsData.length : 0
-    },
-    analyticsDataHoursCount() {
-      if (this.analyticsData.length) {
-        let sum = 0;
-        this.analyticsData.forEach(obj => {
-            if (obj.hasOwnProperty('duration')) {
-              sum += obj['duration'];
-            }
-        });
-        return sum
-      } else {
-        return 0
-      } 
-    }
   },
   methods: {
+    downloadExcel() {
+      this.$refs.analyticsGrid.api.exportDataAsExcel({
+        processCellCallback: (params) => {
+          const colDef = params.column.getColDef()
+          if (colDef.valueFormatter) {
+            const valueFormatterParams = {
+              ...params,
+              data: params.node.data,
+              node: params.node, 
+              colDef: params.column.getColDef(),
+            }
+            return colDef.valueFormatter(valueFormatterParams);
+          }
+          if (params.node.group) {
+            if (params.node.field === 'all') return `Всего ${params.node.aggData.duration} ч`
+            if (params.node.field === 'activeUserFullName') return `Инструктор ${params.node.key} ${params.node.aggData.duration} ч`
+            if (params.node.field === 'studentFullName') return `Студент ${params.node.key} ${params.node.aggData.duration} ч`
+          }
+          return params.value;
+        },
+      })
+    },
     customGroupCellRenderer(params) {
       const { node, value } = params;
-      console.log(node)
       if (node.group) {
         const totalHours = node.aggData.duration;
         if (node.field === 'activeUserFullName') {
