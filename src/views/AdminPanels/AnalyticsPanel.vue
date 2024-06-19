@@ -1,5 +1,5 @@
 ﻿<template>
-  <div style="width: 100%">
+  <div style="width: 100%;height: calc(100% - 40px)">
     <div class="desk-title" :class="{'ml-4': !isMobile}">
       Аналитика
     </div>
@@ -64,62 +64,50 @@
         </section>
       </v-btn>
     </div>
-    <div class="d-flex" :class="isMobile ? 'flex-column' : 'flex-row'">
-      <div class="total-count-text" :class="{'ml-4': !isMobile}">
-        Всего записей: {{ analyticsDataCount }} 
-       </div>
-       <div class="total-count-text" :class="{'ml-4': !isMobile}">
-        Количество часов: {{ analyticsDataHoursCount }}
-       </div>
+    <div :class="{'ml-4':!isMobile}" style="height: calc(100%  - 150px); background-color: firebrick" > 
+      <ag-grid-vue
+          style="width: 100%; height: 100%;"
+          class="ag-theme-alpine"
+          :columnDefs="columnDefs"
+          :defaultColDef="defaultColDef"
+          :autoGroupColumnDef="autoGroupColumnDef"
+          :rowData="analyticsData"
+          groupDisplayType="groupRows"
+          suppressAggFuncInHeader
+      />
     </div>
-    <v-data-table
-        :headers="headers"
-        :items="analyticsData"
-        class="custom-header-table"
-        :class="{'header-no-padding': isMobile}"
-        style="border-bottom: thin solid rgba(0, 0, 0, 0.12); border-radius: unset !important;"
-        no-data-text="Нет данных для отображения"
-        :hide-default-footer="true"
-        disable-pagination
-        :header-props="{ class: 'blue--text text--darken-2 header-grid-text px-0' }"
-        mobile-breakpoint="0"
-    >
-      <template v-slot:item="{ item }">
-        <tr style="height: 64px !important;">
-          <td :class="{'pl-0': isMobile}">{{ item.activeUserFullName || '-' }}</td>
-          <td>{{ item.studentFullName || '-'}}</td>
-          <td>{{ item.startTime || '-' }}</td>
-          <td>{{ item.duration ? `${item.duration} ч.` : '-' }}</td>
-          <td>{{ getStatusName(item.practiceStateEnum) }}</td>
-          <td>{{ getReasonName(item.practiceDeleteReasonEnum)}}</td>
-        </tr>
-      </template>
-    </v-data-table>
   </div>
 </template>
 <script>
+import { AgGridVue } from 'ag-grid-vue';
+import 'ag-grid-enterprise';
+import "ag-grid-community/styles/ag-grid.css"; // Mandatory CSS required by the grid
+import "ag-grid-community/styles/ag-theme-alpine.css"; // Optional Theme applied to the grid
 import VueTextMask from "vue-text-mask";
 import {Icon} from '@iconify/vue2'
 import UsersRequest from "@/services/UsersRequest";
 import moment from "moment";
-import {formatTransmissions} from "@/utils/utils";
 import {mapState} from "vuex";
-import {nextTick} from "vue";
 export default {
   name:'AnalyticsPanel',
   components: {
     VueTextMask,
-    Icon
+    Icon,
+    AgGridVue
   },
   data: () => ({
-    headers: [
-      {text: 'Инструктор', align: 'start', sortable: false, value: 'activeUserFullName', width: '25%'},
-      {text: 'Студент', align: 'start', sortable: false, value: 'studentFullName', width: '25%'},
-      {text: 'Дата практики', align: 'start', sortable: false, value: 'startTime', width: '10%'},
-      {text: 'Длительность', align: 'start', sortable: false, value: 'duration', width: '5%'},
-      {text: 'Статус практики', align: 'start', sortable: false, value: 'practiceStateEnum', width: '15%'},
-      {text: 'Причина', align: 'start', sortable: false, value: 'practiceDeleteReasonEnum', width: '20%'},
-    ],
+    defaultColDef: {
+      flex: 1,
+      minWidth: 100,
+      suppressHeaderMenuButton: true,
+      resizable: false
+    },
+    autoGroupColumnDef: {
+      headerName: "Группы",
+      cellRendererParams: {
+        suppressCount: true,
+      },
+    },
     filters: {
       activeUserId: '',
       studentId: '',
@@ -193,6 +181,54 @@ export default {
   },
   computed:{
     ...mapState(['isMobile']),
+    columnDefs() {
+      return [
+        {
+          field: 'all',
+          hide: true,
+          rowGroup: true,
+          valueFormatter: params => {
+            return this.customGroupCellRenderer(params)
+          },
+        },
+        {
+          field: "activeUserFullName",
+          rowGroup: true,
+          hide: true,
+          valueFormatter:  params => {
+            return this.customGroupCellRenderer(params)
+          },
+        },
+        {
+          field: "startTime",
+          headerName:'Дата практики'
+        },
+        { 
+          field: "studentFullName",
+          rowGroup: true,
+          hide: true ,
+          valueFormatter: params => {
+            return this.customGroupCellRenderer(params)
+          },
+        },
+        { 
+          field: "duration",
+          valueFormatter: params => params.value + ' ч',
+          headerName:'Длительность',
+          aggFunc: 'sum'
+        },
+        { 
+          field: "practiceStateEnum" ,
+          valueFormatter: params => this.getStatusName(params.value),
+          headerName:'Статус практики',
+        },
+        { 
+          field: "practiceDeleteReasonEnum",
+          valueFormatter: params => this.getReasonName(params.value),
+          headerName:'Причина',
+        },
+      ]
+    },
     selectedPeriodText() {
       if (this.filters.selectedPeriod.length === 2) {
         this.filters.selectedPeriod.sort()
@@ -260,6 +296,23 @@ export default {
     }
   },
   methods: {
+    customGroupCellRenderer(params) {
+      const { node, value } = params;
+      console.log(node)
+      if (node.group) {
+        const totalHours = node.aggData.duration;
+        if (node.field === 'activeUserFullName') {
+          return `Инструктор ${value}  ${totalHours} ч`;
+        }
+        if (node.field === 'studentFullName') {
+          return `Студент ${value}  ${totalHours} ч`;
+        }
+        if (node.field === 'all') {
+          return `Всего ${value}  ${totalHours} ч`;
+        }
+      }
+      return value;
+    },
     getStartDate() {
       const today = moment();
       const firstDayOfWeek = today.clone().weekday(1);
@@ -373,5 +426,39 @@ export default {
   th:first-of-type {
     padding-left: 0 !important;
   }
+}
+
+.ag-ltr .ag-row > .ag-cell-wrapper.ag-row-group-indent-2 {
+  padding-left: 17px;
+  background-color: #EAEFF3;
+  font-weight: 600;
+}
+.ag-ltr .ag-row > .ag-cell-wrapper.ag-row-group-indent-1 {
+  padding-left: 17px;
+  background-color: #D6DAE1;
+  font-weight: 600;
+}
+.ag-ltr .ag-row > .ag-cell-wrapper.ag-row-group-indent-0 {
+  background-color: #A6A8AA;
+  font-weight: 600;
+}
+.ag-group-child-count {
+  display: none !important;
+}
+.ag-theme-alpine {
+  --ag-header-height: 30px;
+  --ag-header-foreground-color: #4E7AEC;
+  --ag-header-background-color: white;
+}
+.ag-theme-alpine .ag-header-cell {
+  font-size: 16px;
+  font-weight: 600;
+  padding-left: 0 !important;
+}
+.ag-theme-alpine {
+  /* disable all borders */
+  --ag-borders: none;
+  /* then add back a border between rows */
+  --ag-row-border-width: 1px;
 }
 </style>

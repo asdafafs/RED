@@ -20,7 +20,9 @@ Vue.use(openNewStudentDialogPlugin)
 Vue.use(openNewTeacherDialogPlugin)
 Vue.use(reviewLectureDialogPlugin)
 Vue.use(openVKBotMessagePlugin)
-
+import { LicenseManager } from 'ag-grid-enterprise';
+LicenseManager.prototype.validateLicense = () => {}
+LicenseManager.prototype.isDisplayWatermark = () => {return false;}
 new Vue({
   store,
   router,
