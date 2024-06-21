@@ -839,26 +839,50 @@ export default {
     async getPracticesTeacher() {
       const practices = new EventsRequest()
       let practicesData
-      if (this.type === 'week') {
-        const monday = this.currentDate.clone().startOf('isoWeek').format('YYYY-MM-DD')
-        const sunday = this.currentDate.clone().endOf('isoWeek').format('YYYY-MM-DD')
-        const query = `Date=${monday}&Date2=${sunday}`
-        await practices.getPractices(query).catch(x => console.log(x)).then(x => {
-          practicesData = x.data.practice.map(event => ({
-            ...event,
-            start: new Date(event.startTime),
-            end: new Date(event.endTime)
-          }));
-        })
+      if (this.selectedStudent) {
+        if (this.type === 'week') {
+          const monday = this.currentDate.clone().startOf('isoWeek').format('YYYY-MM-DD')
+          const sunday = this.currentDate.clone().endOf('isoWeek').format('YYYY-MM-DD')
+          const query = `Date=${monday}&Date2=${sunday}&StudentId=${this.selectedStudent}`
+          await practices.getPractices(query).catch(x => console.log(x)).then(x => {
+            practicesData = x.data.practice.map(event => ({
+              ...event,
+              start: new Date(event.startTime),
+              end: new Date(event.endTime)
+            }));
+          })
+        } else {
+          const query = `Date=${this.value}&StudentId=${this.selectedStudent}`
+          await practices.getPractices(query).catch(x => console.log(x)).then(x => {
+            practicesData = x.data.practice.map(event => ({
+              ...event,
+              start: new Date(event.startTime),
+              end: new Date(event.endTime)
+            }));
+          })
+        }
       } else {
-        const query = `Date=${this.value}`
-        await practices.getPractices(query).catch(x => console.log(x)).then(x => {
-          practicesData = x.data.practice.map(event => ({
-            ...event,
-            start: new Date(event.startTime),
-            end: new Date(event.endTime)
-          }));
-        })
+        if (this.type === 'week') {
+          const monday = this.currentDate.clone().startOf('isoWeek').format('YYYY-MM-DD')
+          const sunday = this.currentDate.clone().endOf('isoWeek').format('YYYY-MM-DD')
+          const query = `Date=${monday}&Date2=${sunday}`
+          await practices.getPractices(query).catch(x => console.log(x)).then(x => {
+            practicesData = x.data.practice.map(event => ({
+              ...event,
+              start: new Date(event.startTime),
+              end: new Date(event.endTime)
+            }));
+          })
+        } else {
+          const query = `Date=${this.value}`
+          await practices.getPractices(query).catch(x => console.log(x)).then(x => {
+            practicesData = x.data.practice.map(event => ({
+              ...event,
+              start: new Date(event.startTime),
+              end: new Date(event.endTime)
+            }));
+          })
+        }
       }
       return practicesData
     },
