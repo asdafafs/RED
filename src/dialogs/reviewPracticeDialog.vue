@@ -146,8 +146,8 @@ export default {
   computed: {
     saveButtonTitle() {
       if (this.data.student && this.data.userIsStudentInPractice && this.data.e.event.practiceStateEnum === 0) return 'Отписаться'
-      if (this.data.student && !this.data.userIsStudentInPractice && this.data.e.event.practiceStateEnum === 0) return 'Записаться'
-      if (this.data.userTeacher || this.data.isAdmin || this.data.e.event.practiceStateEnum !== 0) return 'Понятно'
+      if (this.data.student && !this.data.userIsStudentInPractice && this.data.e.event.practiceStateEnum === 0 && !this.data.typePractices) return 'Записаться'
+      if (this.data.userTeacher || this.data.isAdmin || this.data.e.event.practiceStateEnum !== 0 || this.data.typePractices) return 'Понятно'
     },
     dateOfPractice() {
       return `${moment(this.data.e.event.startTime).format('DD.MM.YYYY')} (${moment(this.data.e.event.startTime).locale('ru').format('dd')})`;

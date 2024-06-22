@@ -168,9 +168,11 @@
                            mandatory>
               <v-radio :value="false" @click="getPractices">
                 <template v-slot:label>
-                  <strong
-                      style="color:#2B2A29; font-weight: 400 !important; font-size: 16px !important; line-height: 18.75px !important;">Показать
-                    свободные</strong>
+                  <strong 
+                    style="color:#2B2A29; font-weight: 400 !important; font-size: 16px !important; line-height: 18.75px !important;"
+                  >
+                    Показать свободные
+                  </strong>
                 </template>
               </v-radio>
               <v-radio :value="true" @click="getPractices">
@@ -654,6 +656,7 @@ export default {
         const teacher = this.listTeachers.find(teacher => this.selectedTeacher && teacher.id === this.selectedTeacher)
         const teacherTransmissions = teacher ? teacher.transmissionTypeEnum : [];
         const data = {
+          typePractices: this.typePractices,
           e: e,
           listStudents: listStudents,
           userTeacher: this.isUserTeacher,
