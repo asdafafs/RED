@@ -97,10 +97,10 @@
       <v-card-actions class="pa-5">
         <div
             class="review-practice-dialog_actions"
-            :class="data.student && this.data.e.event.practiceStateEnum === 0? 'justify-space-between' : 'justify-end'"
+            :class="data.student && this.data.e.event.practiceStateEnum === 0 && !data.typePractices ? 'justify-space-between' : 'justify-end'"
         >
           <v-btn
-              v-if="data.student && this.data.e.event.practiceStateEnum === 0"
+              v-if="data.student && this.data.e.event.practiceStateEnum === 0 && !data.typePractices"
               lass="open-practice-dialog_actions_cancel-button"
               text
               @click="onCancelClick"
