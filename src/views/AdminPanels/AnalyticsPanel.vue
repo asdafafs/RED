@@ -7,6 +7,7 @@
     <div :class="isMobile ? 'analytics-mobile-filters' : 'analytics-desktop-filters'">
       <v-autocomplete
           v-for="filter in filterItems"
+          multiple
           v-model="filters[filter.key]"
           class="select-user-template v-text-field-custom-h-32 mr-3"
           :class="isMobile ? 'mobile-filter-item' : 'desktop-filter-item'"
@@ -20,8 +21,18 @@
           :item-text="filter.textField"
           :item-value="filter.valueField"
           clearable
-          @click:clear="onClear(filter.key)"
-      />
+          
+      >
+        <template #selection="{ item, index }">
+          <span v-if="filters[filter.key].length === 1">
+            {{ item[filter.textField] }}
+          </span>
+          <span v-else>
+            {{ index === 0 ? `${item[filter.textField]} + ${filters[filter.key].length - 1}` : '' }}
+          </span>
+        </template>
+      </v-autocomplete>
+<!--      @click:clear="onClear(filter.key)"-->
       <v-menu
           :close-on-content-click="false"
           :nudge-right="40"
@@ -55,23 +66,23 @@
       </v-menu>
       <div class="d-flex flex-row" :class="{'justify-space-between': isMobile}" :style="{'width: 100%': isMobile}">
         <v-btn
-            color="#4E7AEC"
-            class="add-instructor-btn"
+            color="#fff"
+            class="clear-filters-btn"
             style="max-width: 150px"
             @click="clearFilters"
         >
-          <section class="d-flex flex-row align-center" style="padding: 8px 12px 8px 12px !important;">
-            <span class="add-instructor-text ml-0">Сбросить</span>
+          <section class="d-flex flex-row align-center" style="padding: 12px 0 !important;">
+            <span class="clear-filters-text ml-0">Сбросить все</span>
           </section>
         </v-btn>
         <v-btn
             color="#4E7AEC"
             class="add-instructor-btn"
             :class="{'ml-3': !isMobile}"
-            style="max-width: 150px"
+            style="max-width: 90px"
             @click="downloadExcel"
         >
-          <section class="d-flex flex-row align-center" style="padding: 8px 12px 8px 12px !important;">
+          <section class="d-flex flex-row align-center" style="padding: 12px 0 !important;">
             <span class="add-instructor-text ml-0">Скачать</span>
           </section>
         </v-btn>
@@ -124,11 +135,11 @@ export default {
       },
     },
     filters: {
-      activeUserId: '',
-      studentId: '',
-      practiceStateEnum: '',
-      practiceDeleteReasonEnum: '',
-      selectedPeriod: '',
+      activeUserId: null,
+      studentId: null,
+      practiceStateEnum: null,
+      practiceDeleteReasonEnum: null,
+      selectedPeriod: null,
     },
     selectedPeriod: '',
     analyticsData: [],
@@ -268,7 +279,7 @@ export default {
           id: 2,
           placeholder: 'Студент',
           key: 'studentId',
-          items: [ { id: null, shortName: 'Студент не назначен' }, ...this.studentsList],
+          items: [ { id: 0, shortName: 'Студент не назначен' }, ...this.studentsList],
           textField: 'shortName',
           valueField: 'id'
         },
@@ -325,7 +336,7 @@ export default {
           return `Инструктор ${value}  ${totalHours} ч`;
         }
         if (node.field === 'studentFullName') {
-          return `Студент ${value}  ${totalHours} ч`;
+          return `Студент ${value ? value : 'не назначен'}  ${totalHours} ч`;
         }
         if (node.field === 'all') {
           return `Всего ${value}  ${totalHours} ч`;
@@ -340,17 +351,15 @@ export default {
       return [firstDayOfWeek.format('YYYY-MM-DD'), lastDayOfWeek.format('YYYY-MM-DD')];
     },
     async getAnalyticsData() {
+      console.log(this.filters.studentId)
       const data = {
-        activeUserId: this.filters.activeUserId,
-        studentId: this.filters.studentId ? this.filters.studentId : this.filters.studentId === null ? null : 0,
-        practiceStateEnum: this.filters.practiceStateEnum,
-        practiceDeleteReasonEnum: this.filters.practiceDeleteReasonEnum,
+        activeUserId: this.filters.activeUserId?.length ? this.filters.activeUserId : null,
+        studentId: this.filters.studentId?.length ? this.filters.studentId[0] === 0 ? [] : this.filters.studentId : null ,
+        practiceStateEnum: this.filters.practiceStateEnum?.length ? this.filters.practiceStateEnum : null,
+        practiceDeleteReasonEnum: this.filters.practiceDeleteReasonEnum?.length ? this.filters.practiceDeleteReasonEnum : null,
         start: this.filters.selectedPeriod[0],
         end: this.filters.selectedPeriod[1],
       }
-      Object.keys(data).forEach(key => {
-        if (data[key] === "") delete data[key]
-      })
       await this.usersRequest.getUserStatInfo(data).then(({data}) => {
         this.analyticsData = data.practice
         this.analyticsData.forEach(x => x.startTime = moment(x.startTime).format('DD.MM.YY HH:mm'))
@@ -383,18 +392,18 @@ export default {
     },
     clearFilters() {
       this.clearingFilters = true
-      this.filters.activeUserId = '';
-      this.filters.studentId = '';
-      this.filters.practiceStateEnum = '';
-      this.filters.practiceDeleteReasonEnum = '';
+      this.filters.activeUserId = null;
+      this.filters.studentId = null;
+      this.filters.practiceStateEnum = null;
+      this.filters.practiceDeleteReasonEnum = null;
       this.filters.selectedPeriod = this.getStartDate()
       this.clearingFilters = false
     },
-    onClear(key) {
+    /*onClear(key) {
       if (key === 'studentId') {
         this.filters.studentId = ''
       }
-    }
+    }*/
   },
 };
 </script>
@@ -480,5 +489,22 @@ export default {
   --ag-borders: none;
   /* then add back a border between rows */
   --ag-row-border-width: 1px;
+}
+
+.clear-filters {
+  &-btn {
+    border-radius: 12px !important;
+    height: 32px !important;
+    width: 225px !important;
+    text-transform: none !important;
+    box-shadow: none;
+  }
+
+  &-text {
+    font-size: 16px !important;
+    font-weight: 500 !important;
+    color: black !important;
+    line-height: 18.75px !important;
+  }
 }
 </style>
