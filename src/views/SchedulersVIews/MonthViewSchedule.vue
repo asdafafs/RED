@@ -377,6 +377,10 @@ export default {
     selectedTeacher(newValue) {
       // console.log(newValue)
     },
+
+    currentDate(newValue){
+      console.log(newValue)
+    }
   },
   created() {
     this.getGroups().then(() => {
@@ -1121,6 +1125,9 @@ export default {
         this.currentDate = this.currentDate.clone().subtract(1, 'week');
         await this.onToggleClick(this.lastSelectedJoinType)
       }
+      if(this.type === 'day'){
+        this.currentDate = this.currentDate.clone().subtract(1, 'day');
+      }
     },
 
     async nextMonth() {
@@ -1128,6 +1135,9 @@ export default {
       if (this.type === 'week') {
         this.currentDate = this.currentDate.clone().add(1, 'week');
         await this.onToggleClick(this.lastSelectedJoinType)
+      }
+      if(this.type === 'day'){
+        this.currentDate = this.currentDate.clone().add(1, 'day');
       }
     },
 
