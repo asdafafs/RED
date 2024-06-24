@@ -6,22 +6,23 @@
     <hr :class="{'ml-4': !isMobile}">
     <div :class="isMobile ? 'analytics-mobile-filters' : 'analytics-desktop-filters'">
       <v-autocomplete
-          v-for="filter in filterItems"
-          multiple
-          v-model="filters[filter.key]"
-          class="select-user-template v-text-field-custom-h-32 mr-3"
-          :class="isMobile ? 'mobile-filter-item' : 'desktop-filter-item'"
-          outlined
-          dense
-          hide-details
-          height="41"
-          :placeholder="filter.placeholder"
-          no-data-text="Нет данных для отображения"
-          :items="filter.items"
-          :item-text="filter.textField"
-          :item-value="filter.valueField"
-          clearable
-          
+        v-for="filter in filterItems"
+        multiple
+        v-model="filters[filter.key]"
+        class="select-user-template v-text-field-custom-h-32 mr-3"
+        :class="isMobile ? 'mobile-filter-item' : 'desktop-filter-item'"
+        outlined
+        dense
+        hide-details
+        height="41"
+        :placeholder="filter.placeholder"
+        no-data-text="Нет данных для отображения"
+        :items="filter.items"
+        :item-text="filter.textField"
+        :item-value="filter.valueField"
+        clearable
+        @click:clear="onClear(filter.key)"
+        :prepend-item="{value: 'Выбрать все'}"
       >
         <template #selection="{ item, index }">
           <span v-if="filters[filter.key].length === 1">
@@ -31,8 +32,15 @@
             {{ index === 0 ? `${item[filter.textField]} + ${filters[filter.key].length - 1}` : '' }}
           </span>
         </template>
+        <template #prepend-item>
+          <v-list-item @click="onSelectAll(filter.key)">
+            <v-checkbox class="select-all-checkbox" v-model="filter.checkboxValue"/>
+            <span class="select-all-text">
+              Выбрать все
+            </span>
+          </v-list-item>
+        </template>
       </v-autocomplete>
-<!--      @click:clear="onClear(filter.key)"-->
       <v-menu
           :close-on-content-click="false"
           :nudge-right="40"
@@ -186,7 +194,19 @@ export default {
       }
     ],
     clearingFilters: false,
-    firstChangeOfFilters: false
+    firstChangeOfFilters: false,
+    selectAll: {
+      teacher: false,
+      student: false,
+      status: false,
+      reason: false
+    },
+    selectAllCheckbox: {
+      teacher: false,
+      student: false,
+      status: false,
+      reason: false
+    }
   }),
   async beforeMount() {
     this.firstChangeOfFilters = true
@@ -203,7 +223,7 @@ export default {
         this.getAnalyticsData()
       },
       deep: true,
-    }
+    },
   },
   computed:{
     ...mapState(['isMobile']),
@@ -273,7 +293,8 @@ export default {
           key: 'activeUserId',
           items: this.teachersList,
           textField: 'shortName',
-          valueField: 'id'
+          valueField: 'id',
+          checkboxValue: this.selectAllCheckbox.teacher
         },
         {
           id: 2,
@@ -281,7 +302,8 @@ export default {
           key: 'studentId',
           items: [ { id: 0, shortName: 'Студент не назначен' }, ...this.studentsList],
           textField: 'shortName',
-          valueField: 'id'
+          valueField: 'id',
+          checkboxValue: this.selectAllCheckbox.student
         },
         {
           id: 3,
@@ -289,7 +311,8 @@ export default {
           key: 'practiceStateEnum',
           items: this.statusesList,
           textField: 'value',
-          valueField: 'id'
+          valueField: 'id',
+          checkboxValue: this.selectAllCheckbox.status
         },
         {
           id: 4,
@@ -297,7 +320,8 @@ export default {
           key: 'practiceDeleteReasonEnum',
           items: this.reasonsList,
           textField: 'value',
-          valueField: 'id'
+          valueField: 'id',
+          checkboxValue: this.selectAllCheckbox.reason
         },
       ]
     },
@@ -306,6 +330,44 @@ export default {
     },
   },
   methods: {
+    onSelectAll(key) {
+      if (key === 'activeUserId') {
+        this.selectAll.teacher = !this.selectAll.teacher
+        this.selectAllCheckbox.teacher = !this.selectAllCheckbox.teacher
+        if (this.selectAll.teacher) {
+          this.filters.activeUserId = this.teachersList.map(t => t.id)
+        } else {
+          this.filters.activeUserId = []
+        }
+      }
+      if (key === 'studentId') {
+        this.selectAll.student  = !this.selectAll.student
+        this.selectAllCheckbox.student = !this.selectAllCheckbox.student
+        if (this.selectAll.student) {
+          this.filters.studentId = [ { id: 0, shortName: 'Студент не назначен' }, ...this.studentsList].map(t => t.id)
+        } else {
+          this.filters.studentId = []
+        }
+      }
+      if (key === 'practiceStateEnum') {
+        this.selectAll.status = !this.selectAll.status
+        this.selectAllCheckbox.status = !this.selectAllCheckbox.status
+        if (this.selectAll.status) {
+          this.filters.practiceStateEnum = this.statusesList.map(t => t.id)
+        } else {
+          this.filters.practiceStateEnum = []
+        }
+      }
+      if (key === 'practiceDeleteReasonEnum') {
+        this.selectAll.reason = !this.selectAll.reason
+        this.selectAllCheckbox.reason = !this.selectAllCheckbox.reason
+        if (this.selectAll.reason) {
+          this.filters.practiceDeleteReasonEnum = this.reasonsList.map(t => t.id)
+        } else {
+          this.filters.practiceDeleteReasonEnum = []
+        }
+      }
+    },
     downloadExcel() {
       this.$refs.analyticsGrid.api.exportDataAsExcel({
         processCellCallback: (params) => {
@@ -351,10 +413,9 @@ export default {
       return [firstDayOfWeek.format('YYYY-MM-DD'), lastDayOfWeek.format('YYYY-MM-DD')];
     },
     async getAnalyticsData() {
-      console.log(this.filters.studentId)
       const data = {
         activeUserId: this.filters.activeUserId?.length ? this.filters.activeUserId : null,
-        studentId: this.filters.studentId?.length ? this.filters.studentId[0] === 0 ? [] : this.filters.studentId : null ,
+        studentId:  this.filters.studentId ? this.filters.studentId : null,
         practiceStateEnum: this.filters.practiceStateEnum?.length ? this.filters.practiceStateEnum : null,
         practiceDeleteReasonEnum: this.filters.practiceDeleteReasonEnum?.length ? this.filters.practiceDeleteReasonEnum : null,
         start: this.filters.selectedPeriod[0],
@@ -399,11 +460,11 @@ export default {
       this.filters.selectedPeriod = this.getStartDate()
       this.clearingFilters = false
     },
-    /*onClear(key) {
+    onClear(key) {
       if (key === 'studentId') {
-        this.filters.studentId = ''
+        this.selectAll.student = false
       }
-    }*/
+    }
   },
 };
 </script>
@@ -505,6 +566,16 @@ export default {
     font-weight: 500 !important;
     color: black !important;
     line-height: 18.75px !important;
+  }
+}
+
+.select-all {
+  &-checkbox {
+    margin-right: 23px;
+  }
+  &-text {
+    font-size: 13px;
+    font-weight: 500;
   }
 }
 </style>
