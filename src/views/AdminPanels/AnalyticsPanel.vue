@@ -415,7 +415,7 @@ export default {
     async getAnalyticsData() {
       const data = {
         activeUserId: this.filters.activeUserId?.length ? this.filters.activeUserId : null,
-        studentId:  this.filters.studentId ? this.filters.studentId : null,
+        studentId:  this.filters.studentId?.length ? this.filters.studentId : null,
         practiceStateEnum: this.filters.practiceStateEnum?.length ? this.filters.practiceStateEnum : null,
         practiceDeleteReasonEnum: this.filters.practiceDeleteReasonEnum?.length ? this.filters.practiceDeleteReasonEnum : null,
         start: this.filters.selectedPeriod[0],
