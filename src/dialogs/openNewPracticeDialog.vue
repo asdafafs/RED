@@ -212,7 +212,7 @@ export default {
 
   mounted() {
     if (!this.isNew) {
-      this.eventDate = moment(this.data.e.event.startTime)
+      this.eventDate = moment(this.data.e.event.startTime).format('YYYY-MM-DD')
       this.eventStartTime = moment(this.data.e.event.startTime).format('HH:mm')
       this.selectedDuration = +moment(this.data.e.event.endTime).format('HH') - +moment(this.data.e.event.startTime).format('HH') === 1 ? 1 : 2
       this.selectedTransmission = this.data.e.event.transmissionTypeEnum
@@ -265,12 +265,11 @@ export default {
 
     practicePassed() {
       if (this.typeOfReasonId === 1 || this.typeOfReasonId === 0) {
-        if (moment(this.eventDate).isSameOrBefore(this.currentTime)) {
-          console.log(this.eventDate, this.currentTime)
+        if (moment(this.data.e.event.startTime).isSameOrBefore(this.currentTime)) {
           this.typeOfReasonId = 1
         } else this.typeOfReasonId = 0
       }
-      return moment(this.eventDate).isSameOrBefore(this.currentTime)
+      return moment(this.data.e.event.startTime).isSameOrBefore(this.currentTime)
     }
   },
   methods: {
