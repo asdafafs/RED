@@ -91,47 +91,56 @@
               </div>
             </template>
           </v-autocomplete>
-          <v-autocomplete v-model="selectedStudent" class="select-user-template " outlined dense hide-details
-                          height="41"
-                          no-data-text="Нет данных для отображения"
-                          :items="listStudents"
-                          item-value="id" @change="acceptEditableStudent()"
-                          v-if="isUserTeacher && lastSelectedJoinType === 1"
-                          :item-text="item => `${item.surname || ''} ${item.name || ''} ${item.middleName || ''} `">
+          <v-autocomplete 
+              v-model="selectedStudent" 
+              class="select-user-template" 
+              outlined 
+              dense 
+              hide-details
+              height="41"
+              no-data-text="Нет данных для отображения"
+              :items="[{id: 0, text: 'Без студента'},...listStudents]"
+              item-value="id" 
+              @change="acceptEditableStudent()"
+              v-if="isUserTeacher && lastSelectedJoinType === 1"
+              :item-text="item => item.id === 0 ? 'text' : `${item.surname || ''} ${item.name || ''} ${item.middleName || ''} `"
+          >
             <template #selection="{ item }">
-              <div v-if="item.id">
-                <span style="font-size: 16px; line-height: 18.75px; font-weight: 400; color: #2B2A29">
+              <div v-if="selectedStudent !== null">
+                <div v-if="item.id">
+                  <span style="font-size: 16px; line-height: 18.75px; font-weight: 400; color: #2B2A29">
                   {{ item.surname + " " + item.name.charAt(0) + ". " + item.middleName.charAt(0) + "." }}
                 </span>
-                <span style="padding-left: 16px"></span>
-                <br>
-                <span style="font-size: 12px; line-height: 14px; font-weight: 400; color: #A6A8AA">{{
-                    formatTransmissions(item.transmissionTypeEnum)
-                  }}</span>
+                  <span style="padding-left: 16px"></span>
+                  <br>
+                  <span style="font-size: 12px; line-height: 14px; font-weight: 400; color: #A6A8AA">
+                  {{formatTransmissions(item.transmissionTypeEnum)}}
+                </span>
+                </div>
+                <div v-else>
+                  Без студента
+                </div>
               </div>
               <div v-else>
                 <span>Студент</span>
                 <span style="padding-left: 48px"></span>
                 <br>
-                <span
-                    style="font-size: 12px; line-height: 14px; font-weight: 400; color: #A6A8AA">Коробка передач
+                <span style="font-size: 12px; line-height: 14px; font-weight: 400; color: #A6A8AA">
+                  Коробка передач
                 </span>
               </div>
             </template>
             <template #item="{ item }">
-              <div v-if="item.id">
+              <div>
               <span style="font-size: 16px; line-height: 18.75px; font-weight: 400; color: #2B2A29">
-                {{ item.surname + " " + item.name.charAt(0) + ". " + item.middleName.charAt(0) + "." }}
-              </span><br>
-                <span style="font-size: 12px; line-height: 14px; font-weight: 400; color: #A6A8AA">{{
-                    formatTransmissions(item.transmissionTypeEnum)
-                  }}</span>
-              </div>
-              <div v-else>
-                <span>Студент</span>
+                {{ item.id === 0 ? item.text : item.id === null ? 'Студент' : item.surname }}
+              </span>
                 <br>
-                <span
-                    style="font-size: 12px; line-height: 14px; font-weight: 400; color: #A6A8AA">Коробка передач
+                <span v-if="item.id" style="font-size: 12px; line-height: 14px; font-weight: 400; color: #A6A8AA">
+                  {{formatTransmissions(item.transmissionTypeEnum)}}
+                </span>
+                <span v-if="item.id === null" style="font-size: 12px; line-height: 14px; font-weight: 400; color: #A6A8AA">
+                  Коробка передач
                 </span>
               </div>
             </template>
