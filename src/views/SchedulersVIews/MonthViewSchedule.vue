@@ -1125,6 +1125,10 @@ export default {
         this.currentDate = this.currentDate.clone().subtract(1, 'week');
         await this.onToggleClick(this.lastSelectedJoinType)
       }
+      if (this.type === 'month')
+      {
+        this.currentDate = moment(this.value)
+      }
       if(this.type === 'day'){
         this.currentDate = this.currentDate.clone().subtract(1, 'day');
       }
@@ -1135,6 +1139,10 @@ export default {
       if (this.type === 'week') {
         this.currentDate = this.currentDate.clone().add(1, 'week');
         await this.onToggleClick(this.lastSelectedJoinType)
+      }
+      if (this.type === 'month')
+      {
+        this.currentDate = moment(this.value)
       }
       if(this.type === 'day'){
         this.currentDate = this.currentDate.clone().add(1, 'day');
