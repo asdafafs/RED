@@ -99,7 +99,7 @@
               hide-details
               height="41"
               no-data-text="Нет данных для отображения"
-              :items="[{id: 0, text: 'Без студента'},...listStudents]"
+              :items="[{id: 0, text: 'Студент не назначен'},...listStudents]"
               item-value="id" 
               @change="acceptEditableStudent()"
               v-if="isUserTeacher && lastSelectedJoinType === 1"
@@ -118,7 +118,7 @@
                 </span>
                 </div>
                 <div v-else>
-                  Без студента
+                  Студент не назначен
                 </div>
               </div>
               <div v-else>
