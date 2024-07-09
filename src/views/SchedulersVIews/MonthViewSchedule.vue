@@ -133,7 +133,7 @@
             <template #item="{ item }">
               <div>
               <span style="font-size: 16px; line-height: 18.75px; font-weight: 400; color: #2B2A29">
-                {{ item.id === 0 ? item.text : item.id === null ? 'Студент' : item.surname }}
+                {{ item.id === 0 ? item.text : item.id === null ? 'Студент' : item.surname + " " + item.name.charAt(0) + ". " + item.middleName.charAt(0) + "." }}
               </span>
                 <br>
                 <span v-if="item.id" style="font-size: 12px; line-height: 14px; font-weight: 400; color: #A6A8AA">
