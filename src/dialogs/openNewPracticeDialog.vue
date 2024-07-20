@@ -164,6 +164,7 @@
               class="open-practice-dialog_actions_save-button"
               @click="checkNewEvent"
               @keydown.enter="checkNewEvent"
+              :disabled = saveEventDisabled
           >
             <span>Сохранить</span>
           </v-btn>
@@ -198,6 +199,7 @@ export default {
     searchInput: '',
     refreshToken: true,
     currentTime: moment(),
+    saveEventDisabled: false,
   }),
   props: {
     data: {
@@ -315,7 +317,7 @@ export default {
       const [hours, minutes] = this.eventStartTime.split(':');
       const startTime = moment.utc(this.eventDate).hour(parseInt(hours)).minute(parseInt(minutes));
       const endTime = startTime.clone().add(this.selectedDuration, 'hours');
-
+      this.saveEventDisabled = true
       if (this.data.isAdmin) {
         const body = {
           "startTime": startTime,
@@ -325,12 +327,10 @@ export default {
           "transmissionTypeEnum": this.selectedTransmission,
           "city": this.selectedCity
         }
-
         const event = new EventsRequest()
         await event.postAdminPractice(body).then(() => {
           this.$emit('destroy', false)
-        }).catch(x => console.log(x))
-
+        }).catch(x => console.log(x)).finally(() => this.saveEventDisabled = false)
       } else {
         const body = {
           "startTime": startTime,
@@ -339,11 +339,10 @@ export default {
           "transmissionTypeEnum": this.selectedTransmission,
           "city": this.selectedCity
         }
-
         const event = new EventsRequest()
         await event.postPractice(body).then(() => {
           this.$emit('destroy', false)
-        }).catch(x => console.log(x))
+        }).catch(x => console.log(x)).finally(() => this.saveEventDisabled = false)
       }
     },
 
@@ -353,6 +352,7 @@ export default {
       const endTime = startTime.clone().add(this.selectedDuration, 'hours');
       let body = {}
       const event = new EventsRequest()
+      this.saveEventDisabled = true
       if (this.data.isAdmin) {
         if (this.typeOfReasonId === 3) {
           body = {
@@ -376,9 +376,9 @@ export default {
             "practiceStateEnum": this.typeOfReasonId,
           }
         }
-        await event.putAdminPractice(body).catch(x => console.log(x)).then(() =>
+        await event.putAdminPractice(body).then(() =>
             this.$emit('destroy', false)
-        )
+        ).catch(x => console.log(x)).finally(() => this.saveEventDisabled = false)
       } else {
         if (this.typeOfReasonId === 3) {
           body = {
@@ -404,7 +404,7 @@ export default {
         }
         await event.putPractice(body).then(() => {
           this.$emit('destroy', false)
-        }).catch(x => console.log(x))
+        }).catch(x => console.log(x)).finally(() => this.saveEventDisabled = false)
       }
     },
 

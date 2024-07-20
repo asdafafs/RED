@@ -32,6 +32,7 @@
           <v-btn
               class="delete-practice-dialog_actions_save-button"
               @click="onDeleteClick"
+              :disabled = deleteEventDisabled
           >
             <span>Удалить</span>
           </v-btn>
@@ -52,6 +53,7 @@ export default {
     selectedReasonId: 1,
     typeOfReasonId: 1,
     localVisible: true,
+    deleteEventDisabled: false,
   }),
   props: {
     data: {
@@ -65,8 +67,9 @@ export default {
     },
     async onDeleteClick() {
       const event = new EventsRequest()
+      this.deleteEventDisabled = true
       await event.deleteAdminPractice(this.data.e.event.id)
-          .then(() => this.$emit('destroy', false))
+          .then(() => this.$emit('destroy', false)).finally(() => this.deleteEventDisabled = false)
       
     },
   },
