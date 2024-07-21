@@ -417,6 +417,7 @@ export default {
             lectureType: item.lectureType,
             activeUser: item.activeUser,
             hasIntersection: item.hasIntersection,
+            activeUserFullNameShort: item.activeUserFullNameShort
           };
         });
         this.initialData = this.coursesData.map(item => {
@@ -427,6 +428,7 @@ export default {
             endTime: item.endTime,
             lectureType: item.lectureType,
             activeUser: item.activeUser,
+            activeUserFullNameShort:item.activeUserFullNameShort,
             hasIntersection: item.hasIntersection,
           };
         });

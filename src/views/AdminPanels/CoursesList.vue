@@ -1,179 +1,132 @@
 <template>
   <div>
-    <v-btn class="add-student-btn" @click="dialog = true">
+    <v-btn class="add-student-btn" @click="openAddDialog">
       <section class="d-flex flex-row align-center" style="padding: 8px 12px 8px 12px !important;">
         <v-icon color="white">mdi-plus-circle-outline</v-icon>
         <span class="add-student-btn-text">Добавить занятие</span>
       </section>
     </v-btn>
-    <v-data-table :headers="headers" :items="lessons" class="elevation-1 custom-header-table"
-                  no-data-text="Нет данных для отображения"
-                  :sort-by.sync="sortBy" :sort-desc.sync="sortDesc"
-                  :hide-default-footer="true"
-                  mobile-breakpoint="0"
-                  disable-pagination :header-props="{ class: 'blue--text text--darken-2' }"
-                  v-model="selectedRows"
-    >
-      <template v-slot:top>
-        <v-toolbar flat>
-          <v-dialog v-model="dialog" width="auto" persistent>
-            <v-card class="course-event-card">
-              <v-card-title class="pa-3 pb-0 ">
-                <span class="course-event-card__title">{{ formTitle }}</span>
-              </v-card-title>
-              <v-card-text class="pa-3 pt-0">
-                <v-container class="">
-                  <v-row class="pa-0">
-                    <v-col class="flex-column pa-0 flex-wrap">
-                      <v-text-field v-model="editedItem.title" label="Название" height="32px" dense hide-details
-                                    :rules="[titleRules.required]" outlined
-                                    class="v-text-field-custom-course"/>
-                      <v-text-field v-model="editedItem.startTime" label="Начало занятия" type="datetime-local"
-                                    :rules="[startDateTimeRules.required]" :min="getTodayDate" outlined height="32px"
-                                    dense hide-details
-                                    class="v-text-field-custom-course"/>
-                      <v-text-field v-model="editedItem.endTime" label="Конец занятия" type="datetime-local"
-                                    height="32px"
-                                    dense hide-details
-                                    :rules="[endDateTimeRules.required]" :min="getTodayDate" outlined
-                                    class="v-text-field-custom-course"/>
-                      <v-select height="32px" dense hide-details
-                                ref="selectItem"
-                                v-model="discriminator[editedItem.lectureType]"
-                                label="Тип занятия"
-                                :items="discriminator"
-                                :rules="[typeEventRules.required]"
-                                outlined
-                                class="v-text-field-custom-course"
-                                no-data-text="Нет данных для отображения"
-                      >
-                        <template v-slot:item="{ item }">
-                          <v-list-item @click="selectItem(item)">
-                            <v-list-item-content>
-                              <v-list-item-title>
-                                {{ item }}
-                              </v-list-item-title>
-                            </v-list-item-content>
-                          </v-list-item>
-                        </template>
-                      </v-select>
-                      <v-select
-                          height="32px" dense hide-details
-                          v-model="editedItem.activeUser"
-                          label="Выберите преподавателя"
-                          :items="[...teachers, { id: null, name: 'Преподаватель не назначен' }]"
-                          :item-text="item => item ? `${item.surname || ''} ${item.name || ''} ${item.middleName || ''}` : 'Преподаватель не назначен'"
-                          item-value="id"
+    <ag-grid-vue
+        :rowDragManaged="true"
+        @row-drag-end="onRowDragEnd"
+        ref="CoursesGrid"
+        style="width: 100%; height: 500px; min-height: 200px"
+        class="ag-theme-alpine courses-grid"
+        :columnDefs="columnDefs"
+        :defaultColDef="defaultColDef"
+        :rowData="courses"
+    />
+    <v-dialog v-model="dialog" width="auto" persistent>
+      <v-card class="course-event-card">
+        <v-card-title class="pa-3 pb-0 ">
+          <span class="course-event-card__title">{{ formTitle }}</span>
+        </v-card-title>
+        <v-card-text class="pa-3 pt-0">
+          <v-container class="">
+            <v-row class="pa-0">
+              <v-col class="flex-column pa-0 flex-wrap">
+                <v-text-field v-model="editedItem.title" label="Название" height="32px" dense hide-details
+                              :rules="[titleRules.required]" outlined
+                              class="v-text-field-custom-course"/>
+                <v-text-field v-model="editedItem.startTime" label="Начало занятия" type="datetime-local"
+                              :rules="[startDateTimeRules.required]" :min="getTodayDate" outlined height="32px"
+                              dense hide-details
+                              class="v-text-field-custom-course"/>
+                <v-text-field v-model="editedItem.endTime" label="Конец занятия" type="datetime-local"
+                              height="32px"
+                              dense hide-details
+                              :rules="[endDateTimeRules.required]" :min="getTodayDate" outlined
+                              class="v-text-field-custom-course"/>
+                <v-select height="32px" dense hide-details
+                          ref="selectItem"
+                          v-model="discriminator[editedItem.lectureType]"
+                          label="Тип занятия"
+                          :items="discriminator"
+                          :rules="[typeEventRules.required]"
                           outlined
                           class="v-text-field-custom-course"
-                          no-data-text="Нет данных для отображения"/>
-                    </v-col>
-                  </v-row>
-                </v-container>
-              </v-card-text>
-              <v-card-actions class="px-3">
-                <v-container style="display: flex; justify-content: space-between;" class="pa-0 ">
-                  <v-btn text @click="closeEditItem" style="text-transform: none !important;">
-                    <span style="color: black">Отмена</span>
-                  </v-btn>
-                  <v-btn class="close-button" text @click="save" :disabled="hasChanges || isSaveButtonDisabled">
-                    <span style="color: white">Добавить</span>
-                  </v-btn>
-                </v-container>
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
-          <v-dialog v-model="dialogDelete" max-width="500px">
-            <v-card class="rounded-xl">
-              <v-card-title class="text-h5">Удалить занятие?</v-card-title>
-              <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn color="blue darken-1" text @click="closeDelete()">Отмена</v-btn>
-                <v-btn color="blue darken-1" text @click="deleteItemConfirm">OK</v-btn>
-                <v-spacer></v-spacer>
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
-        </v-toolbar>
-      </template>
-      <template v-slot:item="{ item  }">
-        <tr :class="selectedRows.indexOf(item.id)>-1?'selected-row':''">
-          <td class="custom-td">
-            <div class="content-wrapper">
-              <div class="flex-1">
-                <span>{{ item.title }}</span>
-              </div>
-              <div  class="warning-container" v-if="item.hasIntersection">
-                <div class="icon-container">
-                  <warning-instructor-icon class="warning-lecture-icon"/>
-                </div>
-                <div class="text-container">
-                  <span class="warning-match">
-                    В расписании инструктора есть<br>другие занятия в это время
-                  </span>
-                </div>
-              </div>
-            </div>
-          </td>
-          <td>{{ getTitleTeacher(item.activeUser) }}</td>
-          <td>{{ discriminator[item.lectureType] }}</td>
-          <td>
-            {{
-              formatDatetime(item.startTime)
-            }}
-          </td>
-          <td>
-            {{
-              formatDatetime(item.endTime)
-            }}
-          </td>
-          <td class="text-xs-right">
-            <v-icon small class="mr-2 blue--text" @click="editItem(item);">mdi-pencil</v-icon>
-            <v-icon small class="red--text" @click="deleteItem(item)">mdi-delete</v-icon>
-          </td>
-        </tr>
-      </template>
-    </v-data-table>
+                          no-data-text="Нет данных для отображения"
+                >
+                  <template v-slot:item="{ item }">
+                    <v-list-item @click="selectItem(item)">
+                      <v-list-item-content>
+                        <v-list-item-title>
+                          {{ item }}
+                        </v-list-item-title>
+                      </v-list-item-content>
+                    </v-list-item>
+                  </template>
+                </v-select>
+                <v-select
+                    height="32px" dense hide-details
+                    v-model="editedItem.activeUser"
+                    label="Выберите преподавателя"
+                    :items="[...teachers, { id: null, name: 'Преподаватель не назначен' }]"
+                    :item-text="item => item ? `${item.surname || ''} ${item.name || ''} ${item.middleName || ''}` : 'Преподаватель не назначен'"
+                    item-value="id"
+                    outlined
+                    class="v-text-field-custom-course"
+                    no-data-text="Нет данных для отображения"/>
+              </v-col>
+            </v-row>
+          </v-container>
+        </v-card-text>
+        <v-card-actions class="px-3">
+          <v-container style="display: flex; justify-content: space-between;" class="pa-0 ">
+            <v-btn text @click="closeEditItem" style="text-transform: none !important;">
+              <span style="color: black">Отмена</span>
+            </v-btn>
+            <v-btn class="close-button" text @click="save" :disabled="hasChanges || isSaveButtonDisabled">
+              <span style="color: white">Добавить</span>
+            </v-btn>
+          </v-container>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+    <v-dialog v-model="dialogDelete" max-width="500px">
+      <v-card class="rounded-xl">
+        <v-card-title class="text-h5">Удалить занятие?</v-card-title>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="blue darken-1" text @click="closeDelete()">Отмена</v-btn>
+          <v-btn color="blue darken-1" text @click="deleteItemConfirm">OK</v-btn>
+          <v-spacer></v-spacer>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 <script>
 import moment from "moment";
 import WarningIcon from "@/components/Icons/WarningIcon.vue";
 import WarningInstructorIcon from "@/components/Icons/WarningInstructorIcon.vue";
+import {AgGridVue} from "ag-grid-vue";
+import ActionsCellRenderer from "@/components/CellRenderers/ActionsCellRenderer.vue";
 
 export default {
-  components: {WarningInstructorIcon, WarningIcon},
+  components: {AgGridVue, WarningInstructorIcon, WarningIcon,ActionsCellRenderer},
   props: {
     coursesData: {
       type: Array,
       default: () => [],
     },
-
     lectors: {
       type: Array,
       default: () => []
     },
-
     initialData: {
       type: Array,
       default: () => [],
     },
   },
   data: () => ({
+    freezedArray:[],
     sortBy: 'startTime',
     sortDesc: false,
     discriminator: [null, "Основы вождения", "Основы ПДД", "Медицина", "Другое"],
+    selectedRows: [],
     dialog: false,
     dialogDelete: false,
-    selectedRows: [],
-    headers: [
-      {text: 'Название', align: 'start', sortable: false, value: 'title'},
-      {text: 'Преподаватель', align: 'start', sortable: false, value: ''},
-      {text: 'Тип занятия', align: 'start', sortable: false, value: ''},
-      {text: 'Начало', align: 'start', sortable: false, value: 'startTime',},
-      {text: 'Конец', align: 'start', sortable: false, value: 'endTime',},
-      {text: 'Действия', value: 'actions', sortable: false},
-    ],
     teachers: [],
     courses: [],
     editedIndex: -1,
@@ -215,10 +168,84 @@ export default {
         this.initialize();
       },
       deep: true
-    }
+    },
   },
 
   computed: {
+    defaultColDef()  {
+      return {
+        flex: 1,
+        minWidth: 100,
+        suppressHeaderMenuButton: true,
+        resizable: false
+      }
+    },
+    lessonType() {
+      return [
+        {
+          id: 0,
+          value: null
+        },
+        {
+          id: 1,
+          value: 'Основы вождения'
+        },
+        {
+          id: 2,
+          value: 'Основы ПДД'
+        },
+        {
+          id: 3,
+          value: 'Медицина'
+        },
+        {
+          id: 4,
+          value: 'Другое'
+        },
+      ]
+    },
+    columnDefs() {
+      return [
+        {
+          field: 'title',
+          headerName: 'Название',
+          rowDrag: true
+        },
+        {
+          field: 'activeUserFullNameShort',
+          headerName: 'Преподаватель'
+        },
+        {
+          field: 'lectureType',
+          valueFormatter: (params) => (this.lessonType.find(x => x.id === params.value))?.value,
+          headerName: 'Тип занятия'
+        },
+        {
+          field: 'startTime',
+          valueFormatter: (params) => moment(params.value).format('DD.MM.YY HH:mm'),
+          headerName: 'Начало'
+        },
+        {
+          field: 'endTime',
+          valueFormatter: (params) => moment(params.value).format('DD.MM.YY HH:mm'),
+          headerName: 'Конец'
+        },
+        {
+          headerName: 'Действия',
+          cellRendererSelector: (params) => {
+            return {
+              component: 'ActionsCellRenderer',
+              params: {
+                data: params?.data,
+                context: {componentParent: this},
+              }
+            }
+          },
+          maxWidth: 105,
+          
+        },
+      ]
+    },
     hasChanges() {
       const editedItem = this.editedItem
       const initialItem = this.initialItem
@@ -234,22 +261,18 @@ export default {
       }
       return true;
     },
-
     isSaveButtonDisabled() {
       return !(this.titleRules.required(this.editedItem.title)
           && this.startDateTimeRules.required(this.editedItem.startTime)
           && this.endDateTimeRules.required(this.editedItem.endTime)
           && this.typeEventRules.required(this.editedItem.endTime))
     },
-
     lessons() {
       return this.coursesData;
     },
-
     formTitle() {
       return this.editedIndex === -1 ? 'Новое занятие' : 'Редактировать занятие';
     },
-
     isEditedItemEqualInitialItem() {
       const editedItem = this.courses.find(course => course.id === this.editedItem.id);
       const initialItem = this.initialCourses.find(course => course.id === this.editedItem.id);
@@ -261,17 +284,17 @@ export default {
       return false;
     },
   },
-
   created() {
     this.initialize();
     this.$parent.$on('reset-selected-rows', this.resetSelectedRows);
   },
-
   beforeDestroy() {
     this.$parent.$off('reset-selected-rows', this.resetSelectedRows);
   },
-
   methods: {
+    openAddDialog() {
+      return this.dialog = true
+    },
     resetSelectedRows() {
       this.selectedRows = [];
     },
@@ -297,13 +320,6 @@ export default {
       }
     },
 
-    getTitleTeacher(activeUser) {
-      if (activeUser) {
-        const teacher = this.teachers.find(teacher => teacher.id === activeUser);
-        return teacher ? `${teacher.surname} ${teacher.name.substring(0, 1)}.  ${teacher.middleName.substring(0, 1)}.` : '';
-      }
-    },
-
     initialize() {
       this.teachers = this.lectors
       this.courses = this.coursesData.map(item => {
@@ -314,6 +330,7 @@ export default {
           endTime: item.endTime,
           lectureType: item.lectureType,
           activeUser: item.activeUser,
+          activeUserFullNameShort: item.activeUserFullNameShort
         };
       });
       this.initialCourses = this.initialData.map(item => {
@@ -324,8 +341,10 @@ export default {
           endTime: item.endTime,
           lectureType: item.lectureType,
           activeUser: item.activeUser,
+          activeUserFullNameShort: item.activeUserFullNameShort
         };
       });
+      this.freezedArray = this.coursesData
     },
 
     editItem(item) {
@@ -346,7 +365,30 @@ export default {
       this.deletedIndex = this.editedIndex
       this.dialogDelete = true;
     },
-
+    onRowDragEnd() {
+      let lessonNumber = 0;
+      this.$refs.CoursesGrid.api.forEachNode((node,index) => {
+        let freezedStartDate = this.freezedArray[index].startTime
+        let freezedEndDate = this.freezedArray[index].endTime
+        if (node.data.lectureType !== null && node.data.lectureType !== 4) {
+          let oldTitle = node.data.title
+          lessonNumber++;
+          node.setDataValue('title', `Урок ${lessonNumber}`);
+        }
+        node.setDataValue('startTime', freezedStartDate);
+        node.setDataValue('endTime', freezedEndDate);
+      });
+    },
+   /* onRowDragEnd() {
+      let index = 0;
+      this.$refs.gridRef.gridApi.forEachNode(node => {
+        if (node.data.consumableContractId) {
+          index++;
+          this.isRowsDragStart.push(`rowId-${node.id}`);
+          node.setDataValue('priority', index);
+        }
+      });
+    },*/
     deleteItemConfirm() {
       this.courses.splice(this.editedIndex, 1);
       this.$emit('courses-updated', this.courses);
@@ -572,5 +614,12 @@ export default {
   font-size: 12px;
   line-height: 14px;
   word-break: keep-all;
+}
+.courses-grid {
+  .ag-header-cell {
+    font-size: 16px;
+    font-weight: 600;
+    padding-left: 18px !important;
+  }
 }
 </style>

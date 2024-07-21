@@ -100,7 +100,7 @@
       <ag-grid-vue
           ref="analyticsGrid"
           style="width: 100%; height: 100%;"
-          class="ag-theme-alpine"
+          class="ag-theme-alpine analytics-grid"
           :columnDefs="columnDefs"
           :defaultColDef="defaultColDef"
           :autoGroupColumnDef="autoGroupColumnDef"
@@ -540,7 +540,7 @@ export default {
   --ag-header-foreground-color: #4E7AEC;
   --ag-header-background-color: white;
 }
-.ag-theme-alpine .ag-header-cell {
+.analytics-grid .ag-header-cell {
   font-size: 16px;
   font-weight: 600;
   padding-left: 0 !important;
