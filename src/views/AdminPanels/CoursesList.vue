@@ -209,7 +209,11 @@ export default {
         {
           field: 'title',
           headerName: 'Название',
-          rowDrag: true
+          rowDrag: true,
+          valueFormatter: params => {
+            if (params.data.lectureType !== null && params.data.lectureType !== 4) return `Урок ${params.data.lectureNumber} ${params.data.title}`
+            return `${params.value}`
+          }
         },
         {
           field: 'activeUserFullNameShort',
@@ -371,9 +375,8 @@ export default {
         let freezedStartDate = this.freezedArray[index].startTime
         let freezedEndDate = this.freezedArray[index].endTime
         if (node.data.lectureType !== null && node.data.lectureType !== 4) {
-          let oldTitle = node.data.title
           lessonNumber++;
-          node.setDataValue('title', `Урок ${lessonNumber}`);
+          node.setDataValue('lectureNumber', lessonNumber);
         }
         node.setDataValue('startTime', freezedStartDate);
         node.setDataValue('endTime', freezedEndDate);
