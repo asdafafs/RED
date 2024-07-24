@@ -25,6 +25,9 @@
           <v-container class="">
             <v-row class="pa-0">
               <v-col class="flex-column pa-0 flex-wrap">
+                <v-text-field v-model="editedItem.lectureNumber" label="Урок" height="32px" dense hide-details
+                              :rules="[titleRules.required]" disabled outlined
+                              class="v-text-field-custom-course"/>
                 <v-text-field v-model="editedItem.title" label="Название" height="32px" dense hide-details
                               :rules="[titleRules.required]" outlined
                               class="v-text-field-custom-course"/>
@@ -147,6 +150,7 @@ export default {
       endTime: null,
       lectureType: null,
       activeUser: null,
+      lectureNumber: null
     },
     titleRules: {
       required: value => !!value
@@ -348,12 +352,16 @@ export default {
           activeUserFullNameShort: item.activeUserFullNameShort
         };
       });
+      if (this.editedIndex === -1) {
+        this.editedItem.lectureNumber = `Урок ${this.coursesData.length + 1}`
+      }
       this.freezedArray = this.coursesData
     },
 
     editItem(item) {
       this.editedIndex = this.courses.findIndex(course => course.id === item.id);
       this.editedItem = {
+        lectureNumber:  `Урок ${item.lectureNumber}`,
         id: item.id,
         title: item.title,
         startTime: item.startTime,
@@ -491,7 +499,7 @@ export default {
 
 .course-event-card {
   width: 407px !important;
-  height: 329px !important;
+  height: 374px !important;
   border-radius: 12px !important;
   flex-direction: column !important;
   align-items: flex-start !important;
@@ -517,7 +525,7 @@ export default {
 }
 
 .v-text-field-custom-course.v-text-field--outlined .v-input__control .v-input__slot {
-  width: 367px !important;
+  width: 100% !important;
   min-height: 32px !important;
 }
 
@@ -531,7 +539,7 @@ export default {
 }
 
 .v-text-field-custom-course {
-  width: 367px !important;
+  width: 100% !important;
   height: 32px !important;
   margin-top: 12px !important;
 }
