@@ -226,6 +226,7 @@ export default {
         endTime: null,
         activeUser: null,
         lectureType: null,
+        lectureNumber: null
       },
     },
     titleRules: {
@@ -417,7 +418,8 @@ export default {
             lectureType: item.lectureType,
             activeUser: item.activeUser,
             hasIntersection: item.hasIntersection,
-            activeUserFullNameShort: item.activeUserFullNameShort
+            activeUserFullNameShort: item.activeUserFullNameShort,
+            lectureNumber: item.lectureNumber
           };
         });
         this.initialData = this.coursesData.map(item => {
@@ -430,6 +432,7 @@ export default {
             activeUser: item.activeUser,
             activeUserFullNameShort:item.activeUserFullNameShort,
             hasIntersection: item.hasIntersection,
+            lectureNumber: item.lectureNumber
           };
         });
         this.editedItem.groups.title = `Группа №0`;
@@ -444,7 +447,9 @@ export default {
             endTime: item.endTime,
             lectureType: item.lectureType,
             activeUser: item.activeUser,
+            activeUserFullNameShort:item.activeUserFullNameShort,
             hasIntersection: item.hasIntersection,
+            lectureNumber: item.lectureNumber
           };
         });
         this.editedItem.groups = {
@@ -462,7 +467,9 @@ export default {
             endTime: item.endTime,
             lectureType: item.lectureType,
             activeUser: item.activeUser,
+            activeUserFullNameShort:item.activeUserFullNameShort,
             hasIntersection: item.hasIntersection,
+            lectureNumber: item.lectureNumber
           };
         });
         this.selectedDays()
@@ -541,7 +548,7 @@ export default {
           'groupNumber': this.editedItem.groups.groupNumber,
           "groupId": this.editedItem.groups.groupId,
           "studentId": this.selectedStudentsIds,
-          "lecture": this.lessons
+          "lecture": this.lessons,
         }
         await this.updateCourse(body).then(() => {}).
         finally(() => {
@@ -557,7 +564,7 @@ export default {
           'groupNumber': this.editedItem.groups.groupNumber,
           "groupId": this.editedItem.groups.groupId,
           "studentId": this.selectedStudentsIds,
-          "lecture": this.lessons
+          "lecture": this.lessons,
         }
         await this.postCourse(body).then(() => {}).
         catch(x => console.log(x)).finally(() => {

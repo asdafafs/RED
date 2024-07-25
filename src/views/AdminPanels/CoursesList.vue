@@ -8,13 +8,13 @@
     </v-btn>
     <ag-grid-vue
         :rowDragManaged="true"
-        @row-drag-end="onRowDragEnd"
         ref="CoursesGrid"
         style="width: 100%; height: 500px; min-height: 200px"
         class="ag-theme-alpine courses-grid"
         :columnDefs="columnDefs"
         :defaultColDef="defaultColDef"
         :rowData="courses"
+        @row-drag-end="onRowDragEnd"
     />
     <v-dialog v-model="dialog" width="auto" persistent>
       <v-card class="course-event-card">
@@ -105,9 +105,10 @@ import WarningIcon from "@/components/Icons/WarningIcon.vue";
 import WarningInstructorIcon from "@/components/Icons/WarningInstructorIcon.vue";
 import {AgGridVue} from "ag-grid-vue";
 import ActionsCellRenderer from "@/components/CellRenderers/ActionsCellRenderer.vue";
+import DoubleLineCellRenderer from "@/components/CellRenderers/DoubleLineCellRenderer.vue";
 
 export default {
-  components: {AgGridVue, WarningInstructorIcon, WarningIcon,ActionsCellRenderer},
+  components: {AgGridVue, WarningInstructorIcon, WarningIcon,ActionsCellRenderer,DoubleLineCellRenderer},
   props: {
     coursesData: {
       type: Array,
@@ -211,32 +212,62 @@ export default {
     columnDefs() {
       return [
         {
+          field: 'lectureNumber',
+          hide: true,
+        },
+        {
           field: 'title',
           headerName: 'Название',
           rowDrag: true,
           valueFormatter: params => {
             if (params.data.lectureType !== null && params.data.lectureType !== 4) return `Урок ${params.data.lectureNumber} ${params.data.title}`
             return `${params.value}`
-          }
+          },
+          tooltipValueGetter: params => {
+            if (params.data.lectureType !== null && params.data.lectureType !== 4) return `Урок ${params.data.lectureNumber} ${params.data.title}`
+            return `${params.value}`
+          },
+          flex: 1,
+          
         },
         {
           field: 'activeUserFullNameShort',
-          headerName: 'Преподаватель'
+          headerName: 'Преподаватель',
+          maxWidth: 200,
         },
         {
           field: 'lectureType',
           valueFormatter: (params) => (this.lessonType.find(x => x.id === params.value))?.value,
-          headerName: 'Тип занятия'
+          headerName: 'Тип занятия',
+          maxWidth: 200,
         },
         {
           field: 'startTime',
-          valueFormatter: (params) => moment(params.value).format('DD.MM.YY HH:mm'),
+          maxWidth: 100,
+          cellRendererSelector: (params) => {
+            return {
+              component: 'DoubleLineCellRenderer',
+              params: {
+                data: params?.data,
+                context: {componentParent: this},
+              }
+            }
+          },
           headerName: 'Начало'
         },
         {
           field: 'endTime',
-          valueFormatter: (params) => moment(params.value).format('DD.MM.YY HH:mm'),
-          headerName: 'Конец'
+          cellRendererSelector: (params) => {
+            return {
+              component: 'DoubleLineCellRenderer',
+              params: {
+                value: params?.value,
+                context: {componentParent: this},
+              }
+            }
+          },
+          headerName: 'Конец',
+          maxWidth: 100,
         },
         {
           headerName: 'Действия',
@@ -249,7 +280,8 @@ export default {
               }
             }
           },
-          maxWidth: 105,
+          maxWidth: 110,
+          minWidth: 110
           
         },
       ]
@@ -291,6 +323,9 @@ export default {
       }
       return false;
     },
+    isNew() {
+      return +this.$route.params.selectedGroupID === -1
+    }
   },
   created() {
     this.initialize();
@@ -301,6 +336,9 @@ export default {
   },
   methods: {
     openAddDialog() {
+      if (this.editedIndex === -1) {
+        this.editedItem.lectureNumber = this.coursesData.filter(x => x.lectureType !== null && x.lectureType !== 4).length + 1
+      }
       return this.dialog = true
     },
     resetSelectedRows() {
@@ -331,6 +369,7 @@ export default {
     initialize() {
       this.teachers = this.lectors
       this.courses = this.coursesData.map(item => {
+        const teacher = this.teachers.find(teacher => teacher.id === item.activeUser)
         return {
           id: item.id,
           title: item.title,
@@ -338,9 +377,22 @@ export default {
           endTime: item.endTime,
           lectureType: item.lectureType,
           activeUser: item.activeUser,
-          activeUserFullNameShort: item.activeUserFullNameShort
+          activeUserFullNameShort: item.activeUserFullNameShort ? item.activeUserFullNameShort : teacher ?  `${teacher.surname} ${teacher.name.substring(0, 1)}.  ${teacher.middleName.substring(0, 1)}.` : '',
+          lectureNumber: item.lectureNumber
         };
       });
+      if (this.isNew) {
+        let index = 0
+        this.courses.forEach(x => {
+          if (x.lectureType !== null && x.lectureType !== 4 ){
+            index++
+            x.lectureNumber = index
+          }
+        })
+      }
+      if (this.editedIndex === -1) {
+        this.editedItem.lectureNumber = this.coursesData.filter(x => x.lectureType !== null && x.lectureType !== 4).length + 1
+      }
       this.initialCourses = this.initialData.map(item => {
         return {
           id: item.id,
@@ -349,25 +401,24 @@ export default {
           endTime: item.endTime,
           lectureType: item.lectureType,
           activeUser: item.activeUser,
-          activeUserFullNameShort: item.activeUserFullNameShort
+          activeUserFullNameShort: item.activeUserFullNameShort,
+          lectureNumber: item.lectureNumber
         };
       });
-      if (this.editedIndex === -1) {
-        this.editedItem.lectureNumber = `Урок ${this.coursesData.length + 1}`
-      }
       this.freezedArray = this.coursesData
     },
 
     editItem(item) {
       this.editedIndex = this.courses.findIndex(course => course.id === item.id);
       this.editedItem = {
-        lectureNumber:  `Урок ${item.lectureNumber}`,
+        lectureNumber: item.lectureNumber,
         id: item.id,
         title: item.title,
         startTime: item.startTime,
         endTime: item.endTime,
         lectureType: parseInt(item.lectureType),
         activeUser: item.activeUser,
+        activeUserFullNameShort: item.activeUserFullNameShort
       };
       this.dialog = true;
     },
@@ -377,9 +428,9 @@ export default {
       this.deletedIndex = this.editedIndex
       this.dialogDelete = true;
     },
-    onRowDragEnd() {
+    async onRowDragEnd() {
       let lessonNumber = 0;
-      this.$refs.CoursesGrid.api.forEachNode((node,index) => {
+      await this.$refs.CoursesGrid.api.forEachNode((node,index) => {
         let freezedStartDate = this.freezedArray[index].startTime
         let freezedEndDate = this.freezedArray[index].endTime
         if (node.data.lectureType !== null && node.data.lectureType !== 4) {
@@ -389,17 +440,9 @@ export default {
         node.setDataValue('startTime', freezedStartDate);
         node.setDataValue('endTime', freezedEndDate);
       });
+      this.courses = this.$refs.CoursesGrid.getRowData()
+      this.$emit('courses-updated', this.courses);
     },
-   /* onRowDragEnd() {
-      let index = 0;
-      this.$refs.gridRef.gridApi.forEachNode(node => {
-        if (node.data.consumableContractId) {
-          index++;
-          this.isRowsDragStart.push(`rowId-${node.id}`);
-          node.setDataValue('priority', index);
-        }
-      });
-    },*/
     deleteItemConfirm() {
       this.courses.splice(this.editedIndex, 1);
       this.$emit('courses-updated', this.courses);
@@ -420,6 +463,8 @@ export default {
           endTime: null,
           lectureType: null,
           activeUser: null,
+          lectureNumber: null
+          
         };
         this.editedIndex = -1;
       });
@@ -632,5 +677,12 @@ export default {
     font-weight: 600;
     padding-left: 18px !important;
   }
+}
+.break-word  {
+  word-break: break-word !important;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
 }
 </style>
