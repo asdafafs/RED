@@ -650,6 +650,9 @@ export default {
         })
       } else {
         const listStudents = this.listStudents.filter(student => student.id !== null);
+        if (listStudents.length === 0) {
+          return;
+        }
         const student = listStudents.find(student => student.id === e.event.studentId);
         let studentName, studentGeneralHours, studentGeneralHoursSpent, studentAdditionalHoursSpent
         if (this.isUserStudent && student) {
@@ -1070,7 +1073,8 @@ export default {
 
       const student = new UsersRequest()
       let studentList
-      await student.getUsers().catch(x => console.log(x)).then(x => {
+      const query = 'ShowDeleted=false'
+      await student.getUsers(query).catch(x => console.log(x)).then(x => {
         studentList = x.data.students
       })
       this.listStudents.push(...studentList)
@@ -1316,7 +1320,7 @@ export default {
 }
 
 .custom-radio .v-input--selection-controls__ripple {
-  height: 0px;
+  height: 0;
 }
 
 .custom-radio [class*="__ripple"] {
