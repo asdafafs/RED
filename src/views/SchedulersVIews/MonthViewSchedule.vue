@@ -650,9 +650,6 @@ export default {
         })
       } else {
         const listStudents = this.listStudents.filter(student => student.id !== null);
-        if (listStudents.length === 0) {
-          return;
-        }
         const student = listStudents.find(student => student.id === e.event.studentId);
         let studentName, studentGeneralHours, studentGeneralHoursSpent, studentAdditionalHoursSpent
         if (this.isUserStudent && student) {
@@ -690,10 +687,7 @@ export default {
           teacherName: e.event.activeUserFullName
         }
         await this.$reviewPracticeDialogPlugin(data).then((isCancel) => {
-
-          if (!isCancel) this.onToggleClick(this.lastSelectedJoinType).then(() => {
-            this.getAllStudents()
-          })
+          if (!isCancel) this.onToggleClick(this.lastSelectedJoinType)
         })
       }
     },
