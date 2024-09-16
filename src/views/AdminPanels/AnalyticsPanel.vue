@@ -436,7 +436,7 @@ export default {
       })
     },
     async getStudents() {
-      const query = 'ShowDeleted=false'
+      const query = 'ShowDeleted=true'
       await this.usersRequest.getUsers(query).then((response) => {
         this.studentsList = response.data.students;
         this.studentsList = this.studentsList.map(x => ({
