@@ -46,6 +46,7 @@
                         height="32px"
                         hide-details
                         dense/>
+              <v-checkbox v-model="data.editedTeacher.canCancel" label="Может отменять практики" hide-details/>
             </v-col>
           </v-row>
         </v-container>
@@ -136,6 +137,7 @@ export default {
           "middleName": this.data.editedTeacher.middleName,
           "transmissionTypeEnum": this.data.editedTeacher.transmissionTypeEnum,
           "city": this.data.editedTeacher.city,
+          "canCancel": this.data.editedTeacher.canCancel,
         }
 
         await this.postActiveUser(body).finally(async () => {

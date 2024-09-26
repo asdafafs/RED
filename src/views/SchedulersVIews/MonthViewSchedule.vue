@@ -383,13 +383,6 @@ export default {
       }
     },
 
-    selectedTeacher(newValue) {
-      // console.log(newValue)
-    },
-
-    currentDate(newValue){
-      console.log(newValue)
-    }
   },
   created() {
     this.getGroups().then(() => {

@@ -33,7 +33,6 @@ export default {
   computed: {
     ...mapState(['user']),
     isDataLoaded() {
-      console.log('this.user.userId', !!this.user.userId)
       return !!this.user.userId
     }
   },

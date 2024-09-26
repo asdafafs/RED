@@ -118,6 +118,7 @@ export default {
       isAdmin: false,
       city: [],
       transmissionTypeEnum: [],
+      canCancel: false,
     },
   }),
 
@@ -157,6 +158,7 @@ export default {
         transmissionTypeEnum: [],
         isAdmin: false,
         city: [],
+        canCancel: false,
       }
       const data = {
         editedIndex: this.editedIndex,
@@ -213,6 +215,7 @@ export default {
         transmissionTypeEnum: item.transmissionTypeEnum,
         isAdmin: item.isAdmin,
         city: item.city,
+        canCancel: item.canCancel,
       };
       const data = {
         editedIndex: this.editedIndex,
@@ -305,7 +308,7 @@ export default {
 
 .add-instructor-card {
   width: 392px !important;
-  height: 561px !important;
+  height: 601px !important;
   border-radius: 12px !important;
   flex-direction: column !important;
   align-items: flex-start !important;
