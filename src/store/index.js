@@ -18,6 +18,7 @@ export default new Vuex.Store({
             groupId: 0,
             vkUserId: 0,
             isAdmin: false,
+            canCancel: false,
         },
         isMobile: Boolean(/mobile|iphone|ipad|ipod|android|blackberry|mini|windows\sce|palm/i.test(navigator.userAgent.toLowerCase()))
     },
@@ -33,6 +34,7 @@ export default new Vuex.Store({
             state.user.groupId = user.data['groupId']
             state.user.vkUserId = user.data['vkUserId']
             state.user.isAdmin = user.data['isAdmin']
+            state.user.canCancel = user.data['canCancel']
         },
         RESET_CURRENT_USER(state) {
             state.user = {
@@ -47,6 +49,7 @@ export default new Vuex.Store({
                 groupId: 0,
                 vkUserId: 0,
                 isAdmin: false,
+                canCancel: false,
             }
         }
     },

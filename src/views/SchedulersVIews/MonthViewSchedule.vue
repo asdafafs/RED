@@ -452,6 +452,9 @@ export default {
     isAdmin() {
       return this.user.isAdmin
     },
+    canCancel(){
+      return this.user.canCancel
+    },
   },
   methods: {
     formatTransmissions,
@@ -670,6 +673,7 @@ export default {
           isAdmin: this.isAdmin,
           userId: this.userID,
           student: this.isUserStudent,
+          canCancel: this.canCancel,
           teacherTransmissions: teacherTransmissions,
           studentGeneralHours: studentGeneralHours,
           studentGeneralHoursSpent: studentGeneralHoursSpent,

@@ -131,6 +131,7 @@
               v-model="typeOfReasonId"
               row
               hide-details
+              :disabled = "!canCancel"
           >
             <v-radio label="Ожидается" v-if="!practicePassed" :value="0"/>
             <v-radio label="Завершена" v-if="practicePassed" :value="1"/>
@@ -147,7 +148,7 @@
               outlined
               dense
               hide-details
-              :disabled="typeOfReasonId !== 3"
+              :disabled="typeOfReasonId !== 3 || !canCancel"
           />
         </div>
       </v-card-text>
@@ -200,6 +201,7 @@ export default {
     refreshToken: true,
     currentTime: moment(),
     saveEventDisabled: false,
+    canCancel: false,
   }),
   props: {
     data: {
@@ -228,11 +230,13 @@ export default {
       this.selectedStudentId = selectedStudent ? selectedStudent.id : null;
       this.typeOfReasonId = this.data.e.event.practiceStateEnum
       this.selectedReasonId = this.data.e.event.practiceDeleteReasonEnum !== 0 ? this.data.e.event.practiceDeleteReasonEnum : 1
+      this.canCancel = this.data.canCancel
     } else {
       this.eventDate = this.data.practiceDate
       this.eventStartTime = '06:00'
       this.savedTransmission = this.data.teacherTransmissions
       this.selectedTransmission = this.data.teacherTransmissions
+      this.canCancel = this.data.canCancel
     }
   },
   computed: {
