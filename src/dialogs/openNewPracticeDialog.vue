@@ -131,6 +131,7 @@
               v-model="typeOfReasonId"
               row
               hide-details
+              :disabled = "!canCancel && typeOfReasonId === 3"
           >
             <v-radio label="Ожидается" v-if="!practicePassed" :value="0"/>
             <v-radio label="Завершена" v-if="practicePassed" :value="1" />
