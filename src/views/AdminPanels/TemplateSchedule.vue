@@ -5,20 +5,24 @@
         <v-sheet>
           <v-calendar
               ref="calendar"
-              v-model="focus"
               :events="eventsItems"
-              color="primary"
               type="week"
               :event-height="50"
               :weekdays="weekday"
               :event-ripple="false"
+              v-model="practiceCourseStart"
               @mousedown:event="startDrag"
               @mousedown:time="startTime"
               @mousemove:time="mouseMove"
               @mouseup:time="endDrag"
           >
+            <template v-slot:day-label-header="{ days }">
+              <tr>
+                <th v-for="day in days" :key="day"/>
+              </tr>
+            </template>
             <template v-slot:event="{event}">
-              <v-container class="pa-0 mx-0 d-flex" fill>
+              <v-container class="pa-0 mx-0 d-flex flex-wrap" fill @click="mobileEdit(event)">
                 <v-row class="ma-0 flex-wrap" fill>
                   <v-col cols="" class="black--text pa-0 align-self-center  d-lg-block">
                     <div class="text-h6 text-md-subtitle-2 text-lg-h6  d-flex justify-center">
@@ -27,15 +31,24 @@
                   </v-col>
                 </v-row>
                 <v-row class="ma-0" fill>
-                  <v-col class="black--text pa-0 align-self-center  d-lg-block" cols="9">
-                    <div class="font-weight-bold text-format-week">{{ `Вождение` }}</div>
-                    <div class="text-subtitle-2 d-flex">{{ abbreviatedName }}</div>
+                  <v-col class="black--text pa-0 align-self-center  d-lg-block" cols="9" v-if="!showMobile">
+                    <div class="font-weight-bold text-format-week">Вождение</div>
+                    <div class="text-lg-subtitle-2 d-flex" >{{ abbreviatedName }}</div>
                   </v-col>
-                  <v-col cols="2">
-                    <v-icon class="red--text" @click="deleteEvent(event)">mdi-window-close</v-icon>
+                  <v-col cols="" style="padding-left: 0 !important; padding-right: 0 !important;" class=" d-flex justify-center" v-if="!isDeleteMode">
+                    <v-icon class="red--text" @click="deleteEvent(event)" >mdi-window-close</v-icon>
                   </v-col>
                 </v-row>
               </v-container>
+<!--              <v-dialog v-model="mobileEditEvent" max-width="407px" persistent>-->
+<!--                <v-card>-->
+<!--                  <v-text-field type="date" v-model="event.start" label="измените время начала ивента"/>-->
+<!--                  <v-card-actions>-->
+<!--                    <v-btn>Изменить</v-btn>-->
+<!--                    <v-btn @click="deleteEvent(event)">Удалить</v-btn>-->
+<!--                  </v-card-actions>-->
+<!--                </v-card>-->
+<!--              </v-dialog>-->
             </template>
           </v-calendar>
         </v-sheet>
@@ -47,9 +60,9 @@
 import CarLogo from "@/components/logos/CarLogo.vue";
 import LectureLogo from "@/components/logos/LectureLogo.vue";
 import moment from "moment";
-
+import {Icon } from '@iconify/vue2'
 export default {
-  components: {CarLogo, LectureLogo},
+  components: {CarLogo, LectureLogo,Icon},
   watch: {
     eventsTemplate: {
       handler(newVal) {
@@ -66,13 +79,8 @@ export default {
       deep: true
     },
 
-    selectedDuration() {
-      this.createEventsWithNewDuration();
-    },
-
     events: {
       handler() {
-        this.initialize();
       },
       deep: true
     }
@@ -95,16 +103,11 @@ export default {
             item.classList.toggle(x)
           })
         });
-    this.test = true
   },
 
   data: () => ({
     eventsTemplate: [],
-    focus: '',
     weekday: [1, 2, 3, 4, 5, 6, 0],
-    selectedEvent: {},
-    selectedElement: null,
-    selectedOpen: false,
     dragEvent: {
       start: '',
       end: '',
@@ -121,9 +124,14 @@ export default {
       color: '',
     },
     createStart: null,
+    mobileEditEvent: false,
   }),
 
   props: {
+    practiceCourseStart: {
+      type: String,
+      default: '',
+    },
     selectedDuration: {
       type: Number,
       default: 1,
@@ -138,6 +146,16 @@ export default {
       type: Array,
       default: [],
     },
+
+    showMobile: {
+      type: Boolean,
+      default: false,
+    },
+
+    isDeleteMode: {
+      type: Boolean,
+      default: false,
+    }
   },
 
   computed: {
@@ -153,12 +171,12 @@ export default {
     eventsItems() {
       this.eventsTemplate = this.events.map(item => {
         return {
+          dayOfWeek: item.dayOfWeek,
           start: moment(item.start).format("YYYY-MM-DDTHH:mm:ss"),
           end: moment(item.end).format("YYYY-MM-DDTHH:mm:ss"),
+          timed: item.timed,
           color: item.color,
-          dayOfWeek: item.dayOfWeek,
           savedTime: item.savedTime,
-          timed: item.timed
         }
       });
       return this.eventsTemplate;
@@ -166,34 +184,11 @@ export default {
   },
 
   methods: {
-    createEventsWithNewDuration() {
-      this.eventsTemplate.forEach(event => {
-        const newEndTime = moment(event.start).add(this.selectedDuration, 'hours');
-        event.end = newEndTime.valueOf();
-      });
-
-      this.eventsTemplate.sort((a, b) => new Date(a.start) - new Date(b.start));
-
-      for (let i = 0; i < this.eventsTemplate.length; i++) {
-        const currentEvent = this.eventsTemplate[i];
-        const nextEvent = this.eventsTemplate[i + 1];
-
-        if (nextEvent) {
-          const currentEnd = new Date(currentEvent.end).getTime();
-          const nextStart = new Date(nextEvent.start).getTime();
-
-          if (currentEnd > nextStart) {
-            // Пересечение событий, переносим более позднее событие
-            const overlap = currentEnd - nextStart;
-            nextEvent.start = new Date(nextEvent.start).getTime() + overlap;
-            nextEvent.end = new Date(nextEvent.end).getTime() + overlap;
-          }
-        }
+    mobileEdit(event) {
+      if (this.showMobile) {
+        this.mobileEditEvent = true
       }
-
-      this.$emit('plan-updated', this.eventsTemplate);
-    }
-,
+    },
 
     deleteEvent(event) {
       const index = this.eventsTemplate.indexOf(event);
@@ -215,7 +210,6 @@ export default {
         this.dragEvent = event
         this.testTime = event.savedTime
         this.dragTime = null
-        this.extendOriginal = null
       }
     },
 
@@ -226,37 +220,31 @@ export default {
         const start = new Date(this.dragEvent.start).getTime();
         const end = new Date(this.dragEvent.end).getTime();
         const duration = end - start;
-        const newStartTime = mouse - this.dragTime;
-        const newStart = this.roundTime(newStartTime) - 1000;
-        const newEnd = (newStart + duration - 1000);
+        const newStart = mouse - this.dragTime;
+        const newEnd = newStart + duration;
         const isIntersect = this.eventsTemplate.some(event => {
           if (event === this.dragEvent) return false;
 
-          const existingStart = moment(event.start);
-          const existingEnd = moment(event.end);
+          const existingStart = new Date(event.start).getTime();
+          const existingEnd = new Date(event.end).getTime();
 
-          const dragStartInsideExisting = existingStart.isSameOrBefore(newStart) && existingEnd.isSameOrAfter(newStart);
-          const dragEndInsideExisting = existingStart.isSameOrBefore(newEnd) && existingEnd.isSameOrAfter(newEnd);
-          const existingInsideDrag = moment(newStart).isSameOrBefore(existingStart) && moment(newEnd).isSameOrAfter(existingEnd);
-
-          return dragStartInsideExisting || dragEndInsideExisting || existingInsideDrag;
+          return (newStart < existingEnd && newEnd > existingStart);
         });
-        const sec = 1000
-        const interval = Math.abs(newStart - start) >= sec ;
 
-        if (isIntersect || !interval) {
+        if (isIntersect) {
           return;
         }
 
-        this.dragEvent.start = newStart;
-        this.dragEvent.end = newEnd;
+        this.dragEvent.start = this.roundTime(newStart);
+        this.dragEvent.end = this.roundTime(newEnd);
       }
     },
 
     endDrag() {
       if (this.dragEvent) {
         const isIntersect = this.eventsTemplate.some(event => {
-          if (event === this.dragEvent) return false;
+          if (event === this.dragEvent)
+            return false;
           const existingStart = moment(event.start);
           const existingEnd = moment(event.end);
 
@@ -267,7 +255,7 @@ export default {
           this.dragEvent.end = this.testTime + (new Date(this.dragEvent.end).getTime() - new Date(this.dragEvent.start).getTime());
         }
         if (this.testTime !== this.dragEvent.start) {
-          this.dragEvent.color = '#E9E9E8';
+          this.dragEvent.color = '#FFFFFF';
         } else {
           this.dragEvent.color = '#9DB9FF';
         }
@@ -280,19 +268,19 @@ export default {
           color: '',
         };
         this.createStart = null;
-        this.extendOriginal = null;
         this.$emit('plan-updated', this.eventsTemplate);
       }
     },
 
     startTime(tms) {
       const mouse = this.toTime(tms);
-
+      // console.log('mouse',mouse)
       if (this.dragEvent && this.dragTime === null) {
         const start = new Date(this.dragEvent.start).getTime();
         this.dragTime = mouse - start;
       } else {
         const start = moment(this.roundTime(mouse)).format("YYYY-MM-DDTHH:mm:ss");
+        // console.log('start',start)
         const endHour = new Date(start).getHours() + this.selectedDuration;
         const end = moment(new Date(start).setHours(endHour)).format("YYYY-MM-DDTHH:mm:ss");
         const dayOfWeek = moment(start).day();
@@ -321,7 +309,7 @@ export default {
             start: start,
             end: end,
             dayOfWeek: dayOfWeek,
-            color: '#E9E9E8',
+            color: '#FFFFFF',
             timed: true,
           });
           this.$emit('plan-updated', this.eventsTemplate);
@@ -330,7 +318,8 @@ export default {
     },
 
     roundTime(time, down = true) {
-      const roundDownTime = 1000; // 1 секунда в миллисекундах
+      const roundTo = 15
+      const roundDownTime = roundTo * 60 * 1000
 
       return down
           ? time - time % roundDownTime
@@ -340,14 +329,7 @@ export default {
     toTime(tms) {
       return new Date(tms.year, tms.month - 1, tms.day, tms.hour, tms.minute).getTime()
     },
-
-    initialize() {
-    },
-
   },
-  created() {
-    this.initialize()
-  }
 }
 </script>
 <style lang="scss">

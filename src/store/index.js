@@ -1,24 +1,25 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import {AlertStore} from "@/store/Alert/AlertStore";
 import IdentityRequest from "@/services/IdentityRequest";
 
 Vue.use(Vuex)
 
 export default new Vuex.Store({
-    modules: {AlertStore},
     state: {
         user: {
             userId: null,
             email: '',
             emailConfirmed: false,
             phoneNumber: '',
-            name: '1',
+            name: '',
             surname: '',
             middleName: '',
             discriminator: '',
             groupId: 0,
-        }
+            vkUserId: 0,
+            isAdmin: false,
+        },
+        isMobile: Boolean(/mobile|iphone|ipad|ipod|android|blackberry|mini|windows\sce|palm/i.test(navigator.userAgent.toLowerCase()))
     },
     mutations: {
         SET_CURRENT_USER(state, user) {
@@ -30,6 +31,8 @@ export default new Vuex.Store({
             state.user.middleName = user.data['middleName']
             state.user.discriminator = user.data['discriminator']
             state.user.groupId = user.data['groupId']
+            state.user.vkUserId = user.data['vkUserId']
+            state.user.isAdmin = user.data['isAdmin']
         },
         RESET_CURRENT_USER(state) {
             state.user = {
@@ -37,11 +40,13 @@ export default new Vuex.Store({
                 email: '',
                 emailConfirmed: false,
                 phoneNumber: '',
-                name: '1',
+                name: '',
                 surname: '',
                 middleName: '',
                 discriminator: '',
                 groupId: 0,
+                vkUserId: 0,
+                isAdmin: false,
             }
         }
     },

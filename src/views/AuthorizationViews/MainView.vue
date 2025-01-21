@@ -6,7 +6,7 @@
   </v-row>
 </template>
 <script>
-import AuthorizationForm from "@/views/AuthorizationViews/SelectAuthorization.vue";
+import AuthorizationForm from "@/views/AuthorizationViews/AuthorizationForm.vue";
 
 export default {
   components: {AuthorizationForm},

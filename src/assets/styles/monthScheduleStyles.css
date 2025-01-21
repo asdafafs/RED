@@ -1,16 +1,19 @@
 .v-calendar-weekly__week {
     min-height: 20em;
+    max-height: 20em;
 }
 
 @media screen and (max-width: 1260px) {
     .v-calendar-weekly__week {
         min-height: 10em;
+        max-height: 10em;
     }
 }
 
 @media screen and (max-width: 600px) {
     .v-calendar-weekly__week {
         min-height: 5em;
+        max-height: 10em;
     }
 }
 
@@ -23,8 +26,11 @@
     justify-content: center;
     max-width: 98%;
     background-color: rgb(157, 185, 255);
-    border: black 1px;
     margin: 0 0 0 1.1%;
+}
+
+.theme--light.v-calendar-events .v-event-timed {
+    border: 1px black solid !important;
 }
 
 .v-event.v-event-start.v-event-end.white--text {
@@ -34,17 +40,6 @@
 
 .v-event-more {
     font-size: 1em !important;
-}
-
-.app-bar-button-style {
-    text-transform: unset !important;
-    font-size: 1.5em;
-}
-
-.event {
-    display: flex;
-    align-items: center;
-    justify-content: center;
 }
 
 .text-format {

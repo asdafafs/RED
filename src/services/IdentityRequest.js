@@ -9,9 +9,15 @@ export default class IdentityRequest extends HTTPService {
         return this.get("")
     }
 
-    postLoginVk(code) {
+    postLoginVkRegistration(code, redirectUri) {
         return this.post("login-vk", {
-            code
+            code, redirectUri
+        })
+    }
+
+    postBindVk(code, redirectUri) {
+        return this.post("Bind", {
+            code, redirectUri
         })
     }
 
@@ -41,5 +47,9 @@ export default class IdentityRequest extends HTTPService {
 
     postPasswordNewUser(code){
         return this.post("CreateUserPassword", code)
+    }
+    
+    sendEmail(userId) {
+        return this.post('resend-email',{userId: userId})
     }
 }

@@ -3,38 +3,68 @@
     <v-row align="center" justify="center" class=" ">
       <v-col cols="4" class=" pa-0" align="center">
         <v-dialog v-model="overlay" persistent width="auto" content-class="elevation-0">
-          <v-card class="d-flex justify-space-between flex-column white rounded-lg ma-2 width">
-            <v-card-title class="black--text"> Создание пароля</v-card-title>
-            <v-card-subtitle class="black--text">
-              Введите  пароль
+          <v-card class="accept-password-card ">
+            <div class="logo-container">
+              <LogoRed
+                  class="logo-container__image"
+                  :height="50"
+                  :width="84"
+              />
+            </div>
+            <v-card-title class="accept-password-card__title">
+              Создание пароля
+            </v-card-title>
+            <v-card-subtitle class="accept-password-card__subtitle">
+              Придумайте пароль для входа
             </v-card-subtitle>
-            <v-card-text class="pb-0 ">
+            <v-card-text class="pb-0">
               <v-text-field
-                  solo
+                  solo dense outlined
                   v-model="password"
                   :rules="[rulesPassword.required, rulesPassword.min]"
                   name="input-10-1"
                   label="Пароль"
                   hint="Минимум 8 символов"
                   counter
-              ></v-text-field>
-              <v-text-field
-                  solo
-                  v-model="passwordRepeat"
-                  :append-icon="show ? 'mdi-eye ' : 'mdi-eye-off '"
-                  :rules="[rulesPassword.required, rulesPassword.min, checkPasswordMatch]"
+                  autocomplete="new-password"
+                  class="mb-2 accept-password-card__field"
                   :type="show ? 'text' : 'password'"
+              >
+                <template v-slot:append>
+                  <span class="material-icons" v-if="show" @click="show = false">visibility</span>
+                  <span class="material-icons" v-else @click="show = true">visibility_off</span>
+                </template>
+              </v-text-field>
+              <v-text-field
+                  solo dense outlined
+                  v-model="passwordRepeat"
+                  :rules="[rulesPassword.required, rulesPassword.min, checkPasswordMatch]"
                   name="input-10-2"
                   label="Повторите пароль"
                   hint="Минимум 8 символов"
                   counter
-                  @click:append="show = !show"
-              ></v-text-field>
-              <v-alert v-if="!passwordsMatch" type="error">Пароли не совпадают</v-alert>
+                  autocomplete="new-password"
+                  @click:append="showPasswordRepeat = !showPasswordRepeat"
+                  class="accept-password-card__field"
+                  :type="showPasswordRepeat ? 'text' : 'password'"
+              >
+                <template v-slot:append>
+                  <span class="material-icons" v-if="showPasswordRepeat"
+                        @click="showPasswordRepeat = false">visibility</span>
+                  <span class="material-icons" v-else @click="showPasswordRepeat = true">visibility_off</span>
+                </template>
+              </v-text-field>
             </v-card-text>
-            <v-card-actions v-if="passwordsMatch">
-              <v-btn color="#4E7AEC" @click="validatePassword" class="rounded-lg pa-0 white--text" block :disabled="loginButtonDisabled">
-                Добавить пароль
+            <v-card-actions class="accept-password-card__actions">
+              <v-btn
+                  color="#4E7AEC"
+                  @click="validatePassword"
+                  class="accept-password-card__actions__btn white--text"
+                  block
+                  :disabled="loginButtonDisabled || passwordsMatch"
+                  @keydown.enter="validatePassword"
+              >
+                Сохранить и войти
               </v-btn>
             </v-card-actions>
           </v-card>
@@ -45,15 +75,16 @@
 </template>
 <script>
 import IdentityRequest from "@/services/IdentityRequest";
+import LogoRed from "@/components/logos/LogoRed.vue";
 
 export default {
   name: 'AcceptPassword',
-  components: {},
+  components: {LogoRed},
   data: () => ({
     overlay: true,
     loginButtonDisabled: false,
     show: false,
-    loading: false,
+    showPasswordRepeat: false,
     value: '',
     password: '',
     passwordRepeat: '',
@@ -65,33 +96,29 @@ export default {
   }),
   computed: {
     passwordsMatch() {
-      return this.password === this.passwordRepeat;
+      return !(this.password === this.passwordRepeat && this.rulesPassword.min(this.password) === true
+          && this.rulesPassword.min(this.passwordRepeat) === true);
     },
+
     checkPasswordMatch() {
       return value => (value === this.password ? true : 'Пароли не совпадают');
     },
   },
-  async mounted() {
-  },
-  methods: {
-    async confirmPassword(userId, code) {
-      const identity = new IdentityRequest()
-      await identity.postNewPassword({userId, code}).then(() => {
-        identity.getIdentity();
-        this.$router.push({name: 'main'})
-      })
-    },
 
+  methods: {
     async newPassword(body) {
+      this.loginButtonDisabled = true
       const password = new IdentityRequest()
-      await password.postPasswordNewUser(body)
+      await password.postPasswordNewUser(body).finally(() => {
+        this.loginButtonDisabled = false
+      })
     },
 
     validatePassword() {
       if (!(this.rulesPassword.required(this.password) === true && this.rulesPassword.min(this.password) === true)) {
         return;
       }
-      this.loginButtonDisabled = true
+
       const body = {
         "userId": parseInt(this.$route.query.userId),
         "password": this.password,
@@ -106,8 +133,6 @@ export default {
   }
 }
 </script>
-<style>
-.width {
-  width: 20em;
-}
+<style lang="scss">
+@import "@/assets/styles/autorizationFormStyles.scss";
 </style>

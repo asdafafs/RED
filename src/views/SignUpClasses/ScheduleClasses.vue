@@ -1,7 +1,7 @@
 <template>
   <v-container class="px-3 pa-0 ma-0" fluid v-if="true">
-    <div class="text-lg-h3 text-md-h3 text-sm-h3 text-xs-h1 font-weight-medium px-0 mb-3">
-      Расписание ваших занятий
+    <div class="font-weight-medium px-0 mb-3" :class="isMobile ? 'mobile-title' : 'desk-title'">
+      Запись на занятие
     </div>
     <hr>
     <div class="text-lg-h6 text-md-h5 text-sm-h4 text-xs-h1 px-0 mb-3">
@@ -15,6 +15,8 @@
   </v-container>
 </template>
 <script>
+import {mapState} from "vuex";
+
 export default {
   components: {},
   mounted() {
@@ -22,22 +24,10 @@ export default {
   },
   data: () => ({
     test: false,
-    showDrawer: true,
   }),
-  methods: {
-    checkWindowWidth() {
-      this.showDrawer = window.innerWidth >= 1260;
-    },
-  },
-
-  created() {
-    this.checkWindowWidth();
-    window.addEventListener('resize', this.checkWindowWidth);
-  },
-
-  beforeDestroy() {
-    window.removeEventListener('resize', this.checkWindowWidth);
-  },
+  computed:{
+    ...mapState(['user','isMobile']),
+  }
 }
 </script>
 

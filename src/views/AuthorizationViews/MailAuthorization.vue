@@ -1,82 +1,87 @@
 <template>
   <div class="no-scroll">
-    <v-row 
-      align="center" 
-      justify="center"
+    <v-row
+        align="center"
+        justify="center"
     >
       <v-col cols="4" class="pa-0 overflow-x-hidden">
-        <v-dialog 
-          v-model="overlay" 
-          persistent 
-          width="auto" 
-          content-class="elevation-0" 
+        <v-dialog
+            v-model="overlay"
+            persistent
+            width="auto"
+            content-class="elevation-0"
         >
-          <v-card 
-            v-if="overlay" 
-            class="mail-authorization-card height"
+          <v-card
+              class="mail-authorization-card"
           >
-            <v-card-title class="mail-authorization-card__title"> Авторизация</v-card-title>
+            <div class="logo-container">
+              <LogoRed
+                  class="mail-authorization-card__logo"
+                  :height="50"
+                  :width="84"
+              />
+            </div>
+            <v-card-title class="mail-authorization-card__title">
+              Авторизация
+            </v-card-title>
             <v-card-subtitle class="mail-authorization-card__subtitle">
               Для продолжения работы в RED: Расписание, пожалуйста, авторизуйтесь.
             </v-card-subtitle>
-            <LogoRed
-                v-if="!message"
-                class="mail-authorization-card__logo"
-                :height="50"
-                :width="84"
-            />
             <v-card-text class="pb-0">
-              <v-alert v-if="message" type="error">
-                {{ message }}
-              </v-alert>
               <v-text-field
-                solo
-                color="black"
-                v-model="email"
-                :readonly="loading"
-                :rules="[rulesEmail.required]"
-                class="mb-2"
-                clearable
-                label="Email"
-              />
-              <v-text-field
-                solo
-                color="black"
-                v-model="password"
-                :append-icon="show ? 'mdi-eye ' : 'mdi-eye-off '"
-                :rules="[rulesPassword.required, rulesPassword.min]"
-                :type="show ? 'text' : 'password'"
-                name="input-10-4"
-                label="Пароль"
-                hint="Минимум 8 символов"
-                counter
-                @click:append="show = !show"
-              />
-              <v-btn 
-                color="#4E7AEC" 
-                @click="forgetPassword"
-                class="rounded-lg pa-0 ma-0" block text
+                  color="black"
+                  v-model="email"
+                  :readonly="false"
+                  :rules="[rulesEmail.required]"
+                  class="mb-2 mail-authorization-card__field "
+                  label="E-mail"
+                  outlined
+                  dense
               >
-                Забыли пароль?
-              </v-btn>
+                <template v-slot:append>
+                  <span class="material-icons" @click="email=''">close</span>
+                </template>
+              </v-text-field>
+              <v-text-field
+                  color="black"
+                  v-model="password"
+                  :rules="[rulesPassword.required, rulesPassword.min]"
+                  :type="show ? 'text' : 'password'"
+                  name="input-10-4"
+                  label="Пароль"
+                  hint="Минимум 8 символов"
+                  dense
+                  counter
+                  outlined
+                  class="mail-authorization-card__field"
+              >
+                <template v-slot:append>
+                  <span class="material-icons" v-if="show" @click="show = false">visibility</span>
+                  <span class="material-icons" v-else @click="show = true">visibility_off</span>
+                </template>
+              </v-text-field>
+              <span @click="forgetPassword" class="authorization-card__actions__btn" style="color: #4E7AEC">
+                Восстановить пароль
+              </span>
             </v-card-text>
-            <v-card-actions class="mail-authorization-card__actions">
-                <v-btn 
-                  color="#4E7AEC" 
-                  @click="validateForm" 
+            <v-card-actions class="mail-authorization-card__actions py-0">
+              <v-btn
+                  color="#4E7AEC"
+                  @click="validateForm"
                   class="authorization-card__actions__btn white--text"
+                  :disabled="loginButtonDisabled || !isPasswordValid"
+              >
+                Войти
+              </v-btn>
+              <v-btn
+                  color="#2B2A29"
+                  text
+                  @click="logout"
+                  class="authorization-card__actions__btn"
                   :disabled="loginButtonDisabled"
-                >
-                  Войти
-                </v-btn>
-                <v-btn 
-                  color="#E9E9E8" 
-                  @click="logout" 
-                  class="authorization-card__actions__btn" 
-                  :disabled="loginButtonDisabled"
-                >
-                  Выйти
-                </v-btn>
+              >
+                Отмена
+              </v-btn>
             </v-card-actions>
           </v-card>
         </v-dialog>
@@ -92,17 +97,13 @@ export default {
   name: 'MailAuthorization',
   components: {LogoRed},
   data: () => ({
-    message: null,
     overlay: true,
-    form: true,
     show: false,
     email: null,
-    loading: false,
     loginButtonDisabled: false,
-    value: '',
     password: '',
     rulesEmail: {
-      required: v => !!v || 'Введите email'
+      required: value => !!value || 'Введите email'
     },
     rulesPassword: {
       required: value => !!value || 'Введите пароль',
@@ -110,45 +111,59 @@ export default {
     },
     wrongAuth: false,
   }),
+
+  computed: {
+    isPasswordValid() {
+      return this.rulesPassword.required(this.password) === true && this.rulesPassword.min(this.password) === true;
+    },
+  },
+
   methods: {
     async login(body) {
+      this.wrongAuth = false;
       const login = new IdentityRequest()
-      await login.postLogin(body).catch(() => {
-            this.message = "Неверный пользователь или пароль";
+      const identity = new IdentityRequest()
+      const response =  await login.postLogin(body).catch(() => {
             this.password = ''
             this.wrongAuth = true;
           }
       )
+      console.log(response.status)
+      if (response.status === 200) {
+        await identity.getIdentity()
+            .then((x) => {
+              this.$store.dispatch('GET_CURRENT_USER', x);
+            });
+      } else {
+        this.wrongAuth = true;
+      }
     },
     logout() {
       this.$router.push(
-        {
-          name: 'main'
-        }
+          {
+            name: 'main'
+          }
       )
     },
     forgetPassword() {
       this.$router.push(
-        {
-          name: 'recPass'
-        }
+          {
+            name: 'recPass'
+          }
       )
     },
-    async validateForm() {
+    async validateForm()
+    {
       if (!this.isPasswordValid) return
       this.loginButtonDisabled = true
       const body = {
-        "email": this.email,
+        "email": this.email.replace(/\s/g, ''),
         "password": this.password
       }
-      const identity = new IdentityRequest()
-      await this.login(body)
-      await identity.getIdentity()
-          .then((x) => {
-            this.$store.dispatch('GET_CURRENT_USER', x)
-          }).finally(() => {
-            this.loginButtonDisabled = false
-          })
+      new IdentityRequest();
+      await this.login(body).finally(() => {
+        this.loginButtonDisabled = false
+      })
       if (!this.wrongAuth) {
         await this.$router.push({name: 'schedule-lessons'}).catch(err => {
           console.log(err)
@@ -158,17 +173,9 @@ export default {
       }
     }
   },
-  computed: {
-    isPasswordValid() {
-      return this.rulesPassword.required(this.password) === true && this.rulesPassword.min(this.password) === true;
-    },
-  },
+
 };
 </script>
 <style lang="scss">
 @import "@/assets/styles/autorizationFormStyles.scss";
-
-.no-scroll {
-  overflow: hidden;
-}
 </style>

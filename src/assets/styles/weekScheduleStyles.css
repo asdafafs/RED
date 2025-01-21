@@ -1,0 +1,55 @@
+.v-calendar .v-event-timed {
+    white-space: pre-wrap;
+    width: 100%;
+    background-color: rgb(157, 185, 255);
+    border-color: rgb(157, 185, 255);
+    margin: 0 0 0 5px;
+}
+
+.v-event-more {
+    font-size: 1em !important;
+}
+
+.app-bar-button-style {
+    text-transform: unset !important;
+    font-size: 1.5em;
+}
+
+.v-calendar-daily__interval-text {
+    color: #424242;
+    font-size: 19px;
+    font-weight: bold;
+}
+
+@media screen and (max-width: 1260px) {
+    .v-calendar-daily__interval-text {
+        color: #424242;
+        font-size: 10px;
+        font-weight: bold;
+    }
+    .v-calendar-daily__intervals-body {
+        max-width: 30px;
+    }
+    .v-calendar-daily__intervals-head {
+        max-width: 30px;
+    }
+}
+
+.v-btn--fab.v-size--default {
+    height: min-content;
+    width: min-content;
+    font-size: 0.8em;
+}
+
+.v-btn--fab.v-size--small {
+    height: min-content;
+    width: min-content;
+    font-size: 0.8em;
+}
+
+.text-format-week {
+    white-space: pre-wrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-height: 7em;
+}

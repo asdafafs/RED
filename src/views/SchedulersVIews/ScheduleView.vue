@@ -1,12 +1,24 @@
 <template>
   <v-container class="px-3 pa-0 ma-0" fluid v-if="true">
-    <div class="text-h3 font-weight-medium px-0 mb-3">
-      Расписание школы
+    <div class="d-flex flex-row justify-space-between full-width mb-3 align-center " v-if="isMobile">
+      <div class="d-flex flex-column" >
+        <div  class="mobile-subtitle">
+          Удачи на дорогах, {{ userName }}!
+        </div>
+        <div class=" px-0 mobile-title">
+          Расписание
+        </div>
+      </div>
+    </div>
+    <div class="d-flex flex-row justify-space-between full-width mb-3 align-center " v-else>
+        <div class=" px-0 desk-title">
+          Расписание
+        </div>
+        <div class="desk-subtitle">
+          Удачи на дорогах, {{ userName }}!
+        </div>
     </div>
     <hr>
-    <div class="text-lg-h6 text-md-h5 text-sm-h4 text-xs-h1 px-0 mb-3">
-      Ваши текущие занятия
-    </div>
     <v-row>
       <v-col class="pa-0">
         <router-view/>
@@ -15,33 +27,21 @@
   </v-container>
 </template>
 <script>
+import {mapState} from "vuex";
+
 export default {
-  components: {},
-  mounted() {
-    this.test = true
-  },
-  data: () => ({
-    test: false,
-    showDrawer: true,
-  }),
-  methods: {
-    checkWindowWidth() {
-      this.showDrawer = window.innerWidth >= 1260;
+  computed: {
+    ...mapState(['user','isMobile']),
+    userName() {
+      return `${this.user.name} ${this.user.middleName} ${this.user.surname}`
     },
-  },
-
-  created() {
-    this.checkWindowWidth();
-    window.addEventListener('resize', this.checkWindowWidth);
-  },
-
-  beforeDestroy() {
-    window.removeEventListener('resize', this.checkWindowWidth);
   },
 }
 </script>
 
-<style lang="scss" >
+<style lang="scss">
+@import "@/assets/styles/titleStyles.css";
 @import "@/assets/styles/buttonStyles.css";
 @import "@/assets/styles/lineStyles.css";
+@import "@/assets/styles/weekScheduleStyles.css";
 </style>

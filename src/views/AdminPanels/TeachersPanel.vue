@@ -1,82 +1,55 @@
 <template>
-  <v-container fluid>
-    <div class="text-h4 font-weight-medium px-4">
+  <div style="width: 100%">
+    <div class="desk-title">
       Инструкторы и планы
     </div>
-    <v-text-field
-        v-model="search"
-        label="Поиск"
-        prepend-inner-icon="mdi-magnify"
-        single-line
-        variant="outlined"
-        hide-details
-    ></v-text-field>
+    <hr>
+    <div class="d-flex flex-row justify-space-between align-center mb-3">
+      <v-btn
+          color="#4E7AEC"
+          class="add-instructor-card-btn"
+          @click="openNewTeacher"
+      >
+        <section class="d-flex flex-row align-center" style="padding: 8px 12px 8px 12px !important;">
+          <Icon icon="mdi-plus-circle-outline" height="24" color="white"/>
+          <span class="add-instructor-text">Добавить инструктора</span>
+        </section>
+      </v-btn>
+      <v-text-field
+          v-model="search"
+          outlined
+          dense
+          label="Поиск"
+          prepend-inner-icon="mdi-magnify"
+          variant="outlined"
+          hide-details
+          class="search-field"
+          style=" max-width: 256px !important;  border-radius: 12px !important; max-height: 32px !important;"
+      />
+    </div>
     <v-data-table
         :headers="headers"
-        :items="persons.activeUsers"
+        :items="persons"
         :search="search"
-        class="elevation-1 custom-header-table"
+        class="custom-header-table"
+        style="border-bottom: thin solid rgba(0, 0, 0, 0.12); border-radius: unset !important;"
         no-data-text="Нет данных для отображения"
         :hide-default-footer="true"
         disable-pagination
-        :header-props="{ class: 'blue--text text--darken-2' }"
+        :header-props="{ class: 'blue--text text--darken-2 header-grid-text' }"
         mobile-breakpoint="0"
     >
       <template v-slot:top>
         <v-toolbar flat>
-          <v-dialog v-model="dialog" max-width="500px">
-            <template v-slot:activator="{ on, attrs }">
-              <v-btn color="#4E7AEC " dark class="ma-0 rounded-lg" v-bind="attrs" v-on="on">
-                <v-col cols="1" class="px-0">
-                  <i class="mdi mdi-plus-circle-outline" style="transform: scale(1.5)"></i>
-                </v-col>
-                <v-col cols="">
-                  Добавить инструктора
-                </v-col>
-              </v-btn>
-            </template>
-            <v-card class="rounded-xl">
-              <v-card-title>
-                <span class="text-h5">{{ formTitle }}</span>
-              </v-card-title>
-              <v-card-text class="">
-                <v-container class="pa-0">
-                  <v-row class="pa-0">
-                    <v-col cols="12" sm="12" md="12" class="pb-0">
-                      <v-text-field v-model="editedTeacher.name" label="Имя" :rules="[nameRule.required()]" outlined
-                                    class="rounded-xl"></v-text-field>
-                      <v-text-field v-model="editedTeacher.surname" label="Фамилия" :rules="[surnameRule.required()]"
-                                    outlined class="rounded-xl"></v-text-field>
-                      <v-text-field v-model="editedTeacher.middleName" label="Отчество"
-                                    :rules="[middleNameRule.required()]" outlined class="rounded-xl"></v-text-field>
-                      <v-text-field v-model="editedTeacher.email" label="email" :rules="[emailRule.required()]"
-                                    class="rounded-xl" outlined></v-text-field>
-                      <vue-text-mask class="phone-field" v-model="editedTeacher.phoneNumber" :mask="mask"
-                                     placeholderChar="#" :rules="[phoneRule.required()]"></vue-text-mask>
-                    </v-col>
-                  </v-row>
-                </v-container>
-              </v-card-text>
-              <v-card-actions>
-                <v-container style="display: flex; justify-content: space-between;" class="py-0">
-                  <v-btn color="blue darken-1" text @click="close">
-                    Отмена
-                  </v-btn>
-                  <v-btn color="blue darken-1" text @click="save" :disabled="isSaveButtonDisabled">
-                    OK
-                  </v-btn>
-                </v-container>
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
           <v-dialog v-model="dialogDelete" max-width="500px">
             <v-card>
-              <v-card-title class="text-h5">Сносим?</v-card-title>
+              <v-card-title class="text-h5">Вы действительно хотите удалить инструктора?</v-card-title>
               <v-card-actions>
-                <v-spacer></v-spacer>
+                <v-spacer/>
                 <v-btn color="blue darken-1" text @click="closeDelete">Отмена</v-btn>
-                <v-btn color="blue darken-1" text @click="deleteItemConfirm">OK</v-btn>
-                <v-spacer></v-spacer>
+                <v-btn color="blue darken-1" text @click="deleteItemConfirm" :disabled="blockButtonWhenRequest">OK
+                </v-btn>
+                <v-spacer/>
               </v-card-actions>
             </v-card>
           </v-dialog>
@@ -84,44 +57,56 @@
       </template>
       <template v-slot:item="{ item }">
         <tr>
-          <td>{{ item.name + " " + item.surname + " " + item.middleName }}</td>
+          <td>{{ item.fullName }}</td>
           <td>{{ item.email }}</td>
+          <td>{{ formatTransmissions(item.transmissionTypeEnum) }}</td>
+          <td>{{ formatCity(item.city) }}</td>
           <td>
-            <v-btn cols="" class="tab-button pa-0 rounded-lg" color="#4E7AEC" @click="openPlanTemplate(item)">
-              <span class="white--text">Редактировать</span>
+            <v-btn
+                class="grid-button"
+                color="#4E7AEC"
+                @click="openPlanTemplate(item)"
+            >
+              <span class="white--text">Определить план</span>
             </v-btn>
-
           </td>
-          <td class="text-xs-right">
-            <v-icon small class="mr-2 blue--text" @click="editItem(item)">mdi-pencil</v-icon>
-            <v-icon small class="red--text" @click="deleteItem(item)">mdi-delete</v-icon>
+          <td>
+            <v-checkbox v-model="item.isAdmin" @click="acceptNewRole(item)"/>
+          </td>
+          <td class="text-xs-right grid-actions-teachers-panel">
+            <v-icon class="mr-2 blue--text" @click="editItem(item)">mdi-pencil</v-icon>
+            <v-icon class="mr-2 red--text" @click="deleteItem(item)">mdi-delete</v-icon>
+            <v-icon class="blue--text" @click="sendEmail(item)">mdi-email-arrow-right-outline</v-icon>
           </td>
         </tr>
       </template>
     </v-data-table>
-    <router-view></router-view>
-  </v-container>
+    <router-view/>
+  </div>
 </template>
 <script>
 import UsersRequest from "@/services/UsersRequest";
 import VueTextMask from "vue-text-mask";
-
+import { formatTransmissions, formatCity } from '@/utils/utils';
+import { Icon } from '@iconify/vue2'
+import {successAlert} from "@/components/Alerts/alert";
+import IdentityRequest from "@/services/IdentityRequest";
 export default {
-  components: {VueTextMask},
+  components: {VueTextMask,Icon},
   data: () => ({
     search: '',
-    dialog: false,
     dialogDelete: false,
-    mask: ['+', /\d/, '(', /[1-9]/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, '-', /\d/, /\d/],
+    blockButtonWhenRequest: false,
     headers: [
-      {text: 'ФИО', align: 'start', sortable: false,},
-      {text: 'Email', align: 'start', sortable: false,},
-      {text: 'Практики', align: 'start', sortable: false,},
-      {text: 'Действия', value: 'actions', sortable: false},
+      {text: 'ФИО', align: 'start', sortable: false, value: 'fullName', width: '30%'},
+      {text: 'E-mail', align: 'start', sortable: false, value: 'email', width: '15%'},
+      {text: 'Коробка передач', align: 'start', sortable: false, value: 'transmissionTypeEnum', width: '10%'},
+      {text: 'Город', align: 'start', sortable: false, value: 'city', width: '10%'},
+      {text: 'Практики', align: 'start', sortable: false, width: '15%'},
+      {text: 'Права оператора', align: 'start', sortable: false, value: 'rulesAdmin', width: '10%'},
+      {text: 'Действия', align: 'end', value: 'actions', sortable: false, width: '10%'},
     ],
-    persons: {
-      activeUsers: []
-    },
+    persons: [],
     editedIndex: -1,
     deletedIndex: -1,
     editedTeacher: {
@@ -129,33 +114,14 @@ export default {
       surname: '',
       middleName: '',
       email: '',
-      phoneNumber: '7'
+      phoneNumber: '7',
+      isAdmin: false,
+      city: [],
+      transmissionTypeEnum: [],
     },
-    nameRule: {required: value => !!value},
-    surnameRule: {required: value => !!value},
-    middleNameRule: {required: value => !!value},
-    emailRule: {required: value => !!value},
-    phoneRule: {required: value => !!value},
   }),
 
-  computed: {
-    formTitle() {
-      return this.editedIndex === -1 ? 'Новый инструктор' : 'Редактировать инструктора';
-    },
-
-    isSaveButtonDisabled() {
-      return !(this.nameRule.required(this.editedTeacher.name)
-          && this.surnameRule.required(this.editedTeacher.surname)
-          && this.middleNameRule.required(this.editedTeacher.middleName)
-          && this.emailRule.required(this.editedTeacher.email)
-          && this.phoneRule.required(this.editedTeacher.phoneNumber))
-    }
-  },
-
   watch: {
-    dialog(val) {
-      val || this.close();
-    },
     dialogDelete(val) {
       val || this.closeDelete();
     },
@@ -166,6 +132,43 @@ export default {
   },
 
   methods: {
+    async putActiveUser(body) {
+      const user = new UsersRequest();
+      await user.putActiveUser(body).catch(x => console.log(x))
+    },
+
+    async acceptNewRole(item) {
+      await this.putActiveUser(item).finally(async () => {
+        this.close();
+      })
+    },
+
+    formatTransmissions,
+    formatCity,
+
+    async openNewTeacher() {
+      this.editedIndex = -1
+      this.editedTeacher = {
+        name: '',
+        surname: '',
+        middleName: '',
+        email: '',
+        phoneNumber: '7',
+        transmissionTypeEnum: [],
+        isAdmin: false,
+        city: [],
+      }
+      const data = {
+        editedIndex: this.editedIndex,
+        editedTeacher: this.editedTeacher,
+      }
+      await this.$openNewTeacherDialogPlugin(data).then((result) => {
+        if (!result) {
+          this.initialize();
+        }
+      });
+    },
+
     openPlanTemplate(item) {
       const selectedUserID = item.id;
       this.$router.push({name: 'plan-template', params: {selectedUserID}}).catch(() => {
@@ -174,21 +177,18 @@ export default {
 
     async getActiveUsers() {
       const user = new UsersRequest();
-      let teachersData
-      await user.getActiveUser().catch(x => console.log(x)).then(x => {
-        teachersData = x.data
-      })
-      return teachersData
-    },
-
-    async postActiveUser(body) {
-      const user = new UsersRequest();
-      await user.postActiveUser(body).catch(x => console.log(x))
-    },
-
-    async putActiveUser(body) {
-      const user = new UsersRequest();
-      await user.putActiveUser(body).catch(x => console.log(x))
+      let teachersData;
+      await user.getAllActiveUsers()
+          .then(response => {
+            teachersData = response.data.activeUsers.map(user => ({
+              ...user,
+              fullName: `${user.surname} ${user.name} ${user.middleName}`
+            }));
+          })
+          .catch(error => {
+            console.error(error);
+          });
+      return teachersData;
     },
 
     async deleteUser() {
@@ -201,8 +201,8 @@ export default {
       this.persons = await this.getActiveUsers()
     },
 
-    editItem(item) {
-      this.editedIndex = this.persons.activeUsers.indexOf(item);
+    async editItem(item) {
+      this.editedIndex = this.persons.indexOf(item);
       this.editedTeacher = {
         id: item.id,
         email: item.email,
@@ -210,25 +210,45 @@ export default {
         name: item.name,
         surname: item.surname,
         middleName: item.middleName,
+        transmissionTypeEnum: item.transmissionTypeEnum,
+        isAdmin: item.isAdmin,
+        city: item.city,
       };
-      this.dialog = true;
+      const data = {
+        editedIndex: this.editedIndex,
+        editedTeacher: this.editedTeacher,
+      }
+      await this.$openNewTeacherDialogPlugin(data).then((result) => {
+        if (!result) {
+          this.initialize();
+        }
+      });
     },
 
     deleteItem(item) {
-      this.editedIndex = this.persons.activeUsers.indexOf(item);
+      this.editedIndex = this.persons.indexOf(item);
       this.editedTeacher = {name: item.name};
       this.deletedIndex = item.id
       this.dialogDelete = true;
     },
 
     async deleteItemConfirm() {
-      this.persons.activeUsers.splice(this.editedIndex, 1);
-      await this.deleteUser()
-      this.closeDelete();
+      this.blockButtonWhenRequest = true
+      await this.deleteUser().finally(() => {
+        this.initialize()
+        this.closeDelete();
+      })
     },
-
+    
+    async sendEmail(item) {
+      const identity = new IdentityRequest();
+      await identity.sendEmail(item.id).then(() => {
+        successAlert('Запрос на авторизацию отправлен повторно', 5000);
+      })
+    },
+    
     close() {
-      this.dialog = false;
+      this.blockButtonWhenRequest = false;
       this.$nextTick(() => {
         this.editedTeacher = {
           name: '',
@@ -242,6 +262,7 @@ export default {
     },
 
     closeDelete() {
+      this.blockButtonWhenRequest = false
       this.dialogDelete = false;
       this.$nextTick(() => {
         this.editedTeacher = {
@@ -249,38 +270,102 @@ export default {
           surname: '',
           middleName: '',
           email: '',
-          phoneNumber: '7'
+          phoneNumber: '7',
+          gearboxType: 1,
+          isAdmin: false,
         };
         this.editedIndex = -1;
       });
     },
-
-    async save() {
-      if (this.editedIndex > -1) {
-        const body = this.editedTeacher
-        await this.putActiveUser(body).finally(async () => {
-          this.persons = await this.getActiveUsers();
-          this.close();
-        })
-      } else {
-        const body = {
-          "email": this.editedTeacher.email,
-          "phoneNumber": this.editedTeacher.phoneNumber,
-          "name": this.editedTeacher.name,
-          "surname": this.editedTeacher.surname,
-          "middleName": this.editedTeacher.middleName,
-        }
-        await this.postActiveUser(body).finally(async () => {
-          this.persons = await this.getActiveUsers();
-          this.close();
-        })
-
-      }
-    },
   },
 };
 </script>
-<style>
+<style lang="scss">
 @import "@/assets/styles/phoneMaskStyles.css";
 @import "@/assets/styles/dataTableStyles.css";
+@import "@/assets/styles/titleStyles.css";
+
+.grid-button {
+  width: 155px !important;
+  height: 28px !important;
+  border-radius: 12px !important;
+  text-transform: none !important;
+}
+
+.header-grid-text {
+  font-weight: 600 !important;
+  font-size: 16px !important;
+}
+
+.grid-actions-teachers-panel {
+  text-align: end !important;
+  padding-right: 16px !important;
+  min-width: 136px !important;
+}
+
+.add-instructor-card {
+  width: 392px !important;
+  height: 561px !important;
+  border-radius: 12px !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  background: #FFFFFF !important;
+  border: 1px solid #AAA7A6 !important;
+
+  &__type_edit {
+    width: 100% !important;
+    height: 12px !important;
+    margin-bottom: 12px !important;
+    font-style: normal !important;
+    font-weight: 400 !important;
+    font-size: 12px !important;
+    line-height: 14px !important;
+    color: #AAA7A6 !important;
+    flex: none !important;
+    order: 0 !important;
+    flex-grow: 0 !important;
+  }
+
+  &__title {
+    width: 100% !important;
+    height: 28px !important;
+
+    font-style: normal !important;
+    font-weight: 700 !important;
+    font-size: 24px !important;
+    line-height: 28px !important;
+    color: #000000 !important;
+    flex: none !important;
+    order: 0 !important;
+    flex-grow: 0 !important;
+  }
+
+  &__card_text {
+    gap: 12px !important;
+  }
+
+  &-btn {
+    border-radius: 12px !important;
+    height: 32px !important;
+    width: 225px !important;
+    text-transform: none !important;
+  }
+}
+
+.add-instructor {
+  &-btn {
+    border-radius: 12px !important;
+    height: 32px !important;
+    width: 225px !important;
+    text-transform: none !important;
+  }
+
+  &-text {
+    font-size: 16px !important;
+    font-weight: 500 !important;
+    color: white !important;
+    margin-left: 8px !important;
+    line-height: 18.75px !important;
+  }
+}
 </style>

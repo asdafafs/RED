@@ -15,11 +15,15 @@ import {mapState} from "vuex";
 
 export default {
   name: 'App',
-  components: { AppBar},
+  components: {AppBar},
   created() {
     const isRetry = this.$route.query.retry
     const isConfirmRequired = this.$route.query.isConfirmRequired
-    if (this.$route.path === '/post-login' 
+    if (this.$route.path === '/post-login'
+        || this.$route.path === '/post-vkLogin'
+        || this.$route.path === '/accept-password'
+        || this.$route.path === '/mail'
+        || this.$route.path === '/forget-password'
         || isRetry
         || isConfirmRequired
         || this.$route.path === '/confirm-email'
@@ -29,10 +33,11 @@ export default {
   computed: {
     ...mapState(['user']),
     isDataLoaded() {
+      console.log('this.user.userId', !!this.user.userId)
       return !!this.user.userId
     }
   },
-  methods:{
+  methods: {
     async getUserInfo() {
       await store.dispatch('GET_CURRENT_USER')
     }

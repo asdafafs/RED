@@ -5,12 +5,8 @@ export default class UsersRequest extends HTTPService {
         super("User");
     }
 
-    getUsers(isAlertHandler = false) {
-        return this.get("student", isAlertHandler)
-    }
-
-    getStudentId(id, isAlertHandler = false){
-        return this.get("student/" + id, isAlertHandler)
+    getUsers(query, isAlertHandler = false, ) {
+        return this.get("student" + `?${query}`, isAlertHandler)
     }
 
     getStudentNullGroup(isAlertHandler = false){
@@ -23,14 +19,6 @@ export default class UsersRequest extends HTTPService {
 
     putUser(code, isAlertHandler= false) {
         return this.put("student", code, isAlertHandler)
-    }
-
-    deleteUser(id, isAlertHandler = false) {
-        return this.delete("student/" + id, isAlertHandler)
-    }
-
-    putStudentGroup(code, isAlertHandler= false){
-        return this.put("studentGroup", code, isAlertHandler)
     }
 
     postActiveUser(code, isAlertHandler= false) {
@@ -52,4 +40,30 @@ export default class UsersRequest extends HTTPService {
     getActiveUser(isAlertHandler = false) {
         return this.get("active-user", isAlertHandler)
     }
+
+    getAllActiveUsers(isAlertHandler = false){
+        return this.get("active-user-all", isAlertHandler)
+    }
+
+    getAccessibleTeacher(isAlertHandler = false){
+        return this.get("active-user-for-student", isAlertHandler)
+    }
+
+    getCorrectTeacherForSelectedUser(id ,isAlertHandler = false){
+        return this.get("active-user-for-student/" + id, isAlertHandler)
+    }
+
+
+    getCorrectStudentsForCurrentUser(isAlertHandler = false){
+        return this.get("student-matching-for-active-user", isAlertHandler)
+    }
+
+    getCorrectStudentsForSelectedUser(id, isAlertHandler = false){
+        return this.get("student-matching-for-active-user/" + id, isAlertHandler)
+    }
+
+    getFullStudentInfo(isAlertHandler = false){
+        return this.get("student-full-info", isAlertHandler)
+    }
+
 }

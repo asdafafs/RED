@@ -1,5 +1,7 @@
 .custom-header-table th {
     color: #4E7AEC !important;
+    font-weight: 600 !important;
+    font-size: 16px !important;
 }
 
 .v-data-table-header {
@@ -12,4 +14,8 @@
 
 .v-toolbar--flat{
     height: auto !important;
+}
+
+.selected-row{
+   background-color:  #9DB9FF
 }

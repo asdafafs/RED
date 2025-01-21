@@ -1,10 +1,27 @@
-﻿.v-overlay--active .v-overlay__scrim {
+﻿.material-symbols-outlined {
+    font-variation-settings: 'FILL' 0,
+    'wght' 400,
+    'GRAD' 0,
+    'opsz' 24
+}
+
+.no-scroll {
+    overflow: hidden;
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+    margin-left: 16px;
+}
+
+.v-overlay--active .v-overlay__scrim {
     display: none;
 }
 
 .v-overlay--active {
     backdrop-filter: blur(2px);
-    background: rgb(0 0 0 / 0.8);
+    background: #4E7AEC33;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -65,27 +82,48 @@
         flex-direction: column !important; 
 
         &__btn {
-            border-radius: 8px !important;
+            text-transform: none !important;
+            border-radius: 12px !important;
             padding: 0 !important;
             margin: 4px 0 4px 0 !important;
-            width: 350px !important;
-            
+            width: 100% !important;
+            max-width: 355px !important;
+            max-height: 32px !important;
+
+            &__email{
+                text-transform: none !important;
+                color: white !important;
+                border-radius: 12px !important;
+                padding: 0 !important;
+                margin: 4px 0 4px 0 !important;
+                width: 350px !important;
+            }
+
+            &__vk{
+                text-transform: none !important;
+                color: black !important;
+                border-radius: 12px !important;
+                padding: 0 !important;
+                margin: 4px 0 4px 0 !important;
+                width: 350px !important;
+            }
         }
     }
 }
 
 .mail-authorization-card {
     display: flex !important;
-    gap: 16px !important;
     flex-direction: column !important;
-    min-height: 28rem !important;
-    width: 400px !important;
-    height: 560px !important;
+    width: 396px !important;
+    //height: 460px !important;
+    //min-height: 336px !important;
     
     &__title {
         font-weight: 700 !important;
         font-size: 32px !important;
         line-height: 37.5px !important;
+        padding: 0 24px 10px !important;
+        margin-bottom: 16px !important;
     }
     &__subtitle {
         font-weight: 400 !important;
@@ -100,6 +138,13 @@
         align-self: center !important;
         transform: scale(2.1) !important;
         padding:8px 0 16px 0;
+        margin-left: 16px;
+        margin-top: 2em !important;
+
+    }
+
+    &__field {
+        border-radius: 12px !important;
     }
     
     &__actions {
@@ -112,6 +157,117 @@
             margin: 4px 0 4px 0 !important;
             width: 350px;
 
+        }
+    }
+}
+
+.logo-container {
+    display: flex;
+    align-items: center !important;
+    margin-left: 24px !important;
+    padding: 18px 0 16px 0 !important;
+
+    &__image {
+        align-self: center !important;
+        width: auto;
+    }
+}
+
+.accept-password-card{
+    display: flex !important;
+    flex-direction: column !important;
+    width: 316px !important;
+    //height: 322px !important;
+
+    &__title {
+        font-weight: 700 !important;
+        font-size: 32px !important;
+        line-height: 37.5px !important;
+        padding: 0 24px 10px !important;
+        margin-bottom: 16px !important;
+        word-break: keep-all;
+    }
+    &__subtitle {
+        font-weight: 400 !important;
+        font-size: 16px !important;
+        line-height: 18px !important;
+        color: #000000 !important;
+        caret-color: #000000 !important;
+        padding: 0 24px 16px 24px !important;
+    }
+
+    &__logo {
+        align-self: center !important;
+        transform: scale(2.1) !important;
+        padding:8px 0 16px 0;
+        margin-left: 16px;
+        margin-top: 2em !important;
+    }
+
+    &__field {
+        border-radius: 12px !important;
+    }
+
+    &__actions {
+        display: flex;
+        flex-direction: column;
+
+        &__btn {
+            text-transform: none !important;
+            border-radius: 12px !important;
+            padding: 0 !important;
+            margin: 16px 0 16px 0 !important;
+            width: 262px !important;
+            height: 32px !important;
+        }
+    }
+}
+
+.forget-password-card{
+    display: flex !important;
+    flex-direction: column !important;
+    width: 396px !important;
+    height: 264px !important;
+
+    &__title {
+        font-weight: 700 !important;
+        font-size: 32px !important;
+        line-height: 37.5px !important;
+        padding: 0 24px 10px !important;
+        margin-bottom: 16px !important;
+    }
+    &__subtitle {
+        font-weight: 400 !important;
+        font-size: 16px !important;
+        line-height: 18px !important;
+        color: #000000 !important;
+        caret-color: #000000 !important;
+        padding: 0 24px 16px 24px !important;
+    }
+
+    &__logo {
+        align-self: center !important;
+        transform: scale(2.1) !important;
+        padding:8px 0 16px 0;
+        margin-left: 16px;
+        margin-top: 2em !important;
+    }
+
+    &__field {
+        border-radius: 12px !important;
+    }
+
+    &__actions {
+        display: flex;
+        flex-direction: column;
+
+        &__btn {
+            text-transform: none !important;
+            border-radius: 12px !important;
+            padding: 0 !important;
+            margin: 16px 0 0 0 !important;
+            width: 262px !important;
+            height: 32px !important;
         }
     }
 }
