@@ -6,7 +6,6 @@
 
 <script>
 import IdentityRequest from "@/services/IdentityRequest";
-import store from "@/store";
 
 export default {
   async mounted() {

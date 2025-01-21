@@ -5,13 +5,13 @@
         <v-sheet>
           <v-calendar
               ref="calendar"
-              v-model="focus"
               :events="eventsItems"
               color="primary"
               type="week"
               :event-height="50"
               :weekdays="weekday"
               :event-ripple="false"
+              v-model="practiceCourseStart"
               @mousedown:event="startDrag"
               @mousedown:time="startTime"
               @mousemove:time="mouseMove"
@@ -27,12 +27,12 @@
                   </v-col>
                 </v-row>
                 <v-row class="ma-0" fill>
-                  <v-col class="black--text pa-0 align-self-center  d-lg-block" cols="9">
-                    <div class="font-weight-bold text-format-week">{{ `Вождение` }}</div>
-                    <div class="text-subtitle-2 d-flex">{{ abbreviatedName }}</div>
+                  <v-col class="black--text pa-0 align-self-center  d-lg-block" cols="9" >
+                    <div class="font-weight-bold text-format-week">Вождение</div>
+                    <div class="text-lg-subtitle-2 d-flex" >{{ abbreviatedName }}</div>
                   </v-col>
-                  <v-col cols="2">
-                    <v-icon class="red--text" @click="deleteEvent(event)">mdi-window-close</v-icon>
+                  <v-col cols="2" style="padding-left: 0 !important;">
+                    <v-icon class="red--text" @click="deleteEvent(event)" >mdi-window-close</v-icon>
                   </v-col>
                 </v-row>
               </v-container>
@@ -95,16 +95,11 @@ export default {
             item.classList.toggle(x)
           })
         });
-    this.test = true
   },
 
   data: () => ({
     eventsTemplate: [],
-    focus: '',
     weekday: [1, 2, 3, 4, 5, 6, 0],
-    selectedEvent: {},
-    selectedElement: null,
-    selectedOpen: false,
     dragEvent: {
       start: '',
       end: '',
@@ -124,6 +119,10 @@ export default {
   }),
 
   props: {
+    practiceCourseStart:{
+      type: String,
+      default: '',
+    },
     selectedDuration: {
       type: Number,
       default: 1,
@@ -193,7 +192,7 @@ export default {
 
       this.$emit('plan-updated', this.eventsTemplate);
     }
-,
+    ,
 
     deleteEvent(event) {
       const index = this.eventsTemplate.indexOf(event);
@@ -226,37 +225,32 @@ export default {
         const start = new Date(this.dragEvent.start).getTime();
         const end = new Date(this.dragEvent.end).getTime();
         const duration = end - start;
-        const newStartTime = mouse - this.dragTime;
-        const newStart = this.roundTime(newStartTime) - 1000;
-        const newEnd = (newStart + duration - 1000);
+        const newStart = mouse - this.dragTime;
+        const newEnd = newStart + duration;
         const isIntersect = this.eventsTemplate.some(event => {
           if (event === this.dragEvent) return false;
 
-          const existingStart = moment(event.start);
-          const existingEnd = moment(event.end);
+          const existingStart = new Date(event.start).getTime();
+          const existingEnd = new Date(event.end).getTime();
 
-          const dragStartInsideExisting = existingStart.isSameOrBefore(newStart) && existingEnd.isSameOrAfter(newStart);
-          const dragEndInsideExisting = existingStart.isSameOrBefore(newEnd) && existingEnd.isSameOrAfter(newEnd);
-          const existingInsideDrag = moment(newStart).isSameOrBefore(existingStart) && moment(newEnd).isSameOrAfter(existingEnd);
-
-          return dragStartInsideExisting || dragEndInsideExisting || existingInsideDrag;
+          return (newStart < existingEnd && newEnd > existingStart);
         });
-        const sec = 1000
-        const interval = Math.abs(newStart - start) >= sec ;
 
-        if (isIntersect || !interval) {
+        if (isIntersect) {
           return;
         }
 
-        this.dragEvent.start = newStart;
-        this.dragEvent.end = newEnd;
+        this.dragEvent.start = this.roundTime(newStart);
+        this.dragEvent.end = this.roundTime(newEnd);
       }
     },
+
 
     endDrag() {
       if (this.dragEvent) {
         const isIntersect = this.eventsTemplate.some(event => {
-          if (event === this.dragEvent) return false;
+          if (event === this.dragEvent)
+            return false;
           const existingStart = moment(event.start);
           const existingEnd = moment(event.end);
 
@@ -330,7 +324,8 @@ export default {
     },
 
     roundTime(time, down = true) {
-      const roundDownTime = 1000; // 1 секунда в миллисекундах
+      const roundTo = 15
+      const roundDownTime = roundTo * 60 * 1000
 
       return down
           ? time - time % roundDownTime

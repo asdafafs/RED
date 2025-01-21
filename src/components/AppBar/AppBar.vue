@@ -1,21 +1,51 @@
 <template>
   <v-container fluid>
-    <NavigationBar :drawer.sync="drawer" :role="role" :show-drawer="showDrawer" :student="discriminatorUser" :user="userName"/>
-    <v-app-bar app density="compact" color="#1e1f22" class="appbar position_component app-bar-height">
-      <v-container class="pa-0 my-2" v-if="showDrawer" fluid>
-        <v-row no-gutters class="pa-0 ma-0">
+    <NavigationBar 
+      :drawer.sync="drawer" 
+      :role="role" 
+      :show-drawer="showDrawer" 
+      :student="discriminatorUser" 
+      :user="userName"
+    />
+    <v-app-bar 
+      app 
+      density="compact" 
+      color="#1e1f22" 
+      class="appbar position_component app-bar-height"
+    >
+      <v-container
+          v-if="showDrawer"
+          class="pa-0 my-2"
+          fluid
+          style="max-height: 60px"
+      >
+        <v-row no-gutters class="pa-0 ma-0" style="max-height: 60px;flex-wrap: nowrap;">
           <v-col cols=2>
             <DesktopLogo/>
           </v-col>
           <v-col>
-            <AppButtons :student="discriminatorUser" v-if="isDataLoaded"/>
+            <AppButtons
+              v-if="isDataLoaded"
+              :student="discriminatorUser"
+            />
           </v-col>
           <v-col cols="2">
-              <UserProfile :role="role" :student="discriminatorUser" :user="userName" v-if="isDataLoaded"/>
+            <div class="d-flex align-center" style="height: 100%; width: 100%">
+              <UserProfile
+                class="mr-3"
+                v-if="isDataLoaded"
+                :role="role"
+                :student="discriminatorUser"
+                :user="userName"
+              />
+            </div>
           </v-col>
         </v-row>
       </v-container>
-      <MobileAppBar :drawer.sync="drawer" v-else/>
+      <MobileAppBar
+        v-else
+        :drawer.sync="drawer"
+      />
     </v-app-bar>
   </v-container>
 </template>
@@ -42,11 +72,16 @@ export default {
   },
   methods: {
     checkWindowWidth() {
-      this.showDrawer = window.innerWidth >= 1260;
+      this.showDrawer = window.innerWidth >= 960;
     },
-
   },
-
+  created() {
+    this.checkWindowWidth();
+    window.addEventListener('resize', this.checkWindowWidth);
+  },
+  beforeDestroy() {
+    window.removeEventListener('resize', this.checkWindowWidth);
+  },
   computed: {
     ...mapState(['user']),
     userName() {
@@ -56,15 +91,6 @@ export default {
       this.student = this.user.discriminator !== 'Учитель';
       return this.student
     }
-  },
-
-  created() {
-    this.checkWindowWidth();
-    window.addEventListener('resize', this.checkWindowWidth);
-  },
-
-  beforeDestroy() {
-    window.removeEventListener('resize', this.checkWindowWidth);
   },
 }
 </script>

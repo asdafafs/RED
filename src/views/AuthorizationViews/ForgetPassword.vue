@@ -3,38 +3,22 @@
     <v-row align="center" justify="center" class=" ">
       <v-col cols="4" class=" pa-0" align="center">
         <v-dialog v-model="overlay" persistent width="auto" content-class="elevation-0">
-          <v-card class="d-flex justify-space-between flex-column white rounded-lg ma-2 width">
-            <v-card-title class="black--text"> Восстановление пароля</v-card-title>
-            <v-card-subtitle class="black--text">
-              Введите новый пароль
+          <v-card class="forget-password-card">
+            <div class="logo-container-recovery-password">
+              <LogoRed
+                  class="logo-container-recovery-password__image"
+                  :height="50"
+                  :width="84"
+              />
+            </div>
+            <v-card-title class="forget-password-card__title"> Проверьте почту</v-card-title>
+            <v-card-subtitle class="forget-password-card__subtitle">
+              Мы отправили ссылку для восстановления пароля на указанный электронный адрес. Проверьте почтовый ящик.
             </v-card-subtitle>
-            <v-card-text class="pb-0 ">
-              <v-text-field
-                  solo
-                  v-model="password"
-                  :rules="[rulesPassword.required, rulesPassword.min]"
-                  name="input-10-1"
-                  label="Пароль"
-                  hint="Минимум 8 символов"
-                  counter
-              ></v-text-field>
-              <v-text-field
-                  solo
-                  v-model="passwordRepeat"
-                  :append-icon="show ? 'mdi-eye ' : 'mdi-eye-off '"
-                  :rules="[rulesPassword.required, rulesPassword.min, checkPasswordMatch]"
-                  :type="show ? 'text' : 'password'"
-                  name="input-10-2"
-                  label="Повторите пароль"
-                  hint="Минимум 8 символов"
-                  counter
-                  @click:append="show = !show"
-              ></v-text-field>
-              <v-alert v-if="!passwordsMatch" type="error">Пароли не совпадают</v-alert>
-            </v-card-text>
-            <v-card-actions v-if="passwordsMatch">
-              <v-btn color="#4E7AEC" @click="validatePassword" class="rounded-lg pa-0 white--text" block :disabled="loginButtonDisabled">
-                Обновить пароль
+            <v-card-actions class="forget-password-card__actions">
+              <v-btn color="#4E7AEC" @click="validatePassword" class="forget-password-card__actions__btn white--text" block
+                     :disabled="loginButtonDisabled">
+                Вернуться к авторизации
               </v-btn>
             </v-card-actions>
           </v-card>
@@ -44,75 +28,22 @@
   </div>
 </template>
 <script>
-import IdentityRequest from "@/services/IdentityRequest";
+import LogoRed from "@/components/logos/LogoRed.vue";
 
 export default {
   name: 'ForgetPassword',
-  components: {},
+  components: {LogoRed},
   data: () => ({
     overlay: true,
     loginButtonDisabled: false,
-    show: false,
-    loading: false,
-    value: '',
-    password: '',
-    passwordRepeat: '',
-    rulesPassword: {
-      required: value => !!value || 'Введите пароль.',
-      min: v => v.length >= 8 || 'Минимум 8 символов',
-    }
-    ,
   }),
-  computed: {
-    passwordsMatch() {
-      return this.password === this.passwordRepeat;
-    },
-    checkPasswordMatch() {
-      return value => (value === this.password ? true : 'Пароли не совпадают');
-    },
-  },
-  async mounted() {
-    const userId = this.$route.query.userId
-    const code = this.$route.query.code
-    await this.confirmEmail(userId, code)
-  },
   methods: {
-    async confirmEmail(userId, code) {
-      const identity = new IdentityRequest()
-      await identity.postNewPassword({userId, code}).then(() => {
-        console.log("test")
-        identity.getIdentity();
-        this.$router.push({name: 'main'})
-      })
-    },
-
-    async newPassword(body) {
-      const password = new IdentityRequest()
-      await password.postNewPassword(body)
-    },
-
     validatePassword() {
-      if (!(this.rulesPassword.required(this.password) === true && this.rulesPassword.min(this.password) === true)) {
-        return;
-      }
-      this.loginButtonDisabled = true
-      const body = {
-        "userId": 0,
-        "newPassword": this.password,
-        "code": "string"
-      }
-      this.newPassword(body)
-      alert('пароль сменен')
-      this.$router.push({name: 'main'}).catch(err => {
-        console.log(err)
-      })
-      this.overlay = false;
+      this.$router.push({name: 'main'}).catch(() => {})
     }
   }
 }
 </script>
-<style>
-.width {
-  width: 20em;
-}
+<style lang="scss">
+@import "@/assets/styles/autorizationFormStyles.scss";
 </style>

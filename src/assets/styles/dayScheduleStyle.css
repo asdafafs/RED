@@ -1,0 +1,67 @@
+.day-event {
+    display: flex;
+    height: 100%;
+    border-radius: 12px;
+    align-items: center;
+
+    padding: 15px;
+
+    .day {
+        display: flex;
+        color: #000000;
+        font-size: 40px;
+        font-family: Roboto, sans-serif;
+        font-weight: bold;
+        min-width: 120px;
+        margin: 0 0 0 0;
+    }
+
+    .custom-info {
+        font-size: 16px;
+        color: #000000;
+        padding-left: 8px;
+        font-family: Roboto, sans-serif;
+        font-weight: 600;
+        display: flex;
+        flex-direction: column;
+        white-space: normal;
+
+        .teacher {
+            font-family: Roboto, sans-serif;
+            font-weight: normal;
+            font-size: 12px;
+        }
+
+    }
+
+}
+
+.day-calendar {
+    :only-child {
+        .theme--light.v-calendar-daily .v-calendar-daily__day-interval {
+            border-top: #e0e0e0 0;
+        }
+
+        .theme--light.v-calendar-daily {
+            border-top: none;
+        }
+    }
+
+    border-top: none;
+}
+
+.v-calendar-daily__scroll-area {
+    overflow-y: hidden;
+}
+
+.theme--light.v-calendar-daily .v-calendar-daily__day-interval {
+    border-top: #e0e0e0 0;
+}
+
+.text-format-day {
+    white-space: pre-wrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-height: inherit;
+    max-width: 100%;
+}

@@ -1,30 +1,44 @@
 <template>
-  <v-container fluid>
-    <div class="text-h4 font-weight-medium px-4">
+  <div style="width: 100%">
+    <div class="big-title">
       Группы и планы обучения
     </div>
-    <v-data-table :headers="headersGroup" :search="search" :items="groups" class="elevation-1 custom-header-table"
-                  v-if="!discriminatorUser" no-data-text="Нет данных для отображения"
-                  :hide-default-footer="true" disable-pagination :header-props="{ class: 'blue--text text--darken-2' }"
-                  mobile-breakpoint="0">
+    <hr>
+    <div class="mb-3">
+      <v-btn
+          color="#4E7AEC"
+          class="add-instructor-btn"
+          @click="transitionNewCourse"
+      >
+        <section class="d-flex flex-row align-center" style="padding: 8px 12px 8px 12px !important;">
+          <v-icon color="white">mdi-plus-circle-outline</v-icon>
+          <span class="add-instructor-text">Добавить группу</span>
+        </section>
+      </v-btn>
+    </div>
+    <v-data-table
+        :headers="headersGroup"
+        :items="groups"
+        class="custom-header-table"
+        style="border-bottom: thin solid rgba(0, 0, 0, 0.12); border-radius: unset !important;"
+        v-if="!discriminatorUser"
+        no-data-text="Нет данных для отображения"
+        :hide-default-footer="true"
+        disable-pagination
+        :header-props="{ class: 'blue--text text--darken-2 header-grid-text' }"
+        mobile-breakpoint="0"
+    >
       <template v-slot:top>
         <v-toolbar flat>
-          <v-btn color="#4E7AEC" dark class="ma-0 rounded-lg" @click="transitionNewCourse">
-            <v-col cols="1" class="px-0">
-              <i class="mdi mdi-plus-circle-outline" style="transform: scale(1.5)"></i>
-            </v-col>
-            <v-col cols="">
-              Добавить группу
-            </v-col>
-          </v-btn>
           <v-dialog v-model="groupDelete" max-width="500px">
             <v-card>
               <v-card-title class="text-h5">Удалить группу?</v-card-title>
               <v-card-actions>
-                <v-spacer></v-spacer>
+                <v-spacer/>
                 <v-btn color="blue darken-1" text @click="closeDelete">Отмена</v-btn>
-                <v-btn color="blue darken-1" text @click="deleteItemConfirm">OK</v-btn>
-                <v-spacer></v-spacer>
+                <v-btn color="blue darken-1" text @click="deleteItemConfirm" :disabled="blockButtonWhenRequest">OK
+                </v-btn>
+                <v-spacer/>
               </v-card-actions>
             </v-card>
           </v-dialog>
@@ -39,14 +53,14 @@
             <div style="display: flex; flex-direction: row; flex-wrap: wrap;">
         <span v-if="item.students" v-for="(student, index) in item.students"
               :key="index">
-          {{ student.name }} {{ student.surname }} {{ student.middleName }}, &nbsp;
+          {{ student.surname }} {{ student.name }} {{ student.middleName }}, &nbsp;
           <br>
         </span>
             </div>
           </td>
-          <td class="text-xs-right">
-            <v-icon small class="mr-2 blue--text" @click="editGroupItem(item)">mdi-pencil</v-icon>
-            <v-icon class="red--text" small @click="deleteItem(item)">mdi-delete</v-icon>
+          <td class="text-xs-right grid-actions">
+            <v-icon class="mr-2 blue--text" @click="editGroupItem(item)">mdi-pencil</v-icon>
+            <v-icon class="red--text" @click="deleteItem(item)">mdi-delete</v-icon>
           </td>
         </tr>
       </template>
@@ -54,13 +68,11 @@
     <div v-else>
       <p>Вы не авторизованы для просмотра этой страницы</p>
     </div>
-  </v-container>
+  </div>
 </template>
 <script>
 import GroupsRequest from "@/services/GroupsRequest";
-import CoursesRequest from "@/services/CoursesRequest";
 import {mapState} from "vuex";
-import moment from 'moment';
 import Item from "@/views/AdminPanels/GroupTemplate.vue";
 import CoursesList from "@/views/AdminPanels/CoursesList.vue";
 
@@ -68,13 +80,13 @@ export default {
   components: {CoursesList, Item},
   data: () => ({
     groupDelete: false,
-    search: '',
+    blockButtonWhenRequest: false,
     headersGroup: [
       {text: '№', align: 'start', sortable: false, width: '5%'},
       {text: 'Название', align: 'start', sortable: false, width: '20%'},
       {text: 'Даты обучения', align: 'start', sortable: false, width: '20%'},
       {text: 'Ученики', align: 'start', sortable: false, width: '50%'},
-      {text: 'Действия', value: 'actions', sortable: false, width: '5%'},
+      {text: 'Действия', align: 'end', value: 'actions', sortable: false, width: '5%'},
     ],
     groups: [],
     deletedIndex: -1,
@@ -140,6 +152,7 @@ export default {
     },
 
     async deleteItemConfirm() {
+      this.blockButtonWhenRequest = true
       await this.deleteGroups().finally(async () => {
             this.groups = await this.getGroups();
             this.closeDelete();
@@ -148,6 +161,7 @@ export default {
     },
 
     closeDelete() {
+      this.blockButtonWhenRequest = false
       this.groupDelete = false;
     },
 
@@ -157,7 +171,7 @@ export default {
       const year = String(date.getFullYear());
       const month = String(date.getMonth() + 1).padStart(2, '0');
       const day = String(date.getDate()).padStart(2, '0');
-      return `${year}-${month}-${day}`;
+      return `${day}.${month}.${year}`;
     },
   },
 
@@ -168,5 +182,37 @@ export default {
 
 .theme--light.v-chip:not(.v-chip--active) {
   background: rgba(255, 255, 255, 0.7);
+}
+
+.grid-button {
+  width: 155px !important;
+  height: 28px !important;
+  border-radius: 12px !important;
+  text-transform: none !important;
+}
+
+.header-grid-text {
+  font-weight: 600 !important;
+  font-size: 16px !important;
+}
+
+.grid-actions {
+  text-align: end !important;
+  padding-right: 30px !important;
+}
+
+
+.v-text-field--outlined .v-label {
+  top: 7px !important;
+}
+
+.v-btn {
+  letter-spacing: unset !important;
+}
+
+.big-title {
+  font-weight: 700 !important;
+  font-size: 40px !important;
+  line-height: 46px !important;
 }
 </style>

@@ -1,32 +1,17 @@
 <template>
   <div>
-    <v-container class="px-4 pa-0 ma-0" fluid v-if="showDrawer">
-      <v-row no-gutters align="center" class="spacer">
-        <v-col lg="">
-          <div class="text-h4 font-weight-bold">Здравствуйте, {{ userName }}!</div>
-        </v-col>
-        <v-col lg="3" class="align-self-end text-start justify-start">
-          <div class="text-subtitle-1 uno">{{ groupId }}</div>
-        </v-col>
-        <v-col cols="">
-        </v-col>
-        <v-col cols="1">
-          <v-btn text class="black--text tab-button pa-0" width="100%"
-                 @click="changeButtonMenuState(0); $router.push({name: 'plan-main-month'}).catch(() => {})"
-                 :class="{'tab-background': isButtonMenuPressed[0],}">
-            <span :class="{'tab-button-text': isButtonMenuPressed[0],}">Календарь</span>
-          </v-btn>
-        </v-col>
-        <v-col cols="1">
-          <v-btn text class="black--text tab-button pa-0" width="100%"
-                 @click="changeButtonMenuState(1); openProgressBar()"
-                 :class="{'tab-background': isButtonMenuPressed[1],}">
-            <span :class="{'tab-button-text': isButtonMenuPressed[1],}">Прогресс</span>
-          </v-btn>
-        </v-col>
-      </v-row>
-      <hr>
-      <router-view></router-view>
+    <div class="d-flex flex-row justify-space-between full-width  px-3 mb-3 align-center">
+      <div class="font-weight-medium px-0 mb-3" :class="!showDrawer ? 'mobile-title' : 'desk-title'">
+        Личный кабинет 
+      </div>
+      <div style="font-weight: 700; font-size: 28px; color: #4E7AEC">
+        Удачи на дорогах, {{ userName }}
+      </div>
+    </div>
+    <v-container class="px-4 pa-0 ma-0" fluid v-if="showDrawer && groupId !== 0" >
+      <hr class="mb-2">
+      <div class="d-flex align-center mb-2">  {{ groupTitle }} </div>
+      <router-view/>
     </v-container>
     <v-container class="px-4 pa-0 ma-0" fluid v-if="!showDrawer">
       <v-row>
@@ -34,94 +19,95 @@
           <div class="text-lg-h3 text-md-h4 text-sm-h5 text-xs-h5 font-weight-bold">
             Здравствуйте, {{ userName }}!
           </div>
-          <div class="text-subtitle-1 uno">{{ groupId }}</div>
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col cols="">
-          <v-btn text class="black--text tab-button pa-0" width="100%"
-                 @click="changeButtonMenuState(0); $router.push({name: 'plan-main-day'}).catch(() => {})"
-                 :class="{'tab-background': isButtonMenuPressed[0],}">
-            <span :class="{'tab-button-text': isButtonMenuPressed[0],}">Календарь</span>
-          </v-btn>
-        </v-col>
-        <v-col cols="">
-          <v-btn text class="black--text tab-button pa-0" width="100%"
-                 @click="changeButtonMenuState(1);openProgressBar()"
-                 :class="{'tab-background': isButtonMenuPressed[1],}">
-            <span :class="{'tab-button-text': isButtonMenuPressed[1],}">Прогресс</span>
-          </v-btn>
+          <div class="text-subtitle-1 uno">{{ groupTitle }}</div>
         </v-col>
       </v-row>
       <hr>
-      <router-view></router-view>
+      <router-view/>
     </v-container>
   </div>
 </template>
 <script>
 
 import {mapState} from "vuex";
+import GroupsRequest from "@/services/GroupsRequest";
 
 export default {
   name: 'plan',
   components: {},
   data: () => ({
     showDrawer: true,
+    groupTitle: ''
   }),
-  methods: {
+  watch: {
+    groupId(newValue){
+      this.getGroupNumber()
+    }
+  },
 
-    changeButtonMenuState(index) {
-
-      if (this.lastPressedIndex !== -1) {
-        this.$set(this.isButtonMenuPressed, this.lastPressedIndex, false);
-      }
-      this.$set(this.isButtonMenuPressed, index, true);
-      this.lastPressedIndex = index;
+  computed: {
+    ...mapState(['user']),
+    userName() {
+      return `${this.user.name} ${this.user.middleName} ${this.user.surname}`
     },
+
+    userId() {
+      return this.user.userId
+    },
+
+    groupId() {
+      return this.$store.state.user.groupId
+    },
+  },
+
+  methods: {
     checkWindowWidth() {
       this.showDrawer = window.innerWidth >= 1260;
     },
 
     openProgressBar() {
       const currentStudentID = this.userId;
-      this.$router.push({ name: 'progressBar', params: { currentStudentID}  }).catch((err) => {
-        throw new Error(`Problem handling something: ${err}.`);
+      this.$router.push({name: 'progressBar', params: {currentStudentID}}).catch(() => {
       });
     },
 
-    initialize(){
-    }
+    async getGroupNumber() {
+      const group = new GroupsRequest();
+
+      if(this.groupId !== 0 && this.groupId !== null)
+      {
+        this.groupTitle = await group.getGroup(this.groupId)
+            .then(group => {
+              return group.data[0].groupNumber;
+            })
+            .catch(error => {
+              console.log("Error fetching group:", error);
+              return null;
+            });
+        return this.groupTitle = `Вы зачислены в группу №${this.groupTitle}`
+      }
+      else return this.groupTitle = 'Вы пока не зачислены в группу'
+    },
+
+    async initialize() {
+      await this.getGroupNumber()
+      this.openProgressBar()
+    },
   },
-  computed: {
-    ...mapState(['user']),
-    userName() {
-      return this.user.name
-    },
 
-    userId(){
-      return this.user.userId
-    },
-
-    groupId() {
-      if (this.user.groupId != null)
-        return `Вы зачислены в группу № ${this.user.groupId}`
-      else
-        return 'Вы пока не зачислены в группу'
-    },
-
-    isButtonMenuPressed(){
-      return [this.$route.path.startsWith('/testPlan/mainCal'), this.$route.path.startsWith('/testPlan/progressBar')]
-    }
-
-  },
   created() {
     this.checkWindowWidth();
     window.addEventListener('resize', this.checkWindowWidth);
     this.initialize()
+
   },
 
   beforeDestroy() {
     window.removeEventListener('resize', this.checkWindowWidth);
+  },
+
+  updated() {
+    this.openProgressBar()
   },
 }
 

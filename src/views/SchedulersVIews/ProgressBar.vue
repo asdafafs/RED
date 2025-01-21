@@ -1,76 +1,24 @@
 <template>
   <v-container class="px-0 pa-0 ma-0 " fluid>
-    <div class="text-h5 font-weight-bold" style="">Мои успехи</div>
-    <v-row class="flex-wrap py-2" no-gutters>
-      <v-col class="">
-        <div class=" d-flex flex-column justify-center">
-          <div class="text-center">Пройдено теории
-          </div>
+    <v-row class="flex-wrap py-2" no-gutters style="border-radius: 12px !important; border:1px solid #AAA7A6;">
+      <v-col v-for="(item, index) in items" :key="index">
+        <div class="d-flex flex-column justify-center">
+          <div class="text-center custom-text-circular">{{item.title}}</div>
           <div class="d-flex justify-center">
             <v-progress-circular
                 :rotate="360"
                 :size="240"
                 :width="35"
-                :model-value="value.generalHoursSpent"
-
-                color="#8CED7C"
-                class="ma-2 pa-2 "
-            >
-              <div class="text-center">
-                <div class="text-center text-h3 black--text"> <span class="text-lg-h2" style="color: #4E7AEC">{{ value.generalHoursSpent }} </span>{{ "из" }}
-                  {{ value.generalHours }}
-                </div>
-                <div class="black--text">часов</div>
-              </div>
-
-            </v-progress-circular>
-          </div>
-        </div>
-
-      </v-col>
-      <v-col>
-        <div class=" d-flex flex-column justify-center">
-          <div class="text-center">Осталось практик
-          </div>
-          <div class="d-flex justify-center">
-            <v-progress-circular
-                :rotate="360"
-                :size="240"
-                :width="35"
-                :model-value="value.generalHoursSpent"
-
+                :value="item.hoursSpentPercent"
                 color="#8CED7C"
                 class="ma-2 pa-2"
             >
-              <div class="text-center">
-                <div class="text-center text-h3 black--text"> <span class="text-lg-h2" style="color: #4E7AEC">{{ value.generalHoursSpent }}</span> {{ "из" }}
-                  {{ value.generalHoursSpent }}
+              <div>
+                <div class="custom-text-circular-title">
+                  <span >{{item.hoursSpent}}</span>{{ " " }}
+                  <span class="custom-text-circular">из {{item.totalHours}}</span>
                 </div>
-                <div class="black--text">часов</div>
-              </div>
-            </v-progress-circular>
-          </div>
-        </div>
-      </v-col>
-      <v-col>
-        <div class=" d-flex flex-column justify-center">
-          <div class="text-center">Осталось доппрактик
-          </div>
-          <div class="d-flex justify-center">
-            <v-progress-circular
-                :rotate="360"
-                :size="240"
-                :width="35"
-                :model-value="value.additinalHoursSpent"
-
-                color="#8CED7C"
-                class="ma-2 pa-2"
-            >
-              <div class="text-center">
-                <div class="text-center text-h3 black--text"> <span class="text-lg-h2" style="color: #4E7AEC">{{ value.additinalHoursSpent }}</span> {{ "из" }}
-                  {{ value.additinalHours }}
-                </div>
-                <div class="black--text"> часов</div>
+                <div class="custom-text-circular">часов</div>
               </div>
             </v-progress-circular>
           </div>
@@ -85,21 +33,27 @@ import UsersRequest from "@/services/UsersRequest";
 export default {
   name: 'progressBar',
   data: () => ({
-    value: {
-      generalHours: 0,
-      generalHoursSpent: 0,
-      additinalHours: 0,
-      additinalHoursSpent: 0
-    }
+    items: [
+      {
+        title: 'Пройдено теории',
+        hoursSpent: 0,
+        hoursSpentPercent: 0,
+        totalHours: 0,
+      },
+      {
+        title: 'Осталось практик',
+        hoursSpent: 0,
+        hoursSpentPercent: 0,
+        totalHours: 0,
+      },
+      {
+        title: 'Осталось доппрактик',
+        hoursSpent: 0,
+        hoursSpentPercent: 0,
+        totalHours: 0,
+      }
+    ],
   }),
-
-  mounted() {
-
-  },
-  beforeMount() {
-
-  },
-
 
   computed: {
     getIdUser() {
@@ -118,12 +72,27 @@ export default {
       let studentInfo = users.data.students
       studentInfo = studentInfo.find(student => parseInt(student.id) === parseInt(studentId));
       if (studentInfo) {
-        this.value = {
-          generalHours: studentInfo.generalHours,
-          generalHoursSpent: studentInfo.generalHoursSpent,
-          additinalHours: studentInfo.additinalHours,
-          additinalHoursSpent: studentInfo.additinalHoursSpent
-        };
+
+        this.items = [
+          {
+            title: 'Осталось лекций',
+            hoursSpent: studentInfo.generalHoursSpent,
+            hoursSpentPercent: (studentInfo.generalHoursSpent/studentInfo.generalHours) * 100,
+            totalHours: studentInfo.generalHours
+          },
+          {
+            title: 'Осталось практик',
+            hoursSpent: studentInfo.generalHoursSpent,
+            hoursSpentPercent: (studentInfo.generalHoursSpent/studentInfo.generalHours) * 100,
+            totalHours: studentInfo.generalHours,
+          },
+          {
+            title: 'Осталось доппрактик',
+            hoursSpent: studentInfo.additinalHoursSpent,
+            hoursSpentPercent: (studentInfo.additinalHoursSpent/studentInfo.additinalHours) * 100,
+            totalHours: studentInfo.additinalHours,
+          }
+        ]
       }
     }
     ,
@@ -138,3 +107,18 @@ export default {
   }
 }
 </script>
+<style>
+.custom-text-circular {
+  color: #000000;
+  font-weight: 700 !important;
+  font-size: 24px !important;
+  line-height: 28px !important;
+}
+
+.custom-text-circular-title {
+  color: #4E7AEC;
+  font-weight: 700 !important;
+  font-size: 40px !important;
+  line-height: 28px !important;
+}
+</style>

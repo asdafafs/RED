@@ -2,66 +2,89 @@
   <v-container fluid>
     <v-row no-gutters align="center" class="spacer">
       <v-col lg="">
-        <div class="text-h4 font-weight-bold">
+        <div class="big-title">
           <v-btn icon class="ma-0  align-self-center" @click="prev">
             <v-icon>mdi-chevron-left</v-icon>
           </v-btn>
-          <span class="text-h5">{{ formTitle }}</span>
+          {{ formTitle }}
         </div>
+      </v-col>
+      <v-col class="text-right col-auto  mr-4">
+        <v-btn class="template-course-button" @click="save" color="#4E7AEC"
+               :disabled="isSaveButtonDisabled && blockButtonWhenRequest">
+          <section class="d-flex flex-row align-center" style="padding: 8px 12px 8px 12px !important;">
+            <span class="template-course-button-text white--text">Сохранить изменения</span>
+          </section>
+        </v-btn>
+      </v-col>
+      <v-col class="text-right col-auto">
+        <v-btn class="tab-button pa-0 rounded-lg" color="#2B2A29" @click="cancelChanges" style="min-width: 196px"
+               outlined>
+          <span class="black--text">Выйти без изменений</span>
+        </v-btn>
       </v-col>
     </v-row>
     <hr>
+    <v-row class="flex-wrap">
+      <v-col cols="lg-1 md-2">
+        <v-text-field v-model="editedItem.groups.groupNumber" label="Номер группы" dense
+                      class="text-field-group-template"
+                      :rules="[groupNumberRules.required, groupNumberRules.integer]" outlined hide-details
+                      @change="newGroupTitle"
+                      style="border-radius: 12px !important; max-height: 32px !important;"/>
+      </v-col>
+      <v-col cols="lg-2 md-3">
+        <v-text-field v-model="editedItem.groups.title" label="Название группы" dense
+                      class="text-field-group-template"
+                      style="border-radius: 12px !important; max-height: 32px !important;"
+                      :rules="[titleRules.required]" outlined hide-details disabled/>
+      </v-col>
+    </v-row>
     <v-row class="flex-wrap">
       <v-col cols="12">
         <v-select
             v-model="selectedStudents"
             :value="editedItem.lecture.activeUser"
             :items="studentList"
-            :item-text="item => `${item.name} ${item.surname} ${item.middleName}`"
+            :item-text="item => `${item.surname} ${item.name} ${item.middleName} `"
             label="Список свободных учеников"
             multiple
             hint="Выберите студентов для группы"
             persistent-hint
             no-data-text="Нет данных для отображения"
             item-value="id"
-            @change="updateSelectedStudentsIds"
-        ></v-select>
+            @change="updateSelectedStudentsIds" dense height="32px"/>
       </v-col>
     </v-row>
     <v-row class="flex-wrap">
-      <v-col cols="lg-1 md-2">
-        <v-text-field v-model="editedItem.groups.groupNumber" label="Номер группы"
-                      :rules="[groupNumberRules.required]" outlined hide-details></v-text-field>
-      </v-col>
       <v-col cols="lg-2 md-3">
-        <v-text-field v-model="editedItem.groups.title" label="Название группы"
-                      :rules="[titleRules.required]" outlined hide-details></v-text-field>
-      </v-col>
-      <v-col cols="lg-2 md-3">
-        <v-text-field v-model="editedItem.groups.startDate" label="Дата начала курса"
+        <v-text-field v-model="editedItem.groups.startDate" label="Дата начала курса" dense
                       type="date" :rules="[startDateRules.required]"
-                      @input="updateGlobalStartDate" :min="getTodayDate()" outlined hide-details></v-text-field>
+                      class="text-field-group-template"
+                      style="border-radius: 12px !important; max-height: 32px !important;"
+                      @input="updateGlobalStartDate" :min="getTodayDate()" @change="newGroupTitle" outlined
+                      hide-details/>
       </v-col>
       <v-col cols="lg-1 md-2">
-        <v-text-field
-            label="Выберите время начала занятий"
-            :value="globalStartTime"
-            type="time"
-
-            @input="updateGlobalStartTime"
-            :rules="[startTimeRules.required]"
-            outlined
-            hide-details
-
-        ></v-text-field>
+        <v-text-field dense
+                      label="Выберите время начала занятий"
+                      :value="globalStartTime"
+                      type="time"
+                      @input="updateGlobalStartTime"
+                      :rules="[startTimeRules.required]"
+                      outlined
+                      hide-details
+                      class="text-field-group-template"
+                      style="border-radius: 12px !important; max-height: 32px !important;"/>
       </v-col>
-      <v-col cols="lg-3 md-3 sm-6">
+      <v-col cols="lg-4 md-4 sm-8" class="d-flex justify-space-around">
         <template>
-          <div class="chips-container">
+          <div class="chips-container" style="display: flex; justify-content: space-around; width: 100%;">
             <v-chip
                 v-for="(chip, index) in chips"
                 :key="index"
-                :color="selectedChips.includes(chip) ? 'blue' : null"
+                :class="{ 'white--text': selectedChips.includes(chip) }"
+                :color="selectedChips.includes(chip) ? '#2B2A29' : null"
                 @click="toggleSelectedChip(chip)"
             >
               <strong>{{ chip }}</strong>&nbsp;
@@ -69,22 +92,11 @@
           </div>
         </template>
       </v-col>
-      <v-col class="">
-        <v-btn class="tab-button pa-0 rounded-lg" color="#2B2A29" outlined @click="save"
-               :disabled="isSaveButtonDisabled">
-          <span class="black--text">Сохранить изменения</span>
-        </v-btn>
-      </v-col>
-      <v-col class="">
-        <v-btn class="tab-button pa-0 rounded-lg" color="#2B2A29" text @click="close">
-          <span class="black--text">Выйти без изменений</span>
-        </v-btn>
-      </v-col>
     </v-row>
     <v-row>
-      <v-col>
-        <CoursesList :coursesData="lessons" :lectors="teachers"
-                     @courses-updated="handleCoursesUpdated"></CoursesList>
+      <v-col class="py-0">
+        <CoursesList :coursesData="lessons" :lectors="teachers" :initialData="initialData"
+                     @courses-updated="handleCoursesUpdated"/>
       </v-col>
     </v-row>
   </v-container>
@@ -97,6 +109,7 @@ import UsersRequest from "@/services/UsersRequest";
 import CoursesRequest from "@/services/CoursesRequest";
 import GroupsRequest from "@/services/GroupsRequest";
 import Vue from "vue";
+import {successAlert, warningAlert} from "@/components/Alerts/alert";
 
 export default {
   name: 'Item',
@@ -107,18 +120,14 @@ export default {
     studentList: null,
     globalStartDate: null,
     lessons: [],
+    initialData: [],
     selectedChips: [],
     selectedStudents: [],
     selectedStudentsIds: [],
     teachers: [],
-    groupData: null,
+    blockButtonWhenRequest: false,
     groupDisabled: false,
-    lessonDisabled: false,
-    dialog: false,
-    lessonDelete: false,
-    groupDelete: false,
-    showCoursesList: false,
-    search: '',
+    cancelSaveChanges: false,
     chips: ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'],
     headersGroup: [
       {text: '№', align: 'start', sortable: false, value: 'id', width: '5%'},
@@ -129,7 +138,6 @@ export default {
     ],
     groups: [],
     editedIndex: -1,
-    deletedIndex: -1,
     editedItem: {
       groups: {
         groupId: null,
@@ -137,7 +145,7 @@ export default {
         startDate: null,
         startTime: null,
         fullGroupName: null,
-        groupNumber: null,
+        groupNumber: 0,
       },
 
       lecture: {
@@ -159,16 +167,14 @@ export default {
       required: value => !!value
     },
     groupNumberRules: {
-      required: value => !!value
+      required: value => !!value,
+      integer: value => Number.isInteger(Number(value)) || 'Введите целое число',
     },
 
     dateOfWeek: [false, false, false, false, false, false, false],
     cursorDateOfWeek: 0,
     cursorDate: moment(new Date())
   }),
-
-  mounted() {
-  },
 
   computed: {
     ...mapState(['user']),
@@ -194,18 +200,24 @@ export default {
     },
 
     formTitle() {
-      return this.editedIndex === -1 ? 'Новая группа' : 'Редактировать группу';
+      return this.editedItem.groups.title
     },
   },
 
   created() {
-
     this.initialize();
   },
 
   methods: {
     prev() {
       this.$router.push({name: 'admin-groups'})
+    },
+
+    newGroupTitle() {
+      let startDate = this.editedItem.groups.startDate;
+      let parts = startDate.split('-');
+      let rearranged = [parts[2], parts[1], parts[0]].join('.');
+      return this.editedItem.groups.title = `Группа №${this.editedItem.groups.groupNumber} Старт ${rearranged}`;
     },
 
     getTodayDate() {
@@ -299,8 +311,17 @@ export default {
             activeUser: item.activeUser,
           };
         });
-        const nextGroupNumber = this.groups.length + 1;
-        this.editedItem.groups.title = `Группа №${nextGroupNumber}`;
+        this.initialData = this.coursesData.map(item => {
+          return {
+            id: item.id,
+            title: item.title,
+            startTime: item.startTime,
+            endTime: item.endTime,
+            lectureType: item.lectureType,
+            activeUser: item.activeUser,
+          };
+        });
+        this.editedItem.groups.title = `Группа №0`;
 
       } else {
         await this.getCourseId(this.getGroupId);
@@ -312,34 +333,52 @@ export default {
             endTime: item.endTime,
             lectureType: item.lectureType,
             activeUser: item.activeUser,
-
           };
         });
-        this.editedItem = {
-          groups: {
-            groupId: item.groupId,
-            title: item.title,
-            startDate: this.globalStartDate,
-            studentId: item.student,
-            groupNumber: item.groupNumber
-          },
-
-          lecture: {
-            id: null,
-            title: '',
-            startTime: null,
-            endTime: null,
-            activeUser: null,
-            lectureType: null,
-          },
+        this.editedItem.groups = {
+          groupId: item.groupId,
+          title: item.title,
+          startDate: this.globalStartDate,
+          studentId: item.student,
+          groupNumber: item.groupNumber,
         };
+        this.selectedDays()
         this.updateSelectedStudentsIds()
       }
     },
 
+    selectedDays(){
+      const dayOfWeekMap = {
+        'Monday': 'Пн',
+        'Tuesday': 'Вт',
+        'Wednesday': 'Ср',
+        'Thursday': 'Чт',
+        'Friday': 'Пт',
+        'Saturday': 'Сб',
+        'Sunday': 'Вс'
+      };
+      let daysOfWeekArray = [];
+      if (this.lessons && this.lessons.length > 0) {
+        this.lessons.forEach(event => {
+          const dayOfWeekEnglish = moment(event.startTime).format('dddd');
+          const dayOfWeekRussian = dayOfWeekMap[dayOfWeekEnglish];
+          if (dayOfWeekRussian) {
+            daysOfWeekArray.push(dayOfWeekRussian);
+          }
+        });
+      }
+
+      daysOfWeekArray = daysOfWeekArray.filter((x, i, a) => a.indexOf(x) === i)
+      this.selectedChips = daysOfWeekArray
+    },
+
+    cancelChanges() {
+      warningAlert('Изменения не сохранены', 5000)
+      this.close()
+    },
+
     close() {
-      this.dialog = false;
-      this.showCoursesList = false;
+      this.blockButtonWhenRequest = false
       const nextGroupNumber = this.groups.length + 1;
       this.$nextTick(() => {
         this.editedItem = {
@@ -366,7 +405,7 @@ export default {
     },
 
     save: async function () {
-      this.groupDisabled = true
+      this.blockButtonWhenRequest = true
       if (this.editedIndex > -1) {
         const body = {
           "title": this.editedItem.groups.title,
@@ -377,9 +416,9 @@ export default {
           "studentId": this.selectedStudentsIds,
           "lecture": this.lessons
         }
-        await this.postCourse(body).finally(() => {
-          this.groupDisabled = false
-          this.lessons = []
+        await this.postCourse(body).then(() => {
+          successAlert('Изменения сохранены успешно', 5000);
+          this.close();
         })
       } else {
         const body = {
@@ -391,11 +430,11 @@ export default {
           "studentId": this.selectedStudentsIds,
           "lecture": this.lessons
         }
-        await this.postCourse(body).finally(() => {
-          this.groupDisabled = false
+        await this.postCourse(body).then(() => {
+          successAlert('Группа успешно создана', 5000);
+          this.close();
         })
       }
-      this.close();
     },
 
     formatDatetime(timestamp) {
@@ -497,7 +536,6 @@ export default {
           this.cursorDateOfWeek = 0;
         }
       }
-
     },
 
     getNextDayByWeekendDayIndex(dayOfWeek) {
@@ -525,12 +563,41 @@ export default {
 .chips-container {
   display: flex;
   flex-wrap: wrap;
-  min-width: 210px; /* Минимальная ширина контейнера, чтобы вместить 3 элемента в одной строке */
+  min-width: 210px;
 }
 
 .chips-container > .v-chip {
-  margin-right: 8px; /* Расстояние между элементами */
-  margin-bottom: 8px; /* Расстояние между строками */
+  margin-right: 8px;
+  margin-bottom: 8px;
 }
 
+.text-field-group-template {
+  .v-input__slot {
+    display: flex !important;
+    align-items: center !important;
+    min-height: 32px !important;
+  }
+
+  .v-input__prepend-inner {
+    margin: 0 !important;
+  }
+
+  .v-input__icon {
+    height: 32px !important;
+  }
+}
+
+.template-course-button {
+  text-transform: none !important;
+  border-radius: 12px !important;
+  height: 32px !important;
+  min-width: 196px;
+
+  &-text {
+    font-size: 16px !important;
+    font-weight: 500 !important;
+    margin-left: 8px !important;
+    line-height: 18.75px !important;
+  }
+}
 </style>

@@ -1,80 +1,120 @@
 <template>
-  <v-navigation-drawer :value="drawer" app clipped color="#1e1f22" v-if="!showDrawer" hide-overlay>
-    <v-list height="inherit" class="d-flex flex-column">
+  <v-navigation-drawer
+      v-if="!showDrawer"
+      :value="drawer"
+      app
+      clipped
+      color="#1e1f22"
+      :style="{ height: '94vh' }"
+  >
+    <v-list
+        height="inherit"
+        class="d-flex flex-column"
+    >
       <v-list-item
-          class="white--text align-start align-center list-item">
-        <span class="mdi mdi-plus rotate" @click.stop="$emit('update:drawer', false);"></span>
-      </v-list-item>
-      <v-list-item
-          @click.stop="$router.push({name: 'schedule-lessons'}).catch(() => {}); $emit('update:drawer', false)"
-          class="white--text align-start align-center list-item">
-        Расписание
-      </v-list-item>
-      <v-list-item
-          @click.stop="$router.push({name: 'singUpClasses-month'}).catch(() => {}); $emit('update:drawer', false)"
-          class="white--text align-start align-center list-item">
-        Запись на занятие
-      </v-list-item>
-      <v-list-item
-          @click.stop="$router.push('*').catch(() => {}); $emit('update:drawer', false)"
-          class="white--text align-start align-center list-item">
-        Лекции
-      </v-list-item>
-      <v-list-item
-          v-if="student"
-          @click.stop="$router.push({name: 'plan-main-month'}).catch(() => {}); $emit('update:drawer', false)"
-          class="white--text align-start align-center list-item">
-        Мой план
-      </v-list-item>
-      <v-list-item
-          v-if="!student"
-          @click.stop="$router.push({name: 'admin-students'}).catch(() => {}); $emit('update:drawer', false)"
-          class="white--text align-start align-center list-item">
-        Админпанель
-      </v-list-item>
-      <v-list-item
-          @click.stop="$router.push('*').catch(() => {}); $emit('update:drawer', false)"
-          class="white--text align-start align-center list-item">
-        Привязать аккуант к вк
-      </v-list-item>
-      <v-list-item
-          @click.stop="exit(); $router.push({name: 'main'}).catch(() => {}); $emit('update:drawer', false)"
-          class="white--text align-end mt-auto align-center" style="max-height: 4em;" >
-        <div class="d-flex flex-column">
-          <div>
-            <span class="mdi mdi-account-outline"></span>
-            {{ user }}
-          </div>
-          <div style="text-align: left;">
-            {{ student ? role[0] : role[1] }}
-          </div>
-        </div>
-        <span class="mdi mdi-login" style="transform: scale(1.5)"></span>
+          v-for="item in navigationItems"
+          :key="item.id"
+          class="white--text align-center list-item"
+          @click.stop="onClick(item)"
+          :class="{'align-end mt-auto': item.routerName === 'main'}"
+          v-if="item.id !== 5 || !student"
+      >
+        <template #default>
+          {{ item.title }}
+          <v-icon color="white">{{ item.icon }}</v-icon>
+          <logoutButton v-if="item.routerName === 'main'"/>
+        </template>
       </v-list-item>
     </v-list>
   </v-navigation-drawer>
 </template>
 <script>
 import IdentityRequest from "@/services/IdentityRequest";
+import logoutButton from "@/components/UI/LogoutButton.vue";
 
 export default {
   name: 'NavigationBar',
+  components: {
+    logoutButton
+  },
   props: {
-    drawer: {},
-    role: {},
-    showDrawer: {},
-    student: {},
-    user: {}
+    student: Boolean,
+    drawer: Boolean,
+    showDrawer: Boolean,
+  },
+  computed: {
+    navigationItems() {
+      return [
+        {
+          id: 0,
+          icon: 'mdi-close-thick',
+          visible: true,
+        },
+        {
+          id: 1,
+          title: 'Мое расписание',
+          routerName: 'schedule-lessons',
+          visible: true,
+        },
+        {
+          id: 2,
+          title: 'Запись на занятие',
+          routerName: 'singUpClasses-month',
+          visible: this.student,
+        },
+        {
+          id: 4,
+          title: 'Личный кабинет',
+          routerName: 'plan',
+          visible: this.student,
+        },
+        {
+          id: 5,
+          title: 'Админпанель',
+          routerName: 'admin-students',
+          visible: true,
+        },
+        {
+          id: 6,
+          title: 'Привязать аккаунт к вк',
+          link: 'linkVk',
+          visible: true,
+        },
+        {
+          id: 7,
+          routerName: 'main',
+          visible: true,
+        },
+      ].filter(x => x.visible)
+    }
   },
   methods: {
     async logout() {
       const user = new IdentityRequest()
       await user.postLogout({})
     },
+    onClick(item) {
+      if (item.routerName) {
+        this.$router.push(
+            {
+              name: item.routerName
+            }
+        ).catch(() => {
+            }
+        );
+      }
+      this.$emit('update:drawer', false)
+      if (item.routerName === 'main') this.logout()
+      if (item.link === 'linkVk') this.linkVk()
+    },
 
-    exit() {
-      this.logout()
-    }
+    async linkVk() {
+      const clientId = process.env.CLIENT_ID
+      const redirectUri = process.env.REDIRECT_URI
+      const display = process.env.DISPLAY
+      const responseType = process.env.RESPONSE_TYPE
+      window.location.replace(`https://oauth.vk.com/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&display=${display}&response_type=${responseType}`)
+    },
   }
 }
 </script>
@@ -82,8 +122,6 @@ export default {
 .rotate {
   transform: rotate(45deg) scale(1.8);
 }
-
-
 
 .list-item {
   max-height: 4em;

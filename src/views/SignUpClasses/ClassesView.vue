@@ -1,18 +1,19 @@
 <template>
   <div style="width: 100%; height:100%; padding: 0 12px 12px 12px">
-    <div class="d-flex justify-space-between" style="width: 100%">
+    <div class="d-flex justify-space-between flex-wrap" style="width: 100%">
       <v-btn-toggle
-        v-model="selectedJoinType"
-        group
-        color="black"
+          mandatory
+          v-model="selectedJoinType"
+          group
+          color="black"
       >
         <v-btn
-          v-for="item in calendarButtons"
-          :key="item.id"
-          height="32"
-          class="toggle-button"
-          :value="item.id"
-          @click="onToggleClick(item.id)"
+            v-for="item in calendarButtons"
+            :key="item.id"
+            height="32"
+            class="toggle-button"
+            :value="item.id"
+            @click="onToggleClick(item.id)"
         >
         <span :class="selectedJoinType === item.id ? 'white--text' : 'black--text'">
           {{ item.title }}
@@ -22,61 +23,48 @@
       <div class="d-flex align-center flex-row">
         <span class="mr-3">Показать</span>
         <v-select
-          style="max-width: 130px"
-          height="32"
-          v-model="type"
-          :items="types"
-          dense
-          outlined
-          hide-details
-          class="select-period"
-          :item-text="displayText"
-          :item-value="valueText"
+            no-data-text="Нет данных для отображения"
+            style="max-width: 130px"
+            height="32"
+            v-model="type"
+            :items="types"
+            dense
+            outlined
+            hide-details
+            class="select-period"
+            :item-text="displayText"
+            :item-value="valueText"
+            @change="testMethod"
         />
       </div>
     </div>
     <div v-if="discriminatorUser">
       <v-select
-          class="rounded-lg"
+          class="select-teacher"
           no-data-text="Нет данных для отображения"
           v-model="selectedTeacher"
           label="Выберите инструктора"
           :items="teachers"
-          :item-text="item => `${item.name} ${item.surname} ${item.middleName} `"
+          :item-text="item => `${item.surname} ${item.name} ${item.middleName} `"
           item-value="id"
           @change="confirm(discriminatorUser)"
           hide-details
           outlined
           height="36px"
-          style="width: 350px;"
+          style="width: 350px;  margin-top: 12px !important;"
           dense
       />
     </div>
     <div>
       <div>
-        <v-sheet
-            tile
-            height="54"
-            class="d-flex justify-center"
-        >
-          <v-btn
-              icon
-              class="ma-0 align-self-center"
-              @click="$refs.calendar.prev()"
-          >
+        <v-sheet tile height="54" class="d-flex justify-center">
+          <v-btn icon class="ma-0 align-self-center" @click="prev()">
             <v-icon>mdi-chevron-left</v-icon>
           </v-btn>
-          <v-toolbar-title
-              v-if="test"
-              class="month-name"
-          >
+          <v-toolbar-title v-if="test" class="month-name">
             {{ month }}
           </v-toolbar-title>
-          <v-btn
-              icon
-              class="ma-0 align-self-center"
-              @click="$refs.calendar.next()"
-          >
+          <v-btn icon class="ma-0 align-self-center" @click="next()">
             <v-icon>mdi-chevron-right</v-icon>
           </v-btn>
         </v-sheet>
@@ -93,23 +81,15 @@
               :event-ripple="false"
               :event-height="num"
               :hide-header=false
-              @change="updateRange"
               event-more-text="+ {0}"
           >
             <template v-slot:event="{event}">
               <v-container class="pa-1 mx-0 d-flex ">
-                <v-row class="ma-0">
-                  <v-col cols="4" class="black--text pa-0 align-self-center d-none d-lg-block">
+                <v-row class="ma-0" style="height: inherit; width: inherit">
+                  <v-col class="black--text pa-0 align-self-center">
                     <div class="text-subtitle-2 d-flex justify-center">{{ formatTime(event.startTime) }}</div>
                   </v-col>
-                  <v-col class="d-lg-none pa-0 event">
-                    <div class="logo ">
-                      <car-logo v-if="event.lectureType === 3"/>
-                      <lecture-logo
-                          v-if="event.lectureType === 2 || event.lectureType === 1 || event.lectureType === null"/>
-                    </div>
-                  </v-col>
-                  <v-col class="black--text pa-0 align-self-center d-none d-lg-block">
+                  <v-col class="black--text pa-0 align-self-center">
                     <div class="font-weight-bold text-format" style="width: inherit">{{ event.title }}
                     </div>
                   </v-col>
@@ -118,7 +98,7 @@
             </template>
           </v-calendar>
           <v-dialog v-model="selectedOpen" max-width="407px" persistent>
-            <v-card class="rounded-xl"
+            <v-card class="" style="border-radius: 12px"
                     :style="{ border: (selectedEvent.studentId === null && userID !== selectedEvent.studentId) ? '2px solid #4E7AEC' : '2px solid grey' }"
                     flat>
               <v-toolbar-title class="pa-3">
@@ -134,7 +114,7 @@
                   <v-row class="">
                     <v-col class="flex-column pa-0 flex-wrap">
                       <div style="color: #4E7AEC">
-                        {{ selectedEvent && selectedEvent.startTime ? selectedEvent.startTime.split('T')[0] : '' }}
+                        {{ selectedEvent && selectedEvent.startTime ? formatDate(selectedEvent.startTime) : '' }}
                       </div>
                       <div class="text-lg-h5 font-weight-bold black--text">{{ formatTime(selectedEvent.startTime) }}
                         {{ ' - ' }} {{ formatTime(selectedEvent.endTime) }}
@@ -164,7 +144,8 @@
                   <div>
                     <v-btn text color="primary"
                            v-if="selectedEvent.studentId === null && discriminatorUser && userID !== selectedEvent.studentId"
-                           @click="addEventStudent">
+                           @click="addEventStudent"
+                           :disabled="studentHours[1] <= 0">
                       Записаться
                     </v-btn>
                     <v-btn text color="secondary"
@@ -172,34 +153,8 @@
                            @click="removeEventStudent">
                       Отписаться
                     </v-btn>
-                    <v-btn text color="secondary"
-                           v-else-if="!discriminatorUser"
-                           @click="openRefusalModal()">
-                      Удалить
-                    </v-btn>
                   </div>
                 </v-container>
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
-          <v-dialog v-model="refusalModal" max-width="40em" persistent>
-            <v-card>
-              <v-toolbar-title>Укажите причину отмены</v-toolbar-title>
-              <v-card-text>
-                <v-select no-data-text="Нет данных для отображения"
-                          v-model="selectedReason"
-                          :items="reasonsRefusal"
-                          item-value="id"
-                          @change="confirmReason(selectedReason)"
-                ></v-select>
-              </v-card-text>
-              <v-card-actions>
-                <v-btn text color="primary" @click="confirmDeletePractice()">
-                  Подтвердить
-                </v-btn>
-                <v-btn text color="secondary" @click="closeModal()">
-                  Отменить
-                </v-btn>
               </v-card-actions>
             </v-card>
           </v-dialog>
@@ -214,6 +169,7 @@ import LectureLogo from "@/components/logos/LectureLogo.vue";
 import EventsRequest from "@/services/EventsRequest";
 import UsersRequest from "@/services/UsersRequest";
 import {mapState} from "vuex";
+import moment from "moment/moment";
 
 export default {
   components: {LectureLogo, CarLogo},
@@ -230,15 +186,22 @@ export default {
     weekday: [1, 2, 3, 4, 5, 6, 0],
     selectedEvent: {},
     type: 'month',
-    types: [['month', 'месяц'], ['week', 'неделя'], ['day', 'день']],
+    // types: [['month', 'месяц'], ['week', 'неделя'], ['day', 'день']],
+    types: [['month', 'месяц'], ['day', 'день']],
     mode: 'stack',
-    value: '',
+    value: moment().locale('ru').format('YYYY-MM-DD'),
+    currentDate: moment(),
     selectedElement: null,
     selectedTeacher: null,
     studentHours: [],
     selectedReason: null,
+    selectedState: null,
+    lastSelectedJoinType: 0,
     reasonsRefusal: ['Ремонт', 'Семейные обстоятельства', 'Экзамен ', 'Здоровье', 'Задачи офиса'],
+    stateRefusal: ['Закрыта', 'Сгорела', 'Отменена'],
     selectedReasonId: 0,
+    selectedStateId: 0,
+    prevMonthAndYear: '',
   }),
   mounted() {
     const buttonStyleReplace = [
@@ -261,7 +224,18 @@ export default {
     this.test = true
     window.addEventListener('resize', this.handleResize);
     this.handleResize();
+    this.prevMonthAndYear = this.getMonthAndYear(this.value);
+    if (!this.$vuetify.breakpoint.lgAndUp){
+      this.types= [['month', 'месяц'], ['day', 'день']]
+    }
   },
+
+  watch: {
+    value(newValue) {
+      this.confirmOnChangeMonthAndYear(newValue);
+    },
+  },
+
   computed: {
     ...mapState(['user']),
     calendarButtons() {
@@ -269,14 +243,6 @@ export default {
         {
           id: 0,
           title: 'Практики',
-        },
-        {
-          id: 1,
-          title: 'Экзамен',
-        },
-        {
-          id: 2,
-          title: 'Другое',
         },
       ]
     },
@@ -287,27 +253,26 @@ export default {
     userID() {
       return this.user.userId
     },
-    
+
     month() {
-      return this.$refs.calendar.title.split(' ')[0]
+      return this.$refs.calendar.title
     },
   },
   beforeDestroy() {
     window.removeEventListener('resize', this.handleResize);
   },
-  
+
   created() {
     this.selectedReason = this.reasonsRefusal[0];
     this.initialize();
-
   },
 
   methods: {
     onToggleClick(id) {
+      this.lastSelectedJoinType = id;
       switch (id) {
-        case 0: return this.getAllEvents()
-        case 1: return this.testLessons()
-        case 2: return this.testPractices()
+        case 0:
+          return this.confirm(this.discriminatorUser)
       }
     },
     displayText(item) {
@@ -318,48 +283,53 @@ export default {
       return item[0];
     },
 
-    async confirmDeletePractice() {
-      const body = {
-        "id": this.selectedEvent.id,
-        "stateEnum": 3,
-        "deleteReasonEnum": this.selectedReasonId
+    async confirmOnChangeMonthAndYear(newValue) {
+      if (this.type !== 'week') {
+        const currentMonthAndYear = this.getMonthAndYear(newValue);
+        if (currentMonthAndYear !== this.prevMonthAndYear) {
+          this.onToggleClick(this.lastSelectedJoinType);
+          this.prevMonthAndYear = currentMonthAndYear;
+        }
       }
-      await this.closePractice(body).catch(x => console.log(x)).finally(this.closeModal)
+    },
+    getMonthAndYear(dateString) {
+      const [year, month] = dateString.split('-');
+      return `${year}-${month}`;
     },
 
-    closeModal() {
-      this.refusalModal = false
+    async prev() {
+      this.$refs.calendar.prev()
+      if (this.type === 'week') {
+        this.currentDate = this.currentDate.clone().subtract(1, 'week');
+        await this.confirm(this.discriminatorUser)
+      }
     },
 
-    openRefusalModal() {
-      this.refusalModal = true
+    async next() {
+      this.$refs.calendar.next()
+      if (this.type === 'week') {
+        this.currentDate = this.currentDate.clone().add(1, 'week');
+        await this.confirm(this.discriminatorUser)
+      }
     },
 
-    confirmReason(selectedReason) {
-      return this.selectedReasonId = this.reasonsRefusal.indexOf(selectedReason) + 1
+    testMethod(){
+      this.confirm(this.discriminatorUser)
     },
 
     async getStudent() {
       const student = new UsersRequest()
       let hours
       await student.getUsers().catch(x => console.log(x)).then((response) => {
-        const users = response.data.students; // Предположим, что данные находятся в массиве data
+        const users = response.data.students;
         const foundUser = users.find(user => user.id === this.userID);
         if (foundUser) {
-          console.log(foundUser)
           hours = [foundUser.generalHours, foundUser.generalHoursSpent]
           return console.log(this.studentHours = hours)
         } else {
           console.log('Пользователь с ID', this.userID, 'не найден.');
         }
       })
-
-    },
-
-    async closePractice(body) {
-      const practice = new EventsRequest()
-
-      await practice.closePractice(body).catch(x => console.log(x))
     },
 
     async signPractice(body) {
@@ -376,8 +346,8 @@ export default {
       }
       await this.signPractice(body)
 
-      await this.loadUpdatedEvents();
-
+      await this.confirm(this.discriminatorUser);
+      await this.getStudent()
       this.selectedOpen = false
     },
 
@@ -390,8 +360,8 @@ export default {
       }
       await this.signPractice(body)
 
-      await this.loadUpdatedEvents();
-
+      await this.confirm(this.discriminatorUser);
+      await this.getStudent()
       this.selectedOpen = false
     },
 
@@ -410,7 +380,6 @@ export default {
     async initialize() {
       await this.getEventsTeacher();
       await this.getStudent()
-      
       if (this.discriminatorUser === false) {
         await this.confirm(this.discriminatorUser)
       }
@@ -425,9 +394,10 @@ export default {
 
     async confirm(discriminator) {
       let cal
+      this.currentDate = moment(this.value)
       if (discriminator === true) {
         if (this.selectedTeacher) {
-          await this.getEventsSelectedTeacher(this.selectedTeacher).catch(x => console.log(x)).then(x => {
+          await this.getEventsForStudent(this.selectedTeacher).catch(x => console.log(x)).then(x => {
             cal = x.data.practice.map(event => ({
               ...event,
               start: new Date(event.startTime),
@@ -435,7 +405,7 @@ export default {
             }));
           });
         }
-      } else
+      } else {
         await this.getEventsSelectedTeacher(this.userID).catch(x => console.log(x)).then(x => {
           cal = x.data.practice.map(event => ({
             ...event,
@@ -443,14 +413,35 @@ export default {
             end: new Date(event.endTime)
           }));
         });
-
+      }
       this.events = cal
       this.close();
     },
 
-    async getEventsSelectedTeacher(teacherId) {
+    getEventsForStudent(){
+      if (this.type === 'week') {
+        const practice = new EventsRequest()
+        const monday = this.currentDate.clone().startOf('isoWeek').format('YYYY-MM-DD')
+        const sunday = this.currentDate.clone().endOf('isoWeek').format('YYYY-MM-DD')
+        const query = `Id=${this.selectedTeacher}&Date=${monday}&Date2=${sunday}`
+        return practice.getPracticeFreeOrAssigned(query);
+      }
       const practice = new EventsRequest()
-      return practice.getPracticeId(teacherId);
+      const query = `Id=${this.selectedTeacher}&Date=${this.value}`
+      return practice.getPracticeFreeOrAssigned(query);
+    },
+
+    async getEventsSelectedTeacher(teacherId) {
+      if (this.type === 'week') {
+        const practice = new EventsRequest()
+        const monday = this.currentDate.clone().startOf('isoWeek').format('YYYY-MM-DD')
+        const sunday = this.currentDate.clone().endOf('isoWeek').format('YYYY-MM-DD')
+        const interval = `Date=${monday}&Date2=${sunday}`
+        return practice.getPracticeId(teacherId, interval);
+      }
+      const practice = new EventsRequest()
+      const monthTime = `Date=${this.value}`
+      return practice.getPracticeId(teacherId, monthTime);
     },
 
     close() {
@@ -459,10 +450,10 @@ export default {
         this.editedItem = {name: ''};
         this.editedIndex = -1;
       });
+      this.selectedOpen = false;
     },
 
     showEvent({nativeEvent, event}) {
-      console.log(event)
       const open = () => {
         this.selectedEvent = event
         this.selectedElement = nativeEvent.target
@@ -479,14 +470,15 @@ export default {
       nativeEvent.stopPropagation()
     },
 
+    formatDate(startTime) {
+      return moment(startTime).format("DD-MM-YY");
+    },
+
     formatTime(startTime) {
       const date = new Date(startTime);
       const hours = date.getHours().toString().padStart(2, '0');
       const minutes = date.getMinutes().toString().padStart(2, '0');
       return `${hours}:${minutes}`;
-    },
-
-    updateRange() {
     },
 
     getEventColor(event) {
@@ -498,7 +490,7 @@ export default {
         return '#E9E9E8'
       }
     },
-    
+
     handleResize() {
       if (window.innerWidth < 1260) {
         this.num = 30;
@@ -511,6 +503,63 @@ export default {
 </script>
 <style lang="scss">
 @import "@/assets/styles/monthScheduleStyles.css";
+
+.day-event {
+  display: flex;
+  height: 100%;
+  border-radius: 12px;
+  align-items: center;
+
+  padding: 15px;
+
+  .day {
+    display: flex;
+    color: #000000;
+    font-size: 40px;
+    font-family: Roboto, sans-serif;
+    font-weight: bold;
+    min-width: 120px;
+    margin: 0 0 0 0;
+  }
+
+  .custom-info {
+    font-size: 16px;
+    color: #000000;
+    padding-left: 8px;
+    font-family: Roboto, sans-serif;
+    font-weight: 600;
+    display: flex;
+    flex-direction: column;
+    white-space: normal;
+
+    .teacher {
+      font-family: Roboto, sans-serif;
+      font-weight: normal;
+      font-size: 12px;
+    }
+
+  }
+
+}
+
+.day-calendar {
+  :only-child {
+    .theme--light.v-calendar-daily .v-calendar-daily__day-interval {
+      border-top: #e0e0e0 0;
+    }
+
+    .theme--light.v-calendar-daily {
+      border-top: none;
+    }
+  }
+
+  border-top: none;
+}
+
+.v-calendar-daily__scroll-area {
+  overflow-y: hidden;
+}
+
 .toggle-button {
   margin-right: 0 !important;
   margin-left: 0 !important;
@@ -518,7 +567,7 @@ export default {
   border-radius: 4px !important;
   text-transform: none !important;
   font-size: 16px !important;
-  
+
   .v-btn:hover,
   .v-btn:focus,
   {
@@ -545,26 +594,41 @@ export default {
   font-weight: 600 !important;
   color: black !important;
 }
+
 .event-type {
   font-weight: 600 !important;
   font-size: 12px !important;
   color: black !important;
 }
+
 .event-instructor,
-.event-long
-{
+.event-long {
   font-weight: 400 !important;
   font-size: 12px !important;
   color: black !important;
 }
-.select-period {
-  border-radius: 12px;
-  
+
+.select-teacher {
   .v-input__slot {
-    height: 32px !important;
+    display: flex !important;
+    align-items: center !important;
     min-height: 32px !important;
-    display: flex!important;
-    align-items: center!important;
+  }
+
+  .v-input__prepend-inner {
+    margin: 0 !important;
+  }
+
+  .v-input__icon {
+    max-height: 32px !important;
+  }
+
+  .v-input__control {
+    max-height: 32px !important;
+
+    .v-input__slot {
+      max-height: 32px !important;
+    }
   }
 
   .v-select__selection--comma {
@@ -572,4 +636,31 @@ export default {
   }
 }
 
+.select-period {
+  .v-input__slot {
+    display: flex !important;
+    align-items: center !important;
+    min-height: 32px !important;
+  }
+
+  .v-input__prepend-inner {
+    margin: 0 !important;
+  }
+
+  .v-input__icon {
+    max-height: 32px !important;
+  }
+
+  .v-input__control {
+    max-height: 32px !important;
+
+    .v-input__slot {
+      max-height: 32px !important;
+    }
+  }
+
+  .v-select__selection--comma {
+    margin: 0 !important;
+  }
+}
 </style>

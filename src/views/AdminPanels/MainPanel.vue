@@ -1,58 +1,64 @@
 <template>
-  <v-container fluid class="ma-0 py-2 px-0 justify-center" style="max-width: 100%; overflow: hidden;">
-    <v-row class="flex-wrap  px-3 fill-height">
-      <v-col cols="lg-2 md-4" class="">
-        <v-btn cols="" text class="black--text tab-button pa-0 align-center " width="100%"
-               :class="{'tab-background': isButtonPressed[0]}"
-               @click="changeButtonState(0); $router.push({name: 'admin-students'}).catch(() => {})">
-          <span :class="{ 'tab-button-text':isButtonPressed[0]}">Студенты</span>
-        </v-btn>
-      </v-col>
-      <v-col cols="lg-2 md-4">
-        <v-btn text class="black--text tab-button pa-0" width="100%"
-               :class="{'tab-background': isButtonPressed[1]}"
-               @click="changeButtonState(1); $router.push({name: 'admin-teachers'}).catch(() => {})">
-          <span :class="{ 'tab-button-text':isButtonPressed[1]}">Преподаватели</span>
-        </v-btn>
-      </v-col>
-      <v-col cols="lg-2 md-4">
-        <v-btn cols="" text class="black--text tab-button pa-0" width="100%"
-               :class="{'tab-background': isButtonPressed[2]}"
-               @click="changeButtonState(2); $router.push({name: 'admin-groups'}).catch(() => {})">
-          <span :class="{ 'tab-button-text':isButtonPressed[2]}">Практика</span>
-        </v-btn>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col cols="lg-12">
-        <router-view></router-view>
-      </v-col>
-    </v-row>
-  </v-container>
+  <div style="width: 100%; height:100%; padding: 0 12px 12px 12px">
+      <v-btn-toggle
+        v-model="selectedButton"
+        mandatory
+        group
+        color="black"
+     >
+      <v-btn
+          v-for="item in adminPanelButtons"
+          :key="item.id"
+          height="32"
+          class="toggle-button"
+          :value="item.id"
+          @click="onToggleClick(item.router)"
+      >
+        <span :class="selectedButton === item.id ? 'white--text' : 'black--text'">
+          {{ item.title }}
+        </span>
+      </v-btn>
+      </v-btn-toggle>
+    <router-view/>
+  </div>
 </template>
 <script>
 export default {
-  components: {},
-  data: () => ({}),
+  data: () => ({
+    selectedButton: 0
+  }),
   methods: {
-    changeButtonState(index) {
-      if (this.lastPressedIndex !== -1) {
-        this.$set(this.isButtonPressed, this.lastPressedIndex, false);
-      }
-      this.$set(this.isButtonPressed, index, true);
-      this.lastPressedIndex = index;
-    },
-  },
-
-  computed: {
-    isButtonPressed() {
-      return [this.$route.path === '/admin/students',
-        (this.$route.path === '/admin/teachers' || this.$route.path.startsWith('/admin/template')),
-        (this.$route.path === '/admin/groups' || this.$route.path.startsWith('/admin/groupItem'))]
+    onToggleClick(router) {
+      this.$router.push(
+          {
+            name: router
+          }
+      ).catch(()=> {})
     }
+  },
+  computed: {
+    adminPanelButtons() {
+      return [
+        {
+          id: 0,
+          title: 'Студенты',
+          router: 'admin-students'
+        },
+        {
+          id: 1,
+          title: 'Инструкторы',
+          router: 'admin-teachers'
+        },
+        {
+          id: 2,
+          title: 'Группы',
+          router: 'admin-groups'
+        },
+      ]
+    },
   }
 }
 </script>
-<style lang="scss">
+<style scoped lang="scss">
 @import "@/assets/styles/buttonStyles.css";
 </style>
